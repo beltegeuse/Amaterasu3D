@@ -1,7 +1,7 @@
 #ifndef _Group_H
 #define _Group_H
 
-#include <SceneGraph/DrawObject.h>
+#include <Graphics/SceneGraph/DrawObject.h>
 #include <vector>
 
 namespace SceneGraph

@@ -1,4 +1,4 @@
-#include <SceneGraph/Group.h>
+#include <Graphics/SceneGraph/Group.h>
 
 namespace SceneGraph
 {

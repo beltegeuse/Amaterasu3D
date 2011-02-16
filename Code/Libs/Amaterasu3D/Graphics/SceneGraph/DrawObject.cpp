@@ -1,4 +1,4 @@
-#include <SceneGraph/DrawObject.h>
+#include <Graphics/SceneGraph/DrawObject.h>
 
 namespace SceneGraph
 {
