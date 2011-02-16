@@ -1,5 +1,5 @@
 #include <SFML/Window.hpp>
-
+#include <iostream>
 #ifdef WIN32
 #include <GL/glew.h>
 
@@ -17,6 +17,14 @@ int main()
 	// Create the main window
 	sf::Window window(sf::VideoMode(800, 600), "SFML window",sf::Style::Default,  settings);
 
+	GLenum initialisationGLEW = glewInit();
+	// Si l'initialisation a échouée :
+
+	if(initialisationGLEW != GLEW_OK)
+	{
+		std::cout << "[ERROR] Impossible d'initialiser GLEW...." << std::endl;
+		return 1;
+	}
 	// Vertices
 	float vertices[] = {-0.5, -0.5,   0.0, 0.5,   0.5, -0.5};
 
