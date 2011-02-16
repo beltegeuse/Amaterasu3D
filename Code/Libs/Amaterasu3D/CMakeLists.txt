@@ -1,5 +1,12 @@
 SET(LIB_AMATERASU3D_SRCS
-	Empty.cpp
+	Debug/Exceptions.cpp
+	Logger/Logger.cpp
+	Logger/LoggerDebug.cpp
+	Logger/LoggerFile.cpp
+	Math/Rectangle.cpp
+	Math/SphericalCoordinates.cpp
+	SceneGraph/DrawObject.cpp
+	SceneGraph/Group.cpp
 )
 
 SET(LIB_AMATERASU3D_HEADERS
@@ -12,9 +19,9 @@ INCLUDE_DIRECTORIES(
 
 SET(AMATERASU3D_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
-ADD_LIBRARY(amaterasu3D SHARED ${LIB_AMATERASU3D_SRCS})
+ADD_LIBRARY(Amaterasu3D SHARED ${LIB_AMATERASU3D_SRCS})
 
-install(TARGETS amaterasu3D 
+install(TARGETS Amaterasu3D 
   RUNTIME DESTINATION ${PROJECT_BUILD_PATH}
   LIBRARY DESTINATION ${PROJECT_BUILD_PATH}
   ARCHIVE DESTINATION ${PROJECT_BUILD_PATH}

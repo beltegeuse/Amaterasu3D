@@ -9,10 +9,16 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Config/CMake ${CMAKE_MODULE_PATH})
 SET(PROJECT_BUILD_PATH ${CMAKE_SOURCE_DIR}/Build)
 
 # * --Subprojects--
+# *** SFML
 SET(SFMLDIR C:/msys/1.0/build/SFML-2)
 FIND_PACKAGE(SFML REQUIRED)
 FIND_PACKAGE(GLEW REQUIRED)
 FIND_PACKAGE(OPENGL REQUIRED)
+# *** Boost
+set(BOOST_ROOT C:/MinGW)
+set(BOOST_LIBS unit_test_framework)
+find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
+
 ADD_DEFINITIONS("-Wall -W") #Pour afficher les warning lors de la compilation
 
 ADD_SUBDIRECTORY(Code)

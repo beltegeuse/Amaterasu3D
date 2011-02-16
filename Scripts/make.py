@@ -1,5 +1,9 @@
 import sys
 import os
+import subprocess
+import time
+
+headers = ["testAll"]
 
 def Usage():
     print("make.py Version 0.2 pour EodeGame")
@@ -63,19 +67,31 @@ class Compilation:
 
         os.system(commande)
 
-    def Compiler(self,args):
+    def CompilerAll(self, args):
+        self.Compiler(args)
+        
+        for el in headers:
+            print("")
+            print("======================== ")
+            print("======== " + el + " ========= ")
+            print("======================== ")
+            print("")
+            sys.stdout.flush()
+            self.Compiler([el])
 
+    def Compiler(self,args):
+        #print(" Args = " + str(args))
         commande = ""
         
         # On ajoute les options specifique a la platforme
         if(self.__platform == 'win32'):
-            print("[INFO] Windows Platform.")
+            #print("[INFO] Windows Platform.")
             commande += "mingw32-make"
         elif(self.__platform == 'linux2'):
-            print("[INFO] Linux Platform.")
+            #print("[INFO] Linux Platform.")
             commande += "make"
         else:
-            print("[ERROR] UNsupported Platform : " + self.__platform)
+            print("[ERROR] Unsupported Platform : " + self.__platform)
             return
 
         # Ajout des options normales
@@ -90,11 +106,9 @@ class Compilation:
 
     def __searchBuildDirAndExecute(self, commande):
         if(os.access("Build", os.R_OK)):
-            print("[INFO] Acces Build OK.")
             os.chdir("Build")
             os.system(commande)
         elif(os.access("..//Build", os.R_OK)):
-            print("[INFO] Acces Build OK.")
             os.chdir("..//Build")
             os.system(commande)
         else:
@@ -114,6 +128,6 @@ if __name__=="__main__":
             else:
                 c.Initialisation()
         else: # On va demander la compilation
-            c.Compiler(sys.argv[1:])
+            c.CompilerAll(sys.argv[1:])
     else:
-        c.Compiler([])
+        c.CompilerAll([])
