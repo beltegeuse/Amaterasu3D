@@ -2,48 +2,54 @@
 #define __Texture_h_
 
 //Classe Texture
-#include <GL/glew.h>
-#include <string>
-#include <SFML/Graphics.hpp>
 
+#include <GraphicsEngine/Include.h>
+#include <GraphicsEngine/Utilities/ImageLoader.h>
 
 class Texture
 {
 
 private :
 
-	//Attributs
-	std::string filename; //Fichier texture
-	int tailleX, tailleZ; //Tailles de la texture
-	unsigned int IdTex[1]; //Pointeur sur la texture 
-	sf::Image imageTex; //Image de la texture
-
+	// ======== Attributs
+	//Fichier texture
+	std::string m_filename;
+	//Pointeur sur la texture
+	GLuint m_idTex;
+	//Le Resultat
+	ImageLoadResult m_image;
 
 public :
 
-	//Constructeur
-	Texture(const std::string& filename);
-
-	Texture(unsigned char* image_tex, int tailleX, int tailleZ);
-
-	//Destructeur
+	// ======== Constructeurs & Destructeur
+	Texture(const std::string& filename, bool smooth = true);
 	virtual ~Texture();
 
+	// ======== OpenGL methodes
+	//   * Pour les methodes normales
 	//Fonction qui active le texturage
 	void activateTextureMapping();
-
 	//Fonction qui desactive le texturage
 	void desactivateTextureMapping();
-
 	//Fonction qui active la texture courante
 	void activateTexture();
 
-	//Getter
+	//    * Pour les methodes multitextures
+	void activateMultiTex(GLenum tex);
+	void desactivateMultiTex(GLenum tex);
+
+	// ======== Get information
 	std::string getFilename();
-	int getTailleX();
-	int getTailleY();
+	int getTailleX() const;
+	int getTailleY() const;
 	unsigned int* getIdTex();
-	sf::Image getTable();	//Fonction qui retourne le tableau de l'image
+
+	// ======== Pour modifier la texture
+	sf::Color GetPixel(unsigned int x, unsigned y) const;
+	void SetPixel(unsigned int x, unsigned y, const sf::Color& color);
+
+private:
+	void CreateTexture(bool smooth);
 
 };
 

@@ -10,7 +10,11 @@ SET(LIB_AMATERASU3D_SRCS
 	
 	Graphics/SceneGraph/DrawObject.cpp
 	Graphics/SceneGraph/Group.cpp
-	Graphics/Texture.cpp
+	Graphics/Font/FontManager.cpp
+	Graphics/Font/GraphicString.cpp
+	#Graphics/Texture.cpp
+	#Graphics/ImageLoader.cpp
+	Graphics/Color.cpp
 )
 
 SET(LIB_AMATERASU3D_HEADERS
@@ -27,6 +31,8 @@ ADD_LIBRARY(Amaterasu3D SHARED ${LIB_AMATERASU3D_SRCS})
 
 target_link_libraries(
   Amaterasu3D
+  ${FREETYPE_LIBRARY}
+  ${ZLIB_LIBRARY}
   ${SFML_WINDOW_LIBRARY}
   ${SFML_GRAPHICS_LIBRARY}
   ${GLEW_LIBRARY}
