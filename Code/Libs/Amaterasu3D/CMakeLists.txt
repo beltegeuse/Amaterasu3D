@@ -15,6 +15,8 @@ SET(LIB_AMATERASU3D_SRCS
 	#Graphics/Texture.cpp
 	#Graphics/ImageLoader.cpp
 	Graphics/Color.cpp
+	
+	System/MediaManager.cpp
 )
 
 SET(LIB_AMATERASU3D_HEADERS

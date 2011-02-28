@@ -31,9 +31,6 @@
 #include <exception>
 #include <string>
 
-
-//namespace Yes
-//{
     ////////////////////////////////////////////////////////////
     /// Classe de base pour les exceptions
     ////////////////////////////////////////////////////////////
@@ -59,7 +56,7 @@
     protected :
 
         //----------------------------------------------------------
-        // Donn�es membres
+        // Donnees membres
         //----------------------------------------------------------
         std::string m_Message; ///< Message d�crivant l'exception
     };
@@ -78,8 +75,6 @@
         inline void DoNothing(bool) {}
     #   define Assert(condition) DoNothing(!(condition))
     #endif
-
-//} // namespace Yes
 
 //==========================================================
 // Exception lancee lors d'erreur de chargement de fichiers

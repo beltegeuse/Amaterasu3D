@@ -30,6 +30,7 @@ ImageLoader::~ImageLoader()
 	ilShutDown();
 }
 
+//FIXME: Add exception
 ImageLoadResult ImageLoader::LoadFromFile(const std::string& filename)
 {
 	// Pour connaitre le resultat
