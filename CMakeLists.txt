@@ -16,11 +16,14 @@ FIND_PACKAGE(GLEW REQUIRED)
 FIND_PACKAGE(OPENGL REQUIRED)
 FIND_PACKAGE(FREETYPE REQUIRED)
 FIND_PACKAGE(ZLIB REQUIRED)
+FIND_PACKAGE(SDL REQUIRED)
+
 # *** Boost
 set(BOOST_ROOT C:/MinGW)
 set(BOOST_LIBS unit_test_framework)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
-MESSAGE("Boost libraries link is ${Boost_LIBRARIES}")
+#MESSAGE("Boost libraries link is ${Boost_LIBRARIES}")
+
 ADD_DEFINITIONS("-Wall -W") #Pour afficher les warning lors de la compilation
 
 ADD_SUBDIRECTORY(Code)

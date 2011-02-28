@@ -16,8 +16,6 @@ ADD_EXECUTABLE(TestAmaterasu3D ${TEST_Amaterasu3D})
 target_link_libraries(
 	TestAmaterasu3D
 	Amaterasu3D
-	C:/MinGW/lib/libboost_unit_test_framework-mgw45-mt-1_46.a
-	C:/MinGW/lib/libboost_unit_test_framework-mgw45-mt-d-1_46.a
 	${Boost_LIBRARIES}
 )
 
