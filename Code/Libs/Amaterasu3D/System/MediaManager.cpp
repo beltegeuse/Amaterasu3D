@@ -3,7 +3,7 @@
 #include <boost/filesystem.hpp>
 
 //******************************** CMediaManagerException
-CMediaManagerException::CMediaManagerException(const std::string& File, bool directory)
+MediaManagerException::MediaManagerException(const std::string& File, bool directory)
 {
 	if(directory)
 		m_Message = "Impossible to find directory : " + File;
@@ -12,17 +12,17 @@ CMediaManagerException::CMediaManagerException(const std::string& File, bool dir
 }
 
 //******************************** CMediaManager
-CMediaManager CMediaManager::m_instance;
+MediaManager MediaManager::m_instance;
 
-CMediaManager::CMediaManager()
+MediaManager::MediaManager()
 {
 }
 
-CMediaManager::~CMediaManager()
+MediaManager::~MediaManager()
 {
 }
 
-void CMediaManager::AddPath(const std::string& path)
+void MediaManager::AddPath(const std::string& path)
 {
 	//std::cout << "[INFO] Add path : " << path << std::endl;
 	// Check if the path exist
@@ -32,7 +32,7 @@ void CMediaManager::AddPath(const std::string& path)
 
 	// Check if it's a real directory
 	if(!boost::filesystem::is_directory(path))
-		throw CMediaManagerException(path, true);
+		throw MediaManagerException(path, true);
 
 	// The path doesn't exist yet => add to list
 	if(path.at(path.size()-1) == '/')
@@ -41,7 +41,7 @@ void CMediaManager::AddPath(const std::string& path)
 		m_instance.m_path.push_back(path+"/");
 }
 
-void CMediaManager::AddPathAndChilds(const std::string& path)
+void MediaManager::AddPathAndChilds(const std::string& path)
 {
 	// Add the root directory
 	AddPath(path);
@@ -57,7 +57,7 @@ void CMediaManager::AddPathAndChilds(const std::string& path)
 	}
 }
 
-const std::string CMediaManager::GetPath(const std::string& filename)
+const std::string MediaManager::GetPath(const std::string& filename)
 {
 	// search the file in all path...
 	for(PathList::const_iterator it = m_instance.m_path.begin(); it != m_instance.m_path.end(); ++it)
@@ -68,15 +68,15 @@ const std::string CMediaManager::GetPath(const std::string& filename)
 	}
 
 	// Can find the file....
-	throw CMediaManagerException(filename, false);
+	throw MediaManagerException(filename, false);
 }
 
-void CMediaManager::CheckPathSystem()
+void MediaManager::CheckPathSystem()
 {
 	//FIXME: Have to implement it
 }
 
-std::vector<std::string> CMediaManager::GetPaths()
+std::vector<std::string> MediaManager::GetPaths()
 {
 	return m_instance.m_path;
 }

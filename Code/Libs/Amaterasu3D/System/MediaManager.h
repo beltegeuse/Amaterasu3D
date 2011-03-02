@@ -6,22 +6,22 @@
 #include <string>
 #include <vector>
 
-struct CMediaManagerException: public CException
+struct MediaManagerException: public CException
 {
-	CMediaManagerException(const std::string& File, bool directory);
+	MediaManagerException(const std::string& File, bool directory);
 };
 
 //Todo: think about the complexity. Can store filename only and don't research at each request.
-class CMediaManager
+class MediaManager
 {
 private:
 	typedef std::vector<std::string> PathList;
 	PathList m_path;
-	static CMediaManager m_instance;
+	static MediaManager m_instance;
 
 public:
-	CMediaManager();
-	virtual ~CMediaManager();
+	MediaManager();
+	virtual ~MediaManager();
 
 	static void AddPath(const std::string& path);
 	static void AddPathAndChilds(const std::string& path);
