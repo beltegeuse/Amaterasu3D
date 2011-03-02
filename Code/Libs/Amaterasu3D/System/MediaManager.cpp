@@ -24,6 +24,7 @@ CMediaManager::~CMediaManager()
 
 void CMediaManager::AddPath(const std::string& path)
 {
+	//std::cout << "[INFO] Add path : " << path << std::endl;
 	// Check if the path exist
 	PathList::iterator it = std::find(m_instance.m_path.begin(),m_instance.m_path.end(), path);
 	if(it != m_instance.m_path.end())
@@ -34,7 +35,10 @@ void CMediaManager::AddPath(const std::string& path)
 		throw CMediaManagerException(path, true);
 
 	// The path doesn't exist yet => add to list
-	m_instance.m_path.push_back(path);
+	if(path.at(path.size()-1) == '/')
+		m_instance.m_path.push_back(path);
+	else
+		m_instance.m_path.push_back(path+"/");
 }
 
 void CMediaManager::AddPathAndChilds(const std::string& path)
@@ -48,14 +52,14 @@ void CMediaManager::AddPathAndChilds(const std::string& path)
 	{
 		if ( boost::filesystem::is_directory(itr->status()) )
 		{
-			AddPathAndChilds(path);
+			AddPathAndChilds(itr->string());
 		}
 	}
 }
 
 const std::string CMediaManager::GetPath(const std::string& filename)
 {
-	// seqrch the file in all path...
+	// search the file in all path...
 	for(PathList::const_iterator it = m_instance.m_path.begin(); it != m_instance.m_path.end(); ++it)
 	{
 		std::string totalPath = (*it) + filename;
