@@ -1,0 +1,25 @@
+SET(AssimpOpenGL_SRCS
+	Sample_SimpleOpenGL.cpp
+)
+
+
+INCLUDE_DIRECTORIES(
+	${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+ADD_EXECUTABLE(AssimpOpenGL ${AssimpOpenGL_SRCS})
+
+target_link_libraries(
+  AssimpOpenGL
+  assimp
+  freeglut
+  ${SDL_LIBRARY}
+  ${OPENGL_LIBRARY}
+)
+
+SET_TARGET_PROPERTIES(AssimpOpenGL PROPERTIES
+  INSTALL_RPATH ${PROJECT_BUILD_PATH}
+  INSTALL_RPATH_USE_LINK_PATH true
+)
+
+install(TARGETS AssimpOpenGL RUNTIME DESTINATION ${PROJECT_BUILD_PATH})

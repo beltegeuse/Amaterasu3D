@@ -39,6 +39,7 @@ target_link_libraries(
   ${SFML_GRAPHICS_LIBRARY}
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARY}
+  ${Boost_LIBRARIES}
 )
 
 install(TARGETS Amaterasu3D 

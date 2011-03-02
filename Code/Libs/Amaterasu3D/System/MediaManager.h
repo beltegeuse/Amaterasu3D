@@ -15,7 +15,8 @@ struct CMediaManagerException: public CException
 class CMediaManager
 {
 private:
-	std::vector<std::string> m_path;
+	typedef std::vector<std::string> PathList;
+	PathList m_path;
 	static CMediaManager m_instance;
 
 public:
@@ -26,7 +27,7 @@ public:
 	static void AddPathAndChilds(const std::string& path);
 	static const std::string GetPath(const std::string& filename);
 	static void CheckPathSystem();
-	static std::vector<std::string> GetPaths();
+	static PathList GetPaths();
 };
 
 #endif /* MEDIAMANAGER_H_ */
