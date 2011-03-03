@@ -69,7 +69,7 @@ void Window::Run()
 		SDL_WaitEvent(&evenements);
 		OnEvent(evenements);
 		// Clear the screen
-	    glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	    // Draw all the Scene ...
 	    OnDraw();
 	    // Swap buffers
