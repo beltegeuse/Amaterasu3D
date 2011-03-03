@@ -201,6 +201,12 @@ void recursive_render (const struct aiScene *sc, const struct aiNode* nd)
 			glEnable(GL_LIGHTING);
 		}
 
+		if(mesh->mNormals == NULL) {
+			glDisable(GL_LIGHTING);
+		} else {
+			glEnable(GL_LIGHTING);
+		}
+
 		if(mesh->mColors[0] != NULL) {
 			glEnable(GL_COLOR_MATERIAL);
 		} else {

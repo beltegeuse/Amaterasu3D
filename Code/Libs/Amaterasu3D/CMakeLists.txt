@@ -1,5 +1,6 @@
 SET(LIB_AMATERASU3D_SRCS
 	Debug/Exceptions.cpp
+	Debug/OpenGLDebug.cpp
 	
 	Logger/Logger.cpp
 	Logger/LoggerDebug.cpp
@@ -15,6 +16,7 @@ SET(LIB_AMATERASU3D_SRCS
 	#Graphics/Texture.cpp
 	#Graphics/ImageLoader.cpp
 	Graphics/Color.cpp
+	Graphics/Shader.cpp
 	Graphics/Window.cpp
 	
 	System/MediaManager.cpp

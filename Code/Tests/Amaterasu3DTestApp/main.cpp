@@ -1,23 +1,50 @@
 #include <iostream>
-
+#include <Math/Matrix4.h>
 #include <System/MediaManager.h>
 #include <Graphics/Window.h>
+#include <Graphics/Shader.h>
 #include <windows.h>
 #include "assimp.h"
 #include "aiPostProcess.h"
 #include "aiScene.h"
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <stdlib.h>
+
+
+// Dessin de la geometrie
+GLfloat CubeArray[48] = {
+1.0f, 0.0f, 0.0f, -1.0f, 1.0f, -1.0f,
+1.0f, 0.0f, 1.0f, -1.0f, -1.0f, -1.0f,
+1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 1.0f,
+0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+0.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f,
+1.0f, 1.0f, 0.0f, 1.0f, 1.0f, -1.0f,
+1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f
+};
+GLuint IndiceArray[36] = {
+0,1,2,2,1,3,
+4,5,6,6,5,7,
+3,1,5,5,1,7,
+0,2,6,6,2,4,
+6,7,0,0,7,1,
+2,3,4,4,3,5
+};
 
 #define aisgl_min(x,y) (x<y?x:y)
 #define aisgl_max(x,y) (y>x?y:x)
 
 // Assimp functions ....
 void get_bounding_box_for_node (const struct aiScene* scene,
-	const struct aiNode* nd,
-	struct aiVector3D* min,
-	struct aiVector3D* max,
-	struct aiMatrix4x4* trafo
+		const struct aiNode* nd,
+		struct aiVector3D* min,
+		struct aiVector3D* max,
+		struct aiMatrix4x4* trafo
 ){
 	struct aiMatrix4x4 prev;
 	unsigned int n = 0, t;
@@ -60,11 +87,11 @@ void get_bounding_box (const struct aiScene* scene, struct aiVector3D* min, stru
 	get_bounding_box_for_node(scene, scene->mRootNode,min,max,&trafo);
 }
 
+// Can't send color down as a pointer to aiColor4D because AI colors are ABGR.
 void Color4f(const struct aiColor4D *color)
 {
 	glColor4f(color->r, color->g, color->b, color->a);
 }
-
 
 void recursive_render (const struct aiScene *sc, const struct aiNode* nd)
 {
@@ -78,37 +105,27 @@ void recursive_render (const struct aiScene *sc, const struct aiNode* nd)
 	glMultMatrixf((float*)&m);
 
 	// draw all meshes assigned to this node
+	std::cout << "Draw Mesh : " << nd->mNumMeshes << std::endl;
 	for (; n < nd->mNumMeshes; ++n) {
 		const struct aiMesh* mesh = sc->mMeshes[nd->mMeshes[n]];
 
-//		apply_material(sc->mMaterials[mesh->mMaterialIndex]);
-
-//		if(mesh->mNormals == NULL) {
-//			glDisable(GL_LIGHTING);
-//		} else {
-//			glEnable(GL_LIGHTING);
-//		}
-
-		if(mesh->mColors[0] != NULL) {
-			glEnable(GL_COLOR_MATERIAL);
-		} else {
-			glDisable(GL_COLOR_MATERIAL);
-		}
-
+		std::cout << "Draw Faces : " <<  mesh->mNumFaces << std::endl;
 		for (t = 0; t < mesh->mNumFaces; ++t) {
 			const struct aiFace* face = &mesh->mFaces[t];
 			GLenum face_mode;
 
+			std::cout << face->mNumIndices << std::endl;
 			switch(face->mNumIndices) {
-				case 1: face_mode = GL_POINTS; break;
-				case 2: face_mode = GL_LINES; break;
-				case 3: face_mode = GL_TRIANGLES; break;
-				default: face_mode = GL_POLYGON; break;
+			case 1: face_mode = GL_POINTS; break;
+			case 2: face_mode = GL_LINES; break;
+			case 3: face_mode = GL_TRIANGLES; break;
+			default: face_mode = GL_POLYGON; break;
 			}
 
 			glBegin(face_mode);
 
-			for(i = 0; i < face->mNumIndices; i++) {
+			for(i = 0; i < face->mNumIndices; i++)
+			{
 				int index = face->mIndices[i];
 				if(mesh->mColors[0] != NULL)
 					Color4f(&mesh->mColors[0][index]);
@@ -133,12 +150,26 @@ void recursive_render (const struct aiScene *sc, const struct aiNode* nd)
 class ConcreteWindow : public Window
 {
 private:
-	 const struct aiScene* m_scene;
-	 struct aiVector3D m_scene_center;
+	const struct aiScene* m_scene;
+	struct aiVector3D m_scene_center;
+	float m_factor;
+	Math::CMatrix4 m_matrixPerspective;
+	Shader m_shader;
+	unsigned int m_cubeBuffers[2];
 public:
 	ConcreteWindow() :
 		Window("Amaterasu3DTestApp")
 	{
+		// OpenGL Flags ...
+		glClearColor(0.1f,0.1f,0.1f,1.f);
+		glEnable(GL_DEPTH_TEST);
+		// Projection Matrix
+		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 1000);
+		// XXX docs say all polygons are emitted CCW, but tests show that some aren't.
+		if(getenv("MODEL_IS_BROKEN"))
+			glFrontFace(GL_CW);
+
+		glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
 		// Path search
 		MediaManager::Instance()->AddPathAndChilds("../Donnees");
 		// model Load
@@ -150,7 +181,32 @@ public:
 			m_scene_center.x = (scene_min.x + scene_max.x) / 2.0f;
 			m_scene_center.y = (scene_min.y + scene_max.y) / 2.0f;
 			m_scene_center.z = (scene_min.z + scene_max.z) / 2.0f;
+			std::cout << "[INFO] Center info : " << m_scene_center.x << "x" << m_scene_center.y << "x" << m_scene_center.z << std::endl;
 		}
+		m_factor = scene_max.x-scene_min.x;
+		m_factor = aisgl_max(scene_max.y - scene_min.y,m_factor);
+		m_factor = aisgl_max(scene_max.z - scene_min.z,m_factor);
+		m_factor = 1.f / m_factor;
+		std::cout << "[INFO] Factor info : " << m_factor << std::endl;
+		// Load the Shader
+		m_shader = Shader(MediaManager::Instance()->GetPath("BasicShader.vert"),MediaManager::Instance()->GetPath("BasicShader.frag"));
+		// Create the Cube ...
+		CreateCube();
+	}
+
+	void CreateCube()
+	{
+		// Génération des buffers
+		std::cout << "[INFO] Gen Buffer ..." << std::endl;
+		GLCheck(glGenBuffers( 2, m_cubeBuffers ));
+		// Buffer d'informations de vertex
+		std::cout << "[INFO] Fill Array Buffer ..." << std::endl;
+		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_cubeBuffers[0]));
+		GLCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(CubeArray), CubeArray, GL_STATIC_DRAW));
+		// Buffer d'indices
+		std::cout << "[INFO] Fill Element Array Buffer ..." << std::endl;
+		GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cubeBuffers[1]));
+		GLCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(IndiceArray), IndiceArray, GL_STATIC_DRAW));
 	}
 
 	virtual ~ConcreteWindow()
@@ -160,11 +216,38 @@ public:
 	virtual void OnDraw()
 	{
 		Window::OnDraw();
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		gluLookAt(0.f,0.f,3.f,0.f,0.f,-5.f,0.f,1.f,0.f);
-		glTranslatef(-m_scene_center.x,-m_scene_center.y,-m_scene_center.z);
-		recursive_render(m_scene, m_scene->mRootNode);
+		// Create matrix lookat
+		Math::CMatrix4 matrixLookAt;
+		matrixLookAt.LookAt(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0), Math::TVector3F(0,0,1));
+		// Create scale martix
+		Math::CMatrix4 matrixScale;
+		matrixScale.SetScaling(m_factor,m_factor,m_factor);
+		// Create translate Matrix
+		Math::CMatrix4 matrixTranslate;
+		matrixTranslate.SetTranslation(-m_scene_center.x,-m_scene_center.y,-m_scene_center.z);
+		// Compute ModelViewMatrix
+		Math::CMatrix4 ModelViewMatrix;
+		ModelViewMatrix = matrixLookAt;//*matrixScale*matrixTranslate;
+		// Compute ModelPerspectiveViewMatrix
+		Math::CMatrix4 ModelPerspectiveViewMatrix;
+		ModelPerspectiveViewMatrix = m_matrixPerspective*ModelViewMatrix;
+		// Send matrix to the shader
+		m_shader.Begin();
+		m_shader.SetUniformMatrix4fv("ModelViewMatrix", ModelViewMatrix);
+		m_shader.SetUniformMatrix4fv("ModelPerspectiveViewMatrix", ModelPerspectiveViewMatrix);
+		// Draw the geometry
+		//  * Les differents blindings ...
+		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_cubeBuffers[0]));
+		GLCheck(glEnableVertexAttribArray(m_shader.GetAttribLocation("VertexPosition")));
+		GLCheck(glVertexAttribPointer (m_shader.GetAttribLocation("VertexPosition"), 3, GL_FLOAT, GL_FALSE, 0, 0) );
+		// * le dessins en lui meme
+		GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cubeBuffers[1]));
+		GLCheck(glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0));
+		GLCheck(glDisableVertexAttribArray(m_shader.GetAttribLocation("VertexPosition")));
+		// End of the shader
+		m_shader.End();
+
+		//recursive_render(m_scene, m_scene->mRootNode);
 	}
 };
 
