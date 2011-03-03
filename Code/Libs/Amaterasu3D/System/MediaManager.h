@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+//FIXME: build all the system
 class IResource
 {
 public :

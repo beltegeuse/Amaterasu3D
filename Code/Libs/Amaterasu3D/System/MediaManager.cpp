@@ -23,7 +23,13 @@ void IResource::AddRef()
 // Retire une référence sur la ressource
 int IResource::Release()
 {
-	m_RefCount--;
+	// Décrémentation du compteur de références
+	int RefCount = --m_RefCount;
+	// S'il n'y a plus de référence sur la ressource, on la détruit
+	if (RefCount == 0)
+		delete this;
+	return RefCount;
+
 }
 
 //****************************
