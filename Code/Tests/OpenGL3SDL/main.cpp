@@ -93,15 +93,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     while(!terminer)
     {
         // Gestion des évènements
-
         SDL_WaitEvent(&evenements);
-
         if(evenements.window.event == SDL_WINDOWEVENT_CLOSE)
             terminer = 1;
 
 
         // Nettoyage de l'écran
-
         glClear(GL_COLOR_BUFFER_BIT);
 
 

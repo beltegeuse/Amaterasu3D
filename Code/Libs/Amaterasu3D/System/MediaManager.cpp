@@ -2,7 +2,33 @@
 #include <algorithm>
 #include <boost/filesystem.hpp>
 
-//******************************** CMediaManagerException
+
+//****************************
+//**** IRessource ************
+//****************************
+// Constructeur par défaut
+IResource::IResource()
+{
+}
+// Renvoie le nom associé à la ressource
+const std::string& IResource::GetName() const
+{
+	return m_Name;
+}
+// Ajoute une référence sur la ressource
+void IResource::AddRef()
+{
+	m_RefCount++;
+}
+// Retire une référence sur la ressource
+int IResource::Release()
+{
+	m_RefCount--;
+}
+
+//****************************
+//****  MediaManagerException
+//****************************
 MediaManagerException::MediaManagerException(const std::string& File, bool directory)
 {
 	if(directory)
@@ -11,9 +37,9 @@ MediaManagerException::MediaManagerException(const std::string& File, bool direc
 		m_Message = "Impossible to find file : " + File;
 }
 
-//******************************** CMediaManager
-MediaManager MediaManager::m_instance;
-
+//****************************
+//************** MediaManager
+//****************************
 MediaManager::MediaManager()
 {
 }
@@ -26,8 +52,8 @@ void MediaManager::AddPath(const std::string& path)
 {
 	//std::cout << "[INFO] Add path : " << path << std::endl;
 	// Check if the path exist
-	PathList::iterator it = std::find(m_instance.m_path.begin(),m_instance.m_path.end(), path);
-	if(it != m_instance.m_path.end())
+	PathList::iterator it = std::find(m_path.begin(),m_path.end(), path);
+	if(it != m_path.end())
 		return;
 
 	// Check if it's a real directory
@@ -36,9 +62,9 @@ void MediaManager::AddPath(const std::string& path)
 
 	// The path doesn't exist yet => add to list
 	if(path.at(path.size()-1) == '/')
-		m_instance.m_path.push_back(path);
+		m_path.push_back(path);
 	else
-		m_instance.m_path.push_back(path+"/");
+		m_path.push_back(path+"/");
 }
 
 void MediaManager::AddPathAndChilds(const std::string& path)
@@ -60,7 +86,7 @@ void MediaManager::AddPathAndChilds(const std::string& path)
 const std::string MediaManager::GetPath(const std::string& filename)
 {
 	// search the file in all path...
-	for(PathList::const_iterator it = m_instance.m_path.begin(); it != m_instance.m_path.end(); ++it)
+	for(PathList::const_iterator it = m_path.begin(); it != m_path.end(); ++it)
 	{
 		std::string totalPath = (*it) + filename;
 		if(boost::filesystem::exists(totalPath))
@@ -78,5 +104,5 @@ void MediaManager::CheckPathSystem()
 
 std::vector<std::string> MediaManager::GetPaths()
 {
-	return m_instance.m_path;
+	return m_path;
 }

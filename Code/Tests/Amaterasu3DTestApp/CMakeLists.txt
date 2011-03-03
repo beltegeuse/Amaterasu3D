@@ -5,6 +5,7 @@ SET(Amaterasu3DTestApp_SRCS
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
+	../../Libs/Amaterasu3D
 )
 
 ADD_EXECUTABLE(Amaterasu3DTestApp ${Amaterasu3DTestApp_SRCS})

@@ -15,6 +15,7 @@ SET(LIB_AMATERASU3D_SRCS
 	#Graphics/Texture.cpp
 	#Graphics/ImageLoader.cpp
 	Graphics/Color.cpp
+	Graphics/Window.cpp
 	
 	System/MediaManager.cpp
 )
@@ -35,8 +36,7 @@ target_link_libraries(
   Amaterasu3D
   ${FREETYPE_LIBRARY}
   ${ZLIB_LIBRARY}
-  ${SFML_WINDOW_LIBRARY}
-  ${SFML_GRAPHICS_LIBRARY}
+  ${SDL_LIBRARY}
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARY}
   ${Boost_LIBRARIES}
