@@ -28,10 +28,6 @@
 //==========================================================
 #include "Color.h"
 
-
-//namespace Yes
-//{
-
 /////////////////////////////////////////////////////////////
 // Donn�es membres statiques
 /////////////////////////////////////////////////////////////
@@ -490,5 +486,3 @@ std::ostream& operator <<(std::ostream& Stream, const CColor& Color)
                   << static_cast<int>(Color.GetBlue())  << " "
                   << static_cast<int>(Color.GetAlpha());
 }
-
-//} // namespace Yes

@@ -6,16 +6,8 @@
 #include <string>
 #include <iostream>
 
-// SFML Includes
-#include <SFML/Graphics.hpp>
-
 // CoreEngine Includes
 #include <Debug/Exceptions.h>
-
-struct CLoggerException : public CException
-{
-	CLoggerException(const std::string& Message);
-};
 
 class Logger
 {
@@ -65,12 +57,5 @@ Logger& Logger::operator <<(const T& ToLog)
 	return *(_instance);
 }
 
-// Fonction to transforme pour les Vector2
-template <class T>
-std::ostream& operator<<(std::ostream& out, const sf::Vector2<T>& v)
-{
-	out << "<" << v.x << ", " << v.y << ">";
-	return out;
-}
 
 #endif /* LOGGER_H_ */

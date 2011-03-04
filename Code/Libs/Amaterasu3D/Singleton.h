@@ -50,7 +50,6 @@ protected:
 
 template <typename T> T* CSingleton<T>::singleton = 0;
 
-
 #endif
 
 

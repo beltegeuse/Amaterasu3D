@@ -24,96 +24,106 @@
 
 
 //==========================================================
-// En-tetes
+// En-têtes
 //==========================================================
-#include "Exceptions.h"
-#include <sstream>
+#include <Utilities/File.h>
+#include <algorithm>
+#include <fstream>
 
-
-//namespace Yes
-//{
 
 /////////////////////////////////////////////////////////////
-/// Constructeur
+/// Constructeur à partir d'un std::string
 ///
-/// \param Message : Message d'erreur
+/// \param Name : Chemin complet du fichier
 ///
 ////////////////////////////////////////////////////////////
-CException::CException(const std::string& Message) :
-m_Message(Message)
+CFile::CFile(const std::string& Name) :
+m_Name(Name)
 {
-
+    std::replace(m_Name.begin(), m_Name.end(), '/', '\\');
 }
 
 
 /////////////////////////////////////////////////////////////
-/// Destructeur
+/// Constructeur à partir d'un const char*
+///
+/// \param Name : Chemin complet du fichier
 ///
 ////////////////////////////////////////////////////////////
-CException::~CException() throw()
+CFile::CFile(const char* Name) :
+m_Name(Name)
 {
-
+    std::replace(m_Name.begin(), m_Name.end(), '/', '\\');
 }
 
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le message associï¿½ ï¿½ l'exception
+/// Indique si le fichier existe ou non
 ///
-/// \return Pointeur sur le message
+/// \return True si le fichier existe
 ///
 ////////////////////////////////////////////////////////////
-const char* CException::what() const throw()
+bool CFile::Exists() const
 {
-    return m_Message.c_str();
+	std::ifstream File(m_Name.c_str());
+
+    return File.is_open();
 }
 
 
 /////////////////////////////////////////////////////////////
-/// Constructeur
+/// Renvoie le nom du fichier avec son chemin complet
 ///
-/// \param File :    Fichier source contenant l'erreur
-/// \param Line :    Ligne ï¿½ laquelle se trouve l'erreur dans le fichier source
-/// \param Message : Message d'erreur
+/// \return Chemin complet du fichier
 ///
 ////////////////////////////////////////////////////////////
-CAssertException::CAssertException(const std::string& File, int Line, const std::string& Message) :
-CException("")
+const std::string& CFile::Fullname() const
 {
-	std::ostringstream oss;
-	oss << File << " (" << Line << ") : " << Message << std::endl;
-	m_Message = oss.str();
+    return m_Name;
 }
 
-////////////////////////////////////////////////////////////
-// Constructeur
-//
-// [in] File :    Fichier
-// [in] Message : Message d'erreur
-//
-////////////////////////////////////////////////////////////
-CLoadingFailed::CLoadingFailed(const std::string& File, const std::string& Message)
-{
-    // Formatage du message d'erreur
-    std::ostringstream oss;
-    oss << "Erreur dans le chargement de " << File << std::endl << std::endl << Message;
-
-    m_Message = oss.str();
-}
 
 /////////////////////////////////////////////////////////////
-/// Constructeur
+/// Renvoie le nom du fichier sans son chemin
 ///
-/// \param Error : Message décrivant l'erreur
+/// \return Nom du fichier
 ///
 ////////////////////////////////////////////////////////////
-CBadConversion::CBadConversion(const std::string& Error) :
-CException(Error)
+std::string CFile::Filename() const
 {
+    std::string::size_type Pos = m_Name.find_last_of("\\/");
 
+    if (Pos != std::string::npos)
+        return m_Name.substr(Pos + 1, std::string::npos);
+    else
+        return m_Name;
 }
 
-// Execption
-CLoggerException::CLoggerException(const std::string& Message) :
-	CException("[Logger] : " + Message)
+
+/////////////////////////////////////////////////////////////
+/// Renvoie le nom du fichier sans extension ni chemin
+///
+/// \return Nom du fichier
+///
+////////////////////////////////////////////////////////////
+std::string CFile::ShortFilename() const
 {
+    return Filename().substr(0, Filename().find_last_of("."));
 }
+
+
+/////////////////////////////////////////////////////////////
+/// Renvoie l'extension du fichier
+///
+/// \return Extension du fichier
+///
+////////////////////////////////////////////////////////////
+std::string CFile::Extension() const
+{
+    std::string::size_type Pos = m_Name.find_last_of(".");
+    if (Pos != std::string::npos)
+        return m_Name.substr(Pos + 1, std::string::npos);
+    else
+        return "";
+}
+

@@ -84,5 +84,18 @@ struct CLoadingFailed : public CException
 	CLoadingFailed(const std::string& File, const std::string& Message);
 };
 
+////////////////////////////////////////////////////////////
+/// Exception lancée lors d'une erreur de conversion
+////////////////////////////////////////////////////////////
+struct CBadConversion : public CException
+{
+ CBadConversion(const std::string& Error);
+};
+
+struct CLoggerException : public CException
+{
+	CLoggerException(const std::string& Message);
+};
+
 
 #endif // EXCEPTION_H

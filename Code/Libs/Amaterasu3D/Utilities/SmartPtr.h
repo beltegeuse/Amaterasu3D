@@ -22,110 +22,93 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-#ifndef MEDIAMANAGER_H
-#define MEDIAMANAGER_H
+#ifndef SMARTPTR_H
+#define SMARTPTR_H
 
 //==========================================================
 // En-têtes
 //==========================================================
-#include <Singleton.h>
-#include <Utilities/GenHierarchies.h>
-#include <Utilities/File.h>
-#include <Utilities/StringUtils.h>
-#include <Utilities/SmartPtr.h>
-#include <System/Loaders/Loader.h>
-#include <System/Resources/ShaderBase.h>
-//#include <Core/Model.h>
-//#include <Core/Image.h>
+#include <cstdlib>
+#include <Utilities/SmartPtrPolicies.h>
 #include <Debug/Exceptions.h>
-#include <Logger/Logger.h>
-#include <algorithm>
-#include <cctype>
-#include <map>
-#include <set>
-#include <string>
 
-//==========================================================
-// Liste des médias pris en charge
-//==========================================================
-typedef TYPELIST_1(IShaderBase) MediaList;
 
 ////////////////////////////////////////////////////////////
-/// Modèle de gestionnaire de média
+// Déclarations anticipées
 ////////////////////////////////////////////////////////////
-template <class T>
-struct CMediaHolder
+template <class, template <class> class> class CSmartPtr;
+template <class T, template <class> class Ownership> T*& GetPtr(CSmartPtr<T, Ownership>& Ptr);
+
+
+////////////////////////////////////////////////////////////
+/// Pointeurs intelligents à base de polices
+////////////////////////////////////////////////////////////
+template <class T, template <class> class Ownership = CRefCount>
+class CSmartPtr : public Ownership<T>
 {
-	typedef std::map<std::string, CSmartPtr<ILoader<T> > > TLoadersMap;
-	TLoadersMap m_Loaders; ///< Chargeurs de T associés à leur extension
-};
-
-////////////////////////////////////////////////////////////
-/// Gestionnaire de médias - "empilement" de CMediaHolder pour chaque média
-////////////////////////////////////////////////////////////
-class CMediaManager : public CSingleton<CMediaManager>, public CScatteredHierarchy<MediaList, CMediaHolder>
-{
-private:
-	friend class CSingleton<CMediaManager>;
-
 public :
-
-
-	//----------------------------------------------------------
-	// Ajoute un répertoire de recherche pour les médias
-	//----------------------------------------------------------
-	void AddSearchPath(const std::string& Path);
-
-	//----------------------------------------------------------
-	// Enregistre un nouveau chargeur de T
-	//----------------------------------------------------------
-	template <class T> void RegisterLoader(ILoader<T>* Loader, const std::string& Extensions);
-
-	//----------------------------------------------------------
-	// Supprime un chargeur de T
-	//----------------------------------------------------------
-	template <class T> void UnregisterLoader(const std::string& Extensions);
-
-	//----------------------------------------------------------
-	// Charge un T à partir d'un fichier
-	//----------------------------------------------------------
-	template <class T> T* LoadMediaFromFile(const CFile& Filename) const;
-
-	//----------------------------------------------------------
-	// Sauvegarde un T dans un fichier
-	//----------------------------------------------------------
-	template <class T> void SaveMediaToFile(const T* Object, const CFile& Filename) const;
-
-private :
 
 	//----------------------------------------------------------
 	// Constructeur par défaut
 	//----------------------------------------------------------
-	CMediaManager();
+	CSmartPtr();
+
+	//----------------------------------------------------------
+	// Constructeur par copie
+	//----------------------------------------------------------
+	CSmartPtr(const CSmartPtr& Copy);
+
+	//----------------------------------------------------------
+	// Constructeur à partir d'un pointeur
+	//----------------------------------------------------------
+	CSmartPtr(T* Pointer);
 
 	//----------------------------------------------------------
 	// Destructeur
 	//----------------------------------------------------------
-	~CMediaManager();
+	~CSmartPtr();
 
 	//----------------------------------------------------------
-	// Cherche un fichier dans les répertoires de recherche
+	// Opérateurs de déréférencement
 	//----------------------------------------------------------
-	CFile FindMedia(const CFile& Filename) const;
+	T& operator * () const;
+	T* operator ->() const;
 
 	//----------------------------------------------------------
-	// Cherche le loader correspondant à une extension donnée
+	// Opérateur d'affectation
 	//----------------------------------------------------------
-	template <class T> ILoader<T>& FindLoader(const CFile& Filename) const;
+	const CSmartPtr& operator =(const CSmartPtr& Pointer);
+
+	//----------------------------------------------------------
+	// Opérateur d'affectation (à partir d'un pointeur brut)
+	//----------------------------------------------------------
+	const CSmartPtr& operator =(T* Ptr);
+
+	//----------------------------------------------------------
+	// Opérateur de cast en T*
+	//----------------------------------------------------------
+	operator T*() const;
+
+private :
+
+	//----------------------------------------------------------
+	// Amis
+	//----------------------------------------------------------
+	friend T*& GetPtr<T, Ownership>(CSmartPtr<T, Ownership>& Ptr);
+
+	//----------------------------------------------------------
+	// Echange deux CSmartPtr
+	//----------------------------------------------------------
+	void Swap(CSmartPtr& Ptr);
 
 	//----------------------------------------------------------
 	// Données membres
 	//----------------------------------------------------------
-	std::set<std::string> m_Paths; ///< Liste des chemins de recherche
+	T* m_Data; ///< Pointeur vers la données stockée
 };
 
-#include "MediaManager.inl"
+#include "SmartPtr.inl"
 
 
 
-#endif // MEDIAMANAGER_H
+#endif // SMARTPTR_H

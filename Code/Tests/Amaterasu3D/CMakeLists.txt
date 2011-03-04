@@ -5,7 +5,9 @@ SET(TEST_Amaterasu3D
 	test_helper.cpp
 	Math/test_vector2.cpp
 	Math/test_vector3.cpp
-	System/test_mediamanager.cpp
+	
+	# Old test version
+	#System/test_mediamanager.cpp
 )
 
 INCLUDE_DIRECTORIES(

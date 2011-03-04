@@ -15,14 +15,20 @@ SET(LIB_AMATERASU3D_SRCS
 	
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
-	#Graphics/Texture.cpp
-	#Graphics/ImageLoader.cpp
 	Graphics/Color.cpp
-	Graphics/Shader.cpp
+	#Graphics/Shader.cpp
 	Graphics/Window.cpp
 	Graphics/MatrixManagement.cpp
 	
+	# Have to correct the Image Loader
+	#Graphics/Texture.cpp
+	#Graphics/ImageLoader.cpp
+	
 	System/MediaManager.cpp
+	System/ResourceManager.cpp
+	System/Resources/Resource.cpp
+	System/Resources/ShaderBase.cpp
+	Utilities/File.cpp
 )
 
 SET(LIB_AMATERASU3D_HEADERS

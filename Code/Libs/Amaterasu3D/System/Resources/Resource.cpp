@@ -24,23 +24,19 @@
 
 
 //==========================================================
-// En-tetes
+// En-têtes
 //==========================================================
-#include "Exceptions.h"
-#include <sstream>
+#include <System/Resources/Resource.h>
+#include <System/ResourceManager.h>
 
-
-//namespace Yes
-//{
 
 /////////////////////////////////////////////////////////////
-/// Constructeur
-///
-/// \param Message : Message d'erreur
+/// Constructeur par défaut
 ///
 ////////////////////////////////////////////////////////////
-CException::CException(const std::string& Message) :
-m_Message(Message)
+IResource::IResource() :
+m_Name    (""),
+m_RefCount(1)
 {
 
 }
@@ -50,70 +46,49 @@ m_Message(Message)
 /// Destructeur
 ///
 ////////////////////////////////////////////////////////////
-CException::~CException() throw()
+IResource::~IResource()
 {
-
+    if (m_Name != "")
+        CResourceManager::Instance()->Remove(m_Name);
 }
 
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le message associï¿½ ï¿½ l'exception
+/// Renvoie le nom associé à la ressource
 ///
-/// \return Pointeur sur le message
+/// \return Nom attribué à la ressource
 ///
 ////////////////////////////////////////////////////////////
-const char* CException::what() const throw()
+const std::string& IResource::GetName() const
 {
-    return m_Message.c_str();
+    return m_Name;
 }
 
 
 /////////////////////////////////////////////////////////////
-/// Constructeur
-///
-/// \param File :    Fichier source contenant l'erreur
-/// \param Line :    Ligne ï¿½ laquelle se trouve l'erreur dans le fichier source
-/// \param Message : Message d'erreur
+/// Ajoute une référence sur la ressource
 ///
 ////////////////////////////////////////////////////////////
-CAssertException::CAssertException(const std::string& File, int Line, const std::string& Message) :
-CException("")
+void IResource::AddRef()
 {
-	std::ostringstream oss;
-	oss << File << " (" << Line << ") : " << Message << std::endl;
-	m_Message = oss.str();
+    ++m_RefCount;
 }
 
-////////////////////////////////////////////////////////////
-// Constructeur
-//
-// [in] File :    Fichier
-// [in] Message : Message d'erreur
-//
-////////////////////////////////////////////////////////////
-CLoadingFailed::CLoadingFailed(const std::string& File, const std::string& Message)
-{
-    // Formatage du message d'erreur
-    std::ostringstream oss;
-    oss << "Erreur dans le chargement de " << File << std::endl << std::endl << Message;
-
-    m_Message = oss.str();
-}
 
 /////////////////////////////////////////////////////////////
-/// Constructeur
+/// Retire une référence sur la ressource
 ///
-/// \param Error : Message décrivant l'erreur
+/// \return Nombre de références restantes sur la ressource
 ///
 ////////////////////////////////////////////////////////////
-CBadConversion::CBadConversion(const std::string& Error) :
-CException(Error)
+int IResource::Release()
 {
+    // Décrémentation du compteur de références
+    int RefCount = --m_RefCount;
 
-}
+    // S'il n'y a plus de référence sur la ressource, on la détruit
+    if (RefCount == 0)
+        delete this;
 
-// Execption
-CLoggerException::CLoggerException(const std::string& Message) :
-	CException("[Logger] : " + Message)
-{
+    return RefCount;
 }

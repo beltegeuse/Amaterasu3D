@@ -2,12 +2,6 @@
 
 #include <Logger/Logger.h>
 
-// Execption
-CLoggerException::CLoggerException(const std::string& Message) :
-	CException("[Logger] : " + Message)
-{
-}
-
 
 Logger* Logger::_instance = NULL;
 
