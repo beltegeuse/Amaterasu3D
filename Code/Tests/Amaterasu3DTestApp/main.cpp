@@ -161,15 +161,18 @@ public:
 		Window("Amaterasu3DTestApp")
 	{
 		// OpenGL Flags ...
-		glClearColor(0.1f,0.1f,0.1f,1.f);
-		glEnable(GL_DEPTH_TEST);
+		GLCheck(glClearColor(0.1f,0.1f,0.1f,1.f));
+		GLCheck(glEnable(GL_DEPTH_TEST));
 		// Projection Matrix
+		GLCheck(glMatrixMode(GL_PROJECTION));
+		GLCheck(glLoadIdentity());
+		GLCheck(gluPerspective(70, (double)800/600, 1, 1000));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 1000);
 		// XXX docs say all polygons are emitted CCW, but tests show that some aren't.
-		if(getenv("MODEL_IS_BROKEN"))
-			glFrontFace(GL_CW);
-
-		glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
+//		if(getenv("MODEL_IS_BROKEN"))
+//			glFrontFace(GL_CW);
+//
+//		glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
 		// Path search
 		MediaManager::Instance()->AddPathAndChilds("../Donnees");
 		// model Load
@@ -189,7 +192,7 @@ public:
 		m_factor = 1.f / m_factor;
 		std::cout << "[INFO] Factor info : " << m_factor << std::endl;
 		// Load the Shader
-		m_shader = Shader(MediaManager::Instance()->GetPath("BasicShader.vert"),MediaManager::Instance()->GetPath("BasicShader.frag"));
+		m_shader = Shader(MediaManager::Instance()->GetPath("BasicShaderOld.vert"),MediaManager::Instance()->GetPath("BasicShaderOld.frag"));
 		// Create the Cube ...
 		CreateCube();
 	}
@@ -215,6 +218,10 @@ public:
 
 	virtual void OnDraw()
 	{
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+//		glTranslatef(0,0,-m_scene_center.z);
+		gluLookAt(3,4,2,0,0,0,0,0,1);
 		Window::OnDraw();
 		// Create matrix lookat
 		Math::CMatrix4 matrixLookAt;
@@ -224,26 +231,30 @@ public:
 		matrixScale.SetScaling(m_factor,m_factor,m_factor);
 		// Create translate Matrix
 		Math::CMatrix4 matrixTranslate;
-		matrixTranslate.SetTranslation(-m_scene_center.x,-m_scene_center.y,-m_scene_center.z);
+		//matrixTranslate.SetTranslation(-m_scene_center.x,-m_scene_center.y,-m_scene_center.z);
+		matrixTranslate.SetTranslation(0,0,-m_scene_center.z);
 		// Compute ModelViewMatrix
 		Math::CMatrix4 ModelViewMatrix;
-		ModelViewMatrix = matrixLookAt;//*matrixScale*matrixTranslate;
-		// Compute ModelPerspectiveViewMatrix
-		Math::CMatrix4 ModelPerspectiveViewMatrix;
-		ModelPerspectiveViewMatrix = m_matrixPerspective*ModelViewMatrix;
+		ModelViewMatrix = matrixLookAt;//matrixTranslate;//matrixLookAt;//*matrixScale*matrixTranslate;
 		// Send matrix to the shader
 		m_shader.Begin();
 		m_shader.SetUniformMatrix4fv("ModelViewMatrix", ModelViewMatrix);
-		m_shader.SetUniformMatrix4fv("ModelPerspectiveViewMatrix", ModelPerspectiveViewMatrix);
+		m_shader.SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		// Draw the geometry
 		//  * Les differents blindings ...
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_cubeBuffers[0]));
-		GLCheck(glEnableVertexAttribArray(m_shader.GetAttribLocation("VertexPosition")));
-		GLCheck(glVertexAttribPointer (m_shader.GetAttribLocation("VertexPosition"), 3, GL_FLOAT, GL_FALSE, 0, 0) );
+		GLCheck(glVertexPointer( 3, GL_FLOAT, 6 * sizeof(float), ((float*)NULL + (3)) ));
+		GLCheck(glColorPointer( 3, GL_FLOAT, 6 * sizeof(float), 0 ));
+		//GLCheck(glEnableVertexAttribArray(m_shader.GetAttribLocation("VertexPosition")));
+		//GLCheck(glVertexAttribPointer (m_shader.GetAttribLocation("VertexPosition"), 3, GL_FLOAT, GL_FALSE, 0, 0) );
 		// * le dessins en lui meme
 		GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cubeBuffers[1]));
+		GLCheck(glEnableClientState( GL_VERTEX_ARRAY ));
+		GLCheck(glEnableClientState( GL_COLOR_ARRAY ));
 		GLCheck(glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0));
-		GLCheck(glDisableVertexAttribArray(m_shader.GetAttribLocation("VertexPosition")));
+		//GLCheck(glDisableVertexAttribArray(m_shader.GetAttribLocation("VertexPosition")));
+		GLCheck(glDisableClientState( GL_COLOR_ARRAY ));
+		GLCheck(glDisableClientState( GL_VERTEX_ARRAY ));
 		// End of the shader
 		m_shader.End();
 

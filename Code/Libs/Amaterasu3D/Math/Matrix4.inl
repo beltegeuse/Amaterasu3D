@@ -338,7 +338,7 @@ inline void CMatrix4::OrthoOffCenter(float Left, float Top, float Right, float B
 /////////////////////////////////////////////////////////////
 /// Construit une matrice de projection perspective
 ///
-/// \param Fov :   Champ de vision en radians
+/// \param Fov :   Champ de vision en degree
 /// \param Ratio : Ratio largeur / hauteur
 /// \param Near :  Valeur du plan rapproché
 /// \param Far :   Valeur du plan éloigné
@@ -346,9 +346,10 @@ inline void CMatrix4::OrthoOffCenter(float Left, float Top, float Right, float B
 ////////////////////////////////////////////////////////////
 inline void CMatrix4::PerspectiveFOV(float Fov, float Ratio, float Near, float Far)
 {
-    float YScale = 1.0f / std::tan(Fov / 2);
+    float YScale = 1.0f / std::tan((Fov / 2) * M_PI / 180.0);
     float XScale = YScale / Ratio;
     float Coeff  = Far / (Far - Near);
+
 
     a11 = XScale; a12 = 0.0f;   a13 = 0.0f;  a14 = 0.0f;
     a21 = 0.0f;   a22 = YScale; a23 = 0.0f;  a24 = 0.0f;
