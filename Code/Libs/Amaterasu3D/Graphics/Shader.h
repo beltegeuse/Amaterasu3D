@@ -8,58 +8,54 @@
 #include <Math/Matrix4.h>
 #include <Singleton.h>
 #include <Debug/OpenGLDebug.h>
+#include <System/Resource.h>
+#include <Graphics/ShaderUnit.h>
 #include <iostream>
-//TODO: off screen rendering...
+#include <Enum.h>
 
-class Shader;
-class ShaderUnits;
+/*
+ * \brief class which describe one shader
+ */
 
-class Shader
-{
-private:
-	void ShowLinkLog(unsigned int id);
-};
 
-class ShaderUnits
+class Shader : public IResource
 {
 private:
 	// Attributs
-	unsigned int m_ID;
-	// Type of shader
-	enum ShaderType
-	{
-		VERTEX,
-		FRAGMENT
-	};
-private:
-	// Private function
-	/**
-	 * Load Shader File...
-	 */
-	const std::string LoadFile(const std::string& path);
-	void ShowCompilerLog(unsigned int id);
-	unsigned int CompileShader(const std::string& path, ShaderType type);
-
+	ShaderUnit * m_vertex_shader;
+	ShaderUnit * m_fragement_shader;
+	unsigned int m_programID;
 public:
-	// Constructeurs
-	ShaderUnits(const std::string& path);
-	//Destructor
-	~ShaderUnits();
+	// Constructor
+	Shader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader);
+	virtual ~Shader();
 	// Public functions
 	void Begin();
 	void End();
+	void SetUniformMatrix4fv(const std::string& name, Math::CMatrix4& matrix);
+private:
+	void ShowLinkLog(unsigned int id);
 	// Common shader methods
 	inline unsigned int GetAttribLocation(const std::string& name);
+	inline unsigned int GetUniformLocation(const std::string& name);
 };
 
 //***********************
 //** Inline functions ***
 //***********************
-unsigned int ShaderUnits::GetAttribLocation(const std::string& name)
+unsigned int Shader::GetAttribLocation(const std::string& name)
 {
 	//FIXME: Faire du caching pour accelerer les appels
 	unsigned int id = GLCheck(glGetAttribLocation (m_programID,name.c_str()));
-	std::cout << "[DEBUG] AttribLocation : " << name << " => " << id << std::endl;
+	//std::cout << "[DEBUG] AttribLocation : " << name << " => " << id << std::endl;
+	return id;
+}
+
+unsigned int Shader::GetUniformLocation(const std::string& name)
+{
+	//FIXME: Faire du caching pour accelerer les appels
+	unsigned int id = GLCheck(glGetUniformLocation(m_programID,name.c_str()));
+	//std::cout << "[DEBUG] UniformLocation : " << name << " => " << id << std::endl;
 	return id;
 }
 

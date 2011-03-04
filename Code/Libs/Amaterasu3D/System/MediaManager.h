@@ -28,13 +28,13 @@
 //==========================================================
 // En-têtes
 //==========================================================
+#include <System/Loaders/Loader.h>
 #include <Singleton.h>
 #include <Utilities/GenHierarchies.h>
 #include <Utilities/File.h>
 #include <Utilities/StringUtils.h>
 #include <Utilities/SmartPtr.h>
-#include <System/Loaders/Loader.h>
-#include <System/Resources/ShaderBase.h>
+#include <Graphics/Shader.h>
 //#include <Core/Model.h>
 //#include <Core/Image.h>
 #include <Debug/Exceptions.h>
@@ -48,7 +48,7 @@
 //==========================================================
 // Liste des médias pris en charge
 //==========================================================
-typedef TYPELIST_1(IShaderBase) MediaList;
+typedef TYPELIST_2(Shader, ShaderUnit) MediaList;
 
 ////////////////////////////////////////////////////////////
 /// Modèle de gestionnaire de média

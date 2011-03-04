@@ -26,7 +26,7 @@
 //==========================================================
 // En-têtes
 //==========================================================
-#include <System/Resources/Resource.h>
+#include <System/Resource.h>
 #include <System/ResourceManager.h>
 
 

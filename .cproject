@@ -29,6 +29,7 @@
 								<option id="gnu.cpp.compiler.option.include.paths.18988478" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Amaterasu3D/Code/Libs/Amaterasu3D}&quot;"/>
 									<listOptionValue builtIn="false" value="C:/MinGW/include"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Amaterasu3D/Code/Libs/TinyXML}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1486388983" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>

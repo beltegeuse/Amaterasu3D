@@ -12,11 +12,11 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/SceneGraph/DrawObject.cpp
 	Graphics/SceneGraph/Group.cpp
 	Graphics/SceneGraph/Debug/DebugCubeLeaf.cpp
-	
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
 	Graphics/Color.cpp
-	#Graphics/Shader.cpp
+	Graphics/Shader.cpp
+	Graphics/ShaderUnit.cpp
 	Graphics/Window.cpp
 	Graphics/MatrixManagement.cpp
 	
@@ -26,10 +26,10 @@ SET(LIB_AMATERASU3D_SRCS
 	
 	System/MediaManager.cpp
 	System/ResourceManager.cpp
-	System/Resources/Resource.cpp
-	System/Resources/ShaderBase.cpp
+	System/Resource.cpp
 	System/Loaders/Loaders.cpp
 	System/Loaders/ShadersLoader.cpp
+	System/Loaders/ShadersProgramLoader.cpp
 	
 	Utilities/File.cpp
 )
@@ -40,6 +40,7 @@ SET(LIB_AMATERASU3D_HEADERS
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
+	../TinyXML
 )
 
 SET(AMATERASU3D_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
@@ -53,7 +54,9 @@ target_link_libraries(
   ${SDL_LIBRARY}
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARY}
+  #TODO: Boost is until used?
   ${Boost_LIBRARIES}
+  tinyxml
 )
 
 install(TARGETS Amaterasu3D 

@@ -28,7 +28,7 @@
 //==========================================================
 // En-têtes
 //==========================================================
-#include <System/Resources/Resource.h>
+#include <System/Resource.h>
 #include <Singleton.h>
 #include <map>
 #include <string>
