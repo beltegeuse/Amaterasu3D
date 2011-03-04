@@ -31,9 +31,7 @@ private:
 	const struct aiScene* m_scene;
 	struct aiVector3D m_scene_center;
 	Math::CMatrix4 m_matrixPerspective;
-	//Shader* m_shader;
-	cwc::glShaderManager SM;
-	cwc::glShader *m_shader;
+	Shader* m_shader;
 public:
 	ConcreteWindow() :
 		Window("Amaterasu3DTestApp")
@@ -47,14 +45,16 @@ public:
 		GLCheck(gluPerspective(70, (double)800/600, 1, 1000));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 1000);
 		// Path search
-		MediaManager::Instance()->AddPathAndChilds("../Donnees");
+		//MediaManager::Instance()->AddPathAndChilds("../Donnees");
 		// model Load
-		m_scene = aiImportFile(MediaManager::Instance()->GetPath("dwarf.x").c_str(),aiProcessPreset_TargetRealtime_Quality);
+		//FIXME: Add a loader
+		//m_scene = aiImportFile(MediaManager::Instance()->GetPath("dwarf.x").c_str(),aiProcessPreset_TargetRealtime_Quality);
 		// Load the Shader
-		m_shader = SM.loadfromFile("../Donnees/Shaders/OldOpenGL/BasicShaderOld.vert","../Donnees/Shaders/OldOpenGL/BasicShaderOld.frag");
-		m_shader->begin();
-		m_shader->setUniformMatrix4fv("ProjectionMatrix", sizeof(float), GL_TRUE, (float*)m_matrixPerspective);
-		m_shader->end();
+		CMediaManager::Instance()->AddSearchPath("../Donnees");
+		m_shader = CMediaManager::Instance()->LoadMediaFromFile<Shader>("BasicShaderOld.shader");
+		m_shader->Begin();
+		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
+		m_shader->End();
 		// Create the Cube ...
 		CreateCube();
 	}
@@ -102,13 +102,13 @@ public:
 		Math::CMatrix4 ModelViewMatrix;
 		ModelViewMatrix = matrixLookAt;
 		// Send matrix to the shader
-		m_shader->begin();
+		m_shader->Begin();
 		// Set uniform matrix
-		m_shader->setUniformMatrix4fv("ModelViewMatrix", sizeof(float), GL_TRUE, (float*)ModelViewMatrix);
+		m_shader->SetUniformMatrix4fv("ModelViewMatrix", ModelViewMatrix);
 		// Draw the geometry
 		Window::OnDraw();
 		// End of the shader
-		m_shader->end();
+		m_shader->End();
 
 		//recursive_render(m_scene, m_scene->mRootNode);
 	}
