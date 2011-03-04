@@ -147,10 +147,10 @@ namespace Math
         //----------------------------------------------------------
         // Donn�es membres
         //----------------------------------------------------------
-        float a11, a21, a31, a41; ///< 1�re ligne de la matrice
-        float a12, a22, a32, a42; ///< 2�me ligne de la matrice
-        float a13, a23, a33, a43; ///< 3�me ligne de la matrice
-        float a14, a24, a34, a44; ///< 4�me ligne de la matrice
+        float a11, a12, a13, a14; ///< 1ere ligne de la matrice
+        float a21, a22, a23, a24; ///< 2eme ligne de la matrice
+        float a31, a32, a33, a34; ///< 3eme ligne de la matrice
+        float a41, a42, a43, a44; ///< 4eme ligne de la matrice
     };
 
 

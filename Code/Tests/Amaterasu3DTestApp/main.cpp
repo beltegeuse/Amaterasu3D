@@ -3,6 +3,7 @@
 #include <System/MediaManager.h>
 #include <Graphics/Window.h>
 #include <Graphics/Shader.h>
+
 #include <windows.h>
 #include "assimp.h"
 #include "aiPostProcess.h"
@@ -147,6 +148,15 @@ void recursive_render (const struct aiScene *sc, const struct aiNode* nd)
 	glPopMatrix();
 }
 
+void SawOpenGL(Math::CMatrix4& mat)
+{
+	float* m = (float*)mat;
+	std::cout << m[0] << " " << m[1] << " " << m[2] << " " << m[3] << " " << std::endl;
+	std::cout << m[4] << " " << m[5] << " " << m[6] << " " << m[7] << " " << std::endl;
+	std::cout << m[8] << " " << m[9] << " " << m[10] << " " << m[11] << " " << std::endl;
+	std::cout << m[12] << " " << m[13] << " " << m[14] << " " << m[15] << " " << std::endl;
+}
+
 class ConcreteWindow : public Window
 {
 private:
@@ -154,7 +164,9 @@ private:
 	struct aiVector3D m_scene_center;
 	float m_factor;
 	Math::CMatrix4 m_matrixPerspective;
-	Shader m_shader;
+	//Shader* m_shader;
+	cwc::glShaderManager SM;
+	cwc::glShader *m_shader;
 	unsigned int m_cubeBuffers[2];
 public:
 	ConcreteWindow() :
@@ -168,6 +180,7 @@ public:
 		GLCheck(glLoadIdentity());
 		GLCheck(gluPerspective(70, (double)800/600, 1, 1000));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 1000);
+		//m_matrixPerspective = m_matrixPerspective.Transpose();
 		// XXX docs say all polygons are emitted CCW, but tests show that some aren't.
 //		if(getenv("MODEL_IS_BROKEN"))
 //			glFrontFace(GL_CW);
@@ -192,7 +205,8 @@ public:
 		m_factor = 1.f / m_factor;
 		std::cout << "[INFO] Factor info : " << m_factor << std::endl;
 		// Load the Shader
-		m_shader = Shader(MediaManager::Instance()->GetPath("BasicShaderOld.vert"),MediaManager::Instance()->GetPath("BasicShaderOld.frag"));
+		m_shader = SM.loadfromFile("../Donnees/Shaders/OldOpenGL/BasicShaderOld.vert","../Donnees/Shaders/OldOpenGL/BasicShaderOld.frag");
+		//m_shader = new Shader(MediaManager::Instance()->GetPath("BasicShaderOld.vert"),MediaManager::Instance()->GetPath("BasicShaderOld.frag"));
 		// Create the Cube ...
 		CreateCube();
 	}
@@ -214,14 +228,25 @@ public:
 
 	virtual ~ConcreteWindow()
 	{
+		delete m_shader;
 	}
 
 	virtual void OnDraw()
 	{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-//		glTranslatef(0,0,-m_scene_center.z);
+		//glTranslatef(0,0,-m_scene_center.z);
 		gluLookAt(3,4,2,0,0,0,0,0,1);
+		Math::CMatrix4 mat;
+		glGetFloatv(GL_MODELVIEW_MATRIX, (float*)mat);
+		mat = mat.Transpose();
+		std::cout << "OpenGL Matrix ModelView" << std::endl;
+		std::cout << mat << std::endl;
+		std::cout << "OpenGL Matrix PROJECTION" << std::endl;
+		glGetFloatv(GL_PROJECTION_MATRIX, (float*)mat);
+		mat = mat.Transpose();
+		std::cout << mat << std::endl;
+//		gluLookAt(3,4,2,0,0,0,0,0,1);
 		Window::OnDraw();
 		// Create matrix lookat
 		Math::CMatrix4 matrixLookAt;
@@ -235,11 +260,20 @@ public:
 		matrixTranslate.SetTranslation(0,0,-m_scene_center.z);
 		// Compute ModelViewMatrix
 		Math::CMatrix4 ModelViewMatrix;
-		ModelViewMatrix = matrixLookAt;//matrixTranslate;//matrixLookAt;//*matrixScale*matrixTranslate;
+		ModelViewMatrix.Identity();
+		ModelViewMatrix = matrixLookAt;
+		//ModelViewMatrix = matrixLookAt;//matrixTranslate;//matrixLookAt;//*matrixScale*matrixTranslate;
 		// Send matrix to the shader
-		m_shader.Begin();
-		m_shader.SetUniformMatrix4fv("ModelViewMatrix", ModelViewMatrix);
-		m_shader.SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
+		m_shader->begin();
+		std::cout << "ModelViewMatrix : " << std::endl;
+		//std::cout << ModelViewMatrix << std::endl;
+		SawOpenGL(ModelViewMatrix);
+		std::cout << "ProjectionMatrix : " << std::endl;
+		//std::cout << m_matrixPerspective << std::endl;
+		SawOpenGL(m_matrixPerspective);
+		//ModelViewMatrix = ModelViewMatrix.Transpose();
+		m_shader->setUniformMatrix4fv("ModelViewMatrix", sizeof(float), GL_TRUE, (float*)ModelViewMatrix);
+		m_shader->setUniformMatrix4fv("ProjectionMatrix", sizeof(float), GL_TRUE, (float*)m_matrixPerspective);
 		// Draw the geometry
 		//  * Les differents blindings ...
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_cubeBuffers[0]));
@@ -256,7 +290,7 @@ public:
 		GLCheck(glDisableClientState( GL_COLOR_ARRAY ));
 		GLCheck(glDisableClientState( GL_VERTEX_ARRAY ));
 		// End of the shader
-		m_shader.End();
+		m_shader->end();
 
 		//recursive_render(m_scene, m_scene->mRootNode);
 	}

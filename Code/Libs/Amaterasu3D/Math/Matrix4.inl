@@ -346,15 +346,21 @@ inline void CMatrix4::OrthoOffCenter(float Left, float Top, float Right, float B
 ////////////////////////////////////////////////////////////
 inline void CMatrix4::PerspectiveFOV(float Fov, float Ratio, float Near, float Far)
 {
-    float YScale = 1.0f / std::tan((Fov / 2) * M_PI / 180.0);
-    float XScale = YScale / Ratio;
-    float Coeff  = Far / (Far - Near);
+    //float YScale = 1.0f / std::tan((Fov / 2) * M_PI / 180.0);
+    //float XScale = YScale / Ratio;
+    //float Coeff  = Far / (Far - Near);
+
+	float f = 1 / tan((Fov / 2) * M_PI / 180);
+	a11 = f / Ratio; a12 = 0.0f;   a13 = 0.0f;  a14 = 0.0f;
+	a21 = 0.0f;   a22 = f; a23 = 0.0f;  a24 = 0.0f;
+	a31 = 0.0f;   a32 = 0.0f;   a33 = (Near + Far) / (Near - Far); a34 = (2 * Near * Far) / (Near - Far);
+    a41 = 0.0f;   a42 = 0.0f;   a43 = -1.0f;  a44 = 0.0f;
 
 
-    a11 = XScale; a12 = 0.0f;   a13 = 0.0f;  a14 = 0.0f;
-    a21 = 0.0f;   a22 = YScale; a23 = 0.0f;  a24 = 0.0f;
-    a31 = 0.0f;   a32 = 0.0f;   a33 = Coeff; a34 = Near * -Coeff;
-    a41 = 0.0f;   a42 = 0.0f;   a43 = 1.0f;  a44 = 0.0f;
+    //a11 = XScale; a12 = 0.0f;   a13 = 0.0f;  a14 = 0.0f;
+    //a21 = 0.0f;   a22 = YScale; a23 = 0.0f;  a24 = 0.0f;
+    //a31 = 0.0f;   a32 = 0.0f;   a33 = Coeff; a34 = Near * -Coeff;
+    //a41 = 0.0f;   a42 = 0.0f;   a43 = 1.0f;  a44 = 0.0f;
 }
 
 
@@ -376,9 +382,9 @@ inline void CMatrix4::LookAt(const TVector3F& From, const TVector3F& To, const T
     XAxis.Normalize();
     TVector3F YAxis = ZAxis^XAxis;
 
-    a11 = XAxis.x; a12 = XAxis.y; a13 = XAxis.z; a14 = -XAxis*From;
+    a11 = -XAxis.x; a12 = -XAxis.y; a13 = -XAxis.z; a14 = XAxis*From;
     a21 = YAxis.x; a22 = YAxis.y; a23 = YAxis.z; a24 = -YAxis*From;
-    a31 = ZAxis.x; a32 = ZAxis.y; a33 = ZAxis.z; a34 = -ZAxis*From;
+    a31 = -ZAxis.x; a32 = -ZAxis.y; a33 = -ZAxis.z; a34 = ZAxis*From;
     a41 = 0.0f;    a42 = 0.0f;    a43 = 0.0f;    a44 = 1.0f;
 }
 

@@ -325,7 +325,7 @@ void CFontManager::rat_texture_font_render_text(rat_texture_font *font,float x,f
 	for (ch=text; *ch; ch++){
 		glPushMatrix();
 		glLoadIdentity();
-		glDepthMask(GL_FALSE);
+		glDepthMask(0);
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D,font->textures[*ch]);
 
