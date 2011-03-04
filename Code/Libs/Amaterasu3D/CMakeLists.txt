@@ -11,6 +11,8 @@ SET(LIB_AMATERASU3D_SRCS
 	
 	Graphics/SceneGraph/DrawObject.cpp
 	Graphics/SceneGraph/Group.cpp
+	Graphics/SceneGraph/Debug/DebugCubeLeaf.cpp
+	
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
 	#Graphics/Texture.cpp

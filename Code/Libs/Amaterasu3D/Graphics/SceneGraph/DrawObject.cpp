@@ -11,7 +11,7 @@ DrawObject::~DrawObject()
 }
 void DrawObject::Draw(const Math::CMatrix4& matrix)
 {
-	m_matrix = matrix*m_matrix_transform;
+	m_matrix = m_matrix_transform*matrix;
 }
 void DrawObject::LoadTransformMatrix(const Math::CMatrix4& matrix)
 {

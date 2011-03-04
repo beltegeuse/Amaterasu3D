@@ -5,12 +5,12 @@
 in vec3 VertexPosition;
 
 // Uniform
-uniform mat4 ModelViewMatrix, ModelViewProjectionMatrix;
+uniform mat4 ProjectionMatrix;
+uniform mat4 ModelViewMatrix;
 
 invariant gl_Position;
 
 void main ()
 {
-	vec3 Position = vec3 (ModelViewMatrix * vec4 (VertexPosition, 1.0));
-	gl_Position = ModelViewProjectionMatrix * vec4 (VertexPosition, 1.0);
+	gl_Position = ProjectionMatrix * ModelViewMatrix * vec4 (VertexPosition, 1.0);
 }
