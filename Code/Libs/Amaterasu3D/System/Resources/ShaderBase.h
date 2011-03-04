@@ -32,11 +32,6 @@
 #include <Math/Matrix4.h>
 #include <map>
 
-enum TShaderType
-{
-	SHADER_VERTEX, ///< Vertex shaders
-	SHADER_PIXEL   ///< Pixel shaders
-};
 /////////////////////////////////////////////////////////////
 /// Classe de base pour les shaders Cg
 /////////////////////////////////////////////////////////////
@@ -47,24 +42,18 @@ public :
 	//----------------------------------------------------------
 	// Construit le shader à partir d'un programme Cg
 	//----------------------------------------------------------
-	IShaderBase(unsigned int id, TShaderType Type);
+	IShaderBase(unsigned int id);
 
 	//----------------------------------------------------------
 	// Destructeur
 	//----------------------------------------------------------
 	virtual ~IShaderBase();
 
-	//----------------------------------------------------------
-	// Renvoie le type du shader
-	//----------------------------------------------------------
-	TShaderType GetType() const;
-
 protected :
 
 	//----------------------------------------------------------
 	// Données membres
 	//----------------------------------------------------------
-	TShaderType m_Type;    ///< Type du shader (vertex / pixel)
 	unsigned int m_ID;
 };
 

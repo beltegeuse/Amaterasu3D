@@ -28,6 +28,9 @@ SET(LIB_AMATERASU3D_SRCS
 	System/ResourceManager.cpp
 	System/Resources/Resource.cpp
 	System/Resources/ShaderBase.cpp
+	System/Loaders/Loaders.cpp
+	System/Loaders/ShadersLoader.cpp
+	
 	Utilities/File.cpp
 )
 

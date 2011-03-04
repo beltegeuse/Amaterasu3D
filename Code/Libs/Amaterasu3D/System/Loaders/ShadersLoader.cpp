@@ -26,19 +26,17 @@
 //==========================================================
 // En-têtes
 //==========================================================
-#include <System/Resources/ShaderBase.h>
+#include <System/Loaders/ShadersLoader.h>
+
 
 ////////////////////////////////////////////////////////////
-/// Construit le shader à partir de son programme Cg
+/// Construit le loader
 ///
-/// \param Program : Programme Cg 
-/// \param Type :    Type du shader
+/// \param Type : Type des shaders gérés (vertex / pixel)
 ///
 ////////////////////////////////////////////////////////////
-IShaderBase::IShaderBase(unsigned int id) :
-m_ID(id)
+CShadersLoader::CShadersLoader()
 {
-
 }
 
 
@@ -46,11 +44,20 @@ m_ID(id)
 /// Destructeur
 ///
 ////////////////////////////////////////////////////////////
-IShaderBase::~IShaderBase()
+CShadersLoader::~CShadersLoader()
 {
-    // Destruction du programme
-	//FIXME
-//    if (m_Program)
-//        cgDestroyProgram(m_Program);
 }
 
+
+////////////////////////////////////////////////////////////
+/// Charge un shader à partir d'un fichier
+///
+/// \param Filename : Chemin du fichier à charger
+///
+/// \return Pointeur sur le shader chargé
+///
+////////////////////////////////////////////////////////////
+IShaderBase* CShadersLoader::LoadFromFile(const std::string& Filename)
+{
+    //FIXME Implement it
+}

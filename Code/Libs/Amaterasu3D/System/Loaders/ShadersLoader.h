@@ -22,35 +22,37 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
+#ifndef SHADERSLOADER_H
+#define SHADERSLOADER_H
 
 //==========================================================
 // En-têtes
 //==========================================================
+#include <System/Loaders/Loader.h>
 #include <System/Resources/ShaderBase.h>
 
-////////////////////////////////////////////////////////////
-/// Construit le shader à partir de son programme Cg
-///
-/// \param Program : Programme Cg 
-/// \param Type :    Type du shader
-///
-////////////////////////////////////////////////////////////
-IShaderBase::IShaderBase(unsigned int id) :
-m_ID(id)
+/////////////////////////////////////////////////////////////
+/// Loader de shaders Cg
+/////////////////////////////////////////////////////////////
+class CShadersLoader : public ILoader<IShaderBase>
 {
+public :
 
-}
+	//----------------------------------------------------------
+	// Construit le loader
+	//----------------------------------------------------------
+	CShadersLoader();
+
+	//----------------------------------------------------------
+	// Détruit le loader
+	//----------------------------------------------------------
+	~CShadersLoader();
+
+	//----------------------------------------------------------
+	// Charge un shader à partir d'un fichier
+	//----------------------------------------------------------
+	virtual IShaderBase* LoadFromFile(const std::string& Filename);
+};
 
 
-////////////////////////////////////////////////////////////
-/// Destructeur
-///
-////////////////////////////////////////////////////////////
-IShaderBase::~IShaderBase()
-{
-    // Destruction du programme
-	//FIXME
-//    if (m_Program)
-//        cgDestroyProgram(m_Program);
-}
-
+#endif // SHADERSLOADER_H

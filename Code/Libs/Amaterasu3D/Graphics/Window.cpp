@@ -1,6 +1,9 @@
 #include "Window.h"
 #include <Debug/Exceptions.h>
 #include <Graphics/MatrixManagement.h>
+#include <Logger/Logger.h>
+#include <Logger/LoggerDebug.h>
+#include <System/Loaders/Loaders.h>
 #ifdef WIN32
 #include <GL/glew.h>
 #else
@@ -12,6 +15,14 @@
 Window::Window(const std::string& name, const Math::TVector2I& windowSize) :
 	m_isRunning(false)
 {
+	// **************************************
+	// ******* Logger initialisation ********
+	// **************************************
+	Logger::SetLogger(new LoggerDebug);
+	// **************************************
+	// ******* Media initialisation *********
+	// **************************************
+	Loaders::RegisterAllLoaders();
 	// **************************************
 	// ********* SDL initialisation *********
 	// **************************************
