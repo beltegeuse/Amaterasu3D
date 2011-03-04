@@ -23,7 +23,7 @@ public:
 	DebugCubeLeaf();
 	virtual ~DebugCubeLeaf();
 
-	virtual void Draw(const Math::CMatrix4& matrix);;
+	virtual void Draw();
 };
 
 #endif /* DEBUGCUBELEAF_H_ */

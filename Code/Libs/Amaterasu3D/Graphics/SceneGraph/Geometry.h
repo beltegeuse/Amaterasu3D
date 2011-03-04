@@ -17,7 +17,7 @@ class Geometry : public DrawObject
 public:
 	Geometry();
 	virtual ~Geometry();
-	virtual void Draw(const Math::CMatrix4& matrix);
+	virtual void Draw();
 
 };
 }

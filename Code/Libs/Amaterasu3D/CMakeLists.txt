@@ -20,6 +20,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Color.cpp
 	Graphics/Shader.cpp
 	Graphics/Window.cpp
+	Graphics/MatrixManagement.cpp
 	
 	System/MediaManager.cpp
 )

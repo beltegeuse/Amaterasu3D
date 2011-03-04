@@ -1,5 +1,6 @@
 #include "Window.h"
 #include <Debug/Exceptions.h>
+#include <Graphics/MatrixManagement.h>
 #ifdef WIN32
 #include <GL/glew.h>
 #else
@@ -85,9 +86,15 @@ void Window::OnEvent(SDL_Event& events)
 
 void Window::OnDraw()
 {
+	int numberMatrix = MatrixManagement::Instance()->StackSize();
+
 	// Do all graphics part here
 	// Draw the SceneGraph
-	m_root.Draw(Math::CMatrix4());
+	m_root.Draw();
+
+	// Check if there is leak of matrix stack
+	if(numberMatrix != MatrixManagement::Instance()->StackSize())
+		throw CException("Leak matrix is detected");
 }
 
 SceneGraph::Group& Window::GetSceneRoot()

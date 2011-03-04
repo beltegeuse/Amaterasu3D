@@ -1,5 +1,5 @@
 #include <Graphics/SceneGraph/Group.h>
-
+#include <Graphics/MatrixManagement.h>
 namespace SceneGraph
 {
 /** \brief Constructeur d'un noeud group */
@@ -22,13 +22,28 @@ void Group::AddChild(DrawObject * object)
 	m_objects.push_back(object) ;
 }
 /** \brief Gestion de l'affichage OpenGL */
-void Group::Draw(const Math::CMatrix4& matrix)
+void Group::Draw()
 {
-	DrawObject::Draw(matrix);
+	MatrixManagement::Instance()->PushMatrix(m_matrix_transform);
 	for(unsigned int cpt=0 ; cpt<m_objects.size() ; cpt++)
 	{
-		m_objects[cpt]->Draw(GetCurrentMatrix());
+		m_objects[cpt]->Draw();
 	}
+	MatrixManagement::Instance()->PopMatrix();
 }
+
+void Group::LoadTransformMatrix(const Math::CMatrix4& matrix)
+{
+	m_matrix_transform = matrix;
+}
+void Group::MultTransformMatrix(const Math::CMatrix4& matrix)
+{
+	m_matrix_transform = m_matrix_transform*matrix;
+}
+const Math::CMatrix4& Group::GetTransformMatrix() const
+{
+	return m_matrix_transform;
+}
+
 } // namespace
 

@@ -7,6 +7,7 @@
 
 #include "DebugCubeLeaf.h"
 #include <Debug/OpenGLDebug.h>
+#include <iostream>
 #include <GL/gl.h>
 
 GLfloat DebugCubeLeaf::CubeArray[48] = {
@@ -49,9 +50,8 @@ DebugCubeLeaf::~DebugCubeLeaf()
 	glDeleteBuffers(2, m_cubeBuffers);
 }
 
-void DebugCubeLeaf::Draw(const Math::CMatrix4& matrix)
+void DebugCubeLeaf::Draw()
 {
-	SceneGraph::DrawObject::Draw(matrix);
 	//  * Les differents blindings ...
 	GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_cubeBuffers[0]));
 	GLCheck(glVertexPointer( 3, GL_FLOAT, 6 * sizeof(float), ((float*)NULL + (3)) ));

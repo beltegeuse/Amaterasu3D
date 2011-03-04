@@ -15,9 +15,7 @@ Geometry::Geometry()
 Geometry::~Geometry()
 {
 }
-void Geometry::Draw(const Math::CMatrix4& matrix)
+void Geometry::Draw()
 {
-	DrawObject::Draw(matrix);
-	//FIXME: implement it
 }
 }

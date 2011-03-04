@@ -3,6 +3,7 @@
 
 #include <Math/Matrix4.h>
 #include <Graphics/SceneGraph/DrawObject.h>
+#include <Math/Matrix4.h>
 #include <vector>
 
 namespace SceneGraph
@@ -13,6 +14,7 @@ namespace SceneGraph
 	{
 	private:
 		std::vector<DrawObject*> m_objects ;
+		Math::CMatrix4 m_matrix_transform;
 
 	public:
 		/** \brief Constructeur d'un noeud group */
@@ -23,7 +25,13 @@ namespace SceneGraph
 		/** \brief Ajout d'un fils au groupe d'objets. */
 		virtual void AddChild(DrawObject * object);
 		/** \brief Gestion de l'affichage OpenGL */
-		virtual void Draw(const Math::CMatrix4& matrix);
+		virtual void Draw();
+		/**
+		 * All transform matrix management
+		 */
+		void LoadTransformMatrix(const Math::CMatrix4& matrix);
+		void MultTransformMatrix(const Math::CMatrix4& matrix);
+		const Math::CMatrix4& GetTransformMatrix() const;
 
 	} ;
 
