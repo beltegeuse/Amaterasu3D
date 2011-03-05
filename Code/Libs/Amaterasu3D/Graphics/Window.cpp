@@ -97,14 +97,14 @@ void Window::OnEvent(SDL_Event& events)
 
 void Window::OnDraw()
 {
-	int numberMatrix = MatrixManagement::Instance()->StackSize();
+	int numberMatrix = MatrixManagement::Instance().StackSize();
 
 	// Do all graphics part here
 	// Draw the SceneGraph
 	m_root.Draw();
 
 	// Check if there is leak of matrix stack
-	if(numberMatrix != MatrixManagement::Instance()->StackSize())
+	if(numberMatrix != MatrixManagement::Instance().StackSize())
 		throw CException("Leak matrix is detected");
 }
 

@@ -7,6 +7,7 @@
 
 class MatrixManagement : public CSingleton<MatrixManagement>
 {
+	MAKE_SINGLETON(MatrixManagement);
 private:
 	// Attributs
 	int m_maxMatrix;
@@ -16,12 +17,10 @@ private:
 	Math::CMatrix4 m_identityMatrix;
 
 	// Singleton implements
-	friend class CSingleton<MatrixManagement>;
 	MatrixManagement(int maxMatrix = 50);
-
-public:
 	// Destructor ...
 	virtual ~MatrixManagement();
+public:
 
 	/**
 	 * ModelView Matrix

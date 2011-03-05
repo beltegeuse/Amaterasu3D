@@ -1,6 +1,8 @@
 #include "MatrixManagement.h"
 #include <Debug/Exceptions.h>
 
+SINGLETON_IMPL(MatrixManagement)
+
 MatrixManagement::MatrixManagement(int maxMatrix) :
 m_maxMatrix(maxMatrix)
 {

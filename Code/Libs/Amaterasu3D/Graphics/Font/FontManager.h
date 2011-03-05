@@ -57,8 +57,7 @@ class GraphicsEngine;
 ////////////////////////////////////////////////////////////
     class CFontManager : public CSingleton<CFontManager>
     {
-    private:
-    	friend class CSingleton<CFontManager>;
+    	MAKE_SINGLETON(CFontManager)
     public :
 
         //----------------------------------------------------------

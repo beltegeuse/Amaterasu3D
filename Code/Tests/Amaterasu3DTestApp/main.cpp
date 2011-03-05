@@ -50,11 +50,11 @@ public:
 		//FIXME: Add a loader
 		//m_scene = aiImportFile(MediaManager::Instance()->GetPath("dwarf.x").c_str(),aiProcessPreset_TargetRealtime_Quality);
 		// Load the Shader
-		CMediaManager::Instance()->AddSearchPath("../Donnees");
-		CMediaManager::Instance()->AddSearchPath("../Donnees/Shaders");
-		CMediaManager::Instance()->AddSearchPath("../Donnees/Shaders/OldOpenGL");
-		ShaderUnit* testShader = CMediaManager::Instance()->LoadMediaFromFile<ShaderUnit>("BasicShaderOld.vert");
-		m_shader = CMediaManager::Instance()->LoadMediaFromFile<Shader>("BasicShaderOld.shader");
+		CMediaManager::Instance().AddSearchPath("../Donnees");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
+		//ShaderUnit* testShader = CMediaManager::Instance().LoadMediaFromFile<ShaderUnit>("BasicShaderOld.vert");
+		m_shader = CMediaManager::Instance().LoadMediaFromFile<Shader>("BasicShaderOld.shader");
 		m_shader->Begin();
 		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_shader->End();

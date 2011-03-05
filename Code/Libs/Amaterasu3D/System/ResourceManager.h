@@ -38,7 +38,7 @@
 ////////////////////////////////////////////////////////////
 class CResourceManager : public CSingleton<CResourceManager>
 {
-	friend class CSingleton<CResourceManager>;
+	MAKE_SINGLETON(CResourceManager)
 
 public :
 

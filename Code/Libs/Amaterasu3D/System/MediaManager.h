@@ -66,7 +66,7 @@ struct CMediaHolder
 class CMediaManager : public CSingleton<CMediaManager>, public CScatteredHierarchy<MediaList, CMediaHolder>
 {
 private:
-	friend class CSingleton<CMediaManager>;
+	MAKE_SINGLETON(CMediaManager)
 
 public :
 

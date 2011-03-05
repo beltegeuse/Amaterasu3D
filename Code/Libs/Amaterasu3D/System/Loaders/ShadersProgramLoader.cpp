@@ -96,6 +96,7 @@ Shader* CShaderProgramLoader::LoadFromFile(const std::string& Filename)
 	std::string fragmentShadername = std::string(shadername->Attribute("filename"));
 	Logger::Log() << "   * Fragment shader : " << fragmentShadername << "\n";
 
-	return new Shader(CMediaManager::Instance()->LoadMediaFromFile<ShaderUnit>(vertexShadername),
-					  CMediaManager::Instance()->LoadMediaFromFile<ShaderUnit>(fragmentShadername));
+	//FIXME: Faire appel au ressource manager
+	return new Shader(CMediaManager::Instance().LoadMediaFromFile<ShaderUnit>(vertexShadername),
+					  CMediaManager::Instance().LoadMediaFromFile<ShaderUnit>(fragmentShadername));
 }

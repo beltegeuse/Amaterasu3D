@@ -49,7 +49,7 @@ m_RefCount(1)
 IResource::~IResource()
 {
     if (m_Name != "")
-        CResourceManager::Instance()->Remove(m_Name);
+        CResourceManager::Instance().Remove(m_Name);
 }
 
 

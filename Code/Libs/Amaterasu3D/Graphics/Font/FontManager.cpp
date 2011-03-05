@@ -29,6 +29,8 @@
 
 #include <Debug/Exceptions.h>
 
+SINGLETON_IMPL(CFontManager)
+
 // ==== Quelques fonctions inlines
 static float _textrgba[4]={1.0f,1.0f,1.0f,1.0f};
 

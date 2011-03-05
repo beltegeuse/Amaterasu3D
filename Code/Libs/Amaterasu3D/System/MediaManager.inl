@@ -43,7 +43,7 @@ inline void CMediaManager::RegisterLoader(ILoader<T>* Loader, const std::string&
     CSmartPtr<ILoader<T> > Ptr = Loader;
     for (std::vector<std::string>::iterator i = Ext.begin(); i != Ext.end(); ++i)
 	{
-		Logger::Log() << "  * " << ToLower(*i) << "\n";
+		Logger::Log() << "  * " << ToLower(*i) << " ( " << CMediaHolder<T>::m_Loaders.size() << ")\n";
         CMediaHolder<T>::m_Loaders[ToLower(*i)] = Ptr;
 	}
 }
@@ -121,6 +121,7 @@ inline void CMediaManager::SaveMediaToFile(const T* Object, const CFile& Filenam
 template <class T>
 inline ILoader<T>& CMediaManager::FindLoader(const CFile& Filename) const
 {
+	Logger::Log() << "[DEBUG] Number extension supported : " << CMediaHolder<T>::m_Loaders.size() << "\n";
     // Recherche de l'extension dans la map de loaders
     typename CMediaHolder<T>::TLoadersMap::const_iterator It = CMediaHolder<T>::m_Loaders.find(ToLower(Filename.Extension()));
 
