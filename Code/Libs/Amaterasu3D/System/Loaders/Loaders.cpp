@@ -9,5 +9,5 @@ void Loaders::RegisterAllLoaders()
 	//MediaManager.RegisterLoader(new CImagesLoader, "bmp, dds, jpg, pcx, png, pnm, raw, sgi, tga, tif");
 	CMediaManager::Instance()->RegisterLoader(new CShaderProgramLoader, "shader");
 	CMediaManager::Instance()->RegisterLoader(new ShadersLoader(FRAGMENT_SHADER), "frag");
-	CMediaManager::Instance()->RegisterLoader(new ShadersLoader(VERTEX_SHADER), "vertex");
+	CMediaManager::Instance()->RegisterLoader(new ShadersLoader(VERTEX_SHADER), "vert");
 }

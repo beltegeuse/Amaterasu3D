@@ -37,10 +37,15 @@ inline void CMediaManager::RegisterLoader(ILoader<T>* Loader, const std::string&
     std::vector<std::string> Ext;
     Split(Extensions, Ext, " /\\*.,;|-_\t\n'\"");
 
+	Logger::Log() << "[INFO] Add New Loader ... \n";
+
     // Ajout des extensions une à une
     CSmartPtr<ILoader<T> > Ptr = Loader;
     for (std::vector<std::string>::iterator i = Ext.begin(); i != Ext.end(); ++i)
+	{
+		Logger::Log() << "  * " << ToLower(*i) << "\n";
         CMediaHolder<T>::m_Loaders[ToLower(*i)] = Ptr;
+	}
 }
 
 
@@ -122,6 +127,14 @@ inline ILoader<T>& CMediaManager::FindLoader(const CFile& Filename) const
     // Si l'extension du fichier se trouve parmi celles reconnues on renvoie le loader associé, sinon on lance une exception
     if ((It != CMediaHolder<T>::m_Loaders.end()) && It->second)
         return *It->second;
+
+	It =  CMediaHolder<T>::m_Loaders.begin();
+	Logger::Log() << "[INFO] Extension supported : \n"; 
+	while(It !=  CMediaHolder<T>::m_Loaders.end())
+	{
+		Logger::Log() << "   * "<< It->first << "\n";
+		++It;
+	}
 
     throw CLoadingFailed(Filename.Fullname(), "Aucun loader ne prend en charge ce format de fichier");
 }
