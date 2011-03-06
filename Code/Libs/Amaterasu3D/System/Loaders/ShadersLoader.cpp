@@ -51,5 +51,5 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	vertexShadername = CMediaManager::Instance().FindMedia(vertexShadername).Fullname();
 	fragmentShadername = CMediaManager::Instance().FindMedia(fragmentShadername).Fullname();
 	//FIXME: Faire appel au ressource manager
-	return  m_manager.loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str());
+	return  glShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str());
 }

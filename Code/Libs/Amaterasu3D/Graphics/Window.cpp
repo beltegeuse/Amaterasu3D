@@ -11,6 +11,8 @@
 #include <GL3/gl3.h>
 
 #endif
+#include <GL/gl.h>
+#include <Debug/OpenGLDebug.h>
 
 Window::Window(const std::string& name, const Math::TVector2I& windowSize) :
 	m_isRunning(false)
@@ -61,6 +63,11 @@ Window::Window(const std::string& name, const Math::TVector2I& windowSize) :
 		throw CException("Can't initialize GLEW.");
 	}
 	#endif
+
+	// *******************************
+	// ******** OpenGL initialisation
+	// *******************************
+	GLCheck(glEnable(GL_DEPTH_TEST));
 }
 
 Window::~Window()

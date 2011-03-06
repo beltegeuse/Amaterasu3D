@@ -4,6 +4,7 @@
 #include <Graphics/Window.h>
 #include <Graphics/GLSLShader.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
+#include <Graphics/MatrixManagement.h>
 
 #include <windows.h>
 #include <GL/glew.h>
@@ -38,17 +39,9 @@ public:
 	{
 		// OpenGL Flags ...
 		GLCheck(glClearColor(0.1f,0.1f,0.1f,1.f));
-		GLCheck(glEnable(GL_DEPTH_TEST));
-		// Projection Matrix
-		GLCheck(glMatrixMode(GL_PROJECTION));
-		GLCheck(glLoadIdentity());
-		GLCheck(gluPerspective(70, (double)800/600, 1, 1000));
+
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 1000);
 		// Path search
-		//MediaManager::Instance()->AddPathAndChilds("../Donnees");
-		// model Load
-		//FIXME: Add a loader
-		//m_scene = aiImportFile(MediaManager::Instance()->GetPath("dwarf.x").c_str(),aiProcessPreset_TargetRealtime_Quality);
 		// Load the Shader
 		CMediaManager::Instance().AddSearchPath("../Donnees");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
@@ -58,23 +51,31 @@ public:
 		m_shader->begin();
 		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_shader->end();
-
-//		m_shader_glsl = SM.loadfromFile("../Donnees/Shaders/OldOpenGL/BasicShaderOld.vert", "../Donnees/Shaders/OldOpenGL/BasicShaderOld.frag");
-//		m_shader_glsl->begin();
-//		m_shader_glsl->setUniformMatrix4fv("ProjectionMatrix", 1, GL_TRUE, (float*)m_matrixPerspective);
-//		m_shader_glsl->end();
 		// Create the Cube ...
-		CreateCube();
+		CreateCubes();
 	}
 
-	void CreateCube()
+	SceneGraph::Group* CreateCube(const Math::TVector3F& position)
 	{
-		GetSceneRoot().AddChild(new DebugCubeLeaf());
+		SceneGraph::Group* group = new SceneGraph::Group;
+		Math::CMatrix4 mat;
+		mat.SetTranslation(position.x, position.y, position.z);
+		group->LoadTransformMatrix(mat);
+		group->AddChild(new DebugCubeLeaf());
+		return group;
+	}
+
+	void CreateCubes()
+	{
+		// Multiple cube creation
+		for(int i = 0; i < 10; i++)
+			for(int j = 0; j < 10; j++)
+				for(int k = 0; k < 10; k++)
+					GetSceneRoot().AddChild(CreateCube(Math::TVector3F(i*10 - 50,j*10 - 50,k*10 - 50)));
 	}
 
 	virtual ~ConcreteWindow()
 	{
-		//lete m_shader;
 	}
 
 	void DebugMatrix(Math::CMatrix4& ModelViewMatrix)
@@ -83,22 +84,6 @@ public:
 		SawOpenGL(ModelViewMatrix);
 		std::cout << "ProjectionMatrix : " << std::endl;
 		SawOpenGL(m_matrixPerspective);
-	}
-
-	void DebugOpenGLMatrix()
-	{
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		gluLookAt(3,4,2,0,0,0,0,0,1);
-		Math::CMatrix4 mat;
-		glGetFloatv(GL_MODELVIEW_MATRIX, (float*)mat);
-		mat = mat.Transpose();
-		std::cout << "OpenGL Matrix ModelView" << std::endl;
-		std::cout << mat << std::endl;
-		std::cout << "OpenGL Matrix PROJECTION" << std::endl;
-		glGetFloatv(GL_PROJECTION_MATRIX, (float*)mat);
-		mat = mat.Transpose();
-		std::cout << mat << std::endl;
 	}
 
 	virtual void OnDraw()
@@ -111,16 +96,12 @@ public:
 		ModelViewMatrix = matrixLookAt;
 		// Send matrix to the shader
 		m_shader->begin();
-//		m_shader_glsl->begin();
-		// Set uniform matrix
-		DebugOpenGLMatrix();
-		m_shader->SetUniformMatrix4fv("ModelViewMatrix", ModelViewMatrix);
-//		m_shader_glsl->setUniformMatrix4fv("ModelViewMatrix", 1, GL_TRUE, (float*)ModelViewMatrix);
+		MatrixManagement::Instance().PushMatrix(ModelViewMatrix);
 		// Draw the geometry
 		Window::OnDraw();
 		// End of the shader
+		MatrixManagement::Instance().PopMatrix();
 		m_shader->end();
-//		m_shader_glsl->end();
 
 		//recursive_render(m_scene, m_scene->mRootNode);
 	}

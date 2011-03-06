@@ -14,8 +14,6 @@
 
 class ShadersLoader : public ILoader<glShader>
 {
-private:
-	glShaderManager m_manager;
 public:
 	ShadersLoader();
 	virtual ~ShadersLoader();

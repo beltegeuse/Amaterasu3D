@@ -1,9 +1,10 @@
 #ifndef MATRIXMANAGEMENT_H_
 #define MATRIXMANAGEMENT_H_
-
+#include <Enum.h>
 #include <Math/Matrix4.h>
 #include <vector>
 #include <Singleton.h>
+#include <sigc++/signal.h>
 
 class MatrixManagement : public CSingleton<MatrixManagement>
 {
@@ -15,6 +16,8 @@ private:
 	Math::CMatrix4 m_projectionMatrix;
 	Math::CMatrix4 m_viewMatrix;
 	Math::CMatrix4 m_identityMatrix;
+
+	sigc::signal<void, MatrixType, const Math::CMatrix4&> m_signal_event;
 
 	// Singleton implements
 	MatrixManagement(int maxMatrix = 50);
@@ -34,7 +37,6 @@ public:
 	// Get Matrix
 	const Math::CMatrix4& GetMatrix() const;
 
-	//XXX Study if it's more interesting to get an observer pattern to submit matrix transform
 	/**
 	 * Projection matrix
 	 */
@@ -46,6 +48,9 @@ public:
 	 */
 	void SetViewMatrix(const Math::CMatrix4& matrix);
 	const Math::CMatrix4& GetViewMatrix() const;
+
+	//** to subscribe to the signal
+	sigc::signal<void, MatrixType, const Math::CMatrix4&>& GetSignalEvent();
 };
 
 #endif /* MATRIXMANAGEMENT_H_ */

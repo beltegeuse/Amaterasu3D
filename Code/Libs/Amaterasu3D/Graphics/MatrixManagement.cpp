@@ -28,6 +28,8 @@ void MatrixManagement::PushMatrix(const Math::CMatrix4& matrix)
 	else
 		m_matrix.push_back(matrix*m_matrix.back());
 
+	m_signal_event.emit(MODELVIEW_MATRIX, GetMatrix());
+
 }
 
 void MatrixManagement::PopMatrix()
@@ -35,6 +37,7 @@ void MatrixManagement::PopMatrix()
 	if(m_matrix.empty())
 		throw CException("Matrix stack is empty. Unable to pop matrix");
 	m_matrix.pop_back();
+	m_signal_event.emit(MODELVIEW_MATRIX, GetMatrix());
 }
 
 bool MatrixManagement::IsEmpty() const
@@ -57,6 +60,7 @@ const Math::CMatrix4& MatrixManagement::GetMatrix() const
 void MatrixManagement::SetProjectionMatrix(const Math::CMatrix4& matrix)
 {
 	m_projectionMatrix = matrix;
+	m_signal_event.emit(PROJECTION_MATRIX, matrix);
 }
 
 const Math::CMatrix4& MatrixManagement::GetProjectionMatrix() const
@@ -72,5 +76,10 @@ void MatrixManagement::SetViewMatrix(const Math::CMatrix4& matrix)
 const Math::CMatrix4& MatrixManagement::GetViewMatrix() const
 {
 	return m_viewMatrix;
+}
+
+sigc::signal<void, MatrixType, const Math::CMatrix4&>& MatrixManagement::GetSignalEvent()
+{
+	return m_signal_event;
 }
 

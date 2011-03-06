@@ -52,9 +52,10 @@ target_link_libraries(
   ${SDL_LIBRARY}
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARY}
+  tinyxml
+  sigc-2.0 
   #TODO: Boost is until used?
   ${Boost_LIBRARIES}
-  tinyxml
 )
 
 install(TARGETS Amaterasu3D 

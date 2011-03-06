@@ -39,7 +39,10 @@ Make sure to check extension "GL_EXT_geometry_shader4" before using Geometry sha
 //#include "glslSettings.h"
 #include <Debug/Exceptions.h>
 #include <Debug/OpenGLDebug.h>
+#include <Singleton.h>
 #include <Math/Matrix4.h>
+#include <Enum.h>
+
 
 #include <vector>
 #include <iostream>
@@ -127,7 +130,6 @@ public:
 class GLSLAPI glShader
 {
 	friend class glShaderManager;
-
 public:
 	glShader();
 	virtual    ~glShader();
@@ -184,8 +186,8 @@ public:
 
 	bool       setUniformMatrix2fv(GLcharARB* varname, GLsizei count, GLboolean transpose, GLfloat *value, GLint index = -1); //!< Specify values of uniform 2x2 matrix. \param varname The name of the uniform variable.
 	bool       setUniformMatrix3fv(GLcharARB* varname, GLsizei count, GLboolean transpose, GLfloat *value, GLint index = -1); //!< Specify values of uniform 3x3 matrix. \param varname The name of the uniform variable.
-	bool       setUniformMatrix4fv(GLcharARB* varname, GLsizei count, GLboolean transpose, GLfloat *value, GLint index = -1); //!< Specify values of uniform 4x4 matrix. \param varname The name of the uniform variable.
-	bool       SetUniformMatrix4fv(GLcharARB* varname, Math::CMatrix4& matrix);
+	bool       SetUniformMatrix4fv(GLcharARB* varname, const Math::CMatrix4& matrix);
+
 	// Receive Uniform variables:
 	void       getUniformfv(GLcharARB* varname, GLfloat* values, GLint index = -1); //!< Receive value of uniform variable. \param varname The name of the uniform variable.
 	void       getUniformiv(GLcharARB* varname, GLint* values, GLint index = -1); //!< Receive value of uniform variable. \param varname The name of the uniform variable.
@@ -285,11 +287,13 @@ private:
 //-----------------------------------------------------------------------------
 
 //! To simplify the process loading/compiling/linking shaders this high level interface to simplify setup of a vertex/fragment shader was created. \ingroup GLSL \author Martin Christen
-class GLSLAPI glShaderManager
+class GLSLAPI glShaderManager : public CSingleton<glShaderManager>
 {
-public:
+	MAKE_SINGLETON(glShaderManager);
+
 	glShaderManager();
 	virtual ~glShaderManager();
+public:
 
 	// Regular GLSL (Vertex+Fragment Shader)
 	glShader* loadfromFile(const char* vertexFile, const char* fragmentFile);    //!< load vertex/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param fragmentFile Fragment Shader File.
@@ -303,9 +307,19 @@ public:
 	void      SetOutputPrimitiveType(int nOutputPrimitiveType);  //!< Set the output primitive type for the geometry shader \param nOutputPrimitiveType Output Primitive Type, for example GL_TRIANGLE_STRIP
 	void      SetVerticesOut(int nVerticesOut);                  //!< Set the maximal number of vertices the geometry shader can output \param nVerticesOut Maximal number of output vertices. It is possible to output less vertices!
 
+	//FIXME: Look how to connect to the ressource manager
 	bool      free(glShader* o); //!< Remove the shader and free the memory occupied by this shader.
 
+	//* Multiple shader management
+	void Push(glShader* shader);
+	void Pop();
+	// Callback to update matrix
+	void UpdateMatrix(MatrixType mat, const Math::CMatrix4& matrix);
+
 private:
+	std::vector<glShader*>  m_shader_stack;
+	int m_max_stack;
+
 	std::vector<glShader*>  _shaderObjectList;
 	int                     _nInputPrimitiveType;
 	int                     _nOutputPrimitiveType;
