@@ -11,6 +11,7 @@ m_fragement_shader(FragmentShader)
 {
 	// Program creation
 	m_programID = glCreateProgram () ;
+	std::cout << "[INFO] Shader creation : " << m_programID << std::endl;
 	// attach shaders
 	glAttachShader (m_programID, m_vertex_shader->GetID()) ;
 	glAttachShader (m_programID, m_fragement_shader->GetID()) ;
@@ -43,9 +44,9 @@ void Shader::End()
 	glUseProgram(0);
 }
 
-void Shader::SetUniformMatrix4fv(const std::string& name, Math::CMatrix4& matrix)
+void Shader::SetUniformMatrix4fv(const GLchar* name, Math::CMatrix4& matrix)
 {
-	GLCheck(glUniformMatrix4fv(GetUniformLocation(name),sizeof(float), GL_TRUE, (float*)matrix));
+	GLCheck(glUniformMatrix4fv(GetUniformLocation(name),1, GL_TRUE, (float*)matrix));
 }
 
 void Shader::ShowLinkLog(unsigned int id)
@@ -54,9 +55,15 @@ void Shader::ShowLinkLog(unsigned int id)
 	{
 		throw CException("invalid Shader program");
 	}
+	GLint linked;
+	glGetProgramiv(id, GL_LINK_STATUS, &linked);
+	if (!linked)
+	{
+		throw CException("Shader program is not link.");
+	}
 	GLint blen = 0;
 	GLsizei slen = 0;
-	glGetShaderiv(id, GL_INFO_LOG_LENGTH , &blen);
+	glGetProgramiv(id, GL_INFO_LOG_LENGTH , &blen);
 	if (blen > 1)
 	{
 		GLcharARB* compilerLog = (GLcharARB*)malloc(blen);

@@ -15,8 +15,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
 	Graphics/Color.cpp
-	Graphics/Shader.cpp
-	Graphics/ShaderUnit.cpp
+	Graphics/GLSLShader.cpp
 	Graphics/Window.cpp
 	Graphics/MatrixManagement.cpp
 	
@@ -29,7 +28,6 @@ SET(LIB_AMATERASU3D_SRCS
 	System/Resource.cpp
 	System/Loaders/Loaders.cpp
 	System/Loaders/ShadersLoader.cpp
-	System/Loaders/ShadersProgramLoader.cpp
 	
 	Utilities/File.cpp
 )
@@ -45,7 +43,7 @@ INCLUDE_DIRECTORIES(
 
 SET(AMATERASU3D_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
-ADD_LIBRARY(Amaterasu3D SHARED ${LIB_AMATERASU3D_SRCS})
+ADD_LIBRARY(Amaterasu3D STATIC ${LIB_AMATERASU3D_SRCS})
 
 target_link_libraries(
   Amaterasu3D

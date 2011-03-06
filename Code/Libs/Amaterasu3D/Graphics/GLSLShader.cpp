@@ -6,7 +6,7 @@ Last update: 2006/11/12 (Geometry Shader Support)
 (c) 2003-2006 by Martin Christen. All Rights reserved.
 *********************************************************************/
 
-#include "Shader.h"
+#include "GLSLShader.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,7 +18,6 @@ Last update: 2006/11/12 (Geometry Shader Support)
 
 
 using namespace std;
-using namespace cwc;
 
 bool useGLSL = false;
 bool extensions_init = false;
@@ -70,8 +69,6 @@ Initialization:
 
 */
 
-namespace cwc
-{
 //-----------------------------------------------------------------------------
 // Error, Warning and Info Strings
 char* aGLSLStrings[] = {
@@ -200,7 +197,7 @@ char* aGLSLStrings[] = {
 
       return true;
    }
-}
+
 
 //----------------------------------------------------------------------------- 
 
@@ -962,6 +959,12 @@ bool glShader::setUniformMatrix3fv(GLcharARB* varname, GLsizei count, GLboolean 
 
 //----------------------------------------------------------------------------- 
 
+bool glShader::SetUniformMatrix4fv(GLcharARB* varname, Math::CMatrix4& matrix)
+{
+	GLint loc = GetUniformLocation(varname);
+	glUniformMatrix4fv(loc,1, GL_TRUE, (float*) matrix);
+}
+
 bool glShader::setUniformMatrix4fv(GLcharARB* varname, GLsizei count, GLboolean transpose, GLfloat *value, GLint index)
 {
     if (!useGLSL) return false; // GLSL not available
@@ -1343,7 +1346,7 @@ unsigned long getFileLength(ifstream& file)
 
 
 //----------------------------------------------------------------------------- 
-int glShaderObject::load(char* filename)
+int glShaderObject::load(const char* filename)
 {
    ifstream file;
 	file.open(filename, ios::in);
@@ -1561,7 +1564,7 @@ void glShaderManager::SetVerticesOut(int nVerticesOut)
 }
 
 // ----------------------------------------------------------------------------
-glShader* glShaderManager::loadfromFile(char* vertexFile, char* fragmentFile) 
+glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile)
 {
    glShader* o = new glShader();
    o->UsesGeometryShader(false);

@@ -34,7 +34,7 @@
 #include <Utilities/File.h>
 #include <Utilities/StringUtils.h>
 #include <Utilities/SmartPtr.h>
-#include <Graphics/Shader.h>
+#include <Graphics/GLSLShader.h>
 //#include <Core/Model.h>
 //#include <Core/Image.h>
 #include <Debug/Exceptions.h>
@@ -48,7 +48,7 @@
 //==========================================================
 // Liste des médias pris en charge
 //==========================================================
-typedef TYPELIST_2(Shader, ShaderUnit) MediaList;
+typedef TYPELIST_1(glShader) MediaList;
 
 ////////////////////////////////////////////////////////////
 /// Modèle de gestionnaire de média
@@ -96,6 +96,11 @@ public :
 	//----------------------------------------------------------
 	template <class T> void SaveMediaToFile(const T* Object, const CFile& Filename) const;
 
+	//----------------------------------------------------------
+	// Cherche un fichier dans les répertoires de recherche
+	//----------------------------------------------------------
+	CFile FindMedia(const CFile& Filename) const;
+
 private :
 
 	//----------------------------------------------------------
@@ -107,11 +112,6 @@ private :
 	// Destructeur
 	//----------------------------------------------------------
 	~CMediaManager();
-
-	//----------------------------------------------------------
-	// Cherche un fichier dans les répertoires de recherche
-	//----------------------------------------------------------
-	CFile FindMedia(const CFile& Filename) const;
 
 	//----------------------------------------------------------
 	// Cherche le loader correspondant à une extension donnée

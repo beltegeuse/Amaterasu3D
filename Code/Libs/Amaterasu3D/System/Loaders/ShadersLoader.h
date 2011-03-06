@@ -9,17 +9,17 @@
 #define SHADERLOADER_H_
 
 #include <System/Loaders/Loader.h>
-#include <Graphics/Shader.h>
+#include <Graphics/GLSLShader.h>
 #include <Enum.h>
 
-class ShadersLoader : public ILoader<ShaderUnit>
+class ShadersLoader : public ILoader<glShader>
 {
 private:
-	ShaderUnitType m_Type;
+	glShaderManager m_manager;
 public:
-	ShadersLoader(const ShaderUnitType& type);
+	ShadersLoader();
 	virtual ~ShadersLoader();
-	virtual ShaderUnit* LoadFromFile(const std::string& Filename);
+	virtual glShader* LoadFromFile(const std::string& Filename);
 };
 
 #endif /* SHADERLOADER_H_ */

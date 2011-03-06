@@ -32,31 +32,31 @@ public:
 	// Public functions
 	void Begin();
 	void End();
-	void SetUniformMatrix4fv(const std::string& name, Math::CMatrix4& matrix);
+	void SetUniformMatrix4fv(const GLchar* name, Math::CMatrix4& matrix);
 private:
 	void ShowLinkLog(unsigned int id);
 	// Common shader methods
-	inline unsigned int GetAttribLocation(const std::string& name);
-	inline unsigned int GetUniformLocation(const std::string& name);
+	inline int GetAttribLocation(const GLchar* name);
+	inline int GetUniformLocation(const GLchar* name);
 };
 
 //***********************
 //** Inline functions ***
 //***********************
-unsigned int Shader::GetAttribLocation(const std::string& name)
+int Shader::GetAttribLocation(const GLchar* name)
 {
 	//FIXME: Faire du caching pour accelerer les appels
-	unsigned int id = GLCheck(glGetAttribLocation (m_programID,name.c_str()));
+	unsigned int id = GLCheck(glGetAttribLocation (m_programID,name));
 	//std::cout << "[DEBUG] AttribLocation : " << name << " => " << id << std::endl;
 	return id;
 }
 
-unsigned int Shader::GetUniformLocation(const std::string& name)
+int Shader::GetUniformLocation(const GLchar* name)
 {
 	//FIXME: Faire du caching pour accelerer les appels
-	unsigned int id = GLCheck(glGetUniformLocation(m_programID,name.c_str()));
-	//std::cout << "[DEBUG] UniformLocation : " << name << " => " << id << std::endl;
-	return id;
+	GLint loc = GLCheck(glGetUniformLocation(m_programID,name));
+	std::cout << "[DEBUG] UniformLocation : " << name << " => " << loc << " ( program " << m_programID << " )" <<  std::endl;
+	return loc;
 }
 
 #endif /* SHADER_H_ */

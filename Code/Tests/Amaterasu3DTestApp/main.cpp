@@ -2,7 +2,7 @@
 #include <Math/Matrix4.h>
 #include <System/MediaManager.h>
 #include <Graphics/Window.h>
-#include <Graphics/Shader.h>
+#include <Graphics/GLSLShader.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 
 #include <windows.h>
@@ -31,7 +31,7 @@ private:
 	const struct aiScene* m_scene;
 	struct aiVector3D m_scene_center;
 	Math::CMatrix4 m_matrixPerspective;
-	Shader* m_shader;
+	glShader* m_shader;
 public:
 	ConcreteWindow() :
 		Window("Amaterasu3DTestApp")
@@ -54,10 +54,15 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
 		//ShaderUnit* testShader = CMediaManager::Instance().LoadMediaFromFile<ShaderUnit>("BasicShaderOld.vert");
-		m_shader = CMediaManager::Instance().LoadMediaFromFile<Shader>("BasicShaderOld.shader");
-		m_shader->Begin();
+		m_shader = CMediaManager::Instance().LoadMediaFromFile<glShader>("BasicShaderOld.shader");
+		m_shader->begin();
 		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
-		m_shader->End();
+		m_shader->end();
+
+//		m_shader_glsl = SM.loadfromFile("../Donnees/Shaders/OldOpenGL/BasicShaderOld.vert", "../Donnees/Shaders/OldOpenGL/BasicShaderOld.frag");
+//		m_shader_glsl->begin();
+//		m_shader_glsl->setUniformMatrix4fv("ProjectionMatrix", 1, GL_TRUE, (float*)m_matrixPerspective);
+//		m_shader_glsl->end();
 		// Create the Cube ...
 		CreateCube();
 	}
@@ -69,7 +74,7 @@ public:
 
 	virtual ~ConcreteWindow()
 	{
-		delete m_shader;
+		//lete m_shader;
 	}
 
 	void DebugMatrix(Math::CMatrix4& ModelViewMatrix)
@@ -105,13 +110,17 @@ public:
 		Math::CMatrix4 ModelViewMatrix;
 		ModelViewMatrix = matrixLookAt;
 		// Send matrix to the shader
-		m_shader->Begin();
+		m_shader->begin();
+//		m_shader_glsl->begin();
 		// Set uniform matrix
+		DebugOpenGLMatrix();
 		m_shader->SetUniformMatrix4fv("ModelViewMatrix", ModelViewMatrix);
+//		m_shader_glsl->setUniformMatrix4fv("ModelViewMatrix", 1, GL_TRUE, (float*)ModelViewMatrix);
 		// Draw the geometry
 		Window::OnDraw();
 		// End of the shader
-		m_shader->End();
+		m_shader->end();
+//		m_shader_glsl->end();
 
 		//recursive_render(m_scene, m_scene->mRootNode);
 	}

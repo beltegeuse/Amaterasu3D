@@ -2,8 +2,8 @@
 #version 130
 
 // Uniform
-uniform mat4 ProjectionMatrix;
 uniform mat4 ModelViewMatrix;
+uniform mat4 ProjectionMatrix;
 
 // Out
 smooth out vec4 Color;
