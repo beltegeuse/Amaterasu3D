@@ -39,6 +39,8 @@ Make sure to check extension "GL_EXT_geometry_shader4" before using Geometry sha
 //#include "glslSettings.h"
 #include <Debug/Exceptions.h>
 #include <Debug/OpenGLDebug.h>
+#include <Utilities/SmartPtr.h>
+#include <System/Resource.h>
 #include <Singleton.h>
 #include <Math/Matrix4.h>
 #include <Enum.h>
@@ -127,7 +129,7 @@ public:
 //-----------------------------------------------------------------------------
 
 //! \brief Controlling compiled and linked GLSL program. \ingroup GLSL \author Martin Christen
-class GLSLAPI glShader
+class GLSLAPI glShader : public IResource
 {
 	friend class glShaderManager;
 public:
@@ -284,17 +286,20 @@ private:
 
 };
 
+typedef CSmartPtr<glShader, CResourceCOM> TShaderPtr;
+
 //-----------------------------------------------------------------------------
 
 //! To simplify the process loading/compiling/linking shaders this high level interface to simplify setup of a vertex/fragment shader was created. \ingroup GLSL \author Martin Christen
 class GLSLAPI glShaderManager : public CSingleton<glShaderManager>
 {
 	MAKE_SINGLETON(glShaderManager);
-
+	// Implements Singleton
 	glShaderManager();
 	virtual ~glShaderManager();
-public:
 
+	friend class ShadersLoader;
+	// Only the MediaManager can call this methods
 	// Regular GLSL (Vertex+Fragment Shader)
 	glShader* loadfromFile(const char* vertexFile, const char* fragmentFile);    //!< load vertex/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param fragmentFile Fragment Shader File.
 	glShader* loadfromMemory(const char* vertexMem, const char* fragmentMem); //!< load vertex/fragment shader from memory. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part.
@@ -302,6 +307,11 @@ public:
 	// With Geometry Shader (Vertex+Geomentry+Fragment Shader)
 	glShader* loadfromFile(char* vertexFile, char* geometryFile, char* fragmentFile); //!< load vertex/geometry/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param geometryFile Geometry Shader File \param fragmentFile Fragment Shader File.
 	glShader* loadfromMemory(const char* vertexMem, const char* geometryMem, const char* fragmentMem); //!< load vertex/geometry/fragment shader from memory. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part.
+
+public:
+
+	// Only this methods for load shader
+	TShaderPtr LoadShader(const std::string& filename);
 
 	void      SetInputPrimitiveType(int nInputPrimitiveType);    //!< Set the input primitive type for the geometry shader \param nInputPrimitiveType Input Primitive Type, for example GL_TRIANGLES
 	void      SetOutputPrimitiveType(int nOutputPrimitiveType);  //!< Set the output primitive type for the geometry shader \param nOutputPrimitiveType Output Primitive Type, for example GL_TRIANGLE_STRIP

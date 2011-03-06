@@ -32,7 +32,7 @@ private:
 	const struct aiScene* m_scene;
 	struct aiVector3D m_scene_center;
 	Math::CMatrix4 m_matrixPerspective;
-	glShader* m_shader;
+	TShaderPtr m_shader;
 public:
 	ConcreteWindow() :
 		Window("Amaterasu3DTestApp")
@@ -47,7 +47,7 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
 		//ShaderUnit* testShader = CMediaManager::Instance().LoadMediaFromFile<ShaderUnit>("BasicShaderOld.vert");
-		m_shader = CMediaManager::Instance().LoadMediaFromFile<glShader>("BasicShaderOld.shader");
+		m_shader = glShaderManager::Instance().LoadShader("BasicShaderOld.shader");
 		m_shader->begin();
 		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_shader->end();

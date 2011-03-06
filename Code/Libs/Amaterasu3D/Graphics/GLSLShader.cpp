@@ -19,6 +19,8 @@ Last update: 2006/11/12 (Geometry Shader Support)
 
 
 #include <Graphics/MatrixManagement.h>
+#include <System/ResourceManager.h>
+#include <System/MediaManager.h>
 
 
 SINGLETON_IMPL(glShaderManager)
@@ -1981,8 +1983,10 @@ void glShaderManager::Pop()
 		throw CException("shader stack is empty");
 	m_shader_stack.pop_back();
 	if(!m_shader_stack.empty())
+	{
 		m_shader_stack.back()->SetUniformMatrix4fv("ModelViewMatrix", MatrixManagement::Instance().GetMatrix());
-
+		m_shader_stack.back()->begin();
+	}
 }
 
 void glShaderManager::UpdateMatrix(MatrixType mat, const Math::CMatrix4& matrix)
@@ -2000,4 +2004,13 @@ void glShaderManager::UpdateMatrix(MatrixType mat, const Math::CMatrix4& matrix)
 
 }
 
-
+TShaderPtr glShaderManager::LoadShader(const std::string& filename)
+{
+	TShaderPtr Resource = CResourceManager::Instance().Get<glShader>(filename);
+	if(Resource == NULL)
+	{
+		Resource = CMediaManager::Instance().LoadMediaFromFile<glShader>(filename);
+		CResourceManager::Instance().Add(filename, Resource);
+	}
+	return Resource;
+}
