@@ -7,17 +7,21 @@
 
 #ifndef ASSIMPLOADER_H_
 #define ASSIMPLOADER_H_
-
+#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
 #include <Graphics/SceneGraph/Assimp/AssimpNode.h>
 #include <System/Loaders/Loader.h>
 #include <assimp.h>
 #include "aiScene.h"
+#include <map>
+#include <string>
 
 class AssimpLoader : public ILoader<SceneGraph::AssimpNode>
 {
 private:
 	// Attributs
 	struct aiLogStream m_assimp_stream;
+	typedef std::map<int, SceneGraph::AssimpMesh*> CachedAssimpMeshMap;
+	CachedAssimpMeshMap m_cached_geom;
 public:
 	AssimpLoader();
 	virtual ~AssimpLoader();

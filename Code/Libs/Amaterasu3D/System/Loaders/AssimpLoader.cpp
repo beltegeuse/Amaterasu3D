@@ -29,6 +29,8 @@ AssimpLoader::~AssimpLoader()
 
 SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 {
+	// Empty cache
+	m_cached_geom.erase(m_cached_geom.begin(), m_cached_geom.end());
 	// Load
 	const struct aiScene* scene = aiImportFile(Filename.c_str(),aiProcessPreset_TargetRealtime_Quality);
 	if(!scene)
@@ -36,7 +38,7 @@ SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 	SceneGraph::AssimpNode* group = new SceneGraph::AssimpNode;
 	BuildGroup(group, scene, scene->mRootNode);
 	group->SetAssimpScene(scene);
-	Logger::Log() << "[INFO] Finish to load : " << Filename << "\n";
+	Logger::Log() << "[INFO] Finish to load : " << Filename << " mesh : "<< scene->mNumMeshes << "\n";
 	return group;
 }
 
@@ -57,6 +59,12 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		if(mesh->mNumFaces == 0)
 		{
 			Logger::Log() << "[INFO] Skip assimp mesh. No faces. \n";
+			continue;
+		}
+		if(m_cached_geom.find(nd->mMeshes[n]) != m_cached_geom.end())
+		{
+			Logger::Log() << "[INFO] Find cached resources : " << nd->mMeshes[n] << "\n";
+			group->AddChild(m_cached_geom[nd->mMeshes[n]]);
 			continue;
 		}
 		SceneGraph::AssimpMesh* assimpMesh = new SceneGraph::AssimpMesh;
@@ -129,6 +137,8 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		// Attach to group
 		Logger::Log() << "[INFO] Add to father node... \n";
 		group->AddChild(assimpMesh);
+		Logger::Log() << "[INFO] Add cached resources : " << nd->mMeshes[n] << "\n";
+		m_cached_geom[nd->mMeshes[n]] = assimpMesh;
 
 	}
 
