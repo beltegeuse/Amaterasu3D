@@ -18,6 +18,8 @@ m_is_compiled(false)
 
 AssimpMesh::~AssimpMesh()
 {
+	//FIXME: Si mise en place du cache, alors attention a la destructions des differents objets.
+	// solution : Smart pointeurs
 	glDeleteBuffers(m_buffers.size()+1, m_indices_buffers);
 	delete[] m_indices_buffers;
 }
