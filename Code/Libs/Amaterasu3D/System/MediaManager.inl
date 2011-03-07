@@ -86,7 +86,7 @@ inline T* CMediaManager::LoadMediaFromFile(const CFile& Filename) const
     T* Media = FindLoader<T>(MediaPath).LoadFromFile(MediaPath.Fullname());
 
     // Loggization du chargement
-    Logger::Log() << "Ressource chargée : " << MediaPath.Fullname() << "\n";
+    Logger::Log() << "[LOAD] New resources loaded : " << MediaPath.Fullname() << "\n";
 
     return Media;
 }
@@ -106,7 +106,7 @@ inline void CMediaManager::SaveMediaToFile(const T* Object, const CFile& Filenam
     FindLoader<T>(Filename).SaveToFile(Object, Filename.Fullname());
 
     // Loggization de la sauvegarde
-    Logger::Log() << "Ressource sauvegardée : " << Filename.Fullname() << "\n";
+    Logger::Log() << "[SAVE] resources saved : " << Filename.Fullname() << "\n";
 }
 
 

@@ -31,8 +31,6 @@ void SawOpenGL(Math::CMatrix4& mat)
 class ConcreteWindow : public Window
 {
 private:
-	const struct aiScene* m_scene;
-	struct aiVector3D m_scene_center;
 	Math::CMatrix4 m_matrixPerspective;
 	TShaderPtr m_shader;
 public:
@@ -41,7 +39,7 @@ public:
 	{
 //		Logger::SetLogger(new LoggerFile("Log.out"));
 		//TODO: Mettre dans OnEvent
-//		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 		// Camera
 		CameraAbstract* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		SetCamera(cam);
@@ -51,14 +49,27 @@ public:
 		// Path search
 		// Load the Shader
 		CMediaManager::Instance().AddSearchPath("../Donnees");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
-		m_shader = glShaderManager::Instance().LoadShader("BasicShader.shader");
+		m_shader = glShaderManager::Instance().LoadShader("NoColorBasicShader.shader");
 		m_shader->begin();
 		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_shader->end();
 		// Create the Cube ...
-		CreateCubes();
+		//CreateCubes();
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
+//		GetSceneRoot().AddChild(node);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("Testwuson.X");
+		GetSceneRoot().AddChild(node);
+//		Math::CMatrix4 scale;
+//		scale.SetScaling(0.0141,0.0141,0.0141);
+//		Math::CMatrix4 translate;
+//		translate.SetTranslation(0.0, -35,-14);
+//		node->MultTransformMatrix(scale);
+//		node->MultTransformMatrix(translate);
+//		std::cout << node->GetTransformMatrix() << std::endl;
+		std::cout << "FINISH BUILD SCENE" << std::endl;
 	}
 
 	SceneGraph::Group* CreateCube(const Math::TVector3F& position)
@@ -98,6 +109,7 @@ public:
 		// Send matrix to the shader
 		m_shader->begin();
 		// Draw the geometry
+//		std::cout << "Draw..." << std::endl;
 		Window::OnDraw();
 		// End of the shader
 		m_shader->end();

@@ -16,6 +16,7 @@
 #include "assimp.h"
 #include "aiPostProcess.h"
 #include "aiScene.h"
+#include <iostream>
 
 // the global Assimp scene object
 const struct aiScene* scene = NULL;
@@ -280,7 +281,8 @@ void display(void)
 	tmp = aisgl_max(scene_max.z - scene_min.z,tmp);
 	tmp = 1.f / tmp;
 	glScalef(tmp, tmp, tmp);
-
+	std::cout << "Scale : " << tmp << std::endl;
+	std::cout << "Translate : " << -scene_center.x << "x" << -scene_center.y << "x" << -scene_center.z << std::endl;
         // center the model
 	glTranslatef( -scene_center.x, -scene_center.y, -scene_center.z );
 

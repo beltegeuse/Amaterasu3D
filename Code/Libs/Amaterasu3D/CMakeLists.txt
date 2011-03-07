@@ -14,6 +14,8 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/SceneGraph/DrawObject.cpp
 	Graphics/SceneGraph/Group.cpp
 	Graphics/SceneGraph/Debug/DebugCubeLeaf.cpp
+	Graphics/SceneGraph/Assimp/AssimpMesh.cpp
+	Graphics/SceneGraph/Assimp/AssimpNode.cpp
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
 	Graphics/Color.cpp
@@ -30,6 +32,7 @@ SET(LIB_AMATERASU3D_SRCS
 	System/Resource.cpp
 	System/Loaders/Loaders.cpp
 	System/Loaders/ShadersLoader.cpp
+	System/Loaders/AssimpLoader.cpp
 	
 	Utilities/File.cpp
 )
