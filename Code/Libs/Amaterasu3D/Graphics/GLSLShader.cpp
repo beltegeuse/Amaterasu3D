@@ -393,8 +393,8 @@ void glShader::begin(void)
 
 	if (is_linked)
 	{
-		glShaderManager::Instance().Push(this);
 		glUseProgram(ProgramObject);
+		glShaderManager::Instance().Push(this);
 		CHECK_GL_ERROR();
 	}
 }
@@ -1982,10 +1982,11 @@ void glShaderManager::Pop()
 	if(m_shader_stack.empty())
 		throw CException("shader stack is empty");
 	m_shader_stack.pop_back();
+
 	if(!m_shader_stack.empty())
 	{
-		m_shader_stack.back()->SetUniformMatrix4fv("ModelViewMatrix", MatrixManagement::Instance().GetMatrix());
 		m_shader_stack.back()->begin();
+		m_shader_stack.back()->SetUniformMatrix4fv("ModelViewMatrix", MatrixManagement::Instance().GetMatrix());
 	}
 }
 

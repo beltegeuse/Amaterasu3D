@@ -5,6 +5,7 @@
 #include <Graphics/GLSLShader.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Graphics/MatrixManagement.h>
+#include <Graphics/Camera/CameraFly.h>
 
 #include <windows.h>
 #include <GL/glew.h>
@@ -37,16 +38,17 @@ public:
 	ConcreteWindow() :
 		Window("Amaterasu3DTestApp")
 	{
+		// Camera
+		CameraAbstract* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		SetCamera(cam);
 		// OpenGL Flags ...
 		GLCheck(glClearColor(0.1f,0.1f,0.1f,1.f));
-
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 1000);
 		// Path search
 		// Load the Shader
 		CMediaManager::Instance().AddSearchPath("../Donnees");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
-		//ShaderUnit* testShader = CMediaManager::Instance().LoadMediaFromFile<ShaderUnit>("BasicShaderOld.vert");
 		m_shader = glShaderManager::Instance().LoadShader("BasicShaderOld.shader");
 		m_shader->begin();
 		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
@@ -88,19 +90,12 @@ public:
 
 	virtual void OnDraw()
 	{
-		// Create matrix lookat
-		Math::CMatrix4 matrixLookAt;
-		matrixLookAt.LookAt(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0), Math::TVector3F(0,0,1));
 		// Compute ModelViewMatrix
-		Math::CMatrix4 ModelViewMatrix;
-		ModelViewMatrix = matrixLookAt;
 		// Send matrix to the shader
 		m_shader->begin();
-		MatrixManagement::Instance().PushMatrix(ModelViewMatrix);
 		// Draw the geometry
 		Window::OnDraw();
 		// End of the shader
-		MatrixManagement::Instance().PopMatrix();
 		m_shader->end();
 
 		//recursive_render(m_scene, m_scene->mRootNode);

@@ -5,6 +5,7 @@
 #include <string>
 #include <Math/Vector2.h>
 #include <Graphics/SceneGraph/Group.h>
+#include <Graphics/Camera/CameraAbstract.h>
 
 class Window
 {
@@ -14,6 +15,10 @@ private:
 	SDL_GLContext m_contexteOpenGL;
 	bool m_isRunning;
 	SceneGraph::Group m_root;
+	CameraAbstract* m_camera;
+	// TODO: Write into a class
+	int m_FPS;
+	double m_timeEslapse;
 
 public:
 	// Constructor & Destructor
@@ -26,7 +31,9 @@ public:
 
 	// Virtual methods
 	virtual void OnDraw();
-	virtual void OnEvent(SDL_Event& events);
+	virtual void OnEvent(SDL_Event& events, double delta);
+	//! Warning, stole the adress value
+	void SetCamera(CameraAbstract* camera);
 };
 
 #endif /* WINDOW_H_ */

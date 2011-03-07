@@ -9,6 +9,8 @@ SET(LIB_AMATERASU3D_SRCS
 	Math/Rectangle.cpp
 	Math/SphericalCoordinates.cpp
 	
+	Graphics/Camera/CameraAbstract.cpp
+	Graphics/Camera/CameraFly.cpp
 	Graphics/SceneGraph/DrawObject.cpp
 	Graphics/SceneGraph/Group.cpp
 	Graphics/SceneGraph/Debug/DebugCubeLeaf.cpp

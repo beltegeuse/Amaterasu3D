@@ -15,7 +15,8 @@
 #include <Debug/OpenGLDebug.h>
 
 Window::Window(const std::string& name, const Math::TVector2I& windowSize) :
-	m_isRunning(false)
+	m_isRunning(false),
+	m_camera(NULL)
 {
 	// **************************************
 	// ******* Logger initialisation ********
@@ -76,17 +77,36 @@ Window::~Window()
 	SDL_GL_DeleteContext(m_contexteOpenGL);
 	SDL_DestroyWindow(m_fenetre);
 	SDL_Quit();
+	// Camera delete
+	if(m_camera)
+		delete m_camera;
 }
 
 void Window::Run()
 {
 	SDL_Event evenements;
 	m_isRunning = true;
+	int lastTime = SDL_GetTicks();
+	// Compteur de FPS
+	m_FPS = 0;
+	m_timeEslapse = 0.0;
 	while(m_isRunning)
 	{
+		double delta = (SDL_GetTicks() - lastTime) / 1000.0;
+		lastTime += delta*1000.0;
 		// Events ......
-		SDL_WaitEvent(&evenements);
-		OnEvent(evenements);
+		while(SDL_PollEvent(&evenements)) {
+			OnEvent(evenements, delta);
+		}
+		// Mise a jour des FPS
+		m_timeEslapse += delta;
+		m_FPS += 1;
+		if(m_timeEslapse > 1.0)
+		{
+			std::cout << "[INFO] FPS : " << m_FPS << std::endl;
+			m_timeEslapse = m_timeEslapse - 1.0;
+			m_FPS = 0;
+		}
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	    // Draw all the Scene ...
@@ -96,19 +116,29 @@ void Window::Run()
 	}
 }
 
-void Window::OnEvent(SDL_Event& events)
+void Window::OnEvent(SDL_Event& events, double delta)
 {
 	if(events.window.event == SDL_WINDOWEVENT_CLOSE)
 		m_isRunning = false;
+	if(m_camera)
+		m_camera->OnEvent(events, delta);
 }
 
 void Window::OnDraw()
 {
 	int numberMatrix = MatrixManagement::Instance().StackSize();
 
+	if(m_camera)
+	{
+		m_camera->ComputeMatrix();
+		MatrixManagement::Instance().PushMatrix(m_camera->GetMatrix());
+	}
 	// Do all graphics part here
 	// Draw the SceneGraph
 	m_root.Draw();
+
+	if(m_camera)
+		MatrixManagement::Instance().PopMatrix();
 
 	// Check if there is leak of matrix stack
 	if(numberMatrix != MatrixManagement::Instance().StackSize())
@@ -118,4 +148,11 @@ void Window::OnDraw()
 SceneGraph::Group& Window::GetSceneRoot()
 {
 	return m_root;
+}
+
+void Window::SetCamera(CameraAbstract* camera)
+{
+	if(m_camera)
+		delete m_camera;
+	m_camera = camera;
 }
