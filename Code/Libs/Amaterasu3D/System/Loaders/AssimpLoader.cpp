@@ -120,7 +120,7 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		SceneGraph::AssimpMeshBuffer bufferVertex;
 		bufferVertex.buffer = &mesh->mVertices[0].x;
 		bufferVertex.dimension = 3;
-		bufferVertex.size = maxIndice*3;
+		bufferVertex.size = maxIndice*3+3;
 		Logger::Log() << "   * size : " << bufferVertex.size << "\n";
 		assimpMesh->AddBuffer(bufferVertex, VERTEX_ATTRIBUT);
 		// Compile all buffers

@@ -45,11 +45,12 @@ public:
 		SetCamera(cam);
 		// OpenGL Flags ...
 		GLCheck(glClearColor(0.1f,0.1f,0.1f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 1000);
+		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 10000);
 		// Path search
 		// Load the Shader
 		CMediaManager::Instance().AddSearchPath("../Donnees");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
 		m_shader = glShaderManager::Instance().LoadShader("NoColorBasicShader.shader");
@@ -60,7 +61,7 @@ public:
 		//CreateCubes();
 //		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
 //		GetSceneRoot().AddChild(node);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("Testwuson.X");
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 		GetSceneRoot().AddChild(node);
 //		Math::CMatrix4 scale;
 //		scale.SetScaling(0.0141,0.0141,0.0141);
