@@ -11,6 +11,7 @@ smooth in vec3 Color_in;
 
 void main()
 {	
-	vec3 ColorNorm = normalize(Color_in);
-	gl_FragColor = vec4 (1.0,0,0,1.0);
+	//vec3 ColorNorm = normalize(Color_in);
+	//gl_FragColor = vec4 (ColorNorm,1.0);
+	gl_FragColor = vec4 (Color_in,1.0);
 }

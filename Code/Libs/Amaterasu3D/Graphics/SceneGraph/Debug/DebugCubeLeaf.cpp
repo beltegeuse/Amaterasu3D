@@ -37,14 +37,14 @@ GLuint DebugCubeLeaf::IndiceArray[36] = {
 DebugCubeLeaf::DebugCubeLeaf()
 {
 	// Génération des buffers
-	std::cout << "[INFO] Gen Buffer ..." << std::endl;
+	Logger::Log() << "[INFO] Gen Buffer ...\n";
 	GLCheck(glGenBuffers( 2, m_cubeBuffers ));
 	// Buffer d'informations de vertex
-	std::cout << "[INFO] Fill Array Buffer ..." << std::endl;
+	Logger::Log() << "[INFO] Fill Array Buffer ...\n";
 	GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_cubeBuffers[0]));
 	GLCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(CubeArray), CubeArray, GL_STATIC_DRAW));
 	// Buffer d'indices
-	std::cout << "[INFO] Fill Element Array Buffer ..." << std::endl;
+	Logger::Log() << "[INFO] Fill Element Array Buffer ...\n";
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cubeBuffers[1]));
 	GLCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(IndiceArray), IndiceArray, GL_STATIC_DRAW));
 }
@@ -76,12 +76,12 @@ void DebugCubeLeaf::Draw()
 	if(vertexSupport)
 	{
 		glEnableVertexAttribArray (VERTEX_ATTRIBUT);
-		GLCheck(glVertexAttribPointer(VERTEX_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), ((float*)NULL + (3)) ));
+		GLCheck(glVertexAttribPointer(VERTEX_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0));
 	}
 	if(colorSupport)
 	{
 		glEnableVertexAttribArray (COLOR_ATTRIBUT);
-		GLCheck(glVertexAttribPointer(COLOR_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0 ));
+		GLCheck(glVertexAttribPointer(COLOR_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), ((float*)NULL + (3))));
 	}
 	// * le dessins en lui meme
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cubeBuffers[1]));

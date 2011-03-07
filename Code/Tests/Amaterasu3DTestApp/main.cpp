@@ -6,6 +6,7 @@
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Graphics/MatrixManagement.h>
 #include <Graphics/Camera/CameraFly.h>
+#include <Logger/LoggerFile.h>
 
 #include <windows.h>
 #include <GL/glew.h>
@@ -38,8 +39,9 @@ public:
 	ConcreteWindow() :
 		Window("Amaterasu3DTestApp")
 	{
+//		Logger::SetLogger(new LoggerFile("Log.out"));
 		//TODO: Mettre dans OnEvent
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+//		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 		// Camera
 		CameraAbstract* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		SetCamera(cam);
