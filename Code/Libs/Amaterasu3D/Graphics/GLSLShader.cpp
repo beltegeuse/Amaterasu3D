@@ -987,6 +987,19 @@ GLint glShader::GetUniformLocation(const GLcharARB *name)
 	return loc;
 }
 
+GLint glShader::GetAttribLocation(const GLcharARB* name)
+{
+	GLint loc;
+
+	loc = glGetAttribLocation(ProgramObject, name);
+	if (loc == -1)
+	{
+		cout << "Error: can't find uniform variable \"" << name << "\"\n";
+	}
+	CHECK_GL_ERROR();
+	return loc;
+}
+
 //----------------------------------------------------------------------------- 
 
 void glShader::getUniformfv(GLcharARB* varname, GLfloat* values, GLint index)
@@ -1005,6 +1018,8 @@ void glShader::getUniformfv(GLcharARB* varname, GLfloat* values, GLint index)
 	glGetUniformfv(ProgramObject, loc, values);
 
 }
+
+
 
 //----------------------------------------------------------------------------- 
 
@@ -1045,7 +1060,7 @@ void glShader::getUniformuiv(GLcharARB* varname, GLuint* values, GLint index)
 }
 
 //-----------------------------------------------------------------------------
-void  glShader::BindAttribLocation(GLint index, GLchar* name)
+void  glShader::BindAttribLocation(GLint index, const GLchar* name)
 {
 	glBindAttribLocation(ProgramObject, index, name);
 }
@@ -1287,6 +1302,25 @@ bool glShader::setVertexAttrib4ui(GLuint index, GLuint v0, GLuint v1, GLuint v2,
 
 	return true;
 }
+
+void glShader::addAttributBlinding(ShaderAttributType type, const std::string& name)
+{
+	m_attributs_bind[type] = name;
+}
+
+void glShader::updateAttributBlinding()
+{
+	for(MapAttributs::iterator it = m_attributs_bind.begin(); it != m_attributs_bind.end(); it++)
+	{
+		BindAttribLocation(it->first, it->second.c_str());
+	}
+}
+
+bool glShader::attributAvailable(ShaderAttributType type)
+{
+	return m_attributs_bind.find(type) != m_attributs_bind.end();
+}
+
 //-----------------------------------------------------------------------------
 // ************************************************************************
 // Shader Program : Manage Shader Programs (Vertex/Fragment)
@@ -2014,4 +2048,16 @@ TShaderPtr glShaderManager::LoadShader(const std::string& filename)
 		CResourceManager::Instance().Add(filename, Resource);
 	}
 	return Resource;
+}
+
+glShader* glShaderManager::currentShader()
+{
+	if(!activedShader())
+		throw CException("No activated shader...");
+	return m_shader_stack.back();
+}
+
+bool glShaderManager::activedShader()
+{
+	return m_shader_stack.size() != 0;
 }

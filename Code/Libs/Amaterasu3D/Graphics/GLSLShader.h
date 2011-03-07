@@ -45,7 +45,7 @@ Make sure to check extension "GL_EXT_geometry_shader4" before using Geometry sha
 #include <Math/Matrix4.h>
 #include <Enum.h>
 
-
+#include <map>
 #include <vector>
 #include <iostream>
 //#define GLEW_STATIC
@@ -136,7 +136,9 @@ public:
 	glShader();
 	virtual    ~glShader();
 	void       addShader(glShaderObject* ShaderProgram); //!< add a Vertex or Fragment Program \param ShaderProgram The shader object.
-
+	void addAttributBlinding(ShaderAttributType type, const std::string& name);
+	void updateAttributBlinding();
+	bool attributAvailable(ShaderAttributType type);
 	//!< Returns the OpenGL Program Object (only needed if you want to control everything yourself) \return The OpenGL Program Object
 	GLuint     GetProgramObject(){return ProgramObject;}
 
@@ -152,7 +154,7 @@ public:
 	void       SetVerticesOut(int nVerticesOut);                 //!< Set the maximal number of vertices the geometry shader can output
 
 	GLint       GetUniformLocation(const GLcharARB *name);  //!< Retrieve Location (index) of a Uniform Variable
-
+	GLint       GetAttribLocation(const GLcharARB* name);
 	// Submitting Uniform Variables. You can set varname to 0 and specifiy index retrieved with GetUniformLocation (best performance)
 	bool       setUniform1f(GLcharARB* varname, GLfloat v0, GLint index = -1);  //!< Specify value of uniform variable. \param varname The name of the uniform variable.
 	bool       setUniform2f(GLcharARB* varname, GLfloat v0, GLfloat v1, GLint index = -1);  //!< Specify value of uniform variable. \param varname The name of the uniform variable.
@@ -216,7 +218,7 @@ public:
       \param index Index of the variable
       \param name Name of the attribute.
 	 */
-	void        BindAttribLocation(GLint index, GLchar* name);
+	void        BindAttribLocation(GLint index, const GLchar* name);
 
 	//GLfloat
 	bool        setVertexAttrib1f(GLuint index, GLfloat v0); 				                         //!< Specify value of attribute. \param index The index of the vertex attribute. \param v0 value of the attribute component
@@ -269,7 +271,8 @@ protected:
 
 private:
 	GLuint      ProgramObject;                      // GLProgramObject
-
+	typedef std::map<ShaderAttributType,std::string> MapAttributs;
+	MapAttributs m_attributs_bind;
 
 	GLcharARB*  linker_log;
 	bool        is_linked;
@@ -325,7 +328,8 @@ public:
 	void Pop();
 	// Callback to update matrix
 	void UpdateMatrix(MatrixType mat, const Math::CMatrix4& matrix);
-
+	glShader* currentShader();
+	bool activedShader();
 private:
 	std::vector<glShader*>  m_shader_stack;
 	int m_max_stack;

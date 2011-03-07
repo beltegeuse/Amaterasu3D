@@ -50,6 +50,42 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 
 	vertexShadername = CMediaManager::Instance().FindMedia(vertexShadername).Fullname();
 	fragmentShadername = CMediaManager::Instance().FindMedia(fragmentShadername).Fullname();
-	//FIXME: Faire appel au ressource manager
-	return  glShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str());
+	// Shader creation ....
+	glShader* shader = glShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str());
+	// Attrib blinding ...
+	TiXmlElement *rootAttributs = root->FirstChildElement("Attributs");
+	if(!rootAttributs)
+	{
+		Logger::Log() << "[INFO] No Attribut is available ... \n";
+		return  shader;
+	}
+	TiXmlElement *attributNode = rootAttributs->FirstChildElement("Attribut");
+	Logger::Log() << "[INFO] Attribut : \n";
+	while(attributNode)
+	{
+		//TODO: Faire les exceptions si attributs absent
+		std::string nameAttrib = std::string(attributNode->Attribute("name"));
+		std::string typeAttrib = std::string(attributNode->Attribute("type"));
+		ShaderAttributType type;
+		//TODO: Faire une factory ???
+		if(typeAttrib == "Vertex")
+		{
+			Logger::Log() << "   * Attribut : " << nameAttrib << " (Vertex) \n";
+			type = VERTEX_ATTRIBUT;
+		}
+		else if(typeAttrib == "Color")
+		{
+			Logger::Log() << "   * Attribut : " << nameAttrib << " (Color) \n";
+			type = COLOR_ATTRIBUT;
+		}
+		else
+		{
+			throw CException("Unknow attribut : "+typeAttrib);
+		}
+		shader->addAttributBlinding(type, nameAttrib);
+		attributNode = attributNode->NextSiblingElement("Attribut");
+	}
+	// Set all blindings
+	shader->updateAttributBlinding();
+	return shader;
 }

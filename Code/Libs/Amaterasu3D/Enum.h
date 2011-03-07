@@ -11,3 +11,9 @@ enum MatrixType
 	MODELVIEW_MATRIX,
 	PROJECTION_MATRIX
 };
+
+enum ShaderAttributType
+{
+	VERTEX_ATTRIBUT,
+	COLOR_ATTRIBUT
+};

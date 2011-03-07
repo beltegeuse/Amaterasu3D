@@ -9,6 +9,9 @@
 #include <Debug/OpenGLDebug.h>
 #include <iostream>
 #include <GL/gl.h>
+#include <Enum.h>
+#include <Graphics/GLSLShader.h>
+#include <Logger/Logger.h>
 
 GLfloat DebugCubeLeaf::CubeArray[48] = {
 		1.0f, 0.0f, 0.0f, -1.0f, 1.0f, -1.0f,
@@ -19,7 +22,8 @@ GLfloat DebugCubeLeaf::CubeArray[48] = {
 		0.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f,
 		1.0f, 1.0f, 0.0f, 1.0f, 1.0f, -1.0f,
 		1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f
-		};
+	};
+
 GLuint DebugCubeLeaf::IndiceArray[36] = {
 		0,1,2,2,1,3,
 		4,5,6,6,5,7,
@@ -27,7 +31,7 @@ GLuint DebugCubeLeaf::IndiceArray[36] = {
 		0,2,6,6,2,4,
 		6,7,0,0,7,1,
 		2,3,4,4,3,5
-};
+		};
 
 
 DebugCubeLeaf::DebugCubeLeaf()
@@ -52,18 +56,39 @@ DebugCubeLeaf::~DebugCubeLeaf()
 
 void DebugCubeLeaf::Draw()
 {
+	// pas de shader
+	if(!glShaderManager::Instance().activedShader())
+	{
+		Logger::Log() << "[Warning] No actived shader. Nothings to render ... \n";
+	}
 	//  * Les differents blindings ...
 	GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_cubeBuffers[0]));
-	GLCheck(glVertexPointer( 3, GL_FLOAT, 6 * sizeof(float), ((float*)NULL + (3)) ));
-	GLCheck(glColorPointer( 3, GL_FLOAT, 6 * sizeof(float), 0 ));
-	//GLCheck(glEnableVertexAttribArray(m_shader.GetAttribLocation("VertexPosition")));
-	//GLCheck(glVertexAttribPointer (m_shader.GetAttribLocation("VertexPosition"), 3, GL_FLOAT, GL_FALSE, 0, 0) );
+	// Les disponibilites du shaders
+	bool vertexSupport = glShaderManager::Instance().currentShader()->attributAvailable(VERTEX_ATTRIBUT);
+	bool colorSupport = glShaderManager::Instance().currentShader()->attributAvailable(COLOR_ATTRIBUT);
+
+	if(!(vertexSupport || colorSupport))
+	{
+		// Nothings to render ...
+		return;
+	}
+	// Activation des buffers
+	if(vertexSupport)
+	{
+		glEnableVertexAttribArray (VERTEX_ATTRIBUT);
+		GLCheck(glVertexAttribPointer(VERTEX_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), ((float*)NULL + (3)) ));
+	}
+	if(colorSupport)
+	{
+		glEnableVertexAttribArray (COLOR_ATTRIBUT);
+		GLCheck(glVertexAttribPointer(COLOR_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0 ));
+	}
 	// * le dessins en lui meme
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cubeBuffers[1]));
-	GLCheck(glEnableClientState( GL_VERTEX_ARRAY ));
-	GLCheck(glEnableClientState( GL_COLOR_ARRAY ));
 	GLCheck(glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0));
-	//GLCheck(glDisableVertexAttribArray(m_shader.GetAttribLocation("VertexPosition")));
-	GLCheck(glDisableClientState( GL_COLOR_ARRAY ));
-	GLCheck(glDisableClientState( GL_VERTEX_ARRAY ));
+	// Desactivation des buffers
+	if(vertexSupport)
+		GLCheck(glDisableVertexAttribArray ( VERTEX_ATTRIBUT ));
+	if(colorSupport)
+		GLCheck(glDisableVertexAttribArray ( COLOR_ATTRIBUT ));
 }

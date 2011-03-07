@@ -38,6 +38,8 @@ public:
 	ConcreteWindow() :
 		Window("Amaterasu3DTestApp")
 	{
+		//TODO: Mettre dans OnEvent
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 		// Camera
 		CameraAbstract* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		SetCamera(cam);
@@ -49,7 +51,7 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
-		m_shader = glShaderManager::Instance().LoadShader("BasicShaderOld.shader");
+		m_shader = glShaderManager::Instance().LoadShader("BasicShader.shader");
 		m_shader->begin();
 		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_shader->end();
