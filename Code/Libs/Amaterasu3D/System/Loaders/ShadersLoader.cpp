@@ -38,6 +38,11 @@ void ShadersLoader::LoadShaderAttributs(glShader* shader, TiXmlElement *root)
 			Logger::Log() << "   * Attribut : " << nameAttrib << " (Color) \n";
 			type = COLOR_ATTRIBUT;
 		}
+		else if(typeAttrib == "TexCoord")
+		{
+			Logger::Log() << "   * Attribut : " << nameAttrib << " (TexCoord) \n";
+			type = TEXCOORD_ATTRIBUT;
+		}
 		else
 		{
 			throw CException("Unknow attribut : "+typeAttrib);

@@ -39,7 +39,7 @@ public:
 	{
 //		Logger::SetLogger(new LoggerFile("Log.out"));
 		//TODO: Mettre dans OnEvent
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+//		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 		// Camera
 		CameraAbstract* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		SetCamera(cam);
@@ -54,16 +54,16 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
-		m_shader = glShaderManager::Instance().LoadShader("NoColorBasicShader.shader");
+		m_shader = glShaderManager::Instance().LoadShader("BasicTextureShader.shader");
 		m_shader->begin();
 		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_shader->end();
 		// Create the Cube ...
 		//CreateCubes();
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
-//		GetSceneRoot().AddChild(node);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
 		GetSceneRoot().AddChild(node);
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+//		GetSceneRoot().AddChild(node);
 		std::cout << "FINISH BUILD SCENE" << std::endl;
 	}
 

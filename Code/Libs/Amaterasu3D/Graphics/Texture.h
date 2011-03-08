@@ -10,8 +10,7 @@
 class Texture : public IResource
 {
 
-private :
-
+protected:
 	// ======== Attributs
 	//Pointeur sur la texture
 	GLuint m_idTex;
@@ -46,9 +45,23 @@ public :
 	int getTailleY() const;
 	unsigned int* getIdTex();
 
-private:
-	void CreateTexture(bool smooth);
+	// Setters
+	void SetSize(const Math::TVector2I& dim);
 
+	// Virtual function
+	virtual void CreateTexture(bool smooth) = 0;
+};
+
+class LDRTexture : public Texture
+{
+protected:
+	unsigned int* m_buffer;
+public:
+	LDRTexture();
+	virtual ~LDRTexture();
+
+	void AttachBuffer(unsigned int* buffer);
+	virtual void CreateTexture(bool smooth);
 };
 
 typedef CSmartPtr<Texture, CResourceCOM> TTexturePtr;

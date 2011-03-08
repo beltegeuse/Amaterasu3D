@@ -145,7 +145,17 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 					material->GetTexture(aiTextureType_DIFFUSE, 0, &AiPath);
 					CFile texturePath = std::string(AiPath.data);
 					Logger::Log() << "[INFO] Chargement de la texture : " << texturePath.Filename() << "\n";
-					assimpMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile(texturePath.Filename()));
+					TTexturePtr texturePtr;
+					try
+					{
+						texturePtr = Texture::LoadFromFile(texturePath.Filename());
+					}
+					catch(CException e)
+					{
+						texturePtr = Texture::LoadFromFile("unknowTexture.tga");
+					}
+
+					assimpMesh->AddTextureMap(DIFFUSE_TEXTURE, texturePtr);
 				}
 
 			}

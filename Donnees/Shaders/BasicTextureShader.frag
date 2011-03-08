@@ -7,7 +7,7 @@ precision highp float;
 uniform sampler2D Texture0;
 
 // Entree
-smooth int vec2 outTexCoord;
+smooth in vec2 outTexCoord;
 
 // Sortie
 //out vec4 Color;

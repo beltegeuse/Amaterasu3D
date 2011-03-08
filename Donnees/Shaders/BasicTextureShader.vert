@@ -10,7 +10,7 @@ uniform mat4 ProjectionMatrix;
 uniform mat4 ModelViewMatrix;
 
 // Sortie shader
-soomth out vec2 outTexCoord;
+smooth out vec2 outTexCoord;
 
 invariant gl_Position;
 
