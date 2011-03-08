@@ -10,11 +10,11 @@
 #include <System/Loaders/Loader.h>
 #include <Graphics/Texture.h>
 
-class ImageLoader : public ILoader<Texture>
+class ImagesLoader : public ILoader<Texture>
 {
 public:
-	ImageLoader();
-	virtual ~ImageLoader();
+	ImagesLoader();
+	virtual ~ImagesLoader();
 	virtual Texture* LoadFromFile(const std::string& Filename);
 private:
 	 Texture* LoadHDRImageFromFile(const std::string& Filename);

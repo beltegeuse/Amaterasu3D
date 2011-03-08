@@ -11,6 +11,73 @@ ShadersLoader::~ShadersLoader()
 {
 }
 
+void ShadersLoader::LoadShaderAttributs(glShader* shader, TiXmlElement *root)
+{
+	TiXmlElement *rootAttributs = root->FirstChildElement("Attributs");
+	if(!rootAttributs)
+	{
+		Logger::Log() << "[INFO] No Attribut is available ... \n";
+		return;
+	}
+	TiXmlElement *attributNode = rootAttributs->FirstChildElement("Attribut");
+	Logger::Log() << "[INFO] Attribut : \n";
+	while(attributNode)
+	{
+		//TODO: Faire les exceptions si attributs absent
+		std::string nameAttrib = std::string(attributNode->Attribute("name"));
+		std::string typeAttrib = std::string(attributNode->Attribute("type"));
+		ShaderAttributType type;
+		//TODO: Faire une factory ???
+		if(typeAttrib == "Vertex")
+		{
+			Logger::Log() << "   * Attribut : " << nameAttrib << " (Vertex) \n";
+			type = VERTEX_ATTRIBUT;
+		}
+		else if(typeAttrib == "Color")
+		{
+			Logger::Log() << "   * Attribut : " << nameAttrib << " (Color) \n";
+			type = COLOR_ATTRIBUT;
+		}
+		else
+		{
+			throw CException("Unknow attribut : "+typeAttrib);
+		}
+		shader->addAttributBlinding(type, nameAttrib);
+		attributNode = attributNode->NextSiblingElement("Attribut");
+	}
+}
+
+void ShadersLoader::LoadShaderTextures(glShader* shader, TiXmlElement *root)
+{
+	TiXmlElement *rootTextures = root->FirstChildElement("Textures");
+	if(!rootTextures)
+	{
+		Logger::Log() << "[INFO] No Textures is available ... \n";
+		return;
+	}
+	TiXmlElement *textureNode = rootTextures->FirstChildElement("Texture");
+	Logger::Log() << "[INFO] Textures : \n";
+	while(textureNode)
+	{
+		//TODO: Faire les exceptions si attributs absent
+		std::string nameAttrib = std::string(textureNode->Attribute("name"));
+		std::string typeAttrib = std::string(textureNode->Attribute("type"));
+		TextureType type;
+		//TODO: Faire une factory ???
+		if(typeAttrib == "Diffuse")
+		{
+			Logger::Log() << "   * Texture : " << nameAttrib << " (Diffuse) \n";
+			type = DIFFUSE_TEXTURE;
+		}
+		else
+		{
+			throw CException("Unknow attribut : "+typeAttrib);
+		}
+		shader->addTextureUnit(type, nameAttrib);
+		textureNode = textureNode->NextSiblingElement("Attribut");
+	}
+}
+
 glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 {
 	TiXmlDocument doc( Filename.c_str() );
@@ -53,39 +120,13 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	// Shader creation ....
 	glShader* shader = glShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str());
 	// Attrib blinding ...
-	TiXmlElement *rootAttributs = root->FirstChildElement("Attributs");
-	if(!rootAttributs)
-	{
-		Logger::Log() << "[INFO] No Attribut is available ... \n";
-		return  shader;
-	}
-	TiXmlElement *attributNode = rootAttributs->FirstChildElement("Attribut");
-	Logger::Log() << "[INFO] Attribut : \n";
-	while(attributNode)
-	{
-		//TODO: Faire les exceptions si attributs absent
-		std::string nameAttrib = std::string(attributNode->Attribute("name"));
-		std::string typeAttrib = std::string(attributNode->Attribute("type"));
-		ShaderAttributType type;
-		//TODO: Faire une factory ???
-		if(typeAttrib == "Vertex")
-		{
-			Logger::Log() << "   * Attribut : " << nameAttrib << " (Vertex) \n";
-			type = VERTEX_ATTRIBUT;
-		}
-		else if(typeAttrib == "Color")
-		{
-			Logger::Log() << "   * Attribut : " << nameAttrib << " (Color) \n";
-			type = COLOR_ATTRIBUT;
-		}
-		else
-		{
-			throw CException("Unknow attribut : "+typeAttrib);
-		}
-		shader->addAttributBlinding(type, nameAttrib);
-		attributNode = attributNode->NextSiblingElement("Attribut");
-	}
-	// Set all blindings
+	LoadShaderAttributs(shader, root);
+	// Textures attributs
+	LoadShaderTextures(shader, root);
+	// Update all bindings
+	glShaderManager::Instance().Push(shader);
 	shader->updateAttributBlinding();
+	shader->updateTextureUnitsBlinding();
+	glShaderManager::Instance().Pop();
 	return shader;
 }

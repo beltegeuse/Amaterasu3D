@@ -1,32 +1,23 @@
+#include <GL/glew.h>
+#include <GL/gl.h>
+
 #include "Texture.h"
 
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
-#include <CoreEngine/Managers/GameConfigManager.h>
+#include <System/MediaManager.h>
+#include <System/ResourceManager.h>
 
 //Constructeur
-Texture::Texture(const std::string& path, bool smooth)
+Texture::Texture() :
+	m_texture_data(NULL),
+	m_image_size(Math::TVector2I(0,0))
 {
-	Logger::Log() << "[Texture] Chargement de " << path << "\n";
-
-	m_image = ImageLoader::LoadFromFile(path);
-
-	if(!m_image.success)
-	{
-		throw CLoadingFailed(m_filename,"[Texture] Impossible de charger l'image !");
-	}
-
-	CreateTexture(smooth);
 }
 
 //Destructeur
 Texture::~Texture()
 {
-	if(m_image.success)
-	{
-		ImageLoader::DeleteImage(m_image);
-	}
-
 	glDeleteTextures(1, &m_idTex);
 }
 
@@ -49,19 +40,14 @@ void Texture::activateTexture()
 }
 
 //Getter
-std::string Texture::getFilename()
-{
-	return m_filename;
-}
-
 int Texture::getTailleX() const
 {
-	return m_image.width;
+	return m_image_size.x;
 }
 
 int Texture::getTailleY() const
 {
-	return  m_image.height;
+	return m_image_size.y;
 }
 
 GLuint* Texture::getIdTex()
@@ -81,13 +67,7 @@ void Texture::CreateTexture(bool smooth)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST); //GL_LINEAR_MIPMAP_LINEAR
 
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, getTailleX(), getTailleY(),
-			GL_RGBA, GL_UNSIGNED_BYTE, m_image.data);
-}
-
-sf::Color Texture::GetPixel(unsigned int x, unsigned y) const
-{
-	sf::Color* t = reinterpret_cast<sf::Color*>(m_image.data);
-	return (t[x + getTailleY()*y]);
+			GL_RGBA, GL_UNSIGNED_BYTE, m_texture_data);
 }
 
 void Texture::activateMultiTex(GLenum tex)
@@ -103,4 +83,15 @@ void Texture::desactivateMultiTex(GLenum tex)
 {
 	glActiveTextureARB(tex);
 	glDisable(GL_TEXTURE_2D);
+}
+
+TTexturePtr Texture::LoadFromFile(const std::string& filename)
+{
+	TTexturePtr Resource = CResourceManager::Instance().Get<Texture>(filename);
+	if(Resource == NULL)
+	{
+		Resource = CMediaManager::Instance().LoadMediaFromFile<Texture>(filename);
+		CResourceManager::Instance().Add(filename, Resource);
+	}
+	return Resource;
 }

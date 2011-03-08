@@ -10,9 +10,9 @@ namespace SceneGraph
 {
 
 AssimpMesh::AssimpMesh() :
-m_indices_buffers(NULL),
-m_indices(NULL),
-m_is_compiled(false)
+		m_indices_buffers(NULL),
+		m_indices(NULL),
+		m_is_compiled(false)
 {
 }
 
@@ -34,6 +34,11 @@ void AssimpMesh::AddBuffer(AssimpMeshBuffer buffer, ShaderAttributType type)
 {
 	Assert(!m_is_compiled);
 	m_buffers[type] = buffer;
+}
+
+void AssimpMesh::AddTextureMap(TextureType type, TTexturePtr texture)
+{
+	m_textures_map[type] = texture;
 }
 
 void AssimpMesh::CompileBuffers()
@@ -60,32 +65,45 @@ void AssimpMesh::CompileBuffers()
 
 void AssimpMesh::Draw()
 {
-//	Logger::Log() << "[DEBUG] Assimp Mesh drawing ... \n";
 	// pas de shader
 	if(!glShaderManager::Instance().activedShader())
 	{
 		Logger::Log() << "[Warning] No actived shader. Nothings to render ... \n";
 	}
+	// Textures activation
+	for(TexturesMap::iterator it = m_textures_map.begin(); it != m_textures_map.end(); it++)
+	{
+		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
+			continue;
+		it->second->activateMultiTex(it->first);
+	}
+	// Buffer activation
 	int i = 1;
 	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
 		if(!glShaderManager::Instance().currentShader()->attributAvailable(it->first))
 			continue;
-//		Logger::Log() << "[DEBUG] Assimp Mesh drawing : add buffer ... \n";
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
 		glEnableVertexAttribArray (it->first);
 		GLCheck(glVertexAttribPointer(it->first, it->second.dimension, GL_FLOAT, GL_FALSE, it->second.dimension * sizeof(float), 0));
 		i++;
 	}
 	// Drawing
-//	Logger::Log() << "[DEBUG] Assimp Mesh drawing with index ... \n";
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_buffers[0]));
 	GLCheck(glDrawElements(GL_TRIANGLES, m_indices_size, GL_UNSIGNED_INT, 0));
+	// Buffer desactivation
 	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
 		if(!glShaderManager::Instance().currentShader()->attributAvailable(it->first))
 			continue;
 		glDisableVertexAttribArray (it->first);
+	}
+	// Textures desactivations
+	for(TexturesMap::iterator it = m_textures_map.begin(); it != m_textures_map.end(); it++)
+	{
+		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
+			continue;
+		it->second->desactivateMultiTex(it->first);
 	}
 }
 

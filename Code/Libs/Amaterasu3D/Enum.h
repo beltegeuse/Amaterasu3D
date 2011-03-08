@@ -20,3 +20,8 @@ enum ShaderAttributType
 	NORMAL_ATTRIBUT,
 	TANGENT_ATTRIBUT
 };
+
+enum TextureType
+{
+	DIFFUSE_TEXTURE
+};

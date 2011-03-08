@@ -51,6 +51,7 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
 		m_shader = glShaderManager::Instance().LoadShader("NoColorBasicShader.shader");
@@ -63,13 +64,6 @@ public:
 //		GetSceneRoot().AddChild(node);
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 		GetSceneRoot().AddChild(node);
-//		Math::CMatrix4 scale;
-//		scale.SetScaling(0.0141,0.0141,0.0141);
-//		Math::CMatrix4 translate;
-//		translate.SetTranslation(0.0, -35,-14);
-//		node->MultTransformMatrix(scale);
-//		node->MultTransformMatrix(translate);
-//		std::cout << node->GetTransformMatrix() << std::endl;
 		std::cout << "FINISH BUILD SCENE" << std::endl;
 	}
 

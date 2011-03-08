@@ -22,10 +22,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/GLSLShader.cpp
 	Graphics/Window.cpp
 	Graphics/MatrixManagement.cpp
-	
-	# Have to correct the Image Loader
-	#Graphics/Texture.cpp
-	#Graphics/ImageLoader.cpp
+	Graphics/Texture.cpp
 	
 	System/MediaManager.cpp
 	System/ResourceManager.cpp
@@ -33,6 +30,7 @@ SET(LIB_AMATERASU3D_SRCS
 	System/Loaders/Loaders.cpp
 	System/Loaders/ShadersLoader.cpp
 	System/Loaders/AssimpLoader.cpp
+	System/Loaders/ImagesLoader.cpp
 	
 	Utilities/File.cpp
 )

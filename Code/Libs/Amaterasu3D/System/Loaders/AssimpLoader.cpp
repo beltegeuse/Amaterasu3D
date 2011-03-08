@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <Enum.h>
 #include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Graphics/Texture.h>
+#include <Utilities/File.h>
 
 AssimpLoader::AssimpLoader()
 {
@@ -29,6 +31,7 @@ AssimpLoader::~AssimpLoader()
 
 SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 {
+	//TODO: Add automatic path append for textures
 	// Empty cache
 	m_cached_geom.erase(m_cached_geom.begin(), m_cached_geom.end());
 	// Load
@@ -68,20 +71,6 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 			continue;
 		}
 		SceneGraph::AssimpMesh* assimpMesh = new SceneGraph::AssimpMesh;
-//		apply_material(sc->mMaterials[mesh->mMaterialIndex]);
-//
-//		if(mesh->mNormals == NULL) {
-//			glDisable(GL_LIGHTING);
-//		} else {
-//			glEnable(GL_LIGHTING);
-//		}
-//
-//		if(mesh->mColors[0] != NULL) {
-//			glEnable(GL_COLOR_MATERIAL);
-//		} else {
-//			glDisable(GL_COLOR_MATERIAL);
-//		}
-
 		// Build the indice faces
 		std::vector<unsigned int> indicesVector;
 		std::vector<float> vertexVector;
@@ -100,12 +89,8 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 				int index = face->mIndices[i];
 				indicesVector.push_back(index);
 				maxIndice = std::max(maxIndice, face->mIndices[i]);
-
 //				if(mesh->mColors[0] != NULL)
 //					Color4f(&mesh->mColors[0][index]);
-//				if(mesh->mNormals != NULL)
-//					glNormal3fv(&mesh->mNormals[index].x);
-//				glVertex3fv(&mesh->mVertices[index].x);
 			}
 		}
 		// Create the indice array
@@ -142,14 +127,27 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		//  * UV Coords
 		if(mesh->GetNumUVChannels() > 0)
 		{
+			// TODO: Gestion des materiaux multiples
 			if(mesh->GetNumUVChannels() > 1)
 			{
 				throw CException("Too UV Channels");
 			}
 			else
 			{
+				// Why 3 vector dimension ???
 				buffer.buffer = &mesh->mTextureCoords[0][0].x;
 				assimpMesh->AddBuffer(buffer, TEXCOORD_ATTRIBUT);
+				// Load diffuse image
+				const struct aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+				if(material->GetTextureCount(aiTextureType_DIFFUSE)>0)
+				{
+					aiString AiPath;
+					material->GetTexture(aiTextureType_DIFFUSE, 0, &AiPath);
+					CFile texturePath = std::string(AiPath.data);
+					Logger::Log() << "[INFO] Chargement de la texture : " << texturePath.Filename() << "\n";
+					assimpMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile(texturePath.Filename()));
+				}
+
 			}
 		}
 		//FIXME : Faire le rechargement des materiaux

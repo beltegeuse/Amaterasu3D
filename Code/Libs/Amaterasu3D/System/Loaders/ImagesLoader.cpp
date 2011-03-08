@@ -5,17 +5,19 @@
  *      Author: Beltegeuse
  */
 
-#include "ImageLoader.h"
+#include "ImagesLoader.h"
 #include <Utilities/StringUtils.h>
-ImageLoader::ImageLoader()
+#include <Utilities/File.h>
+
+ImagesLoader::ImagesLoader()
 {
 }
 
-ImageLoader::~ImageLoader()
+ImagesLoader::~ImagesLoader()
 {
 }
 
-Texture* ImageLoader::LoadFromFile(const std::string& Filename)
+Texture* ImagesLoader::LoadFromFile(const std::string& Filename)
 {
 	CFile file = Filename;
 	const std::string ext = ToLower(file.Extension());
@@ -25,13 +27,13 @@ Texture* ImageLoader::LoadFromFile(const std::string& Filename)
 		return LoadImageFromFile(Filename);
 }
 
-Texture* ImageLoader::LoadHDRImageFromFile(const std::string& Filename)
+Texture* ImagesLoader::LoadHDRImageFromFile(const std::string& Filename)
 {
 	throw CException("Unable to load HDR image format.");
 	return NULL;
 }
 
-Texture* ImageLoader::LoadImageFromFile(const std::string& Filename)
+Texture* ImagesLoader::LoadImageFromFile(const std::string& Filename)
 {
 	throw CException("Unable to load image format.");
 	return NULL;
