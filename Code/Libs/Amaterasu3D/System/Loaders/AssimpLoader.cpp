@@ -100,10 +100,7 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 				int index = face->mIndices[i];
 				indicesVector.push_back(index);
 				maxIndice = std::max(maxIndice, face->mIndices[i]);
-//				vertexVector.push_back(mesh->mVertices[index].x);
-//				vertexVector.push_back(mesh->mVertices[index].y);
-//				vertexVector.push_back(mesh->mVertices[index].z);
-//
+
 //				if(mesh->mColors[0] != NULL)
 //					Color4f(&mesh->mColors[0][index]);
 //				if(mesh->mNormals != NULL)
@@ -117,20 +114,45 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		for(unsigned int i = 0; i < indicesVector.size(); i++)
 		{
 			indiceArray[i] = indicesVector[i];
-//			vertexArray[i*3] = vertexVector[i*3];
-//			vertexArray[i*3+1] = vertexVector[i*3+1];
-//			vertexArray[i*3+2] = vertexVector[i*3+2];
 		}
 		// Set all buffers
+		// * Indice Buffer
 		Logger::Log() << "[INFO] Add indice buffer : " << indicesVector.size() << "\n";
 		assimpMesh->SetIndiceBuffer(indiceArray, indicesVector.size());
+		// * Vertex buffer
 		Logger::Log() << "[INFO] Add Vertex buffer ... \n";
-		SceneGraph::AssimpMeshBuffer bufferVertex;
-		bufferVertex.buffer = &mesh->mVertices[0].x;
-		bufferVertex.dimension = 3;
-		bufferVertex.size = maxIndice*3+3;
-		Logger::Log() << "   * size : " << bufferVertex.size << "\n";
-		assimpMesh->AddBuffer(bufferVertex, VERTEX_ATTRIBUT);
+		SceneGraph::AssimpMeshBuffer buffer;
+		buffer.buffer = &mesh->mVertices[0].x;
+		buffer.dimension = 3;
+		buffer.size = maxIndice*3+3;
+		Logger::Log() << "   * size : " << buffer.size << "\n";
+		assimpMesh->AddBuffer(buffer, VERTEX_ATTRIBUT);
+		//  * Normal buffer
+		if(mesh->HasNormals())
+		{
+			buffer.buffer = &mesh->mNormals[0].x;
+			assimpMesh->AddBuffer(buffer, NORMAL_ATTRIBUT);
+		}
+		//  * Tangentes and bitangantes
+		if(mesh->HasTangentsAndBitangents())
+		{
+			buffer.buffer = &mesh->mTangents[0].x;
+			assimpMesh->AddBuffer(buffer, TANGENT_ATTRIBUT);
+		}
+		//  * UV Coords
+		if(mesh->GetNumUVChannels() > 0)
+		{
+			if(mesh->GetNumUVChannels() > 1)
+			{
+				throw CException("Too UV Channels");
+			}
+			else
+			{
+				buffer.buffer = &mesh->mTextureCoords[0][0].x;
+				assimpMesh->AddBuffer(buffer, TEXCOORD_ATTRIBUT);
+			}
+		}
+		//FIXME : Faire le rechargement des materiaux
 		// Compile all buffers
 		Logger::Log() << "[INFO] Compile all buffers ... \n";
 		assimpMesh->CompileBuffers();

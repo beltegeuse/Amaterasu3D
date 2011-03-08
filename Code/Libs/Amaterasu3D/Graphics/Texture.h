@@ -1,12 +1,10 @@
 #ifndef __Texture_h_
 #define __Texture_h_
 
-//Classe Texture
-
-#include <GraphicsEngine/Include.h>
-#include <GraphicsEngine/Utilities/ImageLoader.h>
-
-class Texture
+#include <Math/Vector2.h>
+#include <System/Resource.h>
+//Class Texture
+class Texture : public IResource
 {
 
 private :
@@ -16,13 +14,13 @@ private :
 	std::string m_filename;
 	//Pointeur sur la texture
 	GLuint m_idTex;
-	//Le Resultat
-	ImageLoadResult m_image;
+	//Donnees
+	Math::TVector2I m_image_size;
 
 public :
 
 	// ======== Constructeurs & Destructeur
-	Texture(const std::string& filename, bool smooth = true);
+	Texture();
 	virtual ~Texture();
 
 	// ======== OpenGL methodes
