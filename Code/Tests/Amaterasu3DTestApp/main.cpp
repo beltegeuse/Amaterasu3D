@@ -4,6 +4,7 @@
 #include <Graphics/Window.h>
 #include <Graphics/GLSLShader.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
+#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
 #include <Graphics/MatrixManagement.h>
 #include <Graphics/Camera/CameraFly.h>
 #include <Logger/LoggerFile.h>
@@ -18,6 +19,51 @@
 #include <stdlib.h>
 
 #include "helpers.h"
+
+unsigned int IndiceArray[36] = {
+0,1,2,2,1,3,
+4,5,6,6,5,7,
+3,1,5,5,1,7,
+0,2,6,6,2,4,
+6,7,0,0,7,1,
+2,3,4,4,3,5
+};
+
+float CubeColorArray[24] = {
+1.0f, 0.0f, 0.0f,
+1.0f, 0.0f, 1.0f,
+1.0f, 1.0f, 1.0f,
+0.0f, 0.0f, 1.0f,
+0.0f, 1.0f, 0.0f,
+0.0f, 1.0f, 1.0f,
+1.0f, 1.0f, 0.0f,
+1.0f, 1.0f, 1.0f
+};
+
+float CubeVertexArray[24] = {
+ -1.0f, 1.0f, -1.0f,
+ -1.0f, -1.0f, -1.0f,
+ -1.0f, 1.0f, 1.0f,
+ -1.0f, -1.0f, 1.0f,
+ 1.0f, 1.0f, 1.0f,
+ 1.0f, -1.0f, 1.0f,
+ 1.0f, 1.0f, -1.0f,
+ 1.0f, -1.0f, -1.0f
+};
+
+float CubeUVArray[24] = {
+ 1.0f, 0.0f, 0,
+ 1.0f, 1.0f, 0,
+ 0.0f, 1.0f, 0,
+ 0.0f, 0.0f, 0,
+ 1.0f, 0.0f, 0,
+ 1.0f, 1.0f, 0,
+ 0.0f, 1.0f, 0,
+ 1.0f, 1.0f, 0
+};
+
+
+
 
 void SawOpenGL(Math::CMatrix4& mat)
 {
@@ -55,15 +101,17 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
 		m_shader = glShaderManager::Instance().LoadShader("BasicTextureShader.shader");
+//		m_shader = glShaderManager::Instance().LoadShader("BasicShader.shader");
 		m_shader->begin();
 		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_shader->end();
 		// Create the Cube ...
 		//CreateCubes();
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
-		GetSceneRoot().AddChild(node);
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
 //		GetSceneRoot().AddChild(node);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		GetSceneRoot().AddChild(node);
+//		CreateCubes();
 		std::cout << "FINISH BUILD SCENE" << std::endl;
 	}
 
@@ -73,7 +121,23 @@ public:
 		Math::CMatrix4 mat;
 		mat.SetTranslation(position.x, position.y, position.z);
 		group->LoadTransformMatrix(mat);
-		group->AddChild(new DebugCubeLeaf());
+		SceneGraph::AssimpMesh* mesh = new SceneGraph::AssimpMesh;
+		mesh->SetIndiceBuffer(IndiceArray,36);
+		SceneGraph::AssimpMeshBuffer buffer;
+		buffer.buffer = CubeVertexArray;
+		buffer.dimension = 3;
+		buffer.owner = false;
+		buffer.size = 24;
+		mesh->AddBuffer(buffer, VERTEX_ATTRIBUT);
+//		buffer.buffer = CubeColorArray;
+//		mesh->AddBuffer(buffer, COLOR_ATTRIBUT);
+		buffer.buffer = CubeUVArray;
+		buffer.dimension = 3;
+		buffer.size = 24;
+		mesh->AddBuffer(buffer, COLOR_ATTRIBUT);
+		mesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("unknowTexture.tga"));
+		mesh->CompileBuffers();
+		group->AddChild(mesh);
 		return group;
 	}
 

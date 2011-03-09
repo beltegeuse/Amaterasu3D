@@ -129,9 +129,9 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	// Textures attributs
 	LoadShaderTextures(shader, root);
 	// Update all bindings
-	glShaderManager::Instance().Push(shader);
+	shader->begin();
 	shader->updateAttributBlinding();
 	shader->updateTextureUnitsBlinding();
-	glShaderManager::Instance().Pop();
+	shader->end();
 	return shader;
 }

@@ -95,10 +95,10 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		}
 		// Create the indice array
 		unsigned int * indiceArray = new unsigned int[indicesVector.size()];
-		float * vertexArray = new float[vertexVector.size()];
 		for(unsigned int i = 0; i < indicesVector.size(); i++)
 		{
 			indiceArray[i] = indicesVector[i];
+//			Logger::Log() << indiceArray[i] << "\n";
 		}
 		// Set all buffers
 		// * Indice Buffer
@@ -110,20 +110,21 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		buffer.buffer = &mesh->mVertices[0].x;
 		buffer.dimension = 3;
 		buffer.size = maxIndice*3+3;
+		buffer.owner = false;
 		Logger::Log() << "   * size : " << buffer.size << "\n";
 		assimpMesh->AddBuffer(buffer, VERTEX_ATTRIBUT);
 		//  * Normal buffer
-		if(mesh->HasNormals())
-		{
-			buffer.buffer = &mesh->mNormals[0].x;
-			assimpMesh->AddBuffer(buffer, NORMAL_ATTRIBUT);
-		}
-		//  * Tangentes and bitangantes
-		if(mesh->HasTangentsAndBitangents())
-		{
-			buffer.buffer = &mesh->mTangents[0].x;
-			assimpMesh->AddBuffer(buffer, TANGENT_ATTRIBUT);
-		}
+//		if(mesh->HasNormals())
+//		{
+//			buffer.buffer = &mesh->mNormals[0].x;
+//			assimpMesh->AddBuffer(buffer, NORMAL_ATTRIBUT);
+//		}
+//		//  * Tangentes and bitangantes
+//		if(mesh->HasTangentsAndBitangents())
+//		{
+//			buffer.buffer = &mesh->mTangents[0].x;
+//			assimpMesh->AddBuffer(buffer, TANGENT_ATTRIBUT);
+//		}
 		//  * UV Coords
 		if(mesh->GetNumUVChannels() > 0)
 		{
@@ -134,9 +135,20 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 			}
 			else
 			{
-				// Why 3 vector dimension ???
+//				buffer.size = maxIndice*2+2;
+//				buffer.owner = true;
+//				buffer.dimension = 2;
+//				float * UVArray = new float[maxIndice*2+2];
+//				for(int i = 0; i < maxIndice+1; i++)
+//				{
+//					UVArray[i*2] = mesh->mTextureCoords[0][i].x;
+//					UVArray[i*2+1] = mesh->mTextureCoords[0][i].y;
+//					Logger::Log() << UVArray[i*2] << "x" << UVArray[i*2+1] << "\n";
+//				}
+//				// Why 3 vector dimension ???
+//				buffer.buffer = UVArray;
 				buffer.buffer = &mesh->mTextureCoords[0][0].x;
-				assimpMesh->AddBuffer(buffer, TEXCOORD_ATTRIBUT);
+				assimpMesh->AddBuffer(buffer, COLOR_ATTRIBUT); //FIXME : Warinig
 				// Load diffuse image
 				const struct aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 				if(material->GetTextureCount(aiTextureType_DIFFUSE)>0)

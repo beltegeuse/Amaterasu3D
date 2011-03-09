@@ -1330,6 +1330,7 @@ void glShader::updateTextureUnitsBlinding()
 {
 	for(MapTexture::iterator it = m_textures_bind.begin(); it != m_textures_bind.end(); it++)
 	{
+		Logger::Log() << "[INFO] Texture : " << it->second << " : " << (GLint)it->first << "\n";
 		setUniform1i(it->second.c_str(), it->first);
 	}
 }

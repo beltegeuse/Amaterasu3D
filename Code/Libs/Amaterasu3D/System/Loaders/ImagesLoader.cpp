@@ -37,84 +37,35 @@ Texture* ImagesLoader::LoadHDRImageFromFile(const std::string& Filename)
 
 Texture* ImagesLoader::LoadImageFromFile(const std::string& Filename)
 {
-	FREE_IMAGE_FORMAT fifmt = FreeImage_GetFileType(Filename.c_str(), 0);
+	FREE_IMAGE_FORMAT formato = FreeImage_GetFileType(Filename.c_str(),0);//Automatocally detects the format(from over 20 formats!)
+	FIBITMAP* imagen = FreeImage_Load(formato, Filename.c_str());
 
-	if(fifmt == FIF_UNKNOWN)
-	{
-		Logger::Log() << "[Error] tpImageIO : Unknow type !\n";
-		throw CException("[FreeImage] Unknow file type");
+	FIBITMAP* temp = imagen;
+	imagen = FreeImage_ConvertTo32Bits(imagen);
+	FreeImage_Unload(temp);
+
+	int w = FreeImage_GetWidth(imagen);
+	int h = FreeImage_GetHeight(imagen);
+	Logger::Log() <<"The size of the image is: "<<Filename<<" es "<<w<<"*"<<h<<"\n"; //Some debugging code
+
+	GLubyte* textura = new GLubyte[4*w*h];
+	char* pixeles = (char*)FreeImage_GetBits(imagen);
+	//FreeImage loads in BGR format, so you need to swap some bytes(Or use GL_BGR).
+
+	for(int j= 0; j<w*h; j++){
+		textura[j*4+0]= pixeles[j*4+2];
+		textura[j*4+1]= pixeles[j*4+1];
+		textura[j*4+2]= pixeles[j*4+0];
+		textura[j*4+3]= pixeles[j*4+3];
 	}
 
-	FIBITMAP *dib = FreeImage_Load(fifmt, Filename.c_str(),0);
-
-	if( dib == NULL )
-	{
-		Logger::Log() << "[Error] tpImageIO : Impossible d'ouvrir l'image : " << Filename << "\n";
-		throw CException("[FreeImage] unreadable image");
-	}
-
-	FREE_IMAGE_TYPE image_type = FreeImage_GetImageType(dib);
-
-	int nbBits = (int)FreeImage_GetBPP(dib);
-
-	Logger::Log() << "[Info] [read color] Image BPP : " <<  nbBits << "\n";
-
-	//FIXME: Gestion de la transparence
-	if((image_type != FIT_BITMAP) || (FreeImage_GetBPP(dib) != 24))
-	{
-		Logger::Log() << "[Error] tpImageIO (read Color): Unknow type !\n";
-		throw CException("[FreeImage] Unknow bit size.");
-	}
-
-	unsigned width = FreeImage_GetWidth(dib);
-	unsigned height = FreeImage_GetHeight(dib);
-	unsigned pitch = FreeImage_GetPitch(dib);
-
-	Logger::Log() << "[INFO] Create texture : " << height << "x" << width << "\n";
-	unsigned int * data = new unsigned int[width*height*4];
-
-	BYTE *bits = (BYTE*)FreeImage_GetBits(dib);
-	if((image_type == FIT_BITMAP) && (FreeImage_GetBPP(dib) == 24))
-	{
-		for(unsigned int y = 0; y < height; y++) {
-			BYTE *pixel = (BYTE*)bits;
-			for(unsigned int x = 0; x < width; x++) {
-				data[(y*width+x)*3] = pixel[FI_RGBA_RED];
-				data[(y*width+x)*3+1]= pixel[FI_RGBA_GREEN];
-				data[(y*width+x)*3+2] = pixel[FI_RGBA_BLUE];
-				data[(y*width+x)*3+3] = 255;
-				pixel += (nbBits / 8);
-			} // next line
-			bits += pitch;
-		}
-	}
-	else if(FreeImage_GetBPP(dib) == 8)
-	{
-		std::cout << "[Warning] Read => Force grayscale image ! " << std::endl;
-
-		for(unsigned int y = 0; y < height; y++) {
-			BYTE *pixel = (BYTE*)bits;
-			for(unsigned int x = 0; x < width; x++) {
-				data[(y*width+x)*3] = pixel[0];
-				data[(y*width+x)*3+1] = pixel[0];
-				data[(y*width+x)*3+2] = pixel[0];
-				data[(y*width+x)*3+3] = pixel[0];
-				pixel += 1;
-			} // next line
-			bits += pitch;
-		}
-	}
-	else
-	{
-		throw CException("[FreeImage] Unable to load data");
-	}
 
 	// Send all information in TextureFile
 	LDRTexture* texture = new LDRTexture;
-	texture->AttachBuffer(data);
-	texture->SetSize(Math::TVector2I(height, width));
+	texture->AttachBuffer(textura);
+	texture->SetSize(Math::TVector2I(h, w));
 	texture->CreateTexture(true);
 
-	FreeImage_Unload(dib);
+	FreeImage_Unload(imagen);
 	return texture;
 }

@@ -21,6 +21,7 @@ struct AssimpMeshBuffer
 	float* buffer;
 	int size;
 	int dimension;
+	bool owner;
 };
 
 class AssimpMesh : public DrawObject

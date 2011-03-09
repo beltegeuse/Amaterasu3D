@@ -1,4 +1,6 @@
 #pragma once
+#include <GL/glew.h>
+#include <GL/gl.h>
 
 enum ShaderUnitType
 {
@@ -16,12 +18,12 @@ enum ShaderAttributType
 {
 	VERTEX_ATTRIBUT,
 	COLOR_ATTRIBUT,
-	TEXCOORD_ATTRIBUT,
 	NORMAL_ATTRIBUT,
-	TANGENT_ATTRIBUT
+	TANGENT_ATTRIBUT,
+	TEXCOORD_ATTRIBUT
 };
 
 enum TextureType
 {
-	DIFFUSE_TEXTURE
+	DIFFUSE_TEXTURE = 0
 };

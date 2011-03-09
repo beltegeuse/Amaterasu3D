@@ -37,8 +37,8 @@ public :
 	void activateTexture();
 
 	//    * Pour les methodes multitextures
-	void activateMultiTex(GLenum tex);
-	void desactivateMultiTex(GLenum tex);
+	void activateMultiTex(int texUnit);
+	void desactivateMultiTex(int texUnit);
 
 	// ======== Get information
 	int getTailleX() const;
@@ -55,12 +55,12 @@ public :
 class LDRTexture : public Texture
 {
 protected:
-	unsigned int* m_buffer;
+	GLubyte* m_buffer;
 public:
 	LDRTexture();
 	virtual ~LDRTexture();
 
-	void AttachBuffer(unsigned int* buffer);
+	void AttachBuffer(GLubyte* buffer);
 	virtual void CreateTexture(bool smooth);
 };
 
