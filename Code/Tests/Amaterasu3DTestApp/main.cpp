@@ -18,8 +18,6 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include "helpers.h"
-
 unsigned int IndiceArray[36] = {
 0,1,2,2,1,3,
 4,5,6,6,5,7,
@@ -52,14 +50,14 @@ float CubeVertexArray[24] = {
 };
 
 float CubeUVArray[24] = {
- 1.0f, 0.0f, 0,
- 1.0f, 1.0f, 0,
- 0.0f, 1.0f, 0,
- 0.0f, 0.0f, 0,
- 1.0f, 0.0f, 0,
- 1.0f, 1.0f, 0,
- 0.0f, 1.0f, 0,
- 1.0f, 1.0f, 0
+ 1.0f, 0.0f,
+ 1.0f, 1.0f,
+ 0.0f, 1.0f,
+ 0.0f, 0.0f,
+ 1.0f, 0.0f,
+ 1.0f, 1.0f,
+ 0.0f, 1.0f,
+ 1.0f, 1.0f
 };
 
 
@@ -129,12 +127,10 @@ public:
 		buffer.owner = false;
 		buffer.size = 24;
 		mesh->AddBuffer(buffer, VERTEX_ATTRIBUT);
-//		buffer.buffer = CubeColorArray;
-//		mesh->AddBuffer(buffer, COLOR_ATTRIBUT);
 		buffer.buffer = CubeUVArray;
-		buffer.dimension = 3;
-		buffer.size = 24;
-		mesh->AddBuffer(buffer, COLOR_ATTRIBUT);
+		buffer.dimension = 2;
+		buffer.size = 16;
+		mesh->AddBuffer(buffer, TEXCOORD_ATTRIBUT);
 		mesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("unknowTexture.tga"));
 		mesh->CompileBuffers();
 		group->AddChild(mesh);
@@ -168,12 +164,9 @@ public:
 		// Send matrix to the shader
 		m_shader->begin();
 		// Draw the geometry
-//		std::cout << "Draw..." << std::endl;
 		Window::OnDraw();
 		// End of the shader
 		m_shader->end();
-
-		//recursive_render(m_scene, m_scene->mRootNode);
 	}
 };
 

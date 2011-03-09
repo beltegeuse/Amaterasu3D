@@ -1,6 +1,5 @@
 SET(Amaterasu3DTestApp_SRCS
 	main.cpp
-	helpers.cpp
 )
 
 
