@@ -113,8 +113,11 @@ void LDRTexture::CreateTexture(bool smooth)
 
 	glBindTexture(GL_TEXTURE_2D,m_idTex);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST); //GL_LINEAR_MIPMAP_LINEAR
+	// select modulate to mix texture with color for shading
+	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST); //GL_LINEAR_MIPMAP_LINEAR
 
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, getTailleY(), getTailleX(),
 			GL_RGBA, GL_UNSIGNED_BYTE, m_buffer);
