@@ -11,7 +11,8 @@ enum ShaderUnitType
 enum MatrixType
 {
 	MODELVIEW_MATRIX,
-	PROJECTION_MATRIX
+	PROJECTION_MATRIX,
+	NORMAL_MATRIX
 };
 
 enum ShaderAttributType
@@ -25,5 +26,6 @@ enum ShaderAttributType
 
 enum TextureType
 {
-	DIFFUSE_TEXTURE = 0
+	DIFFUSE_TEXTURE = 0,
+	NORMAL_TEXTURE
 };

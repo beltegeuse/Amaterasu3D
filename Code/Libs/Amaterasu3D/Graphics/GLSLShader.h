@@ -147,6 +147,9 @@ public:
 	void addTextureUnit(TextureType type, const std::string& name);
 	void updateTextureUnitsBlinding();
 	bool textureAvailable(TextureType type);
+	// * matrix
+	void addMatrixBinding(MatrixType type, const std::string& name);
+	bool matrixModeAvailable(MatrixType type);
 
 	//!< Returns the OpenGL Program Object (only needed if you want to control everything yourself) \return The OpenGL Program Object
 	GLuint     GetProgramObject(){return ProgramObject;}
@@ -199,7 +202,9 @@ public:
 
 	bool       setUniformMatrix2fv(const GLcharARB* varname, GLsizei count, GLboolean transpose, GLfloat *value, GLint index = -1); //!< Specify values of uniform 2x2 matrix. \param varname The name of the uniform variable.
 	bool       setUniformMatrix3fv(const GLcharARB* varname, GLsizei count, GLboolean transpose, GLfloat *value, GLint index = -1); //!< Specify values of uniform 3x3 matrix. \param varname The name of the uniform variable.
-	bool       SetUniformMatrix4fv(const GLcharARB* varname, const Math::CMatrix4& matrix);
+	bool       setUniformMatrix4fv(const GLcharARB* varname, const Math::CMatrix4& matrix);
+	bool       setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix);
+	bool       setUniformMatrix3fv(const GLcharARB* varname, const Math::CMatrix3& matrix);
 	// Receive Uniform variables:
 	void       getUniformfv(const GLcharARB* varname, GLfloat* values, GLint index = -1); //!< Receive value of uniform variable. \param varname The name of the uniform variable.
 	void       getUniformiv(const GLcharARB* varname, GLint* values, GLint index = -1); //!< Receive value of uniform variable. \param varname The name of the uniform variable.
@@ -278,11 +283,16 @@ protected:
 	void        UsesGeometryShader(bool bYesNo){ _bUsesGeometryShader = bYesNo;}
 
 private:
-	GLuint      ProgramObject;                      // GLProgramObject
+	// the GLProgramObject ID
+	GLuint      ProgramObject;
+
+	// All binding attributs
 	typedef std::map<ShaderAttributType,std::string> MapAttributs;
 	typedef std::map<TextureType,std::string> MapTexture;
+	typedef std::map<MatrixType,std::string> MapMatrix;
 	MapAttributs m_attributs_bind;
 	MapTexture m_textures_bind;
+	MapMatrix m_matrix_bind;
 
 	GLcharARB*  linker_log;
 	bool        is_linked;

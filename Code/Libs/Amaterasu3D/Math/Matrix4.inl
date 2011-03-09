@@ -387,6 +387,16 @@ inline void CMatrix4::LookAt(const TVector3F& From, const TVector3F& To, const T
     a31 = -ZAxis.x; a32 = -ZAxis.y; a33 = -ZAxis.z; a34 = ZAxis*From;
     a41 = 0.0f;    a42 = 0.0f;    a43 = 0.0f;    a44 = 1.0f;
 }
+////////////////////////////////////////////////////////////
+/// Extract subMatrix 3x3
+////////////////////////////////////////////////////////////
+inline Math::CMatrix3 CMatrix4::ExtractSubMatrix() const
+{
+	Math::CMatrix3 m(a11, a12, a13,
+				    a21, a22, a23,
+				    a13, a23, a33);
+	return m;
+}
 
 
 /////////////////////////////////////////////////////////////

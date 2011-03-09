@@ -6,6 +6,7 @@
 //==========================================================
 #include <Math/Vector3.h>
 #include <Math/Vector4.h>
+#include <Math/Matrix3.h>
 #include <cmath>
 
 
@@ -19,7 +20,7 @@ namespace Math
     public :
 
         //----------------------------------------------------------
-        // Constructeur par d�faut
+        // Constructeur par defaut
         //----------------------------------------------------------
         CMatrix4(float m11 = 1.0f, float m12 = 0.0f, float m13 = 0.0f, float m14 = 0.0f,
                  float m21 = 0.0f, float m22 = 1.0f, float m23 = 0.0f, float m24 = 0.0f,
@@ -95,6 +96,11 @@ namespace Math
         // Construit une matrice de vue
         //----------------------------------------------------------
         void LookAt(const TVector3F& From, const TVector3F& To, const TVector3F& Up = TVector3F(0, 1, 0));
+
+        //----------------------------------------------------------
+        // Extract a 3x3 matrix
+        //----------------------------------------------------------
+        Math::CMatrix3 ExtractSubMatrix() const;
 
         //----------------------------------------------------------
         // Op�rateurs + et - unaires

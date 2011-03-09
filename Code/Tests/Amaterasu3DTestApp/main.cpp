@@ -102,7 +102,7 @@ public:
 		m_shader = glShaderManager::Instance().LoadShader("BasicTextureShader.shader");
 //		m_shader = glShaderManager::Instance().LoadShader("BasicShader.shader");
 		m_shader->begin();
-		m_shader->SetUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
+		m_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_shader->end();
 		// Create the Cube ...
 		//CreateCubes();

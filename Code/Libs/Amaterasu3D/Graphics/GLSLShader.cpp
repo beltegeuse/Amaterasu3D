@@ -966,10 +966,31 @@ bool glShader::setUniformMatrix3fv(const GLcharARB* varname, GLsizei count, GLbo
 
 //----------------------------------------------------------------------------- 
 
-bool glShader::SetUniformMatrix4fv(const GLcharARB* varname, const Math::CMatrix4& matrix)
+bool glShader::setUniformMatrix4fv(const GLcharARB* varname, const Math::CMatrix4& matrix)
 {
 	GLint loc = GetUniformLocation(varname);
 	glUniformMatrix4fv(loc,1, GL_TRUE, (const float*) matrix);
+}
+
+bool glShader:: setUniformMatrix3fv(const GLcharARB* varname, const Math::CMatrix3& matrix)
+{
+	GLint loc = GetUniformLocation(varname);
+	glUniformMatrix3fv(loc,1, GL_TRUE, (const float*) matrix);
+}
+
+bool glShader::setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix)
+{
+	Assert(matrixModeAvailable(type));
+	setUniformMatrix4fv(m_matrix_bind[type].c_str(), matrix);
+	// TODO: Put into martix management ?
+	// Need to update the NormalMatrix ...
+	if(type == MODELVIEW_MATRIX && matrixModeAvailable(NORMAL_MATRIX))
+	{
+		Math::CMatrix4 matrixNormal;
+		matrixNormal = matrix.Inverse();
+		matrixNormal = matrixNormal.Transpose();
+		setUniformMatrix3fv(m_matrix_bind[NORMAL_MATRIX].c_str(), matrixNormal.ExtractSubMatrix());
+	}
 }
 
 //----------------------------------------------------------------------------- 
@@ -1338,6 +1359,16 @@ void glShader::updateTextureUnitsBlinding()
 bool glShader::textureAvailable(TextureType type)
 {
 	return m_textures_bind.find(type) != m_textures_bind.end();
+}
+
+void glShader::addMatrixBinding(MatrixType type, const std::string& name)
+{
+	m_matrix_bind[type] = name;
+}
+
+bool glShader::matrixModeAvailable(MatrixType type)
+{
+	return m_matrix_bind.find(type) != m_matrix_bind.end();
 }
 
 //-----------------------------------------------------------------------------
@@ -2027,7 +2058,8 @@ void glShaderManager::Push(glShader* shader)
 	if(m_shader_stack.size() > m_max_stack)
 		throw CException("shader stack is full");
 	m_shader_stack.push_back(shader);
-	m_shader_stack.back()->SetUniformMatrix4fv("ModelViewMatrix", MatrixManagement::Instance().GetMatrix());
+	if(m_shader_stack.back()->matrixModeAvailable(MODELVIEW_MATRIX))
+		m_shader_stack.back()->setUniformMatrix4fv(MODELVIEW_MATRIX, MatrixManagement::Instance().GetMatrix());
 }
 
 void glShaderManager::Pop()
@@ -2039,7 +2071,8 @@ void glShaderManager::Pop()
 	if(!m_shader_stack.empty())
 	{
 		m_shader_stack.back()->begin();
-		m_shader_stack.back()->SetUniformMatrix4fv("ModelViewMatrix", MatrixManagement::Instance().GetMatrix());
+		if(m_shader_stack.back()->matrixModeAvailable(MODELVIEW_MATRIX))
+			m_shader_stack.back()->setUniformMatrix4fv(MODELVIEW_MATRIX, MatrixManagement::Instance().GetMatrix());
 	}
 }
 
@@ -2049,9 +2082,15 @@ void glShaderManager::UpdateMatrix(MatrixType mat, const Math::CMatrix4& matrix)
 	{
 		//Logger::Log() << "[DEBUG] Update Matrix ... \n";
 		if(mat == MODELVIEW_MATRIX)
-			m_shader_stack.back()->SetUniformMatrix4fv("ModelViewMatrix", matrix);
+		{
+			if(m_shader_stack.back()->matrixModeAvailable(MODELVIEW_MATRIX))
+				m_shader_stack.back()->setUniformMatrix4fv(MODELVIEW_MATRIX, matrix);
+		}
 		else if(mat == PROJECTION_MATRIX)
-			m_shader_stack.back()->SetUniformMatrix4fv("ProjectionMatrix", matrix);
+		{
+			if(m_shader_stack.back()->matrixModeAvailable(PROJECTION_MATRIX))
+				m_shader_stack.back()->setUniformMatrix4fv(PROJECTION_MATRIX, matrix);
+		}
 		else
 			throw CException("unknow matrix type");
 	}

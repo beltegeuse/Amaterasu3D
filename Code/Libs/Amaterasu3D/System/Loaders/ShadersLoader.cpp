@@ -11,6 +11,47 @@ ShadersLoader::~ShadersLoader()
 {
 }
 
+void ShadersLoader::LoadShaderMatrix(glShader* shader, TiXmlElement *root)
+{
+	TiXmlElement *rootMatrix = root->FirstChildElement("MatrixInput");
+	if(!rootMatrix)
+	{
+		Logger::Log() << "[INFO] No Matrix is available ... \n";
+		return;
+	}
+	TiXmlElement *matrixNode = rootMatrix->FirstChildElement("Matrix");
+	Logger::Log() << "[INFO] Matrix : \n";
+	while(matrixNode)
+	{
+		//TODO: Faire les exceptions si attributs absent
+		std::string nameMatrix = std::string(matrixNode->Attribute("name"));
+		std::string typeMatrix= std::string(matrixNode->Attribute("type"));
+		MatrixType type;
+		//TODO: Faire une factory ???
+		if(typeMatrix == "ModelView")
+		{
+			Logger::Log() << "   * Matrix : " << nameMatrix << " (ModelView) \n";
+			type = MODELVIEW_MATRIX;
+		}
+		else if(typeMatrix == "Projection")
+		{
+			Logger::Log() << "   * Matrix : " << nameMatrix << " (Projection) \n";
+			type = PROJECTION_MATRIX;
+		}
+		else if(typeMatrix == "Normal")
+		{
+			Logger::Log() << "   * Matrix : " << nameMatrix << " (Normal) \n";
+			type = NORMAL_MATRIX;
+		}
+		else
+		{
+			throw CException("Unknow Matrix : "+typeMatrix);
+		}
+		shader->addMatrixBinding(type, nameMatrix);
+		matrixNode = matrixNode->NextSiblingElement("Matrix");
+	}
+}
+
 void ShadersLoader::LoadShaderAttributs(glShader* shader, TiXmlElement *root)
 {
 	TiXmlElement *rootAttributs = root->FirstChildElement("Attributs");
@@ -126,8 +167,10 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	glShader* shader = glShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str());
 	// Attrib blinding ...
 	LoadShaderAttributs(shader, root);
-	// Textures attributs
+	// Textures uniform
 	LoadShaderTextures(shader, root);
+	// Matrix uniform
+	LoadShaderMatrix(shader, root);
 	// Update all bindings
 	// * Warning : Need to relink after
 	shader->updateAttributBlinding();
