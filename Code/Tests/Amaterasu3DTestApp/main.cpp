@@ -98,6 +98,7 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/BasicShaders");
 		m_shader = glShaderManager::Instance().LoadShader("BasicTextureShader.shader");
 //		m_shader = glShaderManager::Instance().LoadShader("BasicShader.shader");
 		m_shader->begin();
