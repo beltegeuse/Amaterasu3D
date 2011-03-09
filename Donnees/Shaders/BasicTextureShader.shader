@@ -5,7 +5,7 @@
 	</Textures>
 	<Attributs>
     	<Attribut type="Vertex" name="VertexPosition" />
-    	<Attribut type="Color" name="VertexTexCoord" />
+    	<Attribut type="TexCoord" name="VertexTexCoord" />
     </Attributs>
 	<VertexShader filename="BasicTextureShader.vert" />
 	<FragmentShader filename="BasicTextureShader.frag" />

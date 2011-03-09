@@ -22,6 +22,11 @@ AssimpMesh::~AssimpMesh()
 	// solution : Smart pointeurs
 	glDeleteBuffers(m_buffers.size()+1, m_indices_buffers);
 	delete[] m_indices_buffers;
+	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
+	{
+		if(it->second.owner)
+			delete[] it->second.buffer;
+	}
 }
 
 void AssimpMesh::SetIndiceBuffer(unsigned int* buffer, int size)

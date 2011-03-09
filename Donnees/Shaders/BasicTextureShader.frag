@@ -7,9 +7,9 @@ precision highp float;
 uniform sampler2D Texture0;
 
 // Entree
-smooth in vec3 outTexCoord;
+smooth in vec2 outTexCoord;
 
 void main()
 {	
-	gl_FragColor = texture(Texture0, outTexCoord.xy);
+	gl_FragColor = texture(Texture0, outTexCoord);
 }

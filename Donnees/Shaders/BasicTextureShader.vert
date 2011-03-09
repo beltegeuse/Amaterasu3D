@@ -3,14 +3,14 @@
 
 // Attributs
 in vec3 VertexPosition;
-in vec3 VertexTexCoord;
+in vec2 VertexTexCoord;
 
 // Uniform
 uniform mat4 ProjectionMatrix;
 uniform mat4 ModelViewMatrix;
 
 // Sortie shader
-smooth out vec3 outTexCoord;
+smooth out vec2 outTexCoord;
 
 invariant gl_Position;
 
