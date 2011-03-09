@@ -3,8 +3,7 @@
 
 #include <string>
 
-#if 1
-//#ifdef DEBUG
+#ifdef DEBUG
     // In debug mode, perform a test on every OpenGL call
     #define GLCheck(Func) ((Func), CheckGLError(__FILE__, __LINE__))
 	#define CHECK_GL_ERROR() CheckGLError(__FILE__, __LINE__)

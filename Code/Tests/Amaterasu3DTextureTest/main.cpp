@@ -19,6 +19,7 @@ private:
 	Math::CMatrix4 m_matrixPerspective;
 	TTexturePtr m_texture;
 	CameraAbstract* m_cam;
+	TShaderPtr m_shader_gbuffer;
 public:
 	ConcreteWindow() :
 		Window("Amaterasu3DTestApp")
@@ -33,6 +34,16 @@ public:
 		// Load the Shader
 		CMediaManager::Instance().AddSearchPath("../Donnees");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffer");
+
+		m_shader_gbuffer = glShaderManager::Instance().LoadShader("BumpMapping.shader");
+		m_shader_gbuffer->begin();
+		m_shader_gbuffer->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
+		m_shader_gbuffer->end();
+
 		// Load texture
 		m_texture = Texture::LoadFromFile("unknowTexture.tga");
 		std::cout << "FINISH BUILD SCENE" << std::endl;

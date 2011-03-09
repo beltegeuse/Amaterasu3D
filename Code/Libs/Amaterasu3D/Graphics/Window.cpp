@@ -129,6 +129,9 @@ void Window::OnEvent(SDL_Event& events, double delta)
 
 void Window::OnDraw()
 {
+	////////////////////////////////////////////////
+	// G-Buffer stage
+	////////////////////////////////////////////////
 	int numberMatrix = MatrixManagement::Instance().StackSize();
 
 	if(m_camera)
