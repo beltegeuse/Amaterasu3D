@@ -7,11 +7,9 @@ precision highp float;
 smooth in vec3 Color_in;
 
 // Sortie
-//out vec4 Color;
+out vec4 Color;
 
 void main()
 {	
-	//vec3 ColorNorm = normalize(Color_in);
-	//gl_FragColor = vec4 (ColorNorm,1.0);
-	gl_FragColor = vec4 (Color_in,1.0);
+	Color = vec4 (Color_in,1.0);
 }
