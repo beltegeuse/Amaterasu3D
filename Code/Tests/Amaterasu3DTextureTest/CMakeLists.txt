@@ -13,10 +13,6 @@ ADD_EXECUTABLE(Amaterasu3DTextureTest ${Amaterasu3DTextureTest_SRCS})
 target_link_libraries(
   Amaterasu3DTextureTest
   Amaterasu3D
-  assimp
-  ${SDL_LIBRARY}
-  ${GLEW_LIBRARY}
-  ${OPENGL_LIBRARY}
 )
 
 SET_TARGET_PROPERTIES(Amaterasu3DTextureTest PROPERTIES

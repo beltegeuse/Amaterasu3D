@@ -5,7 +5,7 @@ CameraFly::CameraFly(const Math::TVector3F& pos, const Math::TVector3F& target, 
 	CameraAbstract(pos, target, up),
 	m_angleX(0.0),
 	m_angleY(0.0),
-	m_factor_move(50.0),
+	m_factor_move(200.0),
 	m_mouse_click(false),
 	m_angleX_new(0.0),
 	m_angleY_new(0.0)

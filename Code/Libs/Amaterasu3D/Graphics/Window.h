@@ -22,7 +22,7 @@ private:
 
 public:
 	// Constructor & Destructor
-	Window(const std::string& name = "OpenGL Renderer", const Math::TVector2I& windowSize = Math::TVector2I(800,600));
+	Window(const std::string& name = "OpenGL Renderer", const Math::TVector2I& windowSize = Math::TVector2I(800,600), bool syncVertical = false);
 	virtual ~Window();
 
 	// Public methods

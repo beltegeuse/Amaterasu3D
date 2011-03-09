@@ -46,7 +46,7 @@ INCLUDE_DIRECTORIES(
 
 SET(AMATERASU3D_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
-ADD_LIBRARY(Amaterasu3D STATIC ${LIB_AMATERASU3D_SRCS})
+ADD_LIBRARY(Amaterasu3D SHARED ${LIB_AMATERASU3D_SRCS})
 
 target_link_libraries(
   Amaterasu3D
@@ -58,6 +58,7 @@ target_link_libraries(
   ${OPENGL_LIBRARY}
   tinyxml
   sigc-2.0 
+  assimp
   #TODO: Boost is until used?
   ${Boost_LIBRARIES}
 )

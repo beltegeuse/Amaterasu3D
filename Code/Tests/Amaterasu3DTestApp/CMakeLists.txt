@@ -14,10 +14,6 @@ ADD_EXECUTABLE(Amaterasu3DTestApp ${Amaterasu3DTestApp_SRCS})
 target_link_libraries(
   Amaterasu3DTestApp
   Amaterasu3D
-  assimp
-  ${SDL_LIBRARY}
-  ${GLEW_LIBRARY}
-  ${OPENGL_LIBRARY}
 )
 
 SET_TARGET_PROPERTIES(Amaterasu3DTestApp PROPERTIES

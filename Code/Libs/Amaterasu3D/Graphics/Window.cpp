@@ -14,7 +14,7 @@
 #include <GL/gl.h>
 #include <Debug/OpenGLDebug.h>
 
-Window::Window(const std::string& name, const Math::TVector2I& windowSize) :
+Window::Window(const std::string& name, const Math::TVector2I& windowSize, bool syncVertical) :
 	m_isRunning(false),
 	m_camera(NULL)
 {
@@ -45,7 +45,10 @@ Window::Window(const std::string& name, const Math::TVector2I& windowSize) :
 	m_fenetre = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowSize.x, windowSize.y, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 	m_contexteOpenGL = SDL_GL_CreateContext(m_fenetre);
 	// Sync between double buffer and the screen
-	SDL_GL_SetSwapInterval(1);
+	if(syncVertical)
+		SDL_GL_SetSwapInterval(1);
+	else
+		SDL_GL_SetSwapInterval(0);
 
 	// **************************************
 	// ********* GLEW initialisation ********
