@@ -328,6 +328,7 @@ private:
 	bool m_use_texSpecular;
 	bool m_use_tangants;
 	// Differents buffers
+	//TODO: Mettre le FBO dans glShader
 	FBO* m_FBO;
 public:
 	GBufferShader();
@@ -340,6 +341,8 @@ public:
 
 	virtual void begin();
 	virtual void end();
+
+	FBO* GetFBO();
 };
 
 //-----------------------------------------------------------------------------

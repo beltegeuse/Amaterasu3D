@@ -39,7 +39,7 @@ public:
 		CameraAbstract* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		SetCamera(cam);
 		// Initialise OpenGL
-		GLCheck(glClearColor(0.1f,0.1f,0.1f,1.f));
+		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 10000);
 		// Config path
 		CMediaManager::Instance().AddSearchPath("../Donnees");
@@ -80,8 +80,9 @@ public:
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-//		m_shader->GetDiffuseBuffer()->activateTextureMapping();
-//		m_shader->GetDiffuseBuffer()->activateTexture();
+		Texture* tex = m_shader->GetFBO()->GetTexture("Diffuse");
+		tex->activateTextureMapping();
+		tex->activateTexture();
 		glBegin(GL_QUADS);
 
 		glTexCoord2f(0.0, 0.0);
@@ -97,7 +98,7 @@ public:
 		glVertex2f(1.0, -1.0);
 
 		glEnd();
-
+		tex->desactivateTextureMapping();
 //		m_shader->GetDiffuseBuffer()->desactivateTextureMapping();
 	}
 };

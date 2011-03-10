@@ -59,6 +59,6 @@ void main()
 	}
 	else
 	{
-	    Specular  = SpecularValue;
+	    Specular  = vec4(1.0);
 	}
 }

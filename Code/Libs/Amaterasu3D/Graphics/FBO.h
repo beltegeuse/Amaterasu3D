@@ -10,7 +10,8 @@
 
 #include <Graphics/Texture.h>
 #include <Enum.h>
-#include <vector>
+#include <map>
+#include <string>
 
 class FBOBufferParam : public TextureParams
 {
@@ -57,19 +58,20 @@ class FBO
 private:
 	// Attributs
 	Math::TVector2I m_size;
-	std::vector<GLuint> m_image_id;
+	std::map<std::string, Texture*> m_textures;
 	FBODepthType m_depth_type;
 	GLuint m_depth_id;
 	GLuint m_fbo_id;
 public:
 	FBO(const Math::TVector2I& size,
-	    std::vector<FBOTextureBufferParam>& buffers,
+	    std::map<std::string, FBOTextureBufferParam>& buffers,
 	    FBODepthType type,
 	    FBODepthBufferParam& paramDepth);
 	virtual ~FBO();
 
 	void Bind();
 	void UnBind();
+	Texture* GetTexture(const std::string& nameBuffer);
 private:
 	int GetMaxColorAttachement();
 };

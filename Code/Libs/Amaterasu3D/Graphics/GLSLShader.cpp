@@ -2202,22 +2202,25 @@ void GBufferShader::UpdateAll()
 {
 	glShader::begin();
 	// Set good params
-	std::vector<FBOTextureBufferParam> buffers;
+	std::map<std::string, FBOTextureBufferParam> buffers;
 	// Create all buffers
 	FBOTextureBufferParam tex1;
 	tex1.Attachment = glGetFragDataLocation(GetProgramObject(), "Diffuse");
+	Logger::Log() << "[INFO] Diffuse attachment : " << tex1.Attachment << "\n";
 	FBOTextureBufferParam tex2;
 	tex2.Attachment = glGetFragDataLocation(GetProgramObject(), "Normal");
+	Logger::Log() << "[INFO] Normal attachment : " << tex2.Attachment << "\n";
 	FBOTextureBufferParam tex3;
 	tex3.Attachment = glGetFragDataLocation(GetProgramObject(), "Specular");
+	Logger::Log() << "[INFO] Specular attachment : " << tex3.Attachment << "\n";
 	// Add into a list
-	buffers.push_back(tex1);
-	buffers.push_back(tex2);
-	buffers.push_back(tex3);
+	buffers["Diffuse"] = tex1;
+	buffers["Normal"] = tex2;
+	buffers["Specular"] = tex3;
 	// Create depth buffer param
 	FBODepthBufferParam depthParam;
 	// Create FBO
-	m_FBO = new FBO(Math::TVector2I(800,600), buffers, FBODEPTH_RENDERTARGET, depthParam);
+	m_FBO = new FBO(Math::TVector2I(800,600), buffers, FBODEPTH_TEXTURE, depthParam);
 	glShader::end();
 	glShader::UpdateAll();
 }
@@ -2264,5 +2267,10 @@ bool GBufferShader::textureAvailable(TextureType type)
 		m_use_texSpecular = false;
 	// Return the good value
 	return res;
+}
+
+FBO* GBufferShader::GetFBO()
+{
+	return m_FBO;
 }
 

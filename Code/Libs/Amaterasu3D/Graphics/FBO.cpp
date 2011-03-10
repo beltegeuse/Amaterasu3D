@@ -10,7 +10,7 @@
 #include <Logger/Logger.h>
 
 FBO::FBO(const Math::TVector2I& size,
-	    std::vector<FBOTextureBufferParam>& buffers,
+	    std::map<std::string, FBOTextureBufferParam>& buffers,
 	    FBODepthType type,
 	    FBODepthBufferParam& paramDepth) :
 	    m_depth_type(type),
@@ -21,15 +21,14 @@ FBO::FBO(const Math::TVector2I& size,
 	   throw CException("Pas assez de Color attachement");
 
 	// ==== Construction du FBO pour les color
-	for(int i = 0; i < buffers.size(); i++)
+	for(std::map<std::string, FBOTextureBufferParam>::iterator it = buffers.begin(); it != buffers.end(); it++)
 	{
-	   GLuint id;
-	   glGenTextures(1, &id);
-	   m_image_id.push_back(id);
-	   glBindTexture(GL_TEXTURE_2D, id);
-	   glTexImage2D(GL_TEXTURE_2D, 0, buffers[i].InternalFormat, size.y, size.x, 0, buffers[i].ExternalFormat, buffers[i].Precision, 0);
-	   buffers[i].applyParam();
-	   Logger::Log() << " * Generate Image Render : " << id << "\n";
+	   Texture* tex = new Texture(size);
+	   m_textures[it->first] = tex;
+	   glBindTexture(GL_TEXTURE_2D, tex->getIdTex());
+	   glTexImage2D(GL_TEXTURE_2D, 0, it->second.InternalFormat, size.y, size.x, 0, it->second.ExternalFormat, it->second.Precision, 0);
+	   it->second.applyParam();
+	   Logger::Log() << " * Generate Image Render : " << tex->getIdTex() << "\n";
 	}
 	// ==== Construction de FBO pour Depth
 	if(type != FBODEPTH_NONE)
@@ -60,10 +59,12 @@ FBO::FBO(const Math::TVector2I& size,
 
 	// ==== Ajout au FBO les couleurs
 	GLenum buffersDraw[buffers.size()];
-	for(int i = 0; i < buffers.size(); i++)
+	int i = 0;
+	for(std::map<std::string, FBOTextureBufferParam>::iterator it = buffers.begin(); it != buffers.end(); it++)
 	{
-	   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+buffers[i].Attachment, GL_TEXTURE_2D, m_image_id[i], 0);
-	   buffersDraw[i] = (GL_COLOR_ATTACHMENT0+buffers[i].Attachment);
+	   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+it->second.Attachment, GL_TEXTURE_2D, m_textures[it->first]->getIdTex(), 0);
+	   buffersDraw[i] = (GL_COLOR_ATTACHMENT0+it->second.Attachment);
+	   i++;
 	}
 
 	if(buffers.size() > 0)
@@ -71,18 +72,20 @@ FBO::FBO(const Math::TVector2I& size,
 
 	// ==== Ajout au FBO de la profondeur
 	if(type != FBODEPTH_NONE)
+	{
 	   if(type == FBODEPTH_TEXTURE)
 		   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth_id, 0);
 	   else if(type == FBODEPTH_RENDERTARGET)
 		   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth_id);
 	   else
 		   throw CException("Impossible de trouver le type de Depth type.");
+	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
 	//FIXME: A implemeter
 	//checkFramebufferStatus();
 
-	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 
@@ -103,7 +106,7 @@ void FBO::Bind()
 	if(m_depth_type != FBODEPTH_NONE)
 		flags = flags | GL_DEPTH_BUFFER_BIT;
 
-	if(!m_image_id.empty())
+	if(!m_textures.empty())
 		flags = flags | GL_COLOR_BUFFER_BIT;
 	else
 		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -117,7 +120,7 @@ void FBO::UnBind()
 	glPopAttrib();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	if(m_image_id.empty())
+	if(m_textures.empty())
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 }
 
@@ -126,4 +129,10 @@ int FBO::GetMaxColorAttachement()
 	GLint nb;
 	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &nb);
 	return nb;
+}
+
+Texture* FBO::GetTexture(const std::string& nameBuffer)
+{
+	Assert(m_textures.find(nameBuffer) != m_textures.end());
+	return m_textures[nameBuffer];
 }
