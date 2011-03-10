@@ -1371,6 +1371,21 @@ bool glShader::matrixModeAvailable(MatrixType type)
 	return m_matrix_bind.find(type) != m_matrix_bind.end();
 }
 
+void glShader::OnDraw()
+{
+  // Nothing to do ....
+}
+
+void glShader::UpdateAll()
+{
+	updateAttributBlinding();
+	link();
+	// * Warning : Need to active shader
+	begin();
+	updateTextureUnitsBlinding();
+	end();
+}
+
 //-----------------------------------------------------------------------------
 // ************************************************************************
 // Shader Program : Manage Shader Programs (Vertex/Fragment)
@@ -1638,9 +1653,16 @@ void glShaderManager::SetVerticesOut(int nVerticesOut)
 }
 
 // ----------------------------------------------------------------------------
-glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile)
+glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type)
 {
-	glShader* o = new glShader();
+	glShader* o;
+	if(type == BASIC_SHADER)
+		o = new glShader();
+	else if(type == GBUFFER_SHADER)
+		o = new GBufferShader;
+	else
+		throw CException("[glShadermanager] Unknow shader type");
+
 	o->UsesGeometryShader(false);
 
 	aVertexShader* tVertexShader = new aVertexShader;
@@ -2119,3 +2141,128 @@ bool glShaderManager::activedShader()
 {
 	return m_shader_stack.size() != 0;
 }
+
+//////////////////////////////////////////////////////////////
+// G-Buffer Shader
+//////////////////////////////////////////////////////////////
+GBufferShader::GBufferShader() :
+		m_use_texCoord(false),
+		m_use_texNormal(false),
+		m_use_texDiffuse(false),
+		m_use_texSpecular(false),
+		m_use_tangants(false),
+		m_FBO(NULL)
+{
+}
+
+GBufferShader::~GBufferShader()
+{
+}
+
+// The aim of this function is to setup correctly the shader before rendering
+void GBufferShader::OnDraw()
+{
+	glShader::OnDraw();
+	// For diffuse textures
+	if(m_use_texDiffuse && m_use_texCoord)
+	{
+		setUniform1i("UseDiffuseTex",1);
+	}
+	else
+	{
+		setUniform1i("UseDiffuseTex",0);
+	}
+	// For normal texture
+	if(m_use_texNormal && m_use_tangants && m_use_texCoord)
+	{
+		setUniform1i("UseBumpMapping",1);
+	}
+	else
+	{
+		setUniform1i("UseBumpMapping",0);
+	}
+	// For specular texture
+	if(m_use_texSpecular && m_use_texCoord)
+	{
+		setUniform1i("UseSpecularTex",1);
+	}
+	else
+	{
+		setUniform1i("UseSpecularTex",0);
+	}
+	// After that reinit all attributs for the next drawing
+	m_use_texCoord = false;
+	m_use_texNormal = false;
+	m_use_texDiffuse = false;
+	m_use_texSpecular = false;
+	m_use_tangants = false;
+}
+
+void GBufferShader::UpdateAll()
+{
+	glShader::begin();
+	// Set good params
+	std::vector<FBOTextureBufferParam> buffers;
+	// Create all buffers
+	FBOTextureBufferParam tex1;
+	tex1.Attachment = glGetFragDataLocation(GetProgramObject(), "Diffuse");
+	FBOTextureBufferParam tex2;
+	tex2.Attachment = glGetFragDataLocation(GetProgramObject(), "Normal");
+	FBOTextureBufferParam tex3;
+	tex3.Attachment = glGetFragDataLocation(GetProgramObject(), "Specular");
+	// Add into a list
+	buffers.push_back(tex1);
+	buffers.push_back(tex2);
+	buffers.push_back(tex3);
+	// Create depth buffer param
+	FBODepthBufferParam depthParam;
+	// Create FBO
+	m_FBO = new FBO(Math::TVector2I(800,600), buffers, FBODEPTH_RENDERTARGET, depthParam);
+	glShader::end();
+	glShader::UpdateAll();
+}
+
+bool GBufferShader::attributAvailable(ShaderAttributType type)
+{
+	//TODO: Rewrite this function
+	bool res = glShader::attributAvailable(type);
+	if(!res)
+		return res;
+	// Update attributs
+	if(type == TEXCOORD_ATTRIBUT)
+		m_use_texCoord = true;
+	else if(type == TANGENT_ATTRIBUT)
+		m_use_texCoord = true;
+	// Return the good value
+	return res;
+}
+
+void GBufferShader::begin()
+{
+	m_FBO->Bind();
+	glShader::begin();
+}
+
+void GBufferShader::end()
+{
+	m_FBO->UnBind();
+	glShader::end();
+}
+
+bool GBufferShader::textureAvailable(TextureType type)
+{
+	//TODO: Rewrite this function
+	bool res = glShader::textureAvailable(type);
+	if(!res)
+		return res;
+	// Update attributs
+	if(type == DIFFUSE_TEXTURE)
+		m_use_texDiffuse = true;
+	else if(type == NORMAL_TEXTURE)
+		m_use_texNormal = true;
+	else if(type == SPECULAR_TEXTURE)
+		m_use_texSpecular = false;
+	// Return the good value
+	return res;
+}
+

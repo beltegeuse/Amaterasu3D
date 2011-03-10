@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Shader name="BasicShader">
+<Shader name="BasicShader" type="Basic">
     <MatrixInput>
        <Matrix type="ModelView" name="ModelViewMatrix" />
        <Matrix type="Projection" name="ProjectionMatrix" />

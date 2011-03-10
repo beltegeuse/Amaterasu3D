@@ -80,7 +80,6 @@ void AssimpMesh::Draw()
 	{
 		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
 			continue;
-//		Logger::Log() << "Activate : " << (int) it->first << "\n";
 		it->second->activateMultiTex(it->first);
 	}
 	// Buffer activation
@@ -89,13 +88,13 @@ void AssimpMesh::Draw()
 	{
 		if(!glShaderManager::Instance().currentShader()->attributAvailable(it->first))
 			continue;
-//		Logger::Log() << "BIND Buffer : " << m_indices_buffers[i] << "\n";
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
 		glEnableVertexAttribArray (it->first);
 		GLCheck(glVertexAttribPointer(it->first, it->second.dimension, GL_FLOAT, GL_FALSE, it->second.dimension * sizeof(float), 0));
 		i++;
 	}
 	// Drawing
+	glShaderManager::Instance().currentShader()->OnDraw();
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_buffers[0]));
 	GLCheck(glDrawElements(GL_TRIANGLES, m_indices_size, GL_UNSIGNED_INT, 0));
 	// Buffer desactivation
@@ -110,7 +109,6 @@ void AssimpMesh::Draw()
 	{
 		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
 			continue;
-//		Logger::Log() << "Desactivate : " << (int) it->first << "\n";
 		it->second->desactivateMultiTex(it->first);
 	}
 }

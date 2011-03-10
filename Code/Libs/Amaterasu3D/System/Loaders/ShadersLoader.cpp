@@ -84,6 +84,16 @@ void ShadersLoader::LoadShaderAttributs(glShader* shader, TiXmlElement *root)
 			Logger::Log() << "   * Attribut : " << nameAttrib << " (TexCoord) \n";
 			type = TEXCOORD_ATTRIBUT;
 		}
+		else if(typeAttrib == "Tangent")
+		{
+			Logger::Log() << "   * Attribut : " << nameAttrib << " (Tangent) \n";
+			type = TANGENT_ATTRIBUT;
+		}
+		else if(typeAttrib == "Normal")
+		{
+			Logger::Log() << "   * Attribut : " << nameAttrib << " (Normal) \n";
+			type = NORMAL_ATTRIBUT;
+		}
 		else
 		{
 			throw CException("Unknow attribut : "+typeAttrib);
@@ -115,6 +125,16 @@ void ShadersLoader::LoadShaderTextures(glShader* shader, TiXmlElement *root)
 			Logger::Log() << "   * Texture : " << nameAttrib << " (Diffuse) \n";
 			type = DIFFUSE_TEXTURE;
 		}
+		else if(typeAttrib == "Normal")
+		{
+			Logger::Log() << "   * Texture : " << nameAttrib << " (Normal) \n";
+			type = NORMAL_TEXTURE;
+		}
+		else if(typeAttrib == "Specular")
+		{
+			Logger::Log() << "   * Texture : " << nameAttrib << " (Specular) \n";
+			type = SPECULAR_TEXTURE;
+		}
 		else
 		{
 			throw CException("Unknow attribut : "+typeAttrib);
@@ -142,7 +162,16 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	}
 	// Get the shader name and display it
 	std::string name = std::string(root->Attribute("name"));
-	Logger::Log() << "[INFO] Load shader : " << name << " ... \n";
+	std::string shaderTypeName = std::string(root->Attribute("type"));
+	Logger::Log() << "[INFO] Load shader : " << name << " ( " << shaderTypeName << " ) ... \n";
+	ShaderType shaderType;
+	if(shaderTypeName == "Basic")
+		shaderType = BASIC_SHADER;
+	else if(shaderTypeName == "GBuffer")
+		shaderType = GBUFFER_SHADER;
+	else
+		throw CException("unknow shader type");
+
 	// Get the 2 files name
 	// * Vertex shader
 	TiXmlElement *shadername = root->FirstChildElement("VertexShader");
@@ -164,7 +193,7 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	vertexShadername = CMediaManager::Instance().FindMedia(vertexShadername).Fullname();
 	fragmentShadername = CMediaManager::Instance().FindMedia(fragmentShadername).Fullname();
 	// Shader creation ....
-	glShader* shader = glShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str());
+	glShader* shader = glShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType);
 	// Attrib blinding ...
 	LoadShaderAttributs(shader, root);
 	// Textures uniform
@@ -173,11 +202,6 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	LoadShaderMatrix(shader, root);
 	// Update all bindings
 	// * Warning : Need to relink after
-	shader->updateAttributBlinding();
-	shader->link();
-	// * Warning : Need to active shader
-	shader->begin();
-	shader->updateTextureUnitsBlinding();
-	shader->end();
+	shader->UpdateAll();
 	return shader;
 }

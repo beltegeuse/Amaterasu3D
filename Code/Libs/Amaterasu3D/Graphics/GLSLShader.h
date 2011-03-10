@@ -44,6 +44,9 @@ Make sure to check extension "GL_EXT_geometry_shader4" before using Geometry sha
 #include <Singleton.h>
 #include <Math/Matrix4.h>
 #include <Enum.h>
+#include <Graphics/Texture.h>
+#include <Graphics/FBO.h>
+
 
 #include <map>
 #include <vector>
@@ -142,14 +145,17 @@ public:
 	// * Attributs
 	void addAttributBlinding(ShaderAttributType type, const std::string& name);
 	void updateAttributBlinding();
-	bool attributAvailable(ShaderAttributType type);
+	virtual bool attributAvailable(ShaderAttributType type);
 	// * Textures
 	void addTextureUnit(TextureType type, const std::string& name);
 	void updateTextureUnitsBlinding();
-	bool textureAvailable(TextureType type);
+	virtual bool textureAvailable(TextureType type);
 	// * matrix
 	void addMatrixBinding(MatrixType type, const std::string& name);
-	bool matrixModeAvailable(MatrixType type);
+	virtual bool matrixModeAvailable(MatrixType type);
+	// To know before drawing
+	virtual void OnDraw();
+	virtual void UpdateAll();
 
 	//!< Returns the OpenGL Program Object (only needed if you want to control everything yourself) \return The OpenGL Program Object
 	GLuint     GetProgramObject(){return ProgramObject;}
@@ -157,8 +163,8 @@ public:
 	bool       link(void);                        //!< Link all Shaders
 	char*      getLinkerLog(void);                //!< Get Linker Messages \return char pointer to linker messages. Memory of this string is available until you link again or destroy this class.
 
-	void       begin();                           //!< use Shader. OpenGL calls will go through vertex, geometry and/or fragment shaders.
-	void       end();                             //!< Stop using this shader. OpenGL calls will go through regular pipeline.
+	virtual void       begin();                           //!< use Shader. OpenGL calls will go through vertex, geometry and/or fragment shaders.
+	virtual void       end();                             //!< Stop using this shader. OpenGL calls will go through regular pipeline.
 
 	// Geometry Shader: Input Type, Output and Number of Vertices out
 	void       SetInputPrimitiveType(int nInputPrimitiveType);   //!< Set the input primitive type for the geometry shader
@@ -311,6 +317,31 @@ private:
 
 typedef CSmartPtr<glShader, CResourceCOM> TShaderPtr;
 
+class GBufferShader : public glShader
+{
+private:
+	// Attributs
+	// Differents use for setup the shader
+	bool m_use_texCoord;
+	bool m_use_texNormal;
+	bool m_use_texDiffuse;
+	bool m_use_texSpecular;
+	bool m_use_tangants;
+	// Differents buffers
+	FBO* m_FBO;
+public:
+	GBufferShader();
+	virtual ~GBufferShader();
+
+	virtual void OnDraw();
+	virtual void UpdateAll();
+	virtual bool attributAvailable(ShaderAttributType type);
+	virtual bool textureAvailable(TextureType type);
+
+	virtual void begin();
+	virtual void end();
+};
+
 //-----------------------------------------------------------------------------
 
 //! To simplify the process loading/compiling/linking shaders this high level interface to simplify setup of a vertex/fragment shader was created. \ingroup GLSL \author Martin Christen
@@ -324,7 +355,7 @@ class GLSLAPI glShaderManager : public CSingleton<glShaderManager>
 	friend class ShadersLoader;
 	// Only the MediaManager can call this methods
 	// Regular GLSL (Vertex+Fragment Shader)
-	glShader* loadfromFile(const char* vertexFile, const char* fragmentFile);    //!< load vertex/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param fragmentFile Fragment Shader File.
+	glShader* loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type);    //!< load vertex/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param fragmentFile Fragment Shader File.
 	glShader* loadfromMemory(const char* vertexMem, const char* fragmentMem); //!< load vertex/fragment shader from memory. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part.
 
 	// With Geometry Shader (Vertex+Geomentry+Fragment Shader)

@@ -9,9 +9,10 @@
 #include <System/ResourceManager.h>
 
 //Constructeur
-Texture::Texture() :
-	m_image_size(Math::TVector2I(0,0))
+Texture::Texture(const Math::TVector2I& size) :
+	m_size(size)
 {
+	glGenTextures(1,&m_idTex);
 }
 
 //Destructeur
@@ -30,6 +31,7 @@ void Texture::activateTextureMapping()
 //Fonction qui desactive le texturage
 void Texture::desactivateTextureMapping()
 {
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -42,28 +44,24 @@ void Texture::activateTexture()
 //Getter
 int Texture::getTailleX() const
 {
-	return m_image_size.x;
+	return m_size.x;
 }
 
 int Texture::getTailleY() const
 {
-	return m_image_size.y;
+	return m_size.y;
 }
 
-GLuint* Texture::getIdTex()
+GLuint Texture::getIdTex()
 {
-	return &m_idTex;
+	return m_idTex;
 }
 
-//FIXME: Changer le system
 void Texture::activateMultiTex(int unit)
 {
-	if (glewGetExtension("GL_ARB_multitexture")){
-		//Logger::Log() << "[DEBUG] Activate texture : " << m_idTex << " ( " << unit << " ) \n";
-		glActiveTexture(GL_TEXTURE0+unit);
-		activateTextureMapping();
-		activateTexture();
-	}
+	glActiveTexture(GL_TEXTURE0+unit);
+	activateTextureMapping();
+	activateTexture();
 }
 
 void Texture::desactivateMultiTex(int unit)
@@ -86,44 +84,5 @@ TTexturePtr Texture::LoadFromFile(const std::string& filename)
 
 void Texture::SetSize(const Math::TVector2I& dim)
 {
-	m_image_size = dim;
-}
-
-/*
- * LDRTexture
- */
-
-LDRTexture::LDRTexture() :
-		m_buffer(NULL)
-{
-
-}
-
-LDRTexture::~LDRTexture()
-{
-	if(m_buffer)
-		delete[] m_buffer;
-}
-
-void LDRTexture::CreateTexture(bool smooth)
-{
-	Logger::Log() << "[INFO] Create OpenGL texture : " << getTailleX() << "x" << getTailleY() << "\n";
-	/* Parametrage du placage de textures */
-	glGenTextures(1,&m_idTex);
-
-	glBindTexture(GL_TEXTURE_2D,m_idTex);
-
-	// select modulate to mix texture with color for shading
-	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST); //GL_LINEAR_MIPMAP_LINEAR
-
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, getTailleY(), getTailleX(),
-			GL_RGBA, GL_UNSIGNED_BYTE, m_buffer);
-}
-
-void LDRTexture::AttachBuffer(GLubyte* buffer)
-{
-	m_buffer = buffer;
+	m_size = dim;
 }

@@ -61,11 +61,14 @@ Texture* ImagesLoader::LoadImageFromFile(const std::string& Filename)
 
 
 	// Send all information in TextureFile
-	LDRTexture* texture = new LDRTexture;
-	texture->AttachBuffer(textura);
-	texture->SetSize(Math::TVector2I(h, w));
-	texture->CreateTexture(true);
+	Texture* texture = new Texture(Math::TVector2I(h,w));
+	TextureMipmapsParams param;
+	glBindTexture(GL_TEXTURE_2D,texture->getIdTex());
+	param.applyParam();
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, texture->getTailleY(), texture->getTailleX(),
+					GL_RGBA, GL_UNSIGNED_BYTE, textura);
 
 	FreeImage_Unload(imagen);
+	delete[] textura;
 	return texture;
 }

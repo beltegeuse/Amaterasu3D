@@ -19,6 +19,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
 	Graphics/Color.cpp
+	Graphics/FBO.cpp
 	Graphics/GLSLShader.cpp
 	Graphics/Window.cpp
 	Graphics/MatrixManagement.cpp
