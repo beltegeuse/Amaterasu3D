@@ -40,7 +40,7 @@ void main ()
 	{
 	    vec3 normal = normalize(NormalMatrix * VertexNormal);
 		vec3 tangent = normalize(NormalMatrix * VertexTangent.xyz);
-		vec3 binormal = normalize(cross(VertexNormal, VertexTangent)); // remove w for VertexTangant
+		vec3 binormal = normalize(NormalMatrix * VertexBiTangent); // remove w for VertexTangant
 		outtnbMatrix =  mat3(tangent.x,binormal.x, normal.x,
 		                    tangent.y, binormal.y, normal.y,
 		                    tangent.z,binormal.z,normal.z);
