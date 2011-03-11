@@ -55,8 +55,13 @@ public:
 		// Load scene
 //		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
 //		GetSceneRoot().AddChild(node);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-		GetSceneRoot().AddChild(node);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
+		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
+		nodeGroup->AddChild(node);
+		Math::CMatrix4 mat;
+		mat.SetTranslation(-1000.0,0,0);
+		nodeGroup->LoadTransformMatrix(mat);
+		GetSceneRoot().AddChild(nodeGroup);
 	}
 
 	virtual ~WindowGBuffer()

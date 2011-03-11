@@ -192,7 +192,7 @@ void ShadersLoader::LoadShaderTextures(glShader* shader, TiXmlElement *root)
 			throw CException("Unknow attribut : "+typeAttrib);
 		}
 		shader->addTextureUnit(type, nameAttrib);
-		textureNode = textureNode->NextSiblingElement("Attribut");
+		textureNode = textureNode->NextSiblingElement("Texture");
 	}
 }
 
