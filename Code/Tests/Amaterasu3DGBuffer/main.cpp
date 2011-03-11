@@ -53,7 +53,7 @@ public:
 		m_gbuffer_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_gbuffer_shader->end();
 		// Load scene
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 //		GetSceneRoot().AddChild(node);
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
 		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
@@ -80,6 +80,7 @@ public:
 		glLoadIdentity();
 
 		Texture* tex = m_gbuffer_shader->GetFBO()->GetTexture("Diffuse");
+		Logger::Log() << tex->getIdTex() << "\n";
 		tex->activateTextureMapping();
 		tex->activateTexture();
 		glBegin(GL_QUADS);

@@ -17,23 +17,27 @@ FBO::FBO(const Math::TVector2I& size,
 	    m_depth_id(0),
 	    m_is_activated(false)
 {
+	Logger::Log() << "[INFO] FBO Creation ... \n";
 	// On verifie que l'on a assez de Color Attachement
 	if(GetMaxColorAttachement() < buffers.size())
 	   throw CException("Pas assez de Color attachement");
 
 	// ==== Construction du FBO pour les color
+	Logger::Log() << "  * Color buffer creation ... \n";
 	for(std::map<std::string, FBOTextureBufferParam>::iterator it = buffers.begin(); it != buffers.end(); it++)
 	{
+		Logger::Log() << "   * Create new texture : " << it->first << "\n";
 	   Texture* tex = new Texture(size);
 	   m_textures[it->first] = tex;
 	   glBindTexture(GL_TEXTURE_2D, tex->getIdTex());
 	   glTexImage2D(GL_TEXTURE_2D, 0, it->second.InternalFormat, size.y, size.x, 0, it->second.ExternalFormat, it->second.Precision, 0);
 	   it->second.applyParam();
-	   Logger::Log() << " * Generate Image Render : " << tex->getIdTex() << "\n";
+	   Logger::Log() << "   * Generate Image Render : " << tex->getIdTex() << "\n";
 	}
 	// ==== Construction de FBO pour Depth
 	if(type != FBODEPTH_NONE)
 	{
+		Logger::Log() << "   * Depth buffer creation ... \n";
 	   if(type == FBODEPTH_TEXTURE)
 	   {
 		   glGenTextures(1,&m_depth_id);
@@ -62,8 +66,10 @@ FBO::FBO(const Math::TVector2I& size,
 	// ==== Ajout au FBO les couleurs
 	GLenum buffersDraw[buffers.size()];
 	int i = 0;
+	Logger::Log() << " * Attach textures ... \n";
 	for(std::map<std::string, FBOTextureBufferParam>::iterator it = buffers.begin(); it != buffers.end(); it++)
 	{
+		Logger::Log() << "   * Texture : " << it->first << " attachment : " << it->second.Attachment << " ( id " << m_textures[it->first]->getIdTex() << " ) \n";
 	   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+it->second.Attachment, GL_TEXTURE_2D, m_textures[it->first]->getIdTex(), 0);
 	   buffersDraw[i] = (GL_COLOR_ATTACHMENT0+it->second.Attachment);
 	   i++;
