@@ -23,15 +23,15 @@ smooth in vec3 outColor;
 smooth in vec3 outNormal;
 
 // Shader output
-out vec4 Normal;
 out vec4 Diffuse;
+out vec4 Normal;
 out vec4 Specular;
 void main()
 {
     // Diffuse buffer
     if(UseDiffuseTex == 1)
     {
-		Diffuse = texture2D(TextureDiffuse, outTexCoord.st);
+		Diffuse = texture(TextureDiffuse, outTexCoord.st);
 	}
 	else
 	{
@@ -41,8 +41,8 @@ void main()
 	// Normals buffer
 	if(UseBumpMapping == 1)
 	{
-		vec4 normalMap = texture2D(TextureNormal, outTexCoord.st);
-		vec3 n = normalize(2.0 * normalMap.rgb - 1.0);
+		vec4 normalMap = texture(TextureNormal, outTexCoord.st);
+		vec3 n = normalize(2.0 * normalMap.rgb - 1.0); // decode the Bump texture
 		vec3 normalInterpoled = n * outtnbMatrix;
 		Normal = vec4(normalize(normalInterpoled),1.0);
 	}
@@ -55,7 +55,7 @@ void main()
 	if(UseSpecularTex == 1)
 	{
 	    // Warning use the end element of SpecularValue ton know the shininess
-		Specular = vec4(texture2D(TextureSpecular, outTexCoord.st).rgb, SpecularValue.w);
+		Specular = vec4(texture(TextureSpecular, outTexCoord.st).rgb, SpecularValue.w);
 	}
 	else
 	{

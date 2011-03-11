@@ -18,5 +18,8 @@ namespace Math
 		 float a31, a32, a33; ///< 3eme ligne de la matrice
 	};
 
+	std::istream& operator >>(std::istream& Stream, CMatrix3& Mat);
+	std::ostream& operator <<(std::ostream& Stream, const CMatrix3& Mat);
+
     #include "Matrix3.inl"
 }

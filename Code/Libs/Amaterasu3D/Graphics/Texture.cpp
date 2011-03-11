@@ -66,8 +66,8 @@ void Texture::activateMultiTex(int unit)
 
 void Texture::desactivateMultiTex(int unit)
 {
+	desactivateTextureMapping();
 	glActiveTexture(GL_TEXTURE0+unit);
-	glDisable(GL_TEXTURE_2D);
 }
 
 TTexturePtr Texture::LoadFromFile(const std::string& filename)

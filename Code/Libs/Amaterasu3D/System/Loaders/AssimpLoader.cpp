@@ -124,6 +124,8 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		{
 			buffer.buffer = &mesh->mTangents[0].x;
 			assimpMesh->AddBuffer(buffer, TANGENT_ATTRIBUT);
+			buffer.buffer = &mesh->mBitangents[0].x;
+			assimpMesh->AddBuffer(buffer, BITANGENT_ATTRIBUT);
 		}
 		//  * UV Coords
 		if(mesh->GetNumUVChannels() > 0)

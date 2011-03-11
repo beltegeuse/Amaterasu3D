@@ -159,13 +159,13 @@ public:
 		SawOpenGL(m_matrixPerspective);
 	}
 
-	virtual void OnDraw()
+	virtual void OnDraw(double delta)
 	{
 		// Compute ModelViewMatrix
 		// Send matrix to the shader
 		m_shader->begin();
 		// Draw the geometry
-		Window::OnDraw();
+		Window::OnDraw(delta);
 		// End of the shader
 		m_shader->end();
 	}

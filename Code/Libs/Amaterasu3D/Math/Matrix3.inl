@@ -16,3 +16,21 @@ inline CMatrix3::operator const float*() const
 {
     return &a11;
 }
+
+inline std::istream& operator >>(std::istream& Stream, CMatrix3& Mat)
+{
+	Stream >> Mat.a11 >> Mat.a12 >> Mat.a13;
+	Stream >> Mat.a21 >> Mat.a22 >> Mat.a23;
+	Stream >> Mat.a31 >> Mat.a32 >> Mat.a33;
+
+	return Stream;
+}
+
+inline std::ostream& operator <<(std::ostream& Stream, const CMatrix3& Mat)
+{
+	Stream << Mat.a11 << " " << Mat.a12 << " " << Mat.a13 << std::endl;
+	Stream << Mat.a21 << " " << Mat.a22 << " " << Mat.a23 << std::endl;
+	Stream << Mat.a31 << " " << Mat.a32 << " " << Mat.a33 << std::endl;
+
+	return Stream;
+}

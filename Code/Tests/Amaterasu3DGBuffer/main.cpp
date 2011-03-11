@@ -68,10 +68,10 @@ public:
 	{
 	}
 
-	virtual void OnDraw()
+	virtual void OnDraw(double delta)
 	{
 		m_gbuffer_shader->begin();
-		Window::OnDraw();
+		Window::OnDraw(delta);
 		m_gbuffer_shader->end();
 
 		glMatrixMode(GL_PROJECTION);
@@ -79,8 +79,9 @@ public:
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		Texture* tex = m_gbuffer_shader->GetFBO()->GetTexture("Diffuse");
-		Logger::Log() << tex->getIdTex() << "\n";
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Texture* tex = m_gbuffer_shader->GetFBO()->GetTexture("Normal");
+//		Logger::Log() << tex->getIdTex() << "\n";
 		tex->activateTextureMapping();
 		tex->activateTexture();
 		glBegin(GL_QUADS);

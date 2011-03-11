@@ -41,6 +41,8 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 	std::map<std::string, FBOTextureBufferParam> buffers;
 	Logger::Log() << "   * Chargement des differents buffers .... \n";
 	TiXmlElement *frameNode = rootFBO->FirstChildElement("Frame");
+	shader->begin();
+//	int i = 0;
 	while(frameNode)
 	{
 		std::string name = std::string(frameNode->Attribute("name"));
@@ -53,11 +55,14 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 		}
 		else
 			throw CException("unknow buffer type");
+//		glBindFragDataLocation(shader->GetProgramObject(),i,name.c_str());
 		param.Attachment = glGetFragDataLocation(shader->GetProgramObject(),name.c_str());
 		Logger::Log() << "           * Attachment : " << param.Attachment << "\n";
 		buffers[name] = param;
 		frameNode = frameNode->NextSiblingElement("Frame");
+//		i++;
 	}
+	shader->end();
 	FBODepthBufferParam bufferDepth;
 	FBO* fbo = new FBO(Math::TVector2I(600,800), buffers, typeDepth, bufferDepth); // FIXME
 	shader->SetFBO(fbo);
@@ -140,6 +145,11 @@ void ShadersLoader::LoadShaderAttributs(glShader* shader, TiXmlElement *root)
 		{
 			Logger::Log() << "   * Attribut : " << nameAttrib << " (Tangent) \n";
 			type = TANGENT_ATTRIBUT;
+		}
+		else if(typeAttrib == "BiTangent")
+		{
+			Logger::Log() << "   * Attribut : " << nameAttrib << " (BiTangent) \n";
+			type = BITANGENT_ATTRIBUT;
 		}
 		else if(typeAttrib == "Normal")
 		{

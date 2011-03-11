@@ -999,7 +999,10 @@ bool glShader::setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix
 		Math::CMatrix4 matrixNormal;
 		matrixNormal = matrix.Inverse();
 		matrixNormal = matrixNormal.Transpose();
+//		Logger::Log() << "Normal matrix 4X4: "<< matrixNormal << "\n";
+		//TODO: Do normalisation factor ??? may be in inverse ??
 		setUniformMatrix3fv(m_matrix_bind[NORMAL_MATRIX].c_str(), matrixNormal.ExtractSubMatrix());
+//		Logger::Log() << "Normal matrix 3X3: "<< matrixNormal.ExtractSubMatrix() << "\n";
 	}
 }
 

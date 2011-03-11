@@ -8,7 +8,11 @@ CameraFly::CameraFly(const Math::TVector3F& pos, const Math::TVector3F& target, 
 	m_factor_move(200.0),
 	m_mouse_click(false),
 	m_angleX_new(0.0),
-	m_angleY_new(0.0)
+	m_angleY_new(0.0),
+	m_up_press(false),
+	m_down_press(false),
+	m_left_press(false),
+	m_right_press(false)
 {
 
 }
@@ -22,20 +26,38 @@ void CameraFly::OnEvent(SDL_Event& event, double DeltaTime)
 	if(event.type == SDL_KEYDOWN)
 	{
 		Math::CMatrix4 matrixTransform;
-		const float factor = (DeltaTime*m_factor_move);
 		 switch(event.key.keysym.sym)
 		 {
 		 	 case SDLK_a:
-		 		 m_position += m_left * factor;
+		 		 m_left_press = true;
 		 		 break;
 		 	 case SDLK_d:
-		 		m_position += -m_left * factor;
+		 		m_right_press = true;
 		 		break;
 		 	case SDLK_w:
-		 		m_position += m_forward * factor;
+		 		m_up_press = true;
 		 		break;
 		 	case SDLK_s:
-		 		m_position -= m_forward * factor;
+		 		m_down_press = true;
+		 		break;
+		 }
+	}
+	else if(event.type == SDL_KEYUP)
+	{
+		Math::CMatrix4 matrixTransform;
+		 switch(event.key.keysym.sym)
+		 {
+		 	 case SDLK_a:
+		 		 m_left_press = false;
+		 		 break;
+		 	 case SDLK_d:
+		 		m_right_press = false;
+		 		break;
+		 	case SDLK_w:
+		 		m_up_press = false;
+		 		break;
+		 	case SDLK_s:
+		 		m_down_press = false;
 		 		break;
 		 }
 	}
@@ -60,12 +82,23 @@ void CameraFly::OnEvent(SDL_Event& event, double DeltaTime)
 			m_angleX = -89;
 
 	}
+
 }
 
-void CameraFly::ComputeMatrix()
+void CameraFly::ComputeMatrix(double DeltaTime)
 {
+	const float factor = (DeltaTime*m_factor_move);
+	// Motion
+	if(m_left_press)
+		m_position += m_left * factor;
+	if(m_right_press)
+		m_position += -m_left * factor;
+	if(m_up_press)
+		m_position += m_forward * factor;
+	if(m_down_press)
+		m_position -= m_forward * factor;
 	ComputeAngles();
-	CameraAbstract::ComputeMatrix();
+	CameraAbstract::ComputeMatrix(DeltaTime);
 }
 
 void CameraFly::ComputeAngles()

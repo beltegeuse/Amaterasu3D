@@ -22,7 +22,7 @@ void CameraAbstract::SetMatrix(const Math::CMatrix4& matrix)
 	m_matrix = matrix;
 }
 
-void CameraAbstract::ComputeMatrix()
+void CameraAbstract::ComputeMatrix(double delta)
 {
 //	std::cout << "[DEBUG] Look at : " << std::endl;
 //	std::cout << "  * position : " << m_position << std::endl;

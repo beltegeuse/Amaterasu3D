@@ -61,10 +61,10 @@ public:
 	{
 	}
 
-	virtual void OnDraw()
+	virtual void OnDraw(double delta)
 	{
 		m_shader->begin();
-		Window::OnDraw();
+		Window::OnDraw(delta);
 		m_shader->end();
 
 		glMatrixMode(GL_PROJECTION);

@@ -113,7 +113,7 @@ void Window::Run()
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	    // Draw all the Scene ...
-	    OnDraw();
+	    OnDraw(delta);
 	    // Swap buffers
 	    SDL_GL_SwapWindow(m_fenetre);
 	}
@@ -127,7 +127,7 @@ void Window::OnEvent(SDL_Event& events, double delta)
 		m_camera->OnEvent(events, delta);
 }
 
-void Window::OnDraw()
+void Window::OnDraw(double DeltaTime)
 {
 	////////////////////////////////////////////////
 	// G-Buffer stage
@@ -136,7 +136,7 @@ void Window::OnDraw()
 
 	if(m_camera)
 	{
-		m_camera->ComputeMatrix();
+		m_camera->ComputeMatrix(DeltaTime);
 		MatrixManagement::Instance().PushMatrix(m_camera->GetMatrix());
 	}
 	// Do all graphics part here

@@ -80,6 +80,7 @@ void AssimpMesh::Draw()
 	{
 		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
 			continue;
+//		Logger::Log() << "Active texture : " << it->second->getIdTex() << " to " << it->first << "\n";
 		it->second->activateMultiTex(it->first);
 	}
 	// Buffer activation
@@ -105,10 +106,11 @@ void AssimpMesh::Draw()
 		glDisableVertexAttribArray (it->first);
 	}
 	// Textures desactivations
-	for(TexturesMap::iterator it = m_textures_map.begin(); it != m_textures_map.end(); it++)
+	for(TexturesMap::reverse_iterator it = m_textures_map.rbegin(); it != m_textures_map.rend(); it++)
 	{
 		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
 			continue;
+//		Logger::Log() << "Disable texture : " << it->second->getIdTex() << " to " << it->first << "\n";
 		it->second->desactivateMultiTex(it->first);
 	}
 }

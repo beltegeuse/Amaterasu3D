@@ -20,7 +20,7 @@ public:
 	virtual ~CameraAbstract();
 
 	void SetMatrix(const Math::CMatrix4& matrix);
-	virtual void ComputeMatrix();
+	virtual void ComputeMatrix(double delta);
 	const Math::CMatrix4& GetMatrix();
 	virtual void OnEvent(SDL_Event& events, double deltaTime) = 0;
 };

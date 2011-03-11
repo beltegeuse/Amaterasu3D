@@ -30,7 +30,7 @@ public:
 	SceneGraph::Group& GetSceneRoot();
 
 	// Virtual methods
-	virtual void OnDraw();
+	virtual void OnDraw(double delta);
 	virtual void OnEvent(SDL_Event& events, double delta);
 	//! Warning, stole the adress value
 	void SetCamera(CameraAbstract* camera);

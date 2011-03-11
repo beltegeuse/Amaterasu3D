@@ -21,12 +21,18 @@ private:
 
 	// Les constantes
 	float m_factor_move;
+
+	// For keyboard
+	bool m_up_press;
+	bool m_down_press;
+	bool m_left_press;
+	bool m_right_press;
 public:
 	CameraFly(const Math::TVector3F& pos, const Math::TVector3F& target, const Math::TVector3F& up = Math::TVector3F(0,1,0));
 	virtual ~CameraFly();
 
 	virtual void OnEvent(SDL_Event& event, double deltaTime);
-	virtual void ComputeMatrix();
+	virtual void ComputeMatrix(double delta);
 private:
 	void ComputeAngles();
 };

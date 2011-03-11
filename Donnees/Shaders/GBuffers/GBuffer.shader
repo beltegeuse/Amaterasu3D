@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <Shader name="BumpMapping" type="GBuffer">
-    <OutputFrame depthType="Texture">
-    	<Frame name="Normal" type="RGBA" />
+    <OutputFrame depthType="RenderTarget">
     	<Frame name="Diffuse" type="RGBA" />
+    	<Frame name="Normal" type="RGBA" />
     	<Frame name="Specular" type="RGBA" />
     </OutputFrame>
     <MatrixInput>
@@ -18,6 +18,7 @@
 	<Attributs>
     	<Attribut type="Vertex" name="VertexPosition" />
     	<Attribut type="Tangent" name="VertexTangent" />
+    	<Attribut type="BiTangent" name="VertexBiTangent" />
     	<Attribut type="Normal" name="VertexNormal" />
     	<Attribut type="TexCoord" name="VertexTexCoord" />
     	<Attribut type="Color" name="VertexColor" />

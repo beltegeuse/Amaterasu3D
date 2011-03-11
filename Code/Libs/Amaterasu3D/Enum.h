@@ -15,12 +15,14 @@ enum MatrixType
 	NORMAL_MATRIX
 };
 
+//FIXME: Just compute the direction for Tangante and store in vec4 (last comp)
 enum ShaderAttributType
 {
 	VERTEX_ATTRIBUT,
 	TEXCOORD_ATTRIBUT,
 	NORMAL_ATTRIBUT,
 	TANGENT_ATTRIBUT,
+	BITANGENT_ATTRIBUT,
 	COLOR_ATTRIBUT
 };
 
