@@ -14,7 +14,8 @@ FBO::FBO(const Math::TVector2I& size,
 	    FBODepthType type,
 	    FBODepthBufferParam& paramDepth) :
 	    m_depth_type(type),
-	    m_depth_id(0)
+	    m_depth_id(0),
+	    m_is_activated(false)
 {
 	// On verifie que l'on a assez de Color Attachement
 	if(GetMaxColorAttachement() < buffers.size())
@@ -46,6 +47,7 @@ FBO::FBO(const Math::TVector2I& size,
 		   glGenRenderbuffers(1, &m_depth_id);
 		   glBindRenderbuffer(GL_RENDERBUFFER, m_depth_id);
 		   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24_ARB, size.y, size.x);
+		   glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		   Logger::Log() << " * Generate Depth Render target : " <<  m_depth_id << "\n";
 	   }
 	   else
@@ -82,9 +84,8 @@ FBO::FBO(const Math::TVector2I& size,
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
-	//FIXME: A implemeter
-	//checkFramebufferStatus();
-
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		throw CException("error on FBO creation...");
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
@@ -94,13 +95,18 @@ FBO::FBO(const Math::TVector2I& size,
 FBO::~FBO()
 {
 	//FIXME: Faire le destructeur
+	Logger::Log() << "[INFO] FBO destory \n";
 }
 
 void FBO::Bind()
 {
+	if(m_is_activated)
+		return;
+
+//	Logger::Log() << "FBO Bind " << m_fbo_id << "\n";
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
-	glPushAttrib(GL_VIEWPORT_BIT | GL_COLOR_BUFFER_BIT);
-	glViewport(0,0,m_size.y, m_size.x);
+	glPushAttrib(GL_COLOR_BUFFER_BIT);
+//	glViewport(0,0,m_size.y, m_size.x);
 
 	GLbitfield flags = 0;
 	if(m_depth_type != FBODEPTH_NONE)
@@ -113,15 +119,24 @@ void FBO::Bind()
 
 	if(flags)
 		glClear(flags);
+
+	m_is_activated = true;
 }
 
 void FBO::UnBind()
 {
+	if(!m_is_activated)
+		return;
+
+//	Logger::Log() << "FBO UnBind " << m_fbo_id << "\n";
+
 	glPopAttrib();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	if(m_textures.empty())
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+	m_is_activated = false;
 }
 
 int FBO::GetMaxColorAttachement()

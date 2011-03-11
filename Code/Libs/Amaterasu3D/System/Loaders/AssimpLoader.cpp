@@ -154,18 +154,25 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 					material->GetTexture(aiTextureType_DIFFUSE, 0, &AiPath);
 					CFile texturePath = std::string(AiPath.data);
 					Logger::Log() << "[INFO] Chargement de la texture : " << texturePath.Filename() << "\n";
-					TTexturePtr texturePtr;
-					try
-					{
-						texturePtr = Texture::LoadFromFile(texturePath.Filename());
-					}
-					catch(CException e)
-					{
-						texturePtr = Texture::LoadFromFile("unknowTexture.tga");
-					}
-
-					assimpMesh->AddTextureMap(DIFFUSE_TEXTURE, texturePtr);
+					assimpMesh->AddTextureMap(DIFFUSE_TEXTURE, LoadTexture(texturePath));
 				}
+				if(material->GetTextureCount(aiTextureType_SPECULAR)>0)
+				{
+					aiString AiPath;
+					material->GetTexture(aiTextureType_SPECULAR, 0, &AiPath);
+					CFile texturePath = std::string(AiPath.data);
+					Logger::Log() << "[INFO] Chargement de la texture : " << texturePath.Filename() << "\n";
+					assimpMesh->AddTextureMap(SPECULAR_TEXTURE, LoadTexture(texturePath));
+				}
+				if(material->GetTextureCount(aiTextureType_NORMALS)>0)
+				{
+					aiString AiPath;
+					material->GetTexture(aiTextureType_NORMALS, 0, &AiPath);
+					CFile texturePath = std::string(AiPath.data);
+					Logger::Log() << "[INFO] Chargement de la texture : " << texturePath.Filename() << "\n";
+					assimpMesh->AddTextureMap(NORMAL_TEXTURE, LoadTexture(texturePath));
+				}
+
 
 			}
 		}
@@ -188,4 +195,18 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		group->AddChild(assimpNode);
 	}
 
+}
+
+TTexturePtr AssimpLoader::LoadTexture(const CFile& file)
+{
+	TTexturePtr texturePtr;
+	try
+	{
+		texturePtr = Texture::LoadFromFile(file.Filename());
+	}
+	catch(CException e)
+	{
+		texturePtr = Texture::LoadFromFile("unknowTexture.tga");
+	}
+	return texturePtr;
 }

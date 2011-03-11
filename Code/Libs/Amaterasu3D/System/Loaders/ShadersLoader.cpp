@@ -11,6 +11,58 @@ ShadersLoader::~ShadersLoader()
 {
 }
 
+void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
+{
+	TiXmlElement *rootFBO = root->FirstChildElement("OutputFrame");
+	if(!rootFBO)
+	{
+		Logger::Log() << "[INFO] No FBO is available ... \n";
+		return;
+	}
+	// Get the depth buffer type
+	std::string typeDepthString = std::string(rootFBO->Attribute("depthType"));
+	Logger::Log() << "   * Depth buffer type " << typeDepthString << "\n";
+	FBODepthType typeDepth;
+	if(typeDepthString == "None")
+	{
+		typeDepth = FBODEPTH_NONE;
+	}
+	else if(typeDepthString == "RenderTarget")
+	{
+		typeDepth = FBODEPTH_RENDERTARGET;
+	}
+	else if(typeDepthString == "Texture")
+	{
+		typeDepth = FBODEPTH_TEXTURE;
+	}
+	else
+		throw CException("invalid buffer type");
+	// Get all buffers
+	std::map<std::string, FBOTextureBufferParam> buffers;
+	Logger::Log() << "   * Chargement des differents buffers .... \n";
+	TiXmlElement *frameNode = rootFBO->FirstChildElement("Frame");
+	while(frameNode)
+	{
+		std::string name = std::string(frameNode->Attribute("name"));
+		std::string typeString = std::string(frameNode->Attribute("type"));
+		Logger::Log() << "      * Create buffer : " << name << " ( " << typeString << " ) \n";
+		FBOTextureBufferParam param;
+		if(typeString == "RGBA")
+		{
+			// Nothing to do
+		}
+		else
+			throw CException("unknow buffer type");
+		param.Attachment = glGetFragDataLocation(shader->GetProgramObject(),name.c_str());
+		Logger::Log() << "           * Attachment : " << param.Attachment << "\n";
+		buffers[name] = param;
+		frameNode = frameNode->NextSiblingElement("Frame");
+	}
+	FBODepthBufferParam bufferDepth;
+	FBO* fbo = new FBO(Math::TVector2I(600,800), buffers, typeDepth, bufferDepth); // FIXME
+	shader->SetFBO(fbo);
+}
+
 void ShadersLoader::LoadShaderMatrix(glShader* shader, TiXmlElement *root)
 {
 	TiXmlElement *rootMatrix = root->FirstChildElement("MatrixInput");
@@ -200,6 +252,8 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	LoadShaderTextures(shader, root);
 	// Matrix uniform
 	LoadShaderMatrix(shader, root);
+	// FBO
+	LoadShaderFBO(shader, root);
 	// Update all bindings
 	// * Warning : Need to relink after
 	shader->UpdateAll();

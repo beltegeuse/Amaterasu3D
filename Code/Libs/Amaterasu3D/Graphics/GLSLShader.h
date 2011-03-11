@@ -156,7 +156,9 @@ public:
 	// To know before drawing
 	virtual void OnDraw();
 	virtual void UpdateAll();
-
+	FBO* GetFBO();
+	void SetFBO(FBO* fbo);
+	bool isFBOAvaliable() const;
 	//!< Returns the OpenGL Program Object (only needed if you want to control everything yourself) \return The OpenGL Program Object
 	GLuint     GetProgramObject(){return ProgramObject;}
 
@@ -288,7 +290,7 @@ protected:
 	void        manageMemory(void){_mM = true;}
 	void        UsesGeometryShader(bool bYesNo){ _bUsesGeometryShader = bYesNo;}
 
-private:
+protected:
 	// the GLProgramObject ID
 	GLuint      ProgramObject;
 
@@ -299,6 +301,9 @@ private:
 	MapAttributs m_attributs_bind;
 	MapTexture m_textures_bind;
 	MapMatrix m_matrix_bind;
+	// Differents buffers
+	//TODO: Changes things ...
+	FBO* m_FBO;
 
 	GLcharARB*  linker_log;
 	bool        is_linked;
@@ -327,22 +332,13 @@ private:
 	bool m_use_texDiffuse;
 	bool m_use_texSpecular;
 	bool m_use_tangants;
-	// Differents buffers
-	//TODO: Mettre le FBO dans glShader
-	FBO* m_FBO;
 public:
 	GBufferShader();
 	virtual ~GBufferShader();
 
 	virtual void OnDraw();
-	virtual void UpdateAll();
 	virtual bool attributAvailable(ShaderAttributType type);
 	virtual bool textureAvailable(TextureType type);
-
-	virtual void begin();
-	virtual void end();
-
-	FBO* GetFBO();
 };
 
 //-----------------------------------------------------------------------------

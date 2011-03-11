@@ -25,13 +25,13 @@
 #include <iostream>
 #include <stdlib.h>
 
-class WindowGBuffer : public Window
+class WindowFBO : public Window
 {
 protected:
 	Math::CMatrix4 m_matrixPerspective;
-	TShaderPtr m_gbuffer_shader;
+	TShaderPtr m_shader;
 public:
-	WindowGBuffer() :
+	WindowFBO() :
 		Window("Amaterasu3DTestApp")
 	{
 		// Camera Setup
@@ -46,35 +46,33 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/TestShaders");
 		// Load shader
-		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
-		m_gbuffer_shader->begin();
-		m_gbuffer_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
-		m_gbuffer_shader->end();
+		m_shader = glShaderManager::Instance().LoadShader("TestFBOTextureShader.shader");
+		m_shader->begin();
+		m_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
+		m_shader->end();
 		// Load scene
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
-//		GetSceneRoot().AddChild(node);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
 		GetSceneRoot().AddChild(node);
 	}
 
-	virtual ~WindowGBuffer()
+	virtual ~WindowFBO()
 	{
 	}
 
 	virtual void OnDraw()
 	{
-		m_gbuffer_shader->begin();
+		m_shader->begin();
 		Window::OnDraw();
-		m_gbuffer_shader->end();
+		m_shader->end();
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		Texture* tex = m_gbuffer_shader->GetFBO()->GetTexture("Diffuse");
+		Texture* tex = m_shader->GetFBO()->GetTexture("Color");
 		tex->activateTextureMapping();
 		tex->activateTexture();
 		glBegin(GL_QUADS);
@@ -93,7 +91,6 @@ public:
 
 		glEnd();
 		tex->desactivateTextureMapping();
-//		m_shader->GetDiffuseBuffer()->desactivateTextureMapping();
 	}
 };
 
@@ -105,7 +102,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	aiAttachLogStream(&stream);
 
 	std::cout << "[INFO] Begin ..." << std::endl;
-	WindowGBuffer window;
+	WindowFBO window;
 	window.Run();
 	std::cout << "[INFO] ... end." << std::endl;
 	return 0;

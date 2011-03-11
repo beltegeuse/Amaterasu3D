@@ -62,6 +62,7 @@ private:
 	FBODepthType m_depth_type;
 	GLuint m_depth_id;
 	GLuint m_fbo_id;
+	bool m_is_activated;
 public:
 	FBO(const Math::TVector2I& size,
 	    std::map<std::string, FBOTextureBufferParam>& buffers,

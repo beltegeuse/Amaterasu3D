@@ -10,6 +10,7 @@
 #include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
 #include <Graphics/SceneGraph/Assimp/AssimpNode.h>
 #include <System/Loaders/Loader.h>
+#include <Utilities/File.h>
 #include <assimp.h>
 #include "aiScene.h"
 #include <map>
@@ -28,6 +29,7 @@ public:
 	virtual SceneGraph::AssimpNode* LoadFromFile(const std::string& Filename);
 private:
 	void BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scene, aiNode* nd);
+	TTexturePtr LoadTexture(const CFile& name);
 };
 
 #endif /* ASSIMPLOADER_H_ */

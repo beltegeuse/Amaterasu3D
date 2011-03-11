@@ -23,6 +23,7 @@ private:
 	void LoadShaderAttributs(glShader* shader, TiXmlElement *root);
 	void LoadShaderTextures(glShader* shader, TiXmlElement *root);
 	void LoadShaderMatrix(glShader* shader, TiXmlElement *root);
+	void LoadShaderFBO(glShader* shader, TiXmlElement *root);
 };
 
 #endif /* SHADERLOADER_H_ */

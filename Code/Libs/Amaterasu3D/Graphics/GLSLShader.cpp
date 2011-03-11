@@ -219,7 +219,7 @@ glShader::glShader()
 	is_linked = false;
 	_mM = false;
 	_noshader = true;
-
+	m_FBO = 0;
 	if (!useGLSL)
 	{
 		cout << "**ERROR: OpenGL Shading Language is NOT available!" << endl;
@@ -397,6 +397,11 @@ void glShader::begin(void)
 		glShaderManager::Instance().Push(this);
 		CHECK_GL_ERROR();
 	}
+
+	if(m_FBO != 0)
+	{
+		m_FBO->Bind();
+	}
 }
 
 //----------------------------------------------------------------------------- 
@@ -409,6 +414,11 @@ void glShader::end(void)
 	glShaderManager::Instance().Pop();
 	glUseProgram(0);
 	CHECK_GL_ERROR();
+
+	if(m_FBO != 0)
+	{
+		m_FBO->UnBind();
+	}
 }
 
 //----------------------------------------------------------------------------- 
@@ -1386,6 +1396,22 @@ void glShader::UpdateAll()
 	end();
 }
 
+FBO* glShader::GetFBO()
+{
+	return m_FBO;
+}
+
+void glShader::SetFBO(FBO* fbo)
+{
+	if(m_FBO)
+		delete m_FBO;
+	m_FBO = fbo;
+}
+
+bool glShader::isFBOAvaliable() const
+{
+	return m_FBO == NULL;
+}
 //-----------------------------------------------------------------------------
 // ************************************************************************
 // Shader Program : Manage Shader Programs (Vertex/Fragment)
@@ -2150,8 +2176,7 @@ GBufferShader::GBufferShader() :
 		m_use_texNormal(false),
 		m_use_texDiffuse(false),
 		m_use_texSpecular(false),
-		m_use_tangants(false),
-		m_FBO(NULL)
+		m_use_tangants(false)
 {
 }
 
@@ -2198,33 +2223,6 @@ void GBufferShader::OnDraw()
 	m_use_tangants = false;
 }
 
-void GBufferShader::UpdateAll()
-{
-	glShader::begin();
-	// Set good params
-	std::map<std::string, FBOTextureBufferParam> buffers;
-	// Create all buffers
-	FBOTextureBufferParam tex1;
-	tex1.Attachment = glGetFragDataLocation(GetProgramObject(), "Diffuse");
-	Logger::Log() << "[INFO] Diffuse attachment : " << tex1.Attachment << "\n";
-	FBOTextureBufferParam tex2;
-	tex2.Attachment = glGetFragDataLocation(GetProgramObject(), "Normal");
-	Logger::Log() << "[INFO] Normal attachment : " << tex2.Attachment << "\n";
-	FBOTextureBufferParam tex3;
-	tex3.Attachment = glGetFragDataLocation(GetProgramObject(), "Specular");
-	Logger::Log() << "[INFO] Specular attachment : " << tex3.Attachment << "\n";
-	// Add into a list
-	buffers["Diffuse"] = tex1;
-	buffers["Normal"] = tex2;
-	buffers["Specular"] = tex3;
-	// Create depth buffer param
-	FBODepthBufferParam depthParam;
-	// Create FBO
-	m_FBO = new FBO(Math::TVector2I(800,600), buffers, FBODEPTH_TEXTURE, depthParam);
-	glShader::end();
-	glShader::UpdateAll();
-}
-
 bool GBufferShader::attributAvailable(ShaderAttributType type)
 {
 	//TODO: Rewrite this function
@@ -2238,18 +2236,6 @@ bool GBufferShader::attributAvailable(ShaderAttributType type)
 		m_use_texCoord = true;
 	// Return the good value
 	return res;
-}
-
-void GBufferShader::begin()
-{
-	m_FBO->Bind();
-	glShader::begin();
-}
-
-void GBufferShader::end()
-{
-	m_FBO->UnBind();
-	glShader::end();
 }
 
 bool GBufferShader::textureAvailable(TextureType type)
@@ -2267,10 +2253,5 @@ bool GBufferShader::textureAvailable(TextureType type)
 		m_use_texSpecular = false;
 	// Return the good value
 	return res;
-}
-
-FBO* GBufferShader::GetFBO()
-{
-	return m_FBO;
 }
 
