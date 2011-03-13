@@ -53,15 +53,15 @@ public:
 		m_gbuffer_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_gbuffer_shader->end();
 		// Load scene
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-//		GetSceneRoot().AddChild(node);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
-		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
-		nodeGroup->AddChild(node);
-		Math::CMatrix4 mat;
-		mat.SetTranslation(-1000.0,0,0);
-		nodeGroup->LoadTransformMatrix(mat);
-		GetSceneRoot().AddChild(nodeGroup);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		GetSceneRoot().AddChild(node);
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
+//		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
+//		nodeGroup->AddChild(node);
+//		Math::CMatrix4 mat;
+//		mat.SetTranslation(-1000.0,0,0);
+//		nodeGroup->LoadTransformMatrix(mat);
+//		GetSceneRoot().AddChild(nodeGroup);
 	}
 
 	virtual ~WindowGBuffer()
@@ -80,26 +80,27 @@ public:
 		glLoadIdentity();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		Texture* tex = m_gbuffer_shader->GetFBO()->GetTexture("Normal");
+		m_gbuffer_shader->GetFBO()->DrawDebug();
+//		Texture* tex = m_gbuffer_shader->GetFBO()->GetTexture("Normal");
 //		Logger::Log() << tex->getIdTex() << "\n";
-		tex->activateTextureMapping();
-		tex->activateTexture();
-		glBegin(GL_QUADS);
-
-		glTexCoord2f(0.0, 0.0);
-		glVertex2f(-1.0, -1.0);
-
-		glTexCoord2f(0.0, 1.0);
-		glVertex2f(-1.0, 1.0);
-
-		glTexCoord2f(1.0, 1.0);
-		glVertex2f(1.0, 1.0);
-
-		glTexCoord2f(1.0, 0.0);
-		glVertex2f(1.0, -1.0);
-
-		glEnd();
-		tex->desactivateTextureMapping();
+//		tex->activateTextureMapping();
+//		tex->activateTexture();
+//		glBegin(GL_QUADS);
+//
+//		glTexCoord2f(0.0, 0.0);
+//		glVertex2f(-1.0, -1.0);
+//
+//		glTexCoord2f(0.0, 1.0);
+//		glVertex2f(-1.0, 1.0);
+//
+//		glTexCoord2f(1.0, 1.0);
+//		glVertex2f(1.0, 1.0);
+//
+//		glTexCoord2f(1.0, 0.0);
+//		glVertex2f(1.0, -1.0);
+//
+//		glEnd();
+//		tex->desactivateTextureMapping();
 //		m_shader->GetDiffuseBuffer()->desactivateTextureMapping();
 	}
 };

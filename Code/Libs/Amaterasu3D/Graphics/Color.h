@@ -31,6 +31,19 @@
 #include <iostream>
 
 
+struct Color
+{
+	float R;
+	float G;
+	float B;
+	float A;
+
+	Color(float r, float g, float b, float a = 1.0) :
+		R(r), G(g), B(b), A(a)
+	{
+	}
+};
+
 ////////////////////////////////////////////////////////////
 /// Classe manipulant les couleurs
 ////////////////////////////////////////////////////////////

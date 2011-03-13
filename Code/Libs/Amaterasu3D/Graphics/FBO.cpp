@@ -157,3 +157,102 @@ Texture* FBO::GetTexture(const std::string& nameBuffer)
 	Assert(m_textures.find(nameBuffer) != m_textures.end());
 	return m_textures[nameBuffer];
 }
+
+void FBO::DrawDebug()
+{
+	// Compute Grid need
+	// * Compute how many slot need
+	int nbElementsToDraw = 0;
+	if(m_depth_type == FBODEPTH_TEXTURE)
+		nbElementsToDraw++;
+	nbElementsToDraw += m_textures.size();
+//	Logger::Log() << "ElemeentDraw : " << nbElementsToDraw << "\n";
+	// * Compute the grid dimension
+	int nbHeight = nbElementsToDraw / 2;
+	if(nbElementsToDraw % 2 != 0)
+		nbHeight++;
+
+	int nbWidth = nbHeight;
+	if(nbHeight*nbHeight < nbElementsToDraw)
+		nbWidth++;
+
+	glPushAttrib(GL_VIEWPORT_BIT);
+
+	// Init right matrix for the drawing
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	// Draw the Grid
+	const int WindowHeight = 600; // FIXME: Add to an manager
+	const int WindowWidth = 800;
+	// Compute factors width
+	const int factorWidth = (WindowWidth / nbWidth);
+	const int factorHeight = (WindowHeight / nbHeight);
+//	Logger::Log() << "Nb : " << nbHeight << "x" << nbWidth << "\n";
+//	Logger::Log() << "Factors : " << factorHeight << "x" << factorWidth << "\n";
+	glEnable (GL_SCISSOR_TEST);
+	int nbElementDrew = 0;
+	//glViewport(0,0, factorWidth,  factorHeight);
+	if(m_depth_type == FBODEPTH_TEXTURE)
+	{
+		// Setup scissor
+		//glScissor(0,0, factorWidth,  factorHeight);
+		glViewport(0,0, factorWidth,  factorHeight);
+		// Active the texture
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, m_depth_id);
+		// Draw the texture
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 0.0);
+		glVertex2f(-1.0, -1.0);
+		glTexCoord2f(0.0, 1.0);
+		glVertex2f(-1.0, 1.0);
+		glTexCoord2f(1.0, 1.0);
+		glVertex2f(1.0, 1.0);
+		glTexCoord2f(1.0, 0.0);
+		glVertex2f(1.0, -1.0);
+		glEnd();
+		// Desactive textures
+		glBindTexture(GL_TEXTURE_2D, m_depth_id);
+		glDisable(GL_TEXTURE_2D);
+		nbElementDrew++;
+	}
+	// Draw others textures
+	for(std::map<std::string, Texture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
+	{
+		int idWidth = nbElementDrew / nbWidth;
+		int idHeight = nbElementDrew % nbHeight;
+//		Logger::Log() << it->first << " : " << idHeight*factorHeight << "x" << idWidth*factorWidth << "\n";
+		// Setup scissor
+		//glScissor(idWidth*factorWidth,idHeight*factorHeight, (idWidth+1)*factorWidth,(idHeight+1)*factorHeight);
+		glViewport(idWidth*factorWidth,idHeight*factorHeight, factorWidth,  factorHeight);
+		it->second->activateTextureMapping();
+		it->second->activateTexture();
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 0.0);
+		glVertex2f(-1.0, -1.0);
+		glTexCoord2f(0.0, 1.0);
+		glVertex2f(-1.0, 1.0);
+		glTexCoord2f(1.0, 1.0);
+		glVertex2f(1.0, 1.0);
+		glTexCoord2f(1.0, 0.0);
+		glVertex2f(1.0, -1.0);
+		glEnd();
+		it->second->desactivateTextureMapping();
+		nbElementDrew++;
+	}
+
+	glDisable ( GL_SCISSOR_TEST);
+
+	// Undo transform
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glPopAttrib();
+
+}

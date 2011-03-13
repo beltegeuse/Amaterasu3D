@@ -73,6 +73,9 @@ public:
 	void Bind();
 	void UnBind();
 	Texture* GetTexture(const std::string& nameBuffer);
+
+	//! Draw all associates buffer in a single frame
+	void DrawDebug();
 private:
 	int GetMaxColorAttachement();
 };
