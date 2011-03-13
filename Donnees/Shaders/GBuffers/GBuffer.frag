@@ -18,7 +18,7 @@ uniform sampler2D TextureSpecular;
 
 // Shader input
 smooth in vec2 outTexCoord;
-smooth in mat3 outtnbMatrix;
+smooth in mat3 outtbnMatrix;
 smooth in vec3 outColor;
 smooth in vec3 outNormal;
 
@@ -43,7 +43,7 @@ void main()
 	{
 		vec4 normalMap = texture(TextureNormal, outTexCoord.st);
 		vec3 n = normalize(2.0 * normalMap.rgb - 1.0); // decode the Bump texture
-		vec3 normalInterpoled = n * outtnbMatrix;
+		vec3 normalInterpoled = n * outtbnMatrix;
 		Normal = vec4(normalize(normalInterpoled),1.0);
 	}
 	else

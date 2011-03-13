@@ -21,7 +21,7 @@ uniform mat3 NormalMatrix;
 
 // Smooth variables
 smooth out vec2 outTexCoord;
-smooth out mat3 outtnbMatrix;
+smooth out mat3 outtbnMatrix;
 smooth out vec3 outColor;
 smooth out vec3 outNormal;
 
@@ -39,11 +39,15 @@ void main ()
 	if(UseBumpMapping == 1)
 	{
 	    vec3 normal = normalize(NormalMatrix * VertexNormal);
-		vec3 tangent = normalize(NormalMatrix * VertexTangent.xyz);
-		vec3 binormal = normalize(NormalMatrix * VertexBiTangent); // remove w for VertexTangant
-		outtnbMatrix =  mat3(tangent.x,binormal.x, normal.x,
-		                    tangent.y, binormal.y, normal.y,
-		                    tangent.z,binormal.z,normal.z);
+		vec3 tangent = normalize(NormalMatrix * VertexTangent);
+		vec3 binormal = normalize(NormalMatrix * VertexBiTangent);
+		//outtnbMatrix =  mat3(tangent.x,binormal.x, normal.x,
+		//                    tangent.y, binormal.y, normal.y,
+		//                    tangent.z,binormal.z,normal.z);
+		//outtnbMatrix =  mat3(tangent.x,tangent.y, tangent.z,
+		//                    binormal.x, binormal.y, binormal.z,
+		//                    normal.x,normal.y,normal.z);
+		outtbnMatrix = mat3(tangent, binormal, normal);
 	}
 	else
 	{
