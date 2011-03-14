@@ -30,7 +30,8 @@ enum TextureType
 {
 	DIFFUSE_TEXTURE = 0,
 	NORMAL_TEXTURE = 1,
-	SPECULAR_TEXTURE = 2
+	SPECULAR_TEXTURE = 2,
+	CUSTOM_TEXTURE = 3 // Need to be on the end
 };
 
 enum ShaderType

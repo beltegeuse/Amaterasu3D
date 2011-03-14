@@ -180,28 +180,35 @@ void ShadersLoader::LoadShaderTextures(glShader* shader, TiXmlElement *root)
 		//TODO: Faire les exceptions si attributs absent
 		std::string nameAttrib = std::string(textureNode->Attribute("name"));
 		std::string typeAttrib = std::string(textureNode->Attribute("type"));
-		TextureType type;
+		int typeID;
+	    int id;
 		//TODO: Faire une factory ???
 		if(typeAttrib == "Diffuse")
 		{
 			Logger::Log() << "   * Texture : " << nameAttrib << " (Diffuse) \n";
-			type = DIFFUSE_TEXTURE;
+			typeID = DIFFUSE_TEXTURE;
 		}
 		else if(typeAttrib == "Normal")
 		{
 			Logger::Log() << "   * Texture : " << nameAttrib << " (Normal) \n";
-			type = NORMAL_TEXTURE;
+			typeID = NORMAL_TEXTURE;
 		}
 		else if(typeAttrib == "Specular")
 		{
 			Logger::Log() << "   * Texture : " << nameAttrib << " (Specular) \n";
-			type = SPECULAR_TEXTURE;
+			typeID = SPECULAR_TEXTURE;
+		}
+		else if(typeAttrib == "Custom")
+		{
+			textureNode->Attribute("id",&id);
+			Logger::Log() << "   * Texture : " << nameAttrib << " (Custom) [" << id << "]\n";
+			typeID = CUSTOM_TEXTURE+id;
 		}
 		else
 		{
 			throw CException("Unknow attribut : "+typeAttrib);
 		}
-		shader->addTextureUnit(type, nameAttrib);
+		shader->addTextureUnit(typeID, nameAttrib);
 		textureNode = textureNode->NextSiblingElement("Texture");
 	}
 }

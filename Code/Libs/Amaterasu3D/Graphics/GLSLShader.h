@@ -149,7 +149,7 @@ public:
 	void updateAttributBlinding();
 	virtual bool attributAvailable(ShaderAttributType type);
 	// * Textures
-	void addTextureUnit(TextureType type, const std::string& name);
+	void addTextureUnit(int typeID, const std::string& name);
 	void updateTextureUnitsBlinding();
 	virtual bool textureAvailable(TextureType type);
 	// * matrix
@@ -298,7 +298,7 @@ protected:
 
 	// All binding attributs
 	typedef std::map<ShaderAttributType,std::string> MapAttributs;
-	typedef std::map<TextureType,std::string> MapTexture;
+	typedef std::map<int,std::string> MapTexture;
 	typedef std::map<MatrixType,std::string> MapMatrix;
 	MapAttributs m_attributs_bind;
 	MapTexture m_textures_bind;

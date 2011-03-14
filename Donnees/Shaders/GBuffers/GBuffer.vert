@@ -20,6 +20,7 @@ uniform mat4 ModelViewMatrix;
 uniform mat3 NormalMatrix;
 
 // Smooth variables
+smooth out vec4 outPosition;
 smooth out vec2 outTexCoord;
 smooth out mat3 outtbnMatrix;
 smooth out vec3 outColor;
@@ -41,12 +42,6 @@ void main ()
 	    vec3 normal = normalize(NormalMatrix * VertexNormal);
 		vec3 tangent = normalize(NormalMatrix * VertexTangent);
 		vec3 binormal = normalize(NormalMatrix * VertexBiTangent);
-		//outtnbMatrix =  mat3(tangent.x,binormal.x, normal.x,
-		//                    tangent.y, binormal.y, normal.y,
-		//                    tangent.z,binormal.z,normal.z);
-		//outtnbMatrix =  mat3(tangent.x,tangent.y, tangent.z,
-		//                    binormal.x, binormal.y, binormal.z,
-		//                    normal.x,normal.y,normal.z);
 		outtbnMatrix = mat3(tangent, binormal, normal);
 	}
 	else
@@ -60,6 +55,6 @@ void main ()
         outColor = VertexColor;
     }
     
-    
-	gl_Position = ProjectionMatrix * ModelViewMatrix * vec4 (VertexPosition, 1.0);
+    outPosition = ModelViewMatrix * vec4 (VertexPosition, 1.0);
+	gl_Position = ProjectionMatrix * outPosition;
 }

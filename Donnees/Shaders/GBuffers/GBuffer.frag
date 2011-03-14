@@ -17,6 +17,7 @@ uniform sampler2D TextureNormal;
 uniform sampler2D TextureSpecular;
 
 // Shader input
+smooth in vec4 outPosition;
 smooth in vec2 outTexCoord;
 smooth in mat3 outtbnMatrix;
 smooth in vec3 outColor;
@@ -26,8 +27,13 @@ smooth in vec3 outNormal;
 out vec4 Diffuse;
 out vec4 Normal;
 out vec4 Specular;
+out vec4 Position;
+
 void main()
 {
+	// Position buffer
+	Position = outPosition;
+
     // Diffuse buffer
     if(UseDiffuseTex == 1)
     {

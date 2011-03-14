@@ -1355,9 +1355,9 @@ bool glShader::attributAvailable(ShaderAttributType type)
 	return m_attributs_bind.find(type) != m_attributs_bind.end();
 }
 
-void glShader::addTextureUnit(TextureType type, const std::string& name)
+void glShader::addTextureUnit(int typeID, const std::string& name)
 {
-	m_textures_bind[type] = name;
+	m_textures_bind[typeID] = name;
 }
 
 void glShader::updateTextureUnitsBlinding()
