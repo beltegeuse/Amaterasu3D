@@ -41,6 +41,7 @@ Window::Window(const std::string& name, const Math::TVector2I& windowSize, bool 
 	// OpenGL Buffer instructions
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	//SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	// Creation of the SDL Window
 	m_fenetre = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowSize.x, windowSize.y, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 	m_contexteOpenGL = SDL_GL_CreateContext(m_fenetre);

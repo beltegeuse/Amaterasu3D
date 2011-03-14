@@ -7,11 +7,14 @@
 
 #ifndef FBO_H_
 #define FBO_H_
-
+#include <Graphics/GLSLShader.h>
 #include <Graphics/Texture.h>
 #include <Enum.h>
 #include <map>
 #include <string>
+
+class glShader;
+typedef CSmartPtr<glShader, CResourceCOM> TShaderPtr;
 
 class FBOBufferParam : public TextureParams
 {
@@ -48,8 +51,8 @@ public:
 	FBODepthBufferParam()
 	{
 		ExternalFormat = GL_DEPTH_COMPONENT;
-		InternalFormat = GL_DEPTH_COMPONENT24;
-		Precision = GL_UNSIGNED_BYTE;
+		InternalFormat = GL_DEPTH_COMPONENT;
+		Precision =  GL_FLOAT;
 	}
 
 	virtual void applyParam()
@@ -71,6 +74,8 @@ private:
 	GLuint m_depth_id;
 	GLuint m_fbo_id;
 	bool m_is_activated;
+	// To Avoid reloading shader
+	TShaderPtr m_shader_depth;
 public:
 	FBO(const Math::TVector2I& size,
 	    std::map<std::string, FBOTextureBufferParam>& buffers,
@@ -81,6 +86,7 @@ public:
 	void Bind();
 	void UnBind();
 	Texture* GetTexture(const std::string& nameBuffer);
+	GLuint GetDepthID();
 
 	//! Draw all associates buffer in a single frame
 	void DrawDebug();

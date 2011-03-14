@@ -56,6 +56,8 @@ Make sure to check extension "GL_EXT_geometry_shader4" before using Geometry sha
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+class FBO;
+
 #define GLSLAPI    // static build
 
 struct CShaderException : public CException

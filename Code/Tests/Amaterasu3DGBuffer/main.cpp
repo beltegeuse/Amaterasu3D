@@ -30,6 +30,7 @@ class WindowGBuffer : public Window
 protected:
 	Math::CMatrix4 m_matrixPerspective;
 	TShaderPtr m_gbuffer_shader;
+	TShaderPtr m_show_depth;
 public:
 	WindowGBuffer() :
 		Window("Amaterasu3DTestApp")
@@ -47,21 +48,23 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/2DShaders");
 		// Load shader
 		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_gbuffer_shader->begin();
 		m_gbuffer_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_gbuffer_shader->end();
+		m_show_depth = glShaderManager::Instance().LoadShader("2DFBODrawDepth.shader");
 		// Load scene
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-		GetSceneRoot().AddChild(node);
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
-//		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
-//		nodeGroup->AddChild(node);
-//		Math::CMatrix4 mat;
-//		mat.SetTranslation(-1000.0,0,0);
-//		nodeGroup->LoadTransformMatrix(mat);
-//		GetSceneRoot().AddChild(nodeGroup);
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+//		GetSceneRoot().AddChild(node);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
+		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
+		nodeGroup->AddChild(node);
+		Math::CMatrix4 mat;
+		mat.SetTranslation(-1000.0,0,0);
+		nodeGroup->LoadTransformMatrix(mat);
+		GetSceneRoot().AddChild(nodeGroup);
 	}
 
 	virtual ~WindowGBuffer()
@@ -81,10 +84,16 @@ public:
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_gbuffer_shader->GetFBO()->DrawDebug();
-//		Texture* tex = m_gbuffer_shader->GetFBO()->GetTexture("Normal");
-//		Logger::Log() << tex->getIdTex() << "\n";
-//		tex->activateTextureMapping();
-//		tex->activateTexture();
+		//Texture* tex = m_gbuffer_shader->GetFBO()->GetDepthID();
+		//Logger::Log() << tex->getIdTex() << "\n";
+		//		tex->activateTextureMapping();
+		//		tex->activateTexture();
+
+//		GLuint id = m_gbuffer_shader->GetFBO()->GetDepthID();
+//		Logger::Log() << id << "\n";
+//		m_show_depth->begin();
+//		glEnable(GL_TEXTURE_2D);
+//		glBindTexture(GL_TEXTURE_2D, id);
 //		glBegin(GL_QUADS);
 //
 //		glTexCoord2f(0.0, 0.0);
@@ -100,8 +109,10 @@ public:
 //		glVertex2f(1.0, -1.0);
 //
 //		glEnd();
-//		tex->desactivateTextureMapping();
-//		m_shader->GetDiffuseBuffer()->desactivateTextureMapping();
+//		//tex->desactivateTextureMapping();
+//		glBindTexture(GL_TEXTURE_2D, 0);
+//		glDisable(GL_TEXTURE_2D);
+//		m_show_depth->end();
 	}
 };
 

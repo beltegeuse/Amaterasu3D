@@ -40,6 +40,7 @@ FBO::FBO(const Math::TVector2I& size,
 		Logger::Log() << "   * Depth buffer creation ... \n";
 		if(type == FBODEPTH_TEXTURE)
 		{
+			m_shader_depth = glShaderManager::Instance().LoadShader("2DFBODrawDepth.shader");
 			glGenTextures(1,&m_depth_id);
 			glBindTexture(GL_TEXTURE_2D, m_depth_id);
 			paramDepth.applyParam();
@@ -64,7 +65,9 @@ FBO::FBO(const Math::TVector2I& size,
 	glBindFramebuffer(GL_FRAMEBUFFER,m_fbo_id);
 
 	// ==== Ajout au FBO les couleurs
-	GLenum buffersDraw[buffers.size()];
+	int sizeBufferDraw = buffers.size();
+
+	GLenum buffersDraw[sizeBufferDraw];
 	int i = 0;
 	Logger::Log() << " * Attach textures ... \n";
 	for(std::map<std::string, FBOTextureBufferParam>::iterator it = buffers.begin(); it != buffers.end(); it++)
@@ -74,9 +77,6 @@ FBO::FBO(const Math::TVector2I& size,
 		buffersDraw[i] = (GL_COLOR_ATTACHMENT0+it->second.Attachment);
 		i++;
 	}
-
-	if(buffers.size() > 0)
-		glDrawBuffers(buffers.size(), buffersDraw);
 
 	// ==== Ajout au FBO de la profondeur
 	if(type != FBODEPTH_NONE)
@@ -88,6 +88,9 @@ FBO::FBO(const Math::TVector2I& size,
 		else
 			throw CException("Impossible de trouver le type de Depth type.");
 	}
+
+	if(sizeBufferDraw > 0)
+		glDrawBuffers(sizeBufferDraw, buffersDraw);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
 	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -111,7 +114,7 @@ void FBO::Bind()
 
 	//	Logger::Log() << "FBO Bind " << m_fbo_id << "\n";
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
-	glPushAttrib(GL_COLOR_BUFFER_BIT);
+	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//	glViewport(0,0,m_size.y, m_size.x);
 
 	GLbitfield flags = 0;
@@ -203,7 +206,9 @@ void FBO::DrawDebug()
 		//glScissor(0,0, factorWidth,  factorHeight);
 		glViewport(0,0, factorWidth,  factorHeight);
 		// Active the texture
+		m_shader_depth->begin();
 		glEnable(GL_TEXTURE_2D);
+		glActiveTexture(GL_TEXTURE0+DIFFUSE_TEXTURE);
 		glBindTexture(GL_TEXTURE_2D, m_depth_id);
 		// Draw the texture
 		glBegin(GL_QUADS);
@@ -216,9 +221,11 @@ void FBO::DrawDebug()
 		glTexCoord2f(1.0, 0.0);
 		glVertex2f(1.0, -1.0);
 		glEnd();
+		m_shader_depth->end();
 		// Desactive textures
-		glBindTexture(GL_TEXTURE_2D, m_depth_id);
+		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
+		glActiveTexture(GL_TEXTURE0);
 		nbElementDrew++;
 	}
 	// Draw others textures
@@ -255,4 +262,10 @@ void FBO::DrawDebug()
 
 	glPopAttrib();
 
+}
+
+GLuint FBO::GetDepthID()
+{
+	Assert(m_depth_type == FBODEPTH_TEXTURE);
+	return m_depth_id;
 }
