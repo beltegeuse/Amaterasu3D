@@ -7,6 +7,8 @@
 #include <Math/Vector3.h>
 #include <Math/Vector4.h>
 #include <Math/Matrix3.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
 #include <cmath>
 
 
@@ -26,6 +28,8 @@ namespace Math
                  float m21 = 0.0f, float m22 = 1.0f, float m23 = 0.0f, float m24 = 0.0f,
                  float m31 = 0.0f, float m32 = 0.0f, float m33 = 1.0f, float m34 = 0.0f,
                  float m41 = 0.0f, float m42 = 0.0f, float m43 = 0.0f, float m44 = 1.0f);
+
+        void LoadFromOpenGL(GLenum& matrixType);
 
         //----------------------------------------------------------
         // Met la matrice � l'identit�

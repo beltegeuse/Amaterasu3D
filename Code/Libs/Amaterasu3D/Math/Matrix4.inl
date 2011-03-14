@@ -42,6 +42,15 @@ a41(m41), a42(m42), a43(m43), a44(m44)
 
 }
 
+inline void CMatrix4::LoadFromOpenGL(GLenum& matrixType)
+{
+	float mat[16];
+	glGetFloatv(matrixType, mat);
+	a11 = mat[0]; a12 = mat[1]; a13 = mat[2]; a14 = mat[3];
+	a21 = mat[4]; a22 = mat[5]; a23 = mat[6]; a24 = mat[7];
+	a31 = mat[8]; a32 = mat[9]; a33 = mat[10]; a34 = mat[11];
+	a41 = mat[12]; a42 = mat[13]; a43 = mat[14]; a44 = mat[15];
+}
 
 /////////////////////////////////////////////////////////////
 /// Met la matrice à l'identité
