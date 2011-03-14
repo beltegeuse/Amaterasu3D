@@ -1,0 +1,22 @@
+# 
+# Wavefront material file
+# Converted by the DEEP Exploration  Deep Exploration 6.0 6.0.0.5908 Release
+# Right Hemisphere, LTD
+# http://www.righthemisphere.com/
+# 
+
+newmtl bricks
+Ka 1 1 1
+Kd 0.588 0.588 0.588
+Ks 1 1 1
+illum 2
+Ns 10
+map_Kd spnza_bricks_a_diff.tga
+map_bump spnza_bricks_a_ddn.tga
+bump spnza_bricks_a_ddn.tga
+map_opacity 
+map_d 
+refl 
+map_kS spnza_bricks_a_spec.tga
+map_kA spnza_bricks_a_diff.tga
+map_Ns 
