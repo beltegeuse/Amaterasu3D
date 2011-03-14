@@ -13,5 +13,5 @@ void LightingPassAbstract::SetFBOGraphicBuffer(FBO* fbo)
 
 void LightingPassAbstract::AddPointLight(const PointLight& light)
 {
-	m_points_light.add(light);
+	m_points_light.push_back(light);
 }
