@@ -15,6 +15,8 @@ struct PointLight
 {
 	Math::TVector3F Position;
 	Color LightColor;
+	float LightRaduis;
+	float LightIntensity;
 };
 
 #endif /* LIGHTINGSTRUCTURES_H_ */

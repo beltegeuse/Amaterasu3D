@@ -38,7 +38,7 @@ struct Color
 	float B;
 	float A;
 
-	Color(float r, float g, float b, float a = 1.0) :
+	Color(float r = 1.0, float g = 1.0, float b = 1.0, float a = 1.0) :
 		R(r), G(g), B(b), A(a)
 	{
 	}

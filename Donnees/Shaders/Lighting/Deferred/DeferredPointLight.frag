@@ -9,13 +9,14 @@ uniform sampler2D SpecularBuffer;
 uniform sampler2D NormalBuffer;
 uniform sampler2D PositionBuffer;
 
-// world matrice
-uniform mat4 ModelViewMatrix;
 // light caracteristics
-uniform vec3 LigthPosition;
+uniform vec3 LightPosition;
 uniform vec3 LightColor;
 uniform float LightRaduis;
 uniform float LightIntensity;
+
+// La matrice de la camera
+uniform mat4 ModelViewMatrix;
 
 // Entree
 smooth in vec2 outTexCoord;
@@ -28,7 +29,7 @@ void main()
 	// Inspired by : http://encelo.netsons.org/blog/tag/glsl/
 
 	// Compute the light position
-	vec3 realLightPos = (ModelViewMatrix*vec4(LigthPosition,1.0)).xyz;
+	vec3 realLightPos = (vec4(LightPosition,1.0)*ModelViewMatrix).xyz;
 	
 	// Get all data
 	vec3 diffuseColor = texture(DiffuseBuffer, outTexCoord).xyz;
@@ -37,30 +38,31 @@ void main()
 	vec3 position = texture(PositionBuffer, outTexCoord).xyz;
 	
 	// If the light don't affect this frag => Discard
-	vec3 LightDirection = realLightPos - position;
+	vec3 LightDirection = realLightPos - position; // suppres realLightPosition
 	float LightDistance = length(LightDirection);
 	LightDirection = normalize(LightDirection);
+	
 	if(LightDistance > LightRaduis)
 		discard;
 		
 	// Compute light attenation
-	float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * lightIntensity;
+	float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity;
 	
 	// Initialise Black color
 	Color = vec4(0.0);
 	
 	// Verify the light and the normal is in the same direction
-	NdotL = max(dot(normal, LightDirection), 0.0);
+	float NdotL = max(dot(normal, LightDirection), 0.0);
 	if (NdotL > 0.0) {
 		// Add diffuse compoment
-		Color += LightAtt * (LightColor * NdotL);
+		Color += vec4(LightAtt * (LightColor * NdotL),1.0);
 		// Compute reflect vector
 		vec3 R = reflect(-LightDirection, normal);
 		// Add specular compoment
-		RdotE = max(dot(R, normalize(-position)), 0.0);
-		Color += vec4(LightAtt * lightColor * specularColor.rgb * pow(RdotE, specularColor.a));
+		//float RdotE = max(dot(R, normalize(-position)), 0.0);
+		//Color += vec4(LightAtt * LightColor * specularColor.rgb * pow(RdotE, specularColor.a),1.0);
 	}
 	
 	// Add diffuse color 
-	Color *= vec4(diffuseColor);
+	Color *= vec4(diffuseColor,1.0);
 }

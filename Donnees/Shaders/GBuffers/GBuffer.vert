@@ -39,6 +39,9 @@ void main ()
 	// Normal management
 	if(UseBumpMapping == 1)
 	{
+	    //vec3 normal = normalize(ModelViewMatrix * vec4(VertexNormal,0.0)).xyz;
+		//vec3 tangent = normalize(ModelViewMatrix * vec4(VertexTangent,0.0)).xyz;
+		//vec3 binormal = normalize(ModelViewMatrix * vec4(VertexBiTangent,0.0)).xyz;
 	    vec3 normal = normalize(NormalMatrix * VertexNormal);
 		vec3 tangent = normalize(NormalMatrix * VertexTangent);
 		vec3 binormal = normalize(NormalMatrix * VertexBiTangent);

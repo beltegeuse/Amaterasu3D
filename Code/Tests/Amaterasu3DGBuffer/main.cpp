@@ -15,7 +15,7 @@
 #include <Graphics/MatrixManagement.h>
 #include <Graphics/Camera/CameraFly.h>
 #include <Logger/LoggerFile.h>
-
+#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -30,7 +30,7 @@ class WindowGBuffer : public Window
 protected:
 	Math::CMatrix4 m_matrixPerspective;
 	TShaderPtr m_gbuffer_shader;
-	TShaderPtr m_show_depth;
+	DeferredLighting* m_GI;
 public:
 	WindowGBuffer() :
 		Window("Amaterasu3DTestApp")
@@ -48,23 +48,32 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/2DShaders");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/Deferred");
 		// Load shader
 		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_gbuffer_shader->begin();
 		m_gbuffer_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_gbuffer_shader->end();
-		m_show_depth = glShaderManager::Instance().LoadShader("2DFBODrawDepth.shader");
+		// Load GI
+		m_GI = new DeferredLighting;
+		m_GI->SetFBOGraphicBuffer(m_gbuffer_shader->GetFBO());
+		// Create light 1
+		PointLight light;
+		light.LightColor = Color(1.0,1.0,1.0,0.0);
+		light.Position = Math::TVector3F(3,4,2);
+		light.LightRaduis = 100.0;
+		light.LightIntensity = 1.0;
+		m_GI->AddPointLight(light);
 		// Load scene
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-		GetSceneRoot().AddChild(node);
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
-//		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
-//		nodeGroup->AddChild(node);
-//		Math::CMatrix4 mat;
-//		mat.SetTranslation(-1000.0,0,0);
-//		nodeGroup->LoadTransformMatrix(mat);
-//		GetSceneRoot().AddChild(nodeGroup);
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+//		GetSceneRoot().AddChild(node);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
+		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
+		nodeGroup->AddChild(node);
+		Math::CMatrix4 mat;
+		mat.SetTranslation(-1000.0,0,0);
+		nodeGroup->LoadTransformMatrix(mat);
+		GetSceneRoot().AddChild(nodeGroup);
 	}
 
 	virtual ~WindowGBuffer()
@@ -83,36 +92,11 @@ public:
 		glLoadIdentity();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_gbuffer_shader->GetFBO()->DrawDebug();
-		//Texture* tex = m_gbuffer_shader->GetFBO()->GetDepthID();
-		//Logger::Log() << tex->getIdTex() << "\n";
-		//		tex->activateTextureMapping();
-		//		tex->activateTexture();
 
-//		GLuint id = m_gbuffer_shader->GetFBO()->GetDepthID();
-//		Logger::Log() << id << "\n";
-//		m_show_depth->begin();
-//		glEnable(GL_TEXTURE_2D);
-//		glBindTexture(GL_TEXTURE_2D, id);
-//		glBegin(GL_QUADS);
-//
-//		glTexCoord2f(0.0, 0.0);
-//		glVertex2f(-1.0, -1.0);
-//
-//		glTexCoord2f(0.0, 1.0);
-//		glVertex2f(-1.0, 1.0);
-//
-//		glTexCoord2f(1.0, 1.0);
-//		glVertex2f(1.0, 1.0);
-//
-//		glTexCoord2f(1.0, 0.0);
-//		glVertex2f(1.0, -1.0);
-//
-//		glEnd();
-//		//tex->desactivateTextureMapping();
-//		glBindTexture(GL_TEXTURE_2D, 0);
-//		glDisable(GL_TEXTURE_2D);
-//		m_show_depth->end();
+		MatrixManagement::Instance().PushMatrix(m_camera->GetMatrix());
+		m_GI->ComputeIllumination();
+		MatrixManagement::Instance().PopMatrix();
+
 	}
 };
 

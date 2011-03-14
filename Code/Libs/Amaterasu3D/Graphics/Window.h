@@ -9,7 +9,7 @@
 
 class Window
 {
-private:
+protected:
 	// Attributs
 	SDL_WindowID m_fenetre;
 	SDL_GLContext m_contexteOpenGL;
