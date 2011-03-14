@@ -51,7 +51,7 @@ public:
 	FBODepthBufferParam()
 	{
 		ExternalFormat = GL_DEPTH_COMPONENT;
-		InternalFormat = GL_DEPTH_COMPONENT;
+		InternalFormat = GL_DEPTH_COMPONENT24;
 		Precision =  GL_FLOAT;
 	}
 

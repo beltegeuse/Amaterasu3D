@@ -40,7 +40,7 @@ public:
 		SetCamera(cam);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 10000);
+		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 4000);
 		// Config path
 		CMediaManager::Instance().AddSearchPath("../Donnees");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
@@ -56,15 +56,15 @@ public:
 		m_gbuffer_shader->end();
 		m_show_depth = glShaderManager::Instance().LoadShader("2DFBODrawDepth.shader");
 		// Load scene
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-//		GetSceneRoot().AddChild(node);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
-		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
-		nodeGroup->AddChild(node);
-		Math::CMatrix4 mat;
-		mat.SetTranslation(-1000.0,0,0);
-		nodeGroup->LoadTransformMatrix(mat);
-		GetSceneRoot().AddChild(nodeGroup);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		GetSceneRoot().AddChild(node);
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
+//		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
+//		nodeGroup->AddChild(node);
+//		Math::CMatrix4 mat;
+//		mat.SetTranslation(-1000.0,0,0);
+//		nodeGroup->LoadTransformMatrix(mat);
+//		GetSceneRoot().AddChild(nodeGroup);
 	}
 
 	virtual ~WindowGBuffer()
