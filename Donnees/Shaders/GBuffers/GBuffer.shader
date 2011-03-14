@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Shader name="BumpMapping" type="GBuffer">
-    <OutputFrame depthType="RenderTarget">
+    <OutputFrame depthType="Texture">
     	<Frame name="Diffuse" type="RGBA" />
     	<Frame name="Normal" type="RGBA" />
     	<Frame name="Specular" type="RGBA" />

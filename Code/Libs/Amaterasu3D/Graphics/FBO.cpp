@@ -50,7 +50,7 @@ FBO::FBO(const Math::TVector2I& size,
 		{
 			glGenRenderbuffers(1, &m_depth_id);
 			glBindRenderbuffer(GL_RENDERBUFFER, m_depth_id);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24_ARB, size.y, size.x);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, size.y, size.x);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 			Logger::Log() << " * Generate Depth Render target : " <<  m_depth_id << "\n";
 		}

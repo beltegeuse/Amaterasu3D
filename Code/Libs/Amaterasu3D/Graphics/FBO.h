@@ -27,8 +27,8 @@ public:
 	{
 		MinFiltering = GL_NEAREST;
 		MaxFiltering = GL_NEAREST;
-		SWrap = GL_CLAMP;
-		TWrap = GL_CLAMP;
+		SWrap = GL_CLAMP_TO_EDGE ;
+		TWrap = GL_CLAMP_TO_EDGE ;
 	}
 };
 
@@ -48,8 +48,16 @@ public:
 	FBODepthBufferParam()
 	{
 		ExternalFormat = GL_DEPTH_COMPONENT;
-		InternalFormat = GL_DEPTH_COMPONENT;
+		InternalFormat = GL_DEPTH_COMPONENT24;
 		Precision = GL_UNSIGNED_BYTE;
+	}
+
+	virtual void applyParam()
+	{
+		FBOBufferParam::applyParam();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+		glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
 	}
 };
 
