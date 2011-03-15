@@ -1,8 +1,9 @@
 <?xml version="1.0" ?>
 <Shader name="BasicTextureShader" type="Basic">
     <MatrixInput>
-       <Matrix type="ModelView" name="ModelViewMatrix" />
+       <Matrix type="Model" name="ModelMatrix" />
        <Matrix type="Projection" name="ProjectionMatrix" />
+       <Matrix type="View" name="ViewMatrix" />
     </MatrixInput>
 	<Textures>
 		<Texture type="Diffuse" name="Texture0" />

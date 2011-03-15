@@ -13,8 +13,8 @@ smooth in vec2 outTexCoord;
 out vec4 Color;
 
 float LinearizeDepth(float zoverw){
-	float n = 1.0; // camera z near
-	float f = 1000.0; // camera z far
+	float n = 0.1; // camera z near
+	float f = 100.0; // camera z far
 	return (2.0 * n) / (f + n - zoverw * (f - n));
 }
 

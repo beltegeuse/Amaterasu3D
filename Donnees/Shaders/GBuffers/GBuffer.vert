@@ -9,6 +9,11 @@ in vec3 VertexNormal;
 in vec2 VertexTexCoord;
 in vec3 VertexColor;
 
+uniform mat4 ModelMatrix;
+uniform mat4 ProjectionMatrix;
+uniform mat4 NormalMatrix;
+uniform mat4 ViewMatrix;
+
 // Uniform States
 uniform int UseBumpMapping;
 uniform int UseDiffuseTex;
@@ -25,6 +30,9 @@ invariant gl_Position;
 
 void main ()
 {
+
+	mat3 NormalMatrix3 = mat3(NormalMatrix);
+
     // Texture coordinates
 	if(UseBumpMapping == 1 || UseDiffuseTex == 1 || UseSpecularTex == 1)
 	{
@@ -34,17 +42,17 @@ void main ()
 	// Normal management
 	if(UseBumpMapping == 1)
 	{
-	    //vec3 normal = normalize(ModelViewMatrix * vec4(VertexNormal,0.0)).xyz;
-		//vec3 tangent = normalize(ModelViewMatrix * vec4(VertexTangent,0.0)).xyz;
-		//vec3 binormal = normalize(ModelViewMatrix * vec4(VertexBiTangent,0.0)).xyz;
-	    vec3 normal = normalize(gl_NormalMatrix * VertexNormal);
-		vec3 tangent = normalize(gl_NormalMatrix * VertexTangent);
-		vec3 binormal = normalize(gl_NormalMatrix * VertexBiTangent);
+	    vec3 normal = normalize(ModelMatrix * vec4(VertexNormal,0.0)).xyz;
+		vec3 tangent = normalize(ModelMatrix * vec4(VertexTangent,0.0)).xyz;
+		vec3 binormal = normalize(ModelMatrix * vec4(VertexBiTangent,0.0)).xyz;
+	    //vec3 normal = normalize(NormalMatrix3 * VertexNormal);
+		//vec3 tangent = normalize(NormalMatrix3 * VertexTangent);
+		//vec3 binormal = normalize(NormalMatrix3 * VertexBiTangent);
 		outtbnMatrix = mat3(tangent, binormal, normal);
 	}
 	else
 	{
-	    outNormal = normalize(gl_NormalMatrix * VertexNormal);
+	    outNormal = normalize(NormalMatrix3 * VertexNormal);
 	}
     
     // Diffuse management
@@ -53,6 +61,6 @@ void main ()
         outColor = VertexColor;
     }
     
-    outPosition = gl_ModelViewMatrix * vec4 (VertexPosition, 1.0);
-	gl_Position = gl_ProjectionMatrix * outPosition;
+    outPosition = ModelMatrix * vec4 (VertexPosition, 1.0);
+	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4 (VertexPosition, 1.0);
 }

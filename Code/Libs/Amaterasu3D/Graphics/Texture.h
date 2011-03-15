@@ -58,7 +58,7 @@ protected:
 public :
 
 	// ======== Constructeurs & Destructeur
-	Texture(const Math::TVector2I& size);
+	Texture(const Math::TVector2I& size, bool create = true, GLuint id = 0);
 	virtual ~Texture();
 
 	// Static methods to load textures

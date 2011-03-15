@@ -8,9 +8,11 @@ uniform sampler2D DiffuseBuffer;
 uniform sampler2D SpecularBuffer;
 uniform sampler2D NormalBuffer;
 uniform sampler2D PositionBuffer;
+uniform sampler2D DepthBuffer;
 
 // light caracteristics
 uniform vec3 LightPosition;
+uniform vec3 positionCamera;
 uniform vec3 LightColor;
 uniform float LightRaduis;
 uniform float LightIntensity;
@@ -20,6 +22,12 @@ smooth in vec2 outTexCoord;
 
 // Output buffers
 out vec4 Color;
+
+float LinearizeDepth(float zoverw){
+	float n = 0.1; // camera z near
+	float f = 100.0; // camera z far
+	return (2.0 * n) / (f + n - zoverw * (f - n));
+}
 
 void main()
 {	
@@ -56,10 +64,14 @@ void main()
 		// Compute reflect vector
 		vec3 R = reflect(-LightDirection, normal);
 		// Add specular compoment
-		//float RdotE = max(dot(R, normalize(-position)), 0.0);
-		//Color += vec4(LightAtt * LightColor * specularColor.rgb * pow(RdotE, specularColor.a),1.0);
+		float RdotE = max(dot(R, normalize(-position)), 0.0);
+		Color += vec4(LightAtt * LightColor * specularColor.rgb * pow(RdotE, specularColor.a),0.0);
 	}
 	
 	// Add diffuse color 
 	Color *= vec4(diffuseColor,1.0);
+	
+	//Color = vec4(LightAtt);
+	//if (LightDistance > LightRaduis - 0.02 && LightDistance < LightRaduis + 0.02)
+	//	Color = vec4(1.0, 0.0, 0.0, 0.0);
 }

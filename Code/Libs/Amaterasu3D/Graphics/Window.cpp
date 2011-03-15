@@ -113,6 +113,8 @@ void Window::Run()
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	    // Draw all the Scene ...
+		if(m_camera)
+			m_camera->ComputeMatrix(delta);
 	    OnDraw(delta);
 	    // Swap buffers
 	    SDL_GL_SwapWindow(m_fenetre);
@@ -135,9 +137,7 @@ void Window::OnDraw(double DeltaTime)
 
 	if(m_camera)
 	{
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		m_camera->ComputeMatrix(DeltaTime);
+		m_camera->GetView();
 	}
 	// Do all graphics part here
 	// Draw the SceneGraph

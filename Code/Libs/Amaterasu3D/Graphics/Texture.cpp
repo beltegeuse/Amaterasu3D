@@ -9,10 +9,13 @@
 #include <System/ResourceManager.h>
 
 //Constructeur
-Texture::Texture(const Math::TVector2I& size) :
+Texture::Texture(const Math::TVector2I& size, bool create, GLuint id) :
 	m_size(size)
 {
-	glGenTextures(1,&m_idTex);
+	if(create)
+		glGenTextures(1,&m_idTex);
+	else
+		m_idTex = id;
 }
 
 //Destructeur

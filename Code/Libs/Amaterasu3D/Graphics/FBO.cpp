@@ -46,6 +46,7 @@ FBO::FBO(const Math::TVector2I& size,
 			paramDepth.applyParam();
 			glTexImage2D( GL_TEXTURE_2D, 0, paramDepth.InternalFormat, size.y, size.x, 0, paramDepth.ExternalFormat, paramDepth.Precision, 0);
 			Logger::Log() <<" * Generate Depth Texture : " << m_depth_id << "\n";
+			m_textures["Depth"] = new Texture(size, false, m_depth_id);
 		}
 		else if(type == FBODEPTH_RENDERTARGET)
 		{
@@ -93,8 +94,39 @@ FBO::FBO(const Math::TVector2I& size,
 		glDrawBuffers(sizeBufferDraw, buffersDraw);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
-	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if(error != GL_FRAMEBUFFER_COMPLETE)
+	{
+		switch(error)
+				{
+					case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+						Logger::Log() << "Error! missing a required image/buffer attachment!\n";
+						break;
+					case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+						Logger::Log() << "Error! has no images/buffers attached!\n";
+						break;
+					case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+						Logger::Log() << "Error! has mismatched image/buffer dimensions!\n";
+						break;
+					case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+						Logger::Log() << "Error! 's colorbuffer attachments have different types!\n";
+						break;
+					case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+						Logger::Log() << "Error! trying to draw to non-attached color buffer!\n";
+						break;
+					case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+						Logger::Log() << "Error! trying to read from a non-attached color buffer!\n";
+						break;
+					case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+						Logger::Log() << "Error! format is not supported by current graphics card/driver!\n";
+						break;
+					default:
+						Logger::Log() << "*UNKNOWN ERROR* reported from glCheckFramebufferStatusEXT()!\n";
+						break;
+				}
+
 		throw CException("error on FBO creation...");
+	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 

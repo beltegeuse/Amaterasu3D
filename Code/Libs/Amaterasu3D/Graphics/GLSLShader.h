@@ -37,6 +37,7 @@ Make sure to check extension "GL_EXT_geometry_shader4" before using Geometry sha
 
 //! \defgroup GLSL libglsl
 //#include "glslSettings.h"
+#include <Graphics/MatrixManagement.h>
 #include <Debug/Exceptions.h>
 #include <Debug/OpenGLDebug.h>
 #include <Utilities/SmartPtr.h>
@@ -155,9 +156,12 @@ public:
 	// * matrix
 	void addMatrixBinding(MatrixType type, const std::string& name);
 	virtual bool matrixModeAvailable(MatrixType type);
+	void UpdateMatrix(MatrixType mat);
+	void UpdateMatrixAll();
 	// To know before drawing
 	virtual void OnDraw();
 	virtual void UpdateAll();
+
 	FBO* GetFBO();
 	void SetFBO(FBO* fbo);
 	bool isFBOAvaliable() const;
@@ -379,6 +383,7 @@ public:
 	void Push(glShader* shader);
 	void Pop();
 	// Callback to update matrix
+	void UpdateMatrix(MatrixType mat);
 	glShader* currentShader();
 	bool activedShader();
 private:

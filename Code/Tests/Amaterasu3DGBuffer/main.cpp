@@ -8,6 +8,7 @@
 #include <Graphics/Camera/CameraFly.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
+#include <Graphics/MatrixManagement.h>
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -23,25 +24,29 @@ protected:
 	Math::CMatrix4 m_matrixPerspective;
 	TShaderPtr m_gbuffer_shader;
 	DeferredLighting* m_GI;
+	bool m_debug;
 public:
 	WindowGBuffer() :
-		Window("Amaterasu3DTestApp")
+		Window("Amaterasu3DTestApp"),
+		m_debug(false)
 	{
 		// Camera Setup
 		CameraAbstract* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		SetCamera(cam);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		glMatrixMode(GL_PROJECTION);
-		gluPerspective(70, (double)800/600, 1, 4000);
+		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
+		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Config path
 		CMediaManager::Instance().AddSearchPath("../Donnees");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Model/SponzaOther");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/Deferred");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/2DShaders");
 		// Load shader
 		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
 		// Load GI
@@ -51,17 +56,17 @@ public:
 		PointLight light;
 		light.LightColor = Color(1.0,1.0,1.0,0.0);
 		light.Position = Math::TVector3F(3,4,2);
-		light.LightRaduis = 100.0;
+		light.LightRaduis = 5.0;
 		light.LightIntensity = 1.0;
 		m_GI->AddPointLight(light);
 		// Load scene
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-		GetSceneRoot().AddChild(node);
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
+		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.3DS");
+		GetSceneRoot().AddChild(node1);
+//		SceneGraph::AssimpNode* node2 = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
 //		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
-//		nodeGroup->AddChild(node);
+//		nodeGroup->AddChild(node2);
 //		Math::CMatrix4 mat;
-//		mat.SetTranslation(-1000.0,0,0);
+//		mat.SetTranslation(0,0,-1000.0);
 //		nodeGroup->LoadTransformMatrix(mat);
 //		GetSceneRoot().AddChild(nodeGroup);
 	}
@@ -70,9 +75,26 @@ public:
 	{
 	}
 
+	virtual void OnEvent(SDL_Event& event, double delta)
+	{
+		Window::OnEvent(event, delta);
+		if(event.type == SDL_KEYDOWN)
+		{
+			Math::CMatrix4 matrixTransform;
+			 switch(event.key.keysym.sym)
+			 {
+				 case SDLK_F1:
+					 m_debug = !m_debug;
+					 break;
+			 }
+		}
+
+	}
+
 	virtual void OnDraw(double delta)
 	{
 		m_gbuffer_shader->begin();
+		//m_camera->SendInvMatrix();
 		Window::OnDraw(delta);
 		m_gbuffer_shader->end();
 
@@ -85,8 +107,13 @@ public:
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_gbuffer_shader->GetFBO()->DrawDebug();
-		//m_GI->ComputeIllumination();
+		if(m_debug)
+			m_gbuffer_shader->GetFBO()->DrawDebug();
+		else
+		{
+			m_camera->GetView();
+			m_GI->ComputeIllumination();
+		}
 
 		glPopMatrix();
 		glMatrixMode(GL_PROJECTION);

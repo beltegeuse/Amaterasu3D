@@ -409,7 +409,6 @@ void glShader::end(void)
 	if (!useGLSL) return;
 	if (!_noshader) return;
 
-	glShaderManager::Instance().Pop();
 	glUseProgram(0);
 	CHECK_GL_ERROR();
 
@@ -417,6 +416,8 @@ void glShader::end(void)
 	{
 		m_FBO->UnBind();
 	}
+
+	glShaderManager::Instance().Pop();
 }
 
 //----------------------------------------------------------------------------- 
@@ -977,7 +978,7 @@ bool glShader::setUniformMatrix3fv(const GLcharARB* varname, GLsizei count, GLbo
 bool glShader::setUniformMatrix4fv(const GLcharARB* varname, const Math::CMatrix4& matrix)
 {
 	GLint loc = GetUniformLocation(varname);
-	glUniformMatrix4fv(loc,1, GL_TRUE, (const float*) matrix);
+	glUniformMatrix4fv(loc,1, GL_FALSE, (const float*) matrix);
 }
 
 bool glShader:: setUniformMatrix3fv(const GLcharARB* varname, const Math::CMatrix3& matrix)
@@ -990,18 +991,6 @@ bool glShader::setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix
 {
 	Assert(matrixModeAvailable(type));
 	setUniformMatrix4fv(m_matrix_bind[type].c_str(), matrix);
-	// TODO: Put into martix management ?
-	// Need to update the NormalMatrix ...
-	if(type == MODELVIEW_MATRIX && matrixModeAvailable(NORMAL_MATRIX))
-	{
-		Math::CMatrix4 matrixNormal;
-		matrixNormal = matrix.Inverse();
-		matrixNormal = matrixNormal.Transpose();
-//		Logger::Log() << "Normal matrix 4X4: "<< matrixNormal << "\n";
-		//TODO: Do normalisation factor ??? may be in inverse ??
-		setUniformMatrix3fv(m_matrix_bind[NORMAL_MATRIX].c_str(), matrixNormal.ExtractSubMatrix());
-//		Logger::Log() << "Normal matrix 3X3: "<< matrixNormal.ExtractSubMatrix() << "\n";
-	}
 }
 
 //----------------------------------------------------------------------------- 
@@ -1382,6 +1371,24 @@ bool glShader::matrixModeAvailable(MatrixType type)
 	return m_matrix_bind.find(type) != m_matrix_bind.end();
 }
 
+void glShader::UpdateMatrix(MatrixType type)
+{
+	if(matrixModeAvailable(type))
+	{
+		setUniformMatrix4fv(type, MatrixManagement::Instance().GetMatrix(type));
+	}
+}
+
+void glShader::UpdateMatrixAll()
+{
+	for(MapMatrix::iterator it = m_matrix_bind.begin(); it != m_matrix_bind.end();++it)
+	{
+		UpdateMatrix(it->first);
+	}
+}
+
+void UpdateMatrixAll();
+
 void glShader::OnDraw()
 {
   // Nothing to do ....
@@ -1643,6 +1650,8 @@ glShaderManager::glShaderManager()
 	_nInputPrimitiveType = GL_TRIANGLES;
 	_nOutputPrimitiveType = GL_TRIANGLE_STRIP;
 	_nVerticesOut = 3;
+
+	MatrixManagement::Instance().GetSignalEvent().connect(sigc::mem_fun(*this, &glShaderManager::UpdateMatrix));
 }
 
 glShaderManager::~glShaderManager()
@@ -2104,6 +2113,7 @@ void glShaderManager::Push(glShader* shader)
 	if(m_shader_stack.size() > m_max_stack)
 		throw CException("shader stack is full");
 	m_shader_stack.push_back(shader);
+	m_shader_stack.back()->UpdateMatrixAll();
 }
 
 void glShaderManager::Pop()
@@ -2115,6 +2125,15 @@ void glShaderManager::Pop()
 	if(!m_shader_stack.empty())
 	{
 		m_shader_stack.back()->begin();
+		m_shader_stack.back()->UpdateMatrixAll();
+	}
+}
+
+void glShaderManager::UpdateMatrix(MatrixType type)
+{
+	if(!m_shader_stack.empty())
+	{
+		currentShader()->UpdateMatrix(type);
 	}
 }
 

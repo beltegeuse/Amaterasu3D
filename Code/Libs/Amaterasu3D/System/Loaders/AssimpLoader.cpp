@@ -35,7 +35,7 @@ SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 	// Empty cache
 	m_cached_geom.erase(m_cached_geom.begin(), m_cached_geom.end());
 	// Load
-	const struct aiScene* scene = aiImportFile(Filename.c_str(),aiProcessPreset_TargetRealtime_Quality);
+	const struct aiScene* scene = aiImportFile(Filename.c_str(),aiProcessPreset_TargetRealtime_Quality | aiProcess_TransformUVCoords);
 	if(!scene)
 		throw CException("assimp library can load model.");
 	SceneGraph::AssimpNode* group = new SceneGraph::AssimpNode;

@@ -10,7 +10,8 @@ enum ShaderUnitType
 
 enum MatrixType
 {
-	MODELVIEW_MATRIX,
+	VIEW_MATRIX,
+	MODEL_MATRIX,
 	PROJECTION_MATRIX,
 	NORMAL_MATRIX
 };

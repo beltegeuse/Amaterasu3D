@@ -21,6 +21,8 @@ public:
 
 	void SetMatrix(const Math::CMatrix4& matrix);
 	virtual void ComputeMatrix(double delta);
+	void GetView();
+	void SendInvMatrix();
 	const Math::CMatrix4& GetMatrix();
 	virtual void OnEvent(SDL_Event& events, double deltaTime) = 0;
 };

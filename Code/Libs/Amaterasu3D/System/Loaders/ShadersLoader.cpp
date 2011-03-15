@@ -53,6 +53,16 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 		{
 			// Nothing to do
 		}
+		else if(typeString == "RGB16")
+		{
+			param.InternalFormat = GL_RGB16F;
+			param.ExternalFormat = GL_RGB;
+		}
+		else if(typeString == "RGB32")
+		{
+			param.InternalFormat = GL_RGB32F;
+			param.ExternalFormat = GL_RGB;
+		}
 		else
 			throw CException("unknow buffer type");
 //		glBindFragDataLocation(shader->GetProgramObject(),i,name.c_str());
@@ -85,10 +95,10 @@ void ShadersLoader::LoadShaderMatrix(glShader* shader, TiXmlElement *root)
 		std::string typeMatrix= std::string(matrixNode->Attribute("type"));
 		MatrixType type;
 		//TODO: Faire une factory ???
-		if(typeMatrix == "ModelView")
+		if(typeMatrix == "Model")
 		{
-			Logger::Log() << "   * Matrix : " << nameMatrix << " (ModelView) \n";
-			type = MODELVIEW_MATRIX;
+			Logger::Log() << "   * Matrix : " << nameMatrix << " (Model) \n";
+			type = MODEL_MATRIX;
 		}
 		else if(typeMatrix == "Projection")
 		{
@@ -99,6 +109,11 @@ void ShadersLoader::LoadShaderMatrix(glShader* shader, TiXmlElement *root)
 		{
 			Logger::Log() << "   * Matrix : " << nameMatrix << " (Normal) \n";
 			type = NORMAL_MATRIX;
+		}
+		else if(typeMatrix == "View")
+		{
+			Logger::Log() << "   * Matrix : " << nameMatrix << " (View) \n";
+			type = VIEW_MATRIX;
 		}
 		else
 		{

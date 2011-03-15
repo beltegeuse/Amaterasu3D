@@ -20,6 +20,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/SceneGraph/Assimp/AssimpNode.cpp
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
+	Graphics/MatrixManagement.cpp
 	Graphics/Color.cpp
 	Graphics/FBO.cpp
 	Graphics/GLSLShader.cpp

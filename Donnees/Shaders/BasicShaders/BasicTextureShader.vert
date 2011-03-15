@@ -7,7 +7,8 @@ in vec2 VertexTexCoord;
 
 // Uniform
 uniform mat4 ProjectionMatrix;
-uniform mat4 ModelViewMatrix;
+uniform mat4 ModelMatrix;
+uniform mat4 ViewMatrix;
 
 // Sortie shader
 smooth out vec2 outTexCoord;
@@ -17,5 +18,5 @@ invariant gl_Position;
 void main ()
 {
 	outTexCoord = VertexTexCoord;
-	gl_Position = ProjectionMatrix * ModelViewMatrix * vec4 (VertexPosition, 1.0);
+	gl_Position = ProjectionMatrix * ModelMatrix * ViewMatrix * vec4 (VertexPosition, 1.0);
 }

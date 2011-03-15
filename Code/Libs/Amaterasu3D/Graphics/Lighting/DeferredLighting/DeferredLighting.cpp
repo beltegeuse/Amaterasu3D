@@ -17,8 +17,11 @@ void DeferredLighting::PointLightPass()
 	m_FBO_graphics->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+1);
 	m_FBO_graphics->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 	m_FBO_graphics->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+3);
+	m_FBO_graphics->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4);
 	// Go light pass
 	m_point_light_shader->begin();
+	Math::TVector3F poscam = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX).GetTranslation();
+//	m_point_light_shader->setUniform3f("positionCamera",poscam.x,poscam.y,poscam.z);
 	for(int i = 0; i < m_points_light.size(); i++)
 	{
 		// Setup all light informations
@@ -43,6 +46,7 @@ void DeferredLighting::PointLightPass()
 	m_FBO_graphics->GetTexture("Specular")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 	m_FBO_graphics->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 	m_FBO_graphics->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+	m_FBO_graphics->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 }
 
 void DeferredLighting::ComputeIllumination()

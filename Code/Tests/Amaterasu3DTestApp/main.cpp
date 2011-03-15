@@ -88,7 +88,16 @@ public:
 		SetCamera(cam);
 		// OpenGL Flags ...
 		GLCheck(glClearColor(0.1f,0.1f,0.1f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 10000);
+		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 4000);
+		glMatrixMode(GL_PROJECTION);
+		gluPerspective(70, (double)800/600, 1, 4000);
+		Math::CMatrix4 matrix;
+		matrix.LoadFromOpenGL(GL_PROJECTION_MATRIX);
+
+		std::cout <<matrix<< std::endl;
+		std::cout << m_matrixPerspective << std::endl;
+
+		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Path search
 		// Load the Shader
 		CMediaManager::Instance().AddSearchPath("../Donnees");
@@ -100,15 +109,12 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/BasicShaders");
 		m_shader = glShaderManager::Instance().LoadShader("BasicTextureShader.shader");
 //		m_shader = glShaderManager::Instance().LoadShader("BasicShader.shader");
-		m_shader->begin();
-		m_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
-		m_shader->end();
 		// Create the Cube ...
 		//CreateCubes();
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
-//		GetSceneRoot().AddChild(node);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("dwarf.x");
 		GetSceneRoot().AddChild(node);
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+//		GetSceneRoot().AddChild(node);
 //		CreateCubes();
 		std::cout << "FINISH BUILD SCENE" << std::endl;
 	}

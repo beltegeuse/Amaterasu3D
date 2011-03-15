@@ -1,10 +1,16 @@
 <?xml version="1.0" ?>
 <Shader name="BumpMapping" type="GBuffer">
-    <OutputFrame depthType="RenderTarget">
+	<MatrixInput>
+       <Matrix type="Model" name="ModelMatrix" />
+       <Matrix type="Projection" name="ProjectionMatrix" />
+       <Matrix type="Normal" name="NormalMatrix" />
+       <Matrix type="View" name="ViewMatrix" />
+    </MatrixInput>
+    <OutputFrame depthType="Texture">
     	<Frame name="Diffuse" type="RGBA" />
-    	<Frame name="Normal" type="RGBA" />
+    	<Frame name="Normal" type="RGB32" />
     	<Frame name="Specular" type="RGBA" />
-    	<Frame name="Position" type="RGBA" />
+    	<Frame name="Position" type="RGB32" />
     </OutputFrame>
     <Textures>
 		<Texture type="Diffuse" name="TextureDiffuse" />
