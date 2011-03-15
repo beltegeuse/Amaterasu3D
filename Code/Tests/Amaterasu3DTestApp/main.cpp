@@ -5,7 +5,6 @@
 #include <Graphics/GLSLShader.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
-#include <Graphics/MatrixManagement.h>
 #include <Graphics/Camera/CameraFly.h>
 #include <Logger/LoggerFile.h>
 

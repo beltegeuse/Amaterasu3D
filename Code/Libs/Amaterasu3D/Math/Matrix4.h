@@ -29,7 +29,7 @@ namespace Math
                  float m31 = 0.0f, float m32 = 0.0f, float m33 = 1.0f, float m34 = 0.0f,
                  float m41 = 0.0f, float m42 = 0.0f, float m43 = 0.0f, float m44 = 1.0f);
 
-        void LoadFromOpenGL(GLenum& matrixType);
+        void LoadFromOpenGL(int matrixType);
 
         //----------------------------------------------------------
         // Met la matrice � l'identit�
@@ -157,10 +157,10 @@ namespace Math
         //----------------------------------------------------------
         // Donn�es membres
         //----------------------------------------------------------
-        float a11, a12, a13, a14; ///< 1ere ligne de la matrice
-        float a21, a22, a23, a24; ///< 2eme ligne de la matrice
-        float a31, a32, a33, a34; ///< 3eme ligne de la matrice
-        float a41, a42, a43, a44; ///< 4eme ligne de la matrice
+        float a11, a21, a31, a41; ///< 1ere ligne de la matrice
+        float a12, a22, a32, a42; ///< 2eme ligne de la matrice
+        float a13, a23, a33, a43; ///< 3eme ligne de la matrice
+        float a14, a24, a34, a44; ///< 4eme ligne de la matrice
     };
 
 

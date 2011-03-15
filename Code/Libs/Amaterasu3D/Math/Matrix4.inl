@@ -42,7 +42,7 @@ a41(m41), a42(m42), a43(m43), a44(m44)
 
 }
 
-inline void CMatrix4::LoadFromOpenGL(GLenum& matrixType)
+inline void CMatrix4::LoadFromOpenGL(int matrixType)
 {
 	float mat[16];
 	glGetFloatv(matrixType, mat);

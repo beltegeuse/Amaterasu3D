@@ -24,8 +24,13 @@ void CameraAbstract::SetMatrix(const Math::CMatrix4& matrix)
 
 void CameraAbstract::ComputeMatrix(double delta)
 {
-//	std::cout << "[DEBUG] Look at : " << std::endl;
-//	std::cout << "  * position : " << m_position << std::endl;
-//	std::cout << "  * target : " << m_target << std::endl;
-	m_matrix.LookAt(m_position, m_target, m_up);
+	std::cout << "[DEBUG] Look at : " << std::endl;
+	std::cout << "  * position : " << m_position << std::endl;
+	std::cout << "  * target : " << m_target << std::endl;
+	//m_matrix.LookAt(m_position, m_target);
+	m_matrix.Identity();
+	glMatrixMode(GL_MODELVIEW);
+	gluLookAt(m_position.x,m_position.y,m_position.z,
+			  m_target.x, m_target.y, m_target.z,
+			  0,1,0);
 }

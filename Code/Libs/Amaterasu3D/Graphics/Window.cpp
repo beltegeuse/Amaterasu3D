@@ -1,6 +1,5 @@
 #include "Window.h"
 #include <Debug/Exceptions.h>
-#include <Graphics/MatrixManagement.h>
 #include <Logger/Logger.h>
 #include <Logger/LoggerDebug.h>
 #include <System/Loaders/Loaders.h>
@@ -133,23 +132,18 @@ void Window::OnDraw(double DeltaTime)
 	////////////////////////////////////////////////
 	// G-Buffer stage
 	////////////////////////////////////////////////
-	int numberMatrix = MatrixManagement::Instance().StackSize();
 
 	if(m_camera)
 	{
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 		m_camera->ComputeMatrix(DeltaTime);
-		MatrixManagement::Instance().PushMatrix(m_camera->GetMatrix());
 	}
 	// Do all graphics part here
 	// Draw the SceneGraph
 	m_root.Draw();
 
-	if(m_camera)
-		MatrixManagement::Instance().PopMatrix();
 
-	// Check if there is leak of matrix stack
-	if(numberMatrix != MatrixManagement::Instance().StackSize())
-		throw CException("Leak matrix is detected");
 }
 
 SceneGraph::Group& Window::GetSceneRoot()

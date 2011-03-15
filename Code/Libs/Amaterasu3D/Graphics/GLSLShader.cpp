@@ -17,8 +17,6 @@ Last update: 2006/11/12 (Geometry Shader Support)
 #include <string.h>
 #include <Logger/Logger.h>
 
-
-#include <Graphics/MatrixManagement.h>
 #include <System/ResourceManager.h>
 #include <System/MediaManager.h>
 
@@ -1645,9 +1643,6 @@ glShaderManager::glShaderManager()
 	_nInputPrimitiveType = GL_TRIANGLES;
 	_nOutputPrimitiveType = GL_TRIANGLE_STRIP;
 	_nVerticesOut = 3;
-
-	// slots Connexion
-	MatrixManagement::Instance().GetSignalEvent().connect(sigc::mem_fun(*this, &glShaderManager::UpdateMatrix));
 }
 
 glShaderManager::~glShaderManager()
@@ -2109,8 +2104,6 @@ void glShaderManager::Push(glShader* shader)
 	if(m_shader_stack.size() > m_max_stack)
 		throw CException("shader stack is full");
 	m_shader_stack.push_back(shader);
-	if(m_shader_stack.back()->matrixModeAvailable(MODELVIEW_MATRIX))
-		m_shader_stack.back()->setUniformMatrix4fv(MODELVIEW_MATRIX, MatrixManagement::Instance().GetMatrix());
 }
 
 void glShaderManager::Pop()
@@ -2122,30 +2115,7 @@ void glShaderManager::Pop()
 	if(!m_shader_stack.empty())
 	{
 		m_shader_stack.back()->begin();
-		if(m_shader_stack.back()->matrixModeAvailable(MODELVIEW_MATRIX))
-			m_shader_stack.back()->setUniformMatrix4fv(MODELVIEW_MATRIX, MatrixManagement::Instance().GetMatrix());
 	}
-}
-
-void glShaderManager::UpdateMatrix(MatrixType mat, const Math::CMatrix4& matrix)
-{
-	if(!m_shader_stack.empty())
-	{
-		//Logger::Log() << "[DEBUG] Update Matrix ... \n";
-		if(mat == MODELVIEW_MATRIX)
-		{
-			if(m_shader_stack.back()->matrixModeAvailable(MODELVIEW_MATRIX))
-				m_shader_stack.back()->setUniformMatrix4fv(MODELVIEW_MATRIX, matrix);
-		}
-		else if(mat == PROJECTION_MATRIX)
-		{
-			if(m_shader_stack.back()->matrixModeAvailable(PROJECTION_MATRIX))
-				m_shader_stack.back()->setUniformMatrix4fv(PROJECTION_MATRIX, matrix);
-		}
-		else
-			throw CException("unknow matrix type");
-	}
-
 }
 
 TShaderPtr glShaderManager::LoadShader(const std::string& filename)

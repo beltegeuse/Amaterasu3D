@@ -24,7 +24,6 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/FBO.cpp
 	Graphics/GLSLShader.cpp
 	Graphics/Window.cpp
-	Graphics/MatrixManagement.cpp
 	Graphics/Texture.cpp
 	
 	System/MediaManager.cpp

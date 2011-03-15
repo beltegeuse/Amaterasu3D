@@ -1,8 +1,5 @@
 <?xml version="1.0" ?>
 <Shader name="BasicTextureShader" type="Basic">
-    <MatrixInput>
-       <Matrix type="ModelView" name="ModelViewMatrix" />
-    </MatrixInput>
 	<Textures>
 		<Texture type="Custom" name="DiffuseBuffer" id=0 />
 		<Texture type="Custom" name="SpecularBuffer" id=1 />

@@ -14,11 +14,6 @@ uniform int UseBumpMapping;
 uniform int UseDiffuseTex;
 uniform int UseSpecularTex;
 
-// Uniform matrix
-uniform mat4 ProjectionMatrix;
-uniform mat4 ModelViewMatrix;
-uniform mat3 NormalMatrix;
-
 // Smooth variables
 smooth out vec4 outPosition;
 smooth out vec2 outTexCoord;
@@ -42,14 +37,14 @@ void main ()
 	    //vec3 normal = normalize(ModelViewMatrix * vec4(VertexNormal,0.0)).xyz;
 		//vec3 tangent = normalize(ModelViewMatrix * vec4(VertexTangent,0.0)).xyz;
 		//vec3 binormal = normalize(ModelViewMatrix * vec4(VertexBiTangent,0.0)).xyz;
-	    vec3 normal = normalize(NormalMatrix * VertexNormal);
-		vec3 tangent = normalize(NormalMatrix * VertexTangent);
-		vec3 binormal = normalize(NormalMatrix * VertexBiTangent);
+	    vec3 normal = normalize(gl_NormalMatrix * VertexNormal);
+		vec3 tangent = normalize(gl_NormalMatrix * VertexTangent);
+		vec3 binormal = normalize(gl_NormalMatrix * VertexBiTangent);
 		outtbnMatrix = mat3(tangent, binormal, normal);
 	}
 	else
 	{
-	    outNormal = normalize(NormalMatrix * VertexNormal);
+	    outNormal = normalize(gl_NormalMatrix * VertexNormal);
 	}
     
     // Diffuse management
@@ -58,6 +53,6 @@ void main ()
         outColor = VertexColor;
     }
     
-    outPosition = ModelViewMatrix * vec4 (VertexPosition, 1.0);
-	gl_Position = ProjectionMatrix * outPosition;
+    outPosition = gl_ModelViewMatrix * vec4 (VertexPosition, 1.0);
+	gl_Position = gl_ProjectionMatrix * outPosition;
 }

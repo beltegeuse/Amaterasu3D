@@ -1,5 +1,4 @@
 #include <Graphics/SceneGraph/Group.h>
-#include <Graphics/MatrixManagement.h>
 #include <Logger/Logger.h>
 namespace SceneGraph
 {
@@ -26,12 +25,14 @@ void Group::AddChild(DrawObject * object)
 void Group::Draw()
 {
 //	Logger::Log() << "[DEBUG] Group::Draw\n";
-	MatrixManagement::Instance().PushMatrix(m_matrix_transform);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glMultMatrixf((const float*)m_matrix_transform);
 	for(unsigned int cpt=0 ; cpt<m_objects.size() ; cpt++)
 	{
 		m_objects[cpt]->Draw();
 	}
-	MatrixManagement::Instance().PopMatrix();
+	glPopMatrix();
 }
 
 void Group::LoadTransformMatrix(const Math::CMatrix4& matrix)

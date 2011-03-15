@@ -6,11 +6,6 @@
     	<Frame name="Specular" type="RGBA" />
     	<Frame name="Position" type="RGBA" />
     </OutputFrame>
-    <MatrixInput>
-       <Matrix type="ModelView" name="ModelViewMatrix" />
-       <Matrix type="Projection" name="ProjectionMatrix" />
-       <Matrix type="Normal" name="NormalMatrix" />
-    </MatrixInput>
     <Textures>
 		<Texture type="Diffuse" name="TextureDiffuse" />
 		<Texture type="Normal" name="TextureNormal" />

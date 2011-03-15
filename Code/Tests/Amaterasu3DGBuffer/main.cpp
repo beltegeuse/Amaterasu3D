@@ -1,10 +1,3 @@
-/*
- * main.cpp
- *
- *  Created on: Mar 9, 2011
- *      Author: Beltegeuse
- */
-
 #include <iostream>
 #include <Math/Matrix4.h>
 #include <System/MediaManager.h>
@@ -12,7 +5,6 @@
 #include <Graphics/GLSLShader.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
-#include <Graphics/MatrixManagement.h>
 #include <Graphics/Camera/CameraFly.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
@@ -40,7 +32,8 @@ public:
 		SetCamera(cam);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1, 4000);
+		glMatrixMode(GL_PROJECTION);
+		gluPerspective(70, (double)800/600, 1, 4000);
 		// Config path
 		CMediaManager::Instance().AddSearchPath("../Donnees");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
@@ -51,9 +44,6 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/Deferred");
 		// Load shader
 		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
-		m_gbuffer_shader->begin();
-		m_gbuffer_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
-		m_gbuffer_shader->end();
 		// Load GI
 		m_GI = new DeferredLighting;
 		m_GI->SetFBOGraphicBuffer(m_gbuffer_shader->GetFBO());
@@ -65,15 +55,15 @@ public:
 		light.LightIntensity = 1.0;
 		m_GI->AddPointLight(light);
 		// Load scene
-//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-//		GetSceneRoot().AddChild(node);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
-		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
-		nodeGroup->AddChild(node);
-		Math::CMatrix4 mat;
-		mat.SetTranslation(-1000.0,0,0);
-		nodeGroup->LoadTransformMatrix(mat);
-		GetSceneRoot().AddChild(nodeGroup);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		GetSceneRoot().AddChild(node);
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
+//		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
+//		nodeGroup->AddChild(node);
+//		Math::CMatrix4 mat;
+//		mat.SetTranslation(-1000.0,0,0);
+//		nodeGroup->LoadTransformMatrix(mat);
+//		GetSceneRoot().AddChild(nodeGroup);
 	}
 
 	virtual ~WindowGBuffer()
@@ -87,15 +77,21 @@ public:
 		m_gbuffer_shader->end();
 
 		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
 		glLoadIdentity();
 		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
 		glLoadIdentity();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		MatrixManagement::Instance().PushMatrix(m_camera->GetMatrix());
-		m_GI->ComputeIllumination();
-		MatrixManagement::Instance().PopMatrix();
+		m_gbuffer_shader->GetFBO()->DrawDebug();
+		//m_GI->ComputeIllumination();
+
+		glPopMatrix();
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
 
 	}
 };

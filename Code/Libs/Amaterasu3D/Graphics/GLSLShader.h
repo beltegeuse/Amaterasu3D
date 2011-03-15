@@ -379,7 +379,6 @@ public:
 	void Push(glShader* shader);
 	void Pop();
 	// Callback to update matrix
-	void UpdateMatrix(MatrixType mat, const Math::CMatrix4& matrix);
 	glShader* currentShader();
 	bool activedShader();
 private:

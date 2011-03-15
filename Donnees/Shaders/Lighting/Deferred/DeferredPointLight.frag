@@ -15,9 +15,6 @@ uniform vec3 LightColor;
 uniform float LightRaduis;
 uniform float LightIntensity;
 
-// La matrice de la camera
-uniform mat4 ModelViewMatrix;
-
 // Entree
 smooth in vec2 outTexCoord;
 
@@ -29,7 +26,7 @@ void main()
 	// Inspired by : http://encelo.netsons.org/blog/tag/glsl/
 
 	// Compute the light position
-	vec3 realLightPos = (vec4(LightPosition,1.0)*ModelViewMatrix).xyz;
+	//vec3 realLightPos = (vec4(LightPosition,1.0)*gl_ModelViewMatrix).xyz;
 	
 	// Get all data
 	vec3 diffuseColor = texture(DiffuseBuffer, outTexCoord).xyz;
@@ -38,7 +35,7 @@ void main()
 	vec3 position = texture(PositionBuffer, outTexCoord).xyz;
 	
 	// If the light don't affect this frag => Discard
-	vec3 LightDirection = realLightPos - position; // suppres realLightPosition
+	vec3 LightDirection = LightPosition - position; // suppres realLightPosition
 	float LightDistance = length(LightDirection);
 	LightDirection = normalize(LightDirection);
 	
