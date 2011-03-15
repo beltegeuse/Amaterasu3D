@@ -166,14 +166,15 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 					Logger::Log() << "[INFO] Specular Texture : " << texturePath.Filename() << "\n";
 					assimpMesh->AddTextureMap(SPECULAR_TEXTURE, LoadTexture(texturePath));
 				}
-				if(material->GetTextureCount(aiTextureType_HEIGHT)>0)
-				{
-					aiString AiPath;
-					material->GetTexture(aiTextureType_HEIGHT, 0, &AiPath);
-					CFile texturePath = std::string(AiPath.data);
-					Logger::Log() << "[INFO] Normal texture : " << texturePath.Filename() << "\n";
-					assimpMesh->AddTextureMap(NORMAL_TEXTURE, LoadTexture(texturePath));
-				}
+				//TODO: Desactivation du bump mapping
+//				if(material->GetTextureCount(aiTextureType_HEIGHT)>0)
+//				{
+//					aiString AiPath;
+//					material->GetTexture(aiTextureType_HEIGHT, 0, &AiPath);
+//					CFile texturePath = std::string(AiPath.data);
+//					Logger::Log() << "[INFO] Normal texture : " << texturePath.Filename() << "\n";
+//					assimpMesh->AddTextureMap(NORMAL_TEXTURE, LoadTexture(texturePath));
+//				}
 
 
 			}

@@ -86,6 +86,9 @@ public:
 				 case SDLK_F1:
 					 m_debug = !m_debug;
 					 break;
+				 case SDLK_F2:
+					 m_GI->SetDebugMode(!m_GI->isDebugMode());
+					 break;
 			 }
 		}
 

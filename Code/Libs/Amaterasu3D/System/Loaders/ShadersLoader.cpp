@@ -63,6 +63,16 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 			param.InternalFormat = GL_RGB32F;
 			param.ExternalFormat = GL_RGB;
 		}
+		else if(typeString == "RGBA16")
+		{
+			param.InternalFormat = GL_RGBA16F;
+			param.ExternalFormat = GL_RGBA;
+		}
+		else if(typeString == "RGBA32")
+		{
+			param.InternalFormat = GL_RGBA32F;
+			param.ExternalFormat = GL_RGBA;
+		}
 		else
 			throw CException("unknow buffer type");
 //		glBindFragDataLocation(shader->GetProgramObject(),i,name.c_str());

@@ -16,30 +16,21 @@ uniform vec3 positionCamera;
 uniform vec3 LightColor;
 uniform float LightRaduis;
 uniform float LightIntensity;
-
+uniform bool DebugMode;
 // Entree
 smooth in vec2 outTexCoord;
 
 // Output buffers
 out vec4 Color;
 
-float LinearizeDepth(float zoverw){
-	float n = 0.1; // camera z near
-	float f = 100.0; // camera z far
-	return (2.0 * n) / (f + n - zoverw * (f - n));
-}
-
 void main()
 {	
 	// Inspired by : http://encelo.netsons.org/blog/tag/glsl/
-
-	// Compute the light position
-	//vec3 realLightPos = (vec4(LightPosition,1.0)*gl_ModelViewMatrix).xyz;
 	
 	// Get all data
 	vec3 diffuseColor = texture(DiffuseBuffer, outTexCoord).xyz;
 	vec4 specularColor = texture(SpecularBuffer, outTexCoord);
-	vec3 normal = texture(NormalBuffer, outTexCoord).xyz;
+	vec3 normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
 	vec3 position = texture(PositionBuffer, outTexCoord).xyz;
 	
 	// If the light don't affect this frag => Discard
@@ -47,9 +38,12 @@ void main()
 	float LightDistance = length(LightDirection);
 	LightDirection = normalize(LightDirection);
 	
-	if(LightDistance > LightRaduis)
-		discard;
-		
+	if (DebugMode == false)
+	{
+		if(LightDistance > LightRaduis)
+			discard;
+	}	
+	
 	// Compute light attenation
 	float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity;
 	
@@ -71,7 +65,10 @@ void main()
 	// Add diffuse color 
 	Color *= vec4(diffuseColor,1.0);
 	
-	//Color = vec4(LightAtt);
-	//if (LightDistance > LightRaduis - 0.02 && LightDistance < LightRaduis + 0.02)
-	//	Color = vec4(1.0, 0.0, 0.0, 0.0);
+	if(DebugMode)
+	{
+		Color = vec4(LightAtt);
+		if (LightDistance > LightRaduis - 0.02 && LightDistance < LightRaduis + 0.02)
+			Color = vec4(1.0, 0.0, 0.0, 0.0);
+	}
 }

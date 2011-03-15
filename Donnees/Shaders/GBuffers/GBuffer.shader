@@ -8,9 +8,9 @@
     </MatrixInput>
     <OutputFrame depthType="Texture">
     	<Frame name="Diffuse" type="RGBA" />
-    	<Frame name="Normal" type="RGB32" />
+    	<Frame name="Normal" type="RGBA32" />
     	<Frame name="Specular" type="RGBA" />
-    	<Frame name="Position" type="RGB32" />
+    	<Frame name="Position" type="RGBA32" />
     </OutputFrame>
     <Textures>
 		<Texture type="Diffuse" name="TextureDiffuse" />

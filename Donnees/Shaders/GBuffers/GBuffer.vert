@@ -20,7 +20,7 @@ uniform int UseDiffuseTex;
 uniform int UseSpecularTex;
 
 // Smooth variables
-smooth out vec4 outPosition;
+smooth out vec3 outPosition;
 smooth out vec2 outTexCoord;
 smooth out mat3 outtbnMatrix;
 smooth out vec3 outColor;
@@ -61,6 +61,6 @@ void main ()
         outColor = VertexColor;
     }
     
-    outPosition = ModelMatrix * vec4 (VertexPosition, 1.0);
+    outPosition = (ModelMatrix * vec4 (VertexPosition, 1.0)).xyz;
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4 (VertexPosition, 1.0);
 }

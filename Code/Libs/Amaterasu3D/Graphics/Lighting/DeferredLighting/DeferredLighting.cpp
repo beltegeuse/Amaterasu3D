@@ -1,9 +1,13 @@
 #include "DeferredLighting.h"
 
-DeferredLighting::DeferredLighting()
+DeferredLighting::DeferredLighting() :
+	m_debug_mode(false)
 {
 	// Load shader
 	m_point_light_shader = glShaderManager::Instance().LoadShader("DeferredPointLight.shader");
+	m_point_light_shader->begin();
+	m_point_light_shader->setUniform1i("DebugMode",m_debug_mode);
+	m_point_light_shader->end();
 }
 
 DeferredLighting::~DeferredLighting()
@@ -58,4 +62,17 @@ void DeferredLighting::ComputeIllumination()
 	PointLightPass();
 
 //	glDisable(GL_BLEND);
+}
+
+bool DeferredLighting::isDebugMode() const
+{
+	return m_debug_mode;
+}
+
+void DeferredLighting::SetDebugMode(bool v)
+{
+	m_debug_mode = v;
+	m_point_light_shader->begin();
+	m_point_light_shader->setUniform1i("DebugMode",m_debug_mode);
+	m_point_light_shader->end();
 }

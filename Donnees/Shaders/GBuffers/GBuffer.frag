@@ -17,7 +17,7 @@ uniform sampler2D TextureNormal;
 uniform sampler2D TextureSpecular;
 
 // Shader input
-smooth in vec4 outPosition;
+smooth in vec3 outPosition;
 smooth in vec2 outTexCoord;
 smooth in mat3 outtbnMatrix;
 smooth in vec3 outColor;
@@ -32,7 +32,7 @@ out vec4 Position;
 void main()
 {
 	// Position buffer
-	Position = outPosition;
+	Position = vec4(outPosition,1.0);
 
     // Diffuse buffer
     if(UseDiffuseTex == 1)
@@ -50,11 +50,11 @@ void main()
 		vec4 normalMap = texture(TextureNormal, outTexCoord.st);
 		vec3 n = normalize(2.0 * normalMap.rgb - 1.0); // decode the Bump texture
 		vec3 normalInterpoled = n * outtbnMatrix;
-		Normal = vec4(normalize(normalInterpoled),1.0);
+		Normal = vec4(normalize(normalInterpoled)* 0.5 + 0.5,1.0);
 	}
 	else
 	{
-	    Normal = vec4(normalize(outNormal), 1.0);
+	    Normal = vec4(normalize(outNormal)* 0.5 + 0.5,1.0);
 	}
 	
 	// Specular buffer
