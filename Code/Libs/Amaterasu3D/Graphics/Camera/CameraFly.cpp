@@ -21,6 +21,11 @@ CameraFly::~CameraFly()
 {
 }
 
+void CameraFly::SetSpeed(float moveSec)
+{
+	m_factor_move = moveSec;
+}
+
 void CameraFly::OnEvent(SDL_Event& event, double DeltaTime)
 {
 	if(event.type == SDL_KEYDOWN)

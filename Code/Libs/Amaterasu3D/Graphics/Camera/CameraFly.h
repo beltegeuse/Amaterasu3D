@@ -33,6 +33,8 @@ public:
 
 	virtual void OnEvent(SDL_Event& event, double deltaTime);
 	virtual void ComputeMatrix(double delta);
+	void SetSpeed(float moveSec);
+
 private:
 	void ComputeAngles();
 };

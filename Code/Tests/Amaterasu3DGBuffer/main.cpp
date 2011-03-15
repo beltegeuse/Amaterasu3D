@@ -31,11 +31,12 @@ public:
 		m_debug(false)
 	{
 		// Camera Setup
-		CameraAbstract* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		CameraFly* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		cam->SetSpeed(200.0);
 		SetCamera(cam);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
+		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 4000);
 		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Config path
 		CMediaManager::Instance().AddSearchPath("../Donnees");
@@ -56,11 +57,11 @@ public:
 		PointLight light;
 		light.LightColor = Color(1.0,1.0,1.0,0.0);
 		light.Position = Math::TVector3F(3,4,2);
-		light.LightRaduis = 5.0;
+		light.LightRaduis = 1000.0;
 		light.LightIntensity = 1.0;
 		m_GI->AddPointLight(light);
 		// Load scene
-		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.3DS");
+		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 		GetSceneRoot().AddChild(node1);
 //		SceneGraph::AssimpNode* node2 = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
 //		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
