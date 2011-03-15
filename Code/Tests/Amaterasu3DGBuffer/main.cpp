@@ -54,12 +54,21 @@ public:
 		m_GI = new DeferredLighting;
 		m_GI->SetFBOGraphicBuffer(m_gbuffer_shader->GetFBO());
 		// Create light 1
-		PointLight light;
-		light.LightColor = Color(1.0,1.0,1.0,0.0);
-		light.Position = Math::TVector3F(3,4,2);
-		light.LightRaduis = 1000.0;
-		light.LightIntensity = 1.0;
-		m_GI->AddPointLight(light);
+		PointLight light1;
+		light1.LightColor = Color(1.0,1.0,1.0,0.0);
+		light1.Position = Math::TVector3F(0,20,0);
+		light1.LightRaduis = 100.0;
+		light1.LightIntensity = 1.0;
+		m_GI->AddPointLight(light1);
+		// Create light 2
+		SpotLight light2;
+		light2.LightColor = Color(1.0,1.0,1.0,0.0);
+		light2.Position = Math::TVector3F(-500,500,0);
+		light2.LightRaduis = 3000.0;
+		light2.LightIntensity = 1.0;
+		light2.LightCutOff = 70;
+		light2.Direction = Math::TVector3F(1.0,0.0,0.0);
+		m_GI->AddSpotLight(light2);
 		// Load scene
 		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 		GetSceneRoot().AddChild(node1);

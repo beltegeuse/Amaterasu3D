@@ -7,5 +7,5 @@
 		<Texture type="Custom" name="PositionBuffer" id=3 />
 	</Textures>
 	<VertexShader filename="DeferredPointLight.vert" />
-	<FragmentShader filename="DeferredPointLight.frag" />
+	<FragmentShader filename="DeferredSpotLight.frag" />
 </Shader>

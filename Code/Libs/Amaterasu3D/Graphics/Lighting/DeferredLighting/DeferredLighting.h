@@ -16,6 +16,7 @@ class DeferredLighting : public LightingPassAbstract
 private:
 	// Attributs
 	TShaderPtr m_point_light_shader;
+	TShaderPtr m_spot_light_shader;
 	bool m_debug_mode;
 public:
 	DeferredLighting();
@@ -28,6 +29,7 @@ public:
 	void SetDebugMode(bool v);
 protected:
 	void PointLightPass();
+	void SpotLightPass();
 };
 
 #endif /* DEFERREDLIGHTING_H_ */

@@ -11,11 +11,15 @@ uniform sampler2D PositionBuffer;
 
 // light caracteristics
 uniform vec3 LightPosition;
-uniform vec3 positionCamera;
 uniform vec3 LightColor;
+uniform vec3 LightSpotDirection;
 uniform float LightRaduis;
 uniform float LightIntensity;
+uniform float LightCutOff; // cos value
+
+// To enable / disable the debug mode
 uniform bool DebugMode;
+
 // Entree
 smooth in vec2 outTexCoord;
 
@@ -36,15 +40,16 @@ void main()
 	vec3 LightDirection = LightPosition - position; // suppres realLightPosition
 	float LightDistance = length(LightDirection);
 	LightDirection = normalize(LightDirection);
-	
+	float SpotDot = dot(normalize(LightSpotDirection), -LightDirection);
 	if (DebugMode == false)
 	{
-		if(LightDistance > LightRaduis)
+		if(LightDistance > LightRaduis || SpotDot < LightCutOff)
 			discard;
 	}	
 	
 	// Compute light attenation
-	float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity;
+    float SpotAtt = pow(SpotDot, 12.0); //TODO: uniform ???
+	float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
 	
 	// Initialise Black color
 	Color = vec4(0.0);
@@ -58,7 +63,7 @@ void main()
 		vec3 R = reflect(-LightDirection, normal);
 		// Add specular compoment
 		float RdotE = max(dot(R, normalize(-position)), 0.0);
-		Color += vec4(LightAtt * LightColor * specularColor.rgb * pow(RdotE, specularColor.a),0.0);
+		Color += vec4(LightAtt * LightColor * specularColor.rgb * pow(RdotE, specularColor.a),16.0);
 	}
 	
 	// Add diffuse color 
@@ -69,5 +74,7 @@ void main()
 		Color = vec4(LightAtt);
 		if (LightDistance > LightRaduis - 0.02 && LightDistance < LightRaduis + 0.02)
 			Color = vec4(1.0, 0.0, 0.0, 0.0);
+		if ((SpotDot > LightCutOff - 0.001) &&  (SpotDot < LightCutOff + 0.001))
+			Color = vec4(0.0, 1.0, 0.0, 0.0);
 	}
 }
