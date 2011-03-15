@@ -42,12 +42,12 @@ void main ()
 	// Normal management
 	if(UseBumpMapping == 1)
 	{
-	    vec3 normal = normalize(ModelMatrix * vec4(VertexNormal,0.0)).xyz;
-		vec3 tangent = normalize(ModelMatrix * vec4(VertexTangent,0.0)).xyz;
-		vec3 binormal = normalize(ModelMatrix * vec4(VertexBiTangent,0.0)).xyz;
-	    //vec3 normal = normalize(NormalMatrix3 * VertexNormal);
-		//vec3 tangent = normalize(NormalMatrix3 * VertexTangent);
-		//vec3 binormal = normalize(NormalMatrix3 * VertexBiTangent);
+	    //vec3 normal = normalize(ModelMatrix * vec4(VertexNormal,0.0)).xyz;
+		//vec3 tangent = normalize(ModelMatrix * vec4(VertexTangent,0.0)).xyz;
+		//vec3 binormal = normalize(ModelMatrix * vec4(VertexBiTangent,0.0)).xyz;
+	    vec3 normal = normalize(NormalMatrix3 * VertexNormal);
+		vec3 tangent = normalize(NormalMatrix3 * VertexTangent);
+		vec3 binormal = normalize(NormalMatrix3 * VertexBiTangent);
 		outtbnMatrix = mat3(tangent, binormal, normal);
 	}
 	else
