@@ -1,5 +1,7 @@
 <?xml version="1.0" ?>
 <Shader name="ShadowMap" type="Basic">
+    <OutputFrame depthType="Texture">
+    </OutputFrame>
     <MatrixInput>
        <Matrix type="Model" name="ModelMatrix" />
        <Matrix type="View" name="ViewMatrix" />

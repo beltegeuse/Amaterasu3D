@@ -92,6 +92,11 @@ FBO::FBO(const Math::TVector2I& size,
 
 	if(sizeBufferDraw > 0)
 		glDrawBuffers(sizeBufferDraw, buffersDraw);
+	else
+	{
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
 	GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER);

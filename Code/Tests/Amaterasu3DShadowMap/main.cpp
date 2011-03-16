@@ -22,14 +22,17 @@ class WindowShadow : public Window
 {
 protected:
 	TShaderPtr m_BasicShader;
+	TShaderPtr m_ShadowShader;
 	Math::CMatrix4 m_matrixPerspective;
+	SpotLight m_light;
+
 	bool m_debug;
 public:
 	WindowShadow() :
 		Window("WindowShadow"),
 		m_debug(false)
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Camera Setup
 		CameraFly* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		cam->SetSpeed(20.0);
@@ -45,21 +48,22 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/SponzaOther");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/2DShaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/Deferred");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/BasicShaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Shadow");
 		// Shader loading
 		m_BasicShader = glShaderManager::Instance().LoadShader("BasicShader.shader");
+		m_ShadowShader = glShaderManager::Instance().LoadShader("ShadowMap.shader");
 
-		// Create light 2
-		SpotLight light2;
-		light2.LightColor = Color(1.0,1.0,1.0,0.0);
-		light2.Position = Math::TVector3F(-500,200,0);
-		light2.LightRaduis = 4000.0;
-		light2.LightIntensity = 1.0;
-		light2.LightCutOff = 70;
-		light2.Direction = Math::TVector3F(1.0,0.0,0.0);
+		// Create Light
+		m_light.LightColor = Color(1.0,1.0,1.0,0.0);
+		m_light.Position = Math::TVector3F(0,10,0);
+		m_light.LightRaduis = 40.0;
+		m_light.LightIntensity = 1.0;
+		m_light.LightCutOff = 70;
+		m_light.Direction = Math::TVector3F(4.0,4.0,4.0);
 		// Load scene
 		// * Create first cube
 		SceneGraph::Group * cubeGroup = new SceneGraph::Group;
