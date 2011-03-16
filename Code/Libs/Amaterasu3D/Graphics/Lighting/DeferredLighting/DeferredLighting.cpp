@@ -12,12 +12,6 @@ DeferredLighting::DeferredLighting(Window* win) :
 	m_spot_light_shader = glShaderManager::Instance().LoadShader("DeferredSpotLight.shader");
 	// * simple shader for the shadow map
 	m_simple_shader = glShaderManager::Instance().LoadShader("ShadowMap.shader");
-	std::map<std::string, FBOTextureBufferParam> emptyMap;
-	FBOTextureBufferParam paramTex;
-	emptyMap["Color"] = paramTex;
-	FBODepthBufferParam param;
-	FBO* shadowMapFBO = new FBO(Math::TVector2I(512,512), emptyMap, FBODEPTH_TEXTURE, param);
-	m_simple_shader->SetFBO(shadowMapFBO);
 	SetDebugMode(m_debug_mode);
 }
 
@@ -42,7 +36,7 @@ void DeferredLighting::SpotLightPass()
 		Math::CMatrix4 LightViewMatrix;
 		LightViewMatrix.LookAt(m_spots_lights[i].Position, m_spots_lights[i].Direction);
 		Math::CMatrix4 LightProjectionMatrix;
-		LightProjectionMatrix.PerspectiveFOV(m_spots_lights[i].LightCutOff, 512.0/512.0, 1.0, m_spots_lights[i].LightRaduis);
+		LightProjectionMatrix.PerspectiveFOV(m_spots_lights[i].LightCutOff, 800.0/600.0, 1.0, m_spots_lights[i].LightRaduis);
 		MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
 		MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
 		// * Draw the scene

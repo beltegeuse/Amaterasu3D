@@ -61,10 +61,18 @@ void main()
 	}
 	
 	// Shadow Map
-	vec3 ShadowCoord = 0.5*vec3(LightProjectionMatrix * LightViewMatrix * vec4(position,1.0)) + 0.5;
-	float ClosedLightDistance = LinearizeDepth(ShadowCoord.st);
-	float ShadowFactor = 1.0;
-	ShadowFactor = ClosedLightDistance < LightDistance + 0.0005 ? 0.5 : 1.0 ;
+	//  * Compute projected coordinates
+	mat4 biasMatrix = mat4(0.5, 0.0, 0.0, 0.0,
+						   0.0, 0.5, 0.0, 0.0,
+						   0.0, 0.0, 0.5, 0.0,
+						   0.5, 0.5, 0.5, 1.0);
+	vec4 ShadowCoord = biasMatrix*LightProjectionMatrix * LightViewMatrix * vec4(position,1.0);
+	vec4 shadowCoordinateWdivide = ShadowCoord / ShadowCoord.w ;
+	// Used to lower moiré pattern and self-shadowing
+	shadowCoordinateWdivide.z -= 0.001;
+	
+	float ClosedLightDistance = texture(ShadowBuffer, shadowCoordinateWdivide.st).r;
+	float ShadowFactor = ClosedLightDistance < shadowCoordinateWdivide.z ? 0.2 : 1.0 ;
 	
 	
 	// Compute light attenation
