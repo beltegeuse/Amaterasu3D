@@ -21,16 +21,21 @@
 class WindowShadow : public Window
 {
 protected:
+	TShaderPtr m_BasicShaderShadow;
 	TShaderPtr m_BasicShader;
 	TShaderPtr m_ShadowShader;
 	Math::CMatrix4 m_matrixPerspective;
 	SpotLight m_light;
 
 	bool m_debug;
+	bool m_showDepth;
+	bool m_cameraView;
 public:
 	WindowShadow() :
 		Window("WindowShadow"),
-		m_debug(false)
+		m_debug(false),
+		m_showDepth(false),
+		m_cameraView(false)
 	{
 //		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Camera Setup
@@ -54,12 +59,13 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/BasicShaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Shadow");
 		// Shader loading
+		m_BasicShaderShadow = glShaderManager::Instance().LoadShader("DebugDrawShadowMapOnly.shader");
 		m_BasicShader = glShaderManager::Instance().LoadShader("BasicShader.shader");
 		m_ShadowShader = glShaderManager::Instance().LoadShader("ShadowMap.shader");
 
 		// Create Light
 		m_light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_light.Position = Math::TVector3F(0,10,0);
+		m_light.Position = Math::TVector3F(7,10,7);
 		m_light.LightRaduis = 40.0;
 		m_light.LightIntensity = 1.0;
 		m_light.LightCutOff = 70;
@@ -94,6 +100,10 @@ public:
 				 case SDLK_F1:
 					 m_debug = !m_debug;
 					 break;
+				 case SDLK_F2:
+					 m_showDepth = !m_showDepth;
+				 case SDLK_F3:
+					 m_cameraView = !m_cameraView;
 			 }
 		}
 
@@ -101,9 +111,68 @@ public:
 
 	virtual void OnDraw(double delta)
 	{
-		m_BasicShader->begin();
-		Window::OnDraw(delta);
-		m_BasicShader->end();
+		Math::CMatrix4 LightViewMatrix;
+		LightViewMatrix.LookAt(m_light.Position, m_light.Direction);
+		Math::CMatrix4 LightProjectionMatrix;
+		Math::CMatrix4 oldProjectionMatrix;
+		Math::CMatrix4 oldViewMatrix;
+		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff, 800.0/600.0, 1.0, m_light.LightRaduis);
+		{
+			// Generate the Shadow Map
+			// * Transformations
+			oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
+			oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
+			MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
+			MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
+			// * Draw the scene
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			m_ShadowShader->begin();
+			GetSceneRoot().Draw(); // Draw the scene
+			m_ShadowShader->end();
+			glDisable(GL_CULL_FACE);
+			// * Revert transformations
+			MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
+			MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
+		}
+
+		{
+			if(m_cameraView)
+			{
+				oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
+				oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
+				MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
+				MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
+			}
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			m_ShadowShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+			m_BasicShaderShadow->begin();
+			m_BasicShaderShadow->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
+			m_BasicShaderShadow->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
+			m_BasicShaderShadow->setUniform1i("DebugMode", m_debug);
+			if(!m_cameraView)
+			{
+				m_camera->GetView();
+			}
+			GetSceneRoot().Draw();
+			m_BasicShaderShadow->end();
+			m_ShadowShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+			if(m_cameraView)
+			{
+				MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
+				MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
+			}
+			glDisable(GL_CULL_FACE);
+		}
+
+		if(m_showDepth)
+		{
+			m_ShadowShader->GetFBO()->DrawDebug();
+		}
 //
 //		glMatrixMode(GL_PROJECTION);
 //		glPushMatrix();
