@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <Shader name="BasicShader" type="Basic">
     <MatrixInput>
-       <Matrix type="ModelView" name="ModelViewMatrix" />
+       <Matrix type="Model" name="ModelMatrix" />
+       <Matrix type="View" name="ViewMatrix" />
        <Matrix type="Projection" name="ProjectionMatrix" />
     </MatrixInput>
 	<Attributs>

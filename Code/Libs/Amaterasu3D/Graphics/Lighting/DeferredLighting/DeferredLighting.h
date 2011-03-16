@@ -10,6 +10,7 @@
 
 #include <Graphics/Lighting/LightingPassAbstract.h>
 #include <Graphics/GLSLShader.h>
+#include <Graphics/Window.h>
 
 class DeferredLighting : public LightingPassAbstract
 {
@@ -17,9 +18,11 @@ private:
 	// Attributs
 	TShaderPtr m_point_light_shader;
 	TShaderPtr m_spot_light_shader;
+	TShaderPtr m_simple_shader;
 	bool m_debug_mode;
+	Window* m_window;
 public:
-	DeferredLighting();
+	DeferredLighting(Window* win);
 	virtual ~DeferredLighting();
 
 	virtual void ComputeIllumination();

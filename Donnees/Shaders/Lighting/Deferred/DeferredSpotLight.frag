@@ -8,6 +8,7 @@ uniform sampler2D DiffuseBuffer;
 uniform sampler2D SpecularBuffer;
 uniform sampler2D NormalBuffer;
 uniform sampler2D PositionBuffer;
+uniform sampler2D ShadowBuffer;
 
 // light caracteristics
 uniform vec3 LightPosition;
@@ -17,6 +18,10 @@ uniform float LightRaduis;
 uniform float LightIntensity;
 uniform float LightCutOff; // cos value
 
+// Shadow map
+uniform mat4 LightViewMatrix;
+uniform mat4 LightProjectionMatrix;
+
 // To enable / disable the debug mode
 uniform bool DebugMode;
 
@@ -25,6 +30,14 @@ smooth in vec2 outTexCoord;
 
 // Output buffers
 out vec4 Color;
+
+float LinearizeDepth(vec2 uv)
+{
+  float n = 1.0; // camera z near
+  float f = LightRaduis; // camera z far
+  float z = texture2D(ShadowBuffer, uv).x;
+  return ((2.0 * n) / (f + n - z * (f - n))) * f;
+}
 
 void main()
 {	
@@ -45,7 +58,14 @@ void main()
 	{
 		if(LightDistance > LightRaduis || SpotDot < LightCutOff)
 			discard;
-	}	
+	}
+	
+	// Shadow Map
+	vec3 ShadowCoord = 0.5*vec3(LightProjectionMatrix * LightViewMatrix * vec4(position,1.0)) + 0.5;
+	float ClosedLightDistance = LinearizeDepth(ShadowCoord.st);
+	float ShadowFactor = 1.0;
+	ShadowFactor = ClosedLightDistance < LightDistance + 0.0005 ? 0.5 : 1.0 ;
+	
 	
 	// Compute light attenation
     float SpotAtt = pow(SpotDot, 12.0); //TODO: uniform ???
@@ -68,6 +88,7 @@ void main()
 	
 	// Add diffuse color 
 	Color *= vec4(diffuseColor,1.0);
+	Color *= ShadowFactor;
 	
 	if(DebugMode)
 	{

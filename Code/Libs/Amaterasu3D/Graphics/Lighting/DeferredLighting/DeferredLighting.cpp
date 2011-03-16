@@ -1,15 +1,23 @@
 #include "DeferredLighting.h"
 #include <math.h>
 
-DeferredLighting::DeferredLighting() :
-	m_debug_mode(false)
+DeferredLighting::DeferredLighting(Window* win) :
+	m_debug_mode(false),
+	m_window(win)
 {
 	// Load shader
 	// * Point Light
 	m_point_light_shader = glShaderManager::Instance().LoadShader("DeferredPointLight.shader");;
 	// * Spot Light
 	m_spot_light_shader = glShaderManager::Instance().LoadShader("DeferredSpotLight.shader");
-
+	// * simple shader for the shadow map
+	m_simple_shader = glShaderManager::Instance().LoadShader("ShadowMap.shader");
+	std::map<std::string, FBOTextureBufferParam> emptyMap;
+	FBOTextureBufferParam paramTex;
+	emptyMap["Color"] = paramTex;
+	FBODepthBufferParam param;
+	FBO* shadowMapFBO = new FBO(Math::TVector2I(512,512), emptyMap, FBODEPTH_TEXTURE, param);
+	m_simple_shader->SetFBO(shadowMapFBO);
 	SetDebugMode(m_debug_mode);
 }
 
@@ -24,17 +32,44 @@ void DeferredLighting::SpotLightPass()
 	m_FBO_graphics->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+1);
 	m_FBO_graphics->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 	m_FBO_graphics->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+3);
-	// Go to spot pass
-	m_spot_light_shader->begin();
+
 	for(int i = 0; i < m_spots_lights.size(); i++)
 	{
+		// Generate the Shadow Map
+		// * Transformations
+		Math::CMatrix4 oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
+		Math::CMatrix4 oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
+		Math::CMatrix4 LightViewMatrix;
+		LightViewMatrix.LookAt(m_spots_lights[i].Position, m_spots_lights[i].Direction);
+		Math::CMatrix4 LightProjectionMatrix;
+		LightProjectionMatrix.PerspectiveFOV(m_spots_lights[i].LightCutOff, 512.0/512.0, 1.0, m_spots_lights[i].LightRaduis);
+		MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
+		MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
+		// * Draw the scene
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		m_simple_shader->begin();
+		m_window->GetSceneRoot().Draw(); // Draw the scene
+		m_simple_shader->end();
+		glDisable(GL_CULL_FACE);
+		// * Revert transformations
+		MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
+		MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
+		// * Give Depth Texture
+		m_simple_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4);
+
+		// Go to spot pass
+		m_spot_light_shader->begin();
+		// * Light propreties
 		m_spot_light_shader->setUniform1f("LightRaduis",m_spots_lights[i].LightRaduis);
 		m_spot_light_shader->setUniform1f("LightCutOff", cos(m_spots_lights[i].LightCutOff *(M_PI / 180.0)));
 		m_spot_light_shader->setUniform1f("LightIntensity", m_spots_lights[i].LightIntensity);
 		m_spot_light_shader->setUniform3f("LightPosition", m_spots_lights[i].Position.x, m_spots_lights[i].Position.y, m_spots_lights[i].Position.z);
 		m_spot_light_shader->setUniform3f("LightSpotDirection", m_spots_lights[i].Direction.x, m_spots_lights[i].Direction.y, m_spots_lights[i].Direction.z);
 		m_spot_light_shader->setUniform3f("LightColor", m_spots_lights[i].LightColor.R, m_spots_lights[i].LightColor.G, m_spots_lights[i].LightColor.B);
-
+		// * Shadow Map propreties
+		m_spot_light_shader->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
+		m_spot_light_shader->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
 		// Draw ...
 		glBegin(GL_QUADS);
 		glTexCoord2f(0.0, 0.0);
@@ -46,13 +81,16 @@ void DeferredLighting::SpotLightPass()
 		glTexCoord2f(1.0, 0.0);
 		glVertex2f(1.0, -1.0);
 		glEnd();
+
+		m_spot_light_shader->end();
 	}
-	m_spot_light_shader->end();
+
 	// Desactive differents buffers
 	m_FBO_graphics->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 	m_FBO_graphics->GetTexture("Specular")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 	m_FBO_graphics->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 	m_FBO_graphics->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+	m_simple_shader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 }
 
 void DeferredLighting::PointLightPass()
@@ -98,7 +136,7 @@ void DeferredLighting::ComputeIllumination()
 	glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 	// Points light pass
-	PointLightPass();
+	//PointLightPass();
 	SpotLightPass();
 
 	glBlendFunc(GL_SRC_ALPHA,GL_ZERO);

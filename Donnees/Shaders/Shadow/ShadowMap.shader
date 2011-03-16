@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Shader name="NoColorBasicShader" type="Basic">
+<Shader name="ShadowMap" type="Basic">
     <MatrixInput>
        <Matrix type="Model" name="ModelMatrix" />
        <Matrix type="View" name="ViewMatrix" />
@@ -8,6 +8,6 @@
 	<Attributs>
     	<Attribut type="Vertex" name="VertexPosition" />
     </Attributs>
-	<VertexShader filename="NoColorBasicShader.vert" />
-	<FragmentShader filename="NoColorBasicShader.frag" />
+	<VertexShader filename="ShadowMap.vert" />
+	<FragmentShader filename="ShadowMap.frag" />
 </Shader>

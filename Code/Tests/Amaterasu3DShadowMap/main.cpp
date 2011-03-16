@@ -18,16 +18,15 @@
 #include <iostream>
 #include <stdlib.h>
 
-class WindowGBuffer : public Window
+class WindowShadow : public Window
 {
 protected:
+	TShaderPtr m_BasicShader;
 	Math::CMatrix4 m_matrixPerspective;
-	TShaderPtr m_gbuffer_shader;
-	DeferredLighting* m_GI;
 	bool m_debug;
 public:
-	WindowGBuffer() :
-		Window("Amaterasu3DTestApp"),
+	WindowShadow() :
+		Window("WindowShadow"),
 		m_debug(false)
 	{
 		// Camera Setup
@@ -47,20 +46,11 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/Deferred");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/2DShaders");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/BasicShaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Shadow");
-		// Load shader
-		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
-		// Load GI
-		m_GI = new DeferredLighting(this);
-		m_GI->SetFBOGraphicBuffer(m_gbuffer_shader->GetFBO());
-		// Create light 1
-		PointLight light1;
-		light1.LightColor = Color(1.0,1.0,1.0,0.0);
-		light1.Position = Math::TVector3F(0,20,0);
-		light1.LightRaduis = 100.0;
-		light1.LightIntensity = 1.0;
-		m_GI->AddPointLight(light1);
+		// Shader loading
+		m_BasicShader = glShaderManager::Instance().LoadShader("BasicShader.shader");
+
 		// Create light 2
 		SpotLight light2;
 		light2.LightColor = Color(1.0,1.0,1.0,0.0);
@@ -69,21 +59,23 @@ public:
 		light2.LightIntensity = 1.0;
 		light2.LightCutOff = 70;
 		light2.Direction = Math::TVector3F(1.0,0.0,0.0);
-		m_GI->AddSpotLight(light2);
 		// Load scene
-		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-		GetSceneRoot().AddChild(node1);
-//		SceneGraph::AssimpNode* node2 = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
-//		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
-//		nodeGroup->AddChild(node2);
-//		Math::CMatrix4 mat;
-//		mat.SetTranslation(0,0,-1000.0);
-//		nodeGroup->LoadTransformMatrix(mat);
-//		GetSceneRoot().AddChild(nodeGroup);
-	}
-
-	virtual ~WindowGBuffer()
-	{
+		// * Create first cube
+		SceneGraph::Group * cubeGroup = new SceneGraph::Group;
+		cubeGroup->AddChild(new DebugCubeLeaf);
+		Math::CMatrix4 matCube;
+		matCube.SetTranslation(4,4,4);
+		cubeGroup->LoadTransformMatrix(matCube);
+		// * Create floor
+		SceneGraph::Group * cubeFloor = new SceneGraph::Group;
+		cubeFloor->AddChild(new DebugCubeLeaf);
+		Math::CMatrix4 matFloor;
+		matFloor.SetTranslation(0,0,0);
+		matFloor.SetScaling(10,1,10);
+		cubeFloor->LoadTransformMatrix(matFloor);
+		// Add to root
+		GetSceneRoot().AddChild(cubeGroup);
+		GetSceneRoot().AddChild(cubeFloor);
 	}
 
 	virtual void OnEvent(SDL_Event& event, double delta)
@@ -97,9 +89,6 @@ public:
 				 case SDLK_F1:
 					 m_debug = !m_debug;
 					 break;
-				 case SDLK_F2:
-					 m_GI->SetDebugMode(!m_GI->isDebugMode());
-					 break;
 			 }
 		}
 
@@ -107,32 +96,23 @@ public:
 
 	virtual void OnDraw(double delta)
 	{
-		m_gbuffer_shader->begin();
-		//m_camera->SendInvMatrix();
+		m_BasicShader->begin();
 		Window::OnDraw(delta);
-		m_gbuffer_shader->end();
-
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		if(m_debug)
-			m_gbuffer_shader->GetFBO()->DrawDebug();
-		else
-		{
-			m_camera->GetView();
-			m_GI->ComputeIllumination();
-		}
-
-		glPopMatrix();
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
+		m_BasicShader->end();
+//
+//		glMatrixMode(GL_PROJECTION);
+//		glPushMatrix();
+//		glLoadIdentity();
+//		glMatrixMode(GL_MODELVIEW);
+//		glPushMatrix();
+//		glLoadIdentity();
+//
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//
+//		glPopMatrix();
+//		glMatrixMode(GL_PROJECTION);
+//		glPopMatrix();
+//		glMatrixMode(GL_MODELVIEW);
 
 	}
 };
@@ -145,7 +125,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	aiAttachLogStream(&stream);
 
 	std::cout << "[INFO] Begin ..." << std::endl;
-	WindowGBuffer window;
+	WindowShadow window;
 	window.Run();
 	std::cout << "[INFO] ... end." << std::endl;
 	return 0;
