@@ -1,22 +1,21 @@
 #ifndef DEBUGCUBELEAF_H_
 #define DEBUGCUBELEAF_H_
 
+#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
 #include <Graphics/SceneGraph/DrawObject.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-class DebugCubeLeaf : public SceneGraph::DrawObject
+class DebugCubeLeaf : public SceneGraph::AssimpMesh
 {
 private:
 	// Dessin de la geometrie
-	static GLfloat CubeArray[48];
+	static GLfloat CubeArray[24];
+	static GLfloat CubeArrayColor[24];
 	static GLuint IndiceArray[36];
-	unsigned int m_cubeBuffers[2];
 public:
 	DebugCubeLeaf();
 	virtual ~DebugCubeLeaf();
-
-	virtual void Draw();
 };
 
 #endif /* DEBUGCUBELEAF_H_ */

@@ -29,9 +29,10 @@ public:
 		Window("WindowShadow"),
 		m_debug(false)
 	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Camera Setup
 		CameraFly* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
-		cam->SetSpeed(200.0);
+		cam->SetSpeed(20.0);
 		SetCamera(cam);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
