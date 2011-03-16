@@ -6,7 +6,7 @@
        <Matrix type="Normal" name="NormalMatrix" />
        <Matrix type="View" name="ViewMatrix" />
     </MatrixInput>
-    <OutputFrame depthType="Texture">
+    <OutputFrame depthType="RenderTarget">
     	<Frame name="Diffuse" type="RGBA" />
     	<Frame name="Normal" type="RGBA32" />
     	<Frame name="Specular" type="RGBA" />

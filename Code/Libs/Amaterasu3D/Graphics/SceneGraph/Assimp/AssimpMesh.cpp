@@ -80,7 +80,6 @@ void AssimpMesh::Draw()
 	{
 		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
 			continue;
-//		Logger::Log() << "Active texture : " << it->second->getIdTex() << " to " << it->first << "\n";
 		it->second->activateMultiTex(it->first);
 	}
 	// Buffer activation
@@ -110,7 +109,6 @@ void AssimpMesh::Draw()
 	{
 		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
 			continue;
-//		Logger::Log() << "Disable texture : " << it->second->getIdTex() << " to " << it->first << "\n";
 		it->second->desactivateMultiTex(it->first);
 	}
 }

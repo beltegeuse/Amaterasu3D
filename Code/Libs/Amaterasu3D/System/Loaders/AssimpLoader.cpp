@@ -89,8 +89,6 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 				int index = face->mIndices[i];
 				indicesVector.push_back(index);
 				maxIndice = std::max(maxIndice, face->mIndices[i]);
-//				if(mesh->mColors[0] != NULL)
-//					Color4f(&mesh->mColors[0][index]);
 			}
 		}
 		// Create the indice array
@@ -98,7 +96,6 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		for(unsigned int i = 0; i < indicesVector.size(); i++)
 		{
 			indiceArray[i] = indicesVector[i];
-//			Logger::Log() << indiceArray[i] << "\n";
 		}
 		// Set all buffers
 		// * Indice Buffer
@@ -126,6 +123,30 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 			assimpMesh->AddBuffer(buffer, TANGENT_ATTRIBUT);
 			buffer.buffer = &mesh->mBitangents[0].x;
 			assimpMesh->AddBuffer(buffer, BITANGENT_ATTRIBUT);
+		}
+		// * Couleurs
+		if(mesh->GetNumColorChannels() > 0) //FIXME : Verfier le Loader ...
+		{
+			// TODO: Gestion des couleurs multiples
+			if(mesh->GetNumColorChannels() > 1)
+			{
+				throw CException("Too Color Channels");
+			}
+			else
+			{
+				buffer.size = maxIndice*3+3;
+				buffer.owner = true;
+				buffer.dimension = 3;
+				float * ColorArray = new float[maxIndice*3+3];
+				for(int i = 0; i < maxIndice+1; i++)
+				{
+					ColorArray[i*3] =   mesh->mColors[0][i].r;
+					ColorArray[i*3+1] = mesh->mColors[0][i].g;
+					ColorArray[i*3+2] = mesh->mColors[0][i].b;
+				}
+				buffer.buffer = ColorArray;
+				assimpMesh->AddBuffer(buffer, COLOR_ATTRIBUT);
+			}
 		}
 		//  * UV Coords
 		if(mesh->GetNumUVChannels() > 0)

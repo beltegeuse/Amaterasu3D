@@ -2193,13 +2193,10 @@ void GBufferShader::OnDraw()
 	if(m_use_texNormal && m_use_tangants && m_use_texCoord)
 	{
 		setUniform1i("UseBumpMapping",1);
-//		Logger::Log() << "use Bump Mapping \n";
 	}
 	else
 	{
-//		Logger::Log() << "dont use Bump Mapping \n";
 		setUniform1i("UseBumpMapping",0);
-//		Logger::Log() << m_use_texNormal << " " << m_use_tangants << "\n";
 	}
 	// For specular texture
 	if(m_use_texSpecular && m_use_texCoord)
@@ -2235,22 +2232,18 @@ bool GBufferShader::attributAvailable(ShaderAttributType type)
 
 bool GBufferShader::textureAvailable(TextureType type)
 {
-//	std::cout << "textureAvailable ... " << type << std::endl;
 	//TODO: Rewrite this function
 	bool res = glShader::textureAvailable(type);
 	if(!res)
 		return res;
 	// Update attributs
-//	std::cout << "Test ... " << type << std::endl;
 	if(type == DIFFUSE_TEXTURE)
 	{
 		m_use_texDiffuse = true;
-//		std::cout << "Diffuse Texture... " << type << std::endl;
 	}
 	else if(type == NORMAL_TEXTURE)
 	{
 		m_use_texNormal = true;
-//		std::cout << "Normal Texture..." << std::endl;
 	}
 	else if(type == SPECULAR_TEXTURE)
 		m_use_texSpecular = true;
