@@ -35,7 +35,7 @@ SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 	// Empty cache
 	m_cached_geom.erase(m_cached_geom.begin(), m_cached_geom.end());
 	// Load
-	const struct aiScene* scene = aiImportFile(Filename.c_str(),aiProcessPreset_TargetRealtime_Quality | aiProcess_TransformUVCoords);
+	const struct aiScene* scene = aiImportFile(Filename.c_str(),aiProcessPreset_TargetRealtime_Quality | aiProcess_TransformUVCoords | aiProcess_FindInstances | aiProcess_Triangulate );
 	if(!scene)
 		throw CException("assimp library can load model.");
 	SceneGraph::AssimpNode* group = new SceneGraph::AssimpNode;
@@ -58,6 +58,11 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 
 	// draw all meshes assigned to this node
 	for (unsigned int n = 0; n < nd->mNumMeshes; ++n) {
+		if(m_cached_geom.find(nd->mMeshes[n]) != m_cached_geom.end())
+		{
+			Logger::Log() << "[INFO] Found an instance ... Skip loading \n";
+			group->AddChild(m_cached_geom.find(nd->mMeshes[n])->second );
+		}
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
 		if(mesh->mNumFaces == 0)
 		{
