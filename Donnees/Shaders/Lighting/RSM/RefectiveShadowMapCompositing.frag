@@ -2,6 +2,7 @@
 
 // Precision qualifier
 precision highp float;
+precision highp int;
 
 //Les differents buffers
 uniform sampler2D DiffuseBuffer;
@@ -93,6 +94,15 @@ float noise(vec2 P)
   return n_xy;
 }
 
+vec4 rand(vec2 co)
+{
+	float timer = 1.0;
+float noiseR = (fract(sin(dot(co ,vec2(12.9898,78.233))+timer) * 43758.5453));
+float noiseG = (fract(sin(dot(co ,vec2(12.9898,78.233)*2)+timer) * 43758.5453));
+float noiseB = (fract(sin(dot(co ,vec2(12.9898,78.233)*3)+timer) * 43758.5453));
+return vec4(noiseR,noiseG,noiseB,1.0)*0.3;
+}
+
 void main()
 {		
 	// Get all data
@@ -154,13 +164,23 @@ void main()
 	// ============ Compute Indirect Illumination
 	vec4 IndirectTerm = vec4(0.0);
 	float rayonMax = 0.2;
-	for(float y = 0.0; y < 10.0; y++)
-	for(float x = 0.0; x < 10.0; x++) // FIXME
+	vec2 fres = vec2(20,20);
+	vec3 random = vec3(rand(shadowCoordinateWdivide.st*fres.xy));
+	for(int i = 0; i < 84; i++) // FIXME
 		{
+			//Generate a grid coordinate from a single looping variable.
+			float x = ((i%9)/9.0)-0.5;
+			float y = (i/81.0)-0.5;
+
+			x += random.x;
+			y += random.y;
+
+			float vX = texture(NoiseBuffer,vec2(x,y)).r;
+			float vY = texture(NoiseBuffer,vec2(x,y)).b;
+
 			// Compute RSM Coords
-			vec2 NoiseSamples = texture(NoiseBuffer,shadowCoordinateWdivide.st+noise(shadowCoordinateWdivide.st)*100.0*vec2(y/256.0,x/256.0)).rg;
-			vec2 CoordTexRSM = vec2(shadowCoordinateWdivide.s+rayonMax*NoiseSamples.x*sin(2*M_PI*NoiseSamples.y),
-									shadowCoordinateWdivide.t+rayonMax*NoiseSamples.x*cos(2*M_PI*NoiseSamples.y));
+			vec2 CoordTexRSM = vec2(shadowCoordinateWdivide.s+rayonMax*vX*sin(2*M_PI*vY),
+									shadowCoordinateWdivide.t+rayonMax*vX*cos(2*M_PI*vY));
 			CoordTexRSM = clamp(CoordTexRSM,0.0,1.0);
 			// Get all informations form RSM
 			vec3 NormalVPL = normalize(texture(NormalRSM, CoordTexRSM).xyz * 2.0 - 1.0);
@@ -176,16 +196,16 @@ void main()
 			vec3 VPLDirection = PositionVPL - position;
 			float VPLDistance = length(VPLDirection);
 			VPLDirection = normalize(VPLDirection);
-			float factor = 1 / pow(VPLDistance,4);
+			float factor = vY*vY / pow(VPLDistance,4);
 			//ShadowFactorRSM*
-			//vec4 RadianceFlux = FluxVPL * max(0,dot(normal,VPLDirection));
-			//IndirectTerm += RadianceFlux * factor;
-			IndirectTerm += FluxVPL * ( 1.0 / 100.0 );
+			vec4 RadianceFlux = FluxVPL * max(0,dot(normal,VPLDirection));
+			IndirectTerm += RadianceFlux * factor;
+			//IndirectTerm += vec4(vX,vY,0.5,1.0) * ( 1.0 / 84.0 );
 		}
-	Color += IndirectTerm;
+	//Color += IndirectTerm;
 	if(DebugMode)
 	{
 	   float distanceFromLight = LinearizeDepth(ClosedLightDistance);
-       Color = vec4(IndirectTerm*1.0);
+       Color = vec4(clamp(IndirectTerm,0.0,1.0)*1.0);
 	}
 }
