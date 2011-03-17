@@ -24,12 +24,18 @@ protected:
 	Math::CMatrix4 m_matrixPerspective;
 	TShaderPtr m_GBufferShader;
 	TShaderPtr m_RSMSpotShader;
+	TShaderPtr m_RSMCompositing;
+	Texture * m_textureRand;
 	bool m_debug;
+	bool m_debugGBuffer;
+	bool m_debugCompositing;
 	SpotLight m_light;
 public:
 	WindowReflective() :
 		Window("Amaterasu3DTestApp"),
-		m_debug(false)
+		m_debug(false),
+		m_debugGBuffer(false),
+		m_debugCompositing(false)
 	{
 		// Camera Setup
 		CameraFly* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
@@ -53,6 +59,7 @@ public:
 		// Load shader
 		m_GBufferShader = glShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_RSMSpotShader = glShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
+		m_RSMCompositing = glShaderManager::Instance().LoadShader("RefectiveShadowMapCompositing.shader");
 		// Create light
 		m_light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_light.Position = Math::TVector3F(0,5,10);
@@ -78,7 +85,31 @@ public:
 		sceneModelMatrix.SetScaling(5.0,5.0,5.0);
 		sceneModel->LoadTransformMatrix(sceneModelMatrix);
 		GetSceneRoot().AddChild(sceneModel);
+		// Generate the texture
+		GenerateRandomTexture(256);
+	}
 
+	float GetFloatRandom()
+	{
+		return (float)rand()/(float)RAND_MAX;
+	}
+
+	void GenerateRandomTexture(int size)
+	{
+		m_textureRand = new Texture(Math::TVector2I(size,size));
+		float * tab = new float[size*size*4];
+		for(int i = 0; i < size*size*4; i++)
+		{
+			tab[i] = GetFloatRandom();
+		}
+		m_textureRand->activateTextureMapping();
+		m_textureRand->activateTexture();
+		TextureParams param;
+		param.MinFiltering = GL_NEAREST;
+		param.MaxFiltering = GL_NEAREST;
+		param.applyParam();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, size, 0, GL_RGBA, GL_FLOAT, tab);
+		m_textureRand->desactivateTextureMapping();
 	}
 
 	virtual ~WindowReflective()
@@ -96,6 +127,12 @@ public:
 				 case SDLK_F1:
 					 m_debug = !m_debug;
 					 break;
+				 case SDLK_F2:
+					 m_debugGBuffer = !m_debugGBuffer;
+					 break;
+				 case SDLK_F3:
+					 m_debugCompositing = !m_debugCompositing;
+					 break;
 			 }
 		}
 
@@ -103,12 +140,14 @@ public:
 
 	virtual void OnDraw(double delta)
 	{
+		// =========== First STEPS (GBuffer generation)
 		// Fill in the GBuffer
 		m_GBufferShader->begin();
 		Window::OnDraw(delta);
 		m_GBufferShader->end();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// ========== Second STEPS (RSM generation buffers)
 		// Fill in RSM spot buffers
 		// * Matrix Setup
 		Math::CMatrix4 LightViewMatrix;
@@ -139,8 +178,62 @@ public:
 		MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
 		MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_RSMSpotShader->GetFBO()->DrawDebug();
+		// ========= Third STEPS : Compositing
+		// Bind all texture location
+		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
+		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+3);
+		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4);
+		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+5);
+		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+6);
+		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+7);
+		m_textureRand->activateMultiTex(CUSTOM_TEXTURE+8);
+		m_RSMCompositing->begin();
+		// *** Send all Uniform values
+		m_RSMCompositing->setUniform1f("LightRaduis",m_light.LightRaduis);
+		m_RSMCompositing->setUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
+		m_RSMCompositing->setUniform1f("LightIntensity", m_light.LightIntensity);
+		m_RSMCompositing->setUniform3f("LightPosition", m_light.Position.x, m_light.Position.y, m_light.Position.z);
+		m_RSMCompositing->setUniform3f("LightSpotDirection", m_light.Direction.x, m_light.Direction.y, m_light.Direction.z);
+		m_RSMCompositing->setUniform3f("LightColor", m_light.LightColor.R, m_light.LightColor.G, m_light.LightColor.B);
+		m_RSMCompositing->setUniform1i("DebugMode", m_debugCompositing);
+
+		m_RSMCompositing->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
+		m_RSMCompositing->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
+		// Draw Quad
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0, 0.0);
+			glVertex2f(-1.0, -1.0);
+			glTexCoord2f(0.0, 1.0);
+			glVertex2f(-1.0, 1.0);
+			glTexCoord2f(1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glTexCoord2f(1.0, 0.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+		m_RSMCompositing->end();
+		// Desactivate all texture unit
+		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Specular")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+4);
+		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+5);
+		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+6);
+		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+7);
+		m_textureRand->desactivateMultiTex(CUSTOM_TEXTURE+8);
+
+		if(m_debug)
+		{
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			m_RSMSpotShader->GetFBO()->DrawDebug();
+		}
+		else if(m_debugGBuffer)
+		{
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			m_GBufferShader->GetFBO()->DrawDebug();
+		}
 
 	}
 };
