@@ -1,0 +1,92 @@
+#version 130
+
+// Precision qualifier
+precision highp float;
+
+// Uniform data
+uniform vec4 SpecularValue;
+
+// Uniform States
+uniform int UseBumpMapping;
+uniform int UseDiffuseTex;
+uniform int UseSpecularTex;
+
+// Texture unit
+uniform sampler2D TextureDiffuse;
+uniform sampler2D TextureNormal;
+
+// Shader input
+smooth in vec3 outPosition;
+smooth in vec2 outTexCoord;
+smooth in mat3 outtbnMatrix;
+smooth in vec3 outColor;
+smooth in vec3 outNormal;
+
+// Shader output
+out vec4 Normal;
+out vec4 Position;
+out vec4 Flux;
+
+// light caracteristics
+uniform vec3 LightPosition;
+uniform vec3 LightColor;
+uniform vec3 LightSpotDirection;
+uniform float LightRaduis;
+uniform float LightIntensity;
+uniform float LightCutOff; // cos value
+
+void main()
+{
+	// Position buffer
+	Position = vec4(outPosition,1.0);
+
+    // Diffuse buffer
+    vec4 diffuseColor;
+    if(UseDiffuseTex == 1)
+    {
+		diffuseColor = texture(TextureDiffuse, outTexCoord.st);
+	}
+	else
+	{
+	    diffuseColor = vec4(outColor,1.0);
+	}
+	
+	// Normals buffer
+	if(UseBumpMapping == 1)
+	{
+		vec4 normalMap = texture(TextureNormal, outTexCoord.st);
+		vec3 n = normalize(2.0 * normalMap.rgb - 1.0); // decode the Bump texture
+		vec3 normalInterpoled = n * outtbnMatrix;
+		Normal = vec4(normalize(normalInterpoled)* 0.5 + 0.5,1.0);
+	}
+	else
+	{
+	    Normal = vec4(normalize(outNormal)* 0.5 + 0.5,1.0);
+	}
+	
+	//
+	vec3 LightDirection = LightPosition - outPosition;
+	float LightDistance = length(LightDirection);
+	LightDirection = normalize(LightDirection);
+	float SpotDot = dot(normalize(LightSpotDirection), -LightDirection);
+	
+	Flux = vec4(0.0);
+	if(LightDistance > LightRaduis || SpotDot < LightCutOff)
+	{
+	    // Nothing to do
+	}
+	else
+	{
+		// Compute light attenation
+	    float SpotAtt = pow(SpotDot, 12.0); //TODO: uniform ???
+		float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
+		
+		float NdotL = max(dot(vec3(Normal), LightDirection), 0.0);
+		if (NdotL > 0.0) {
+			// Add diffuse compoment
+			Flux += vec4(LightAtt * (LightColor * NdotL),1.0);
+		}
+		
+		Flux *= diffuseColor;
+	}
+}

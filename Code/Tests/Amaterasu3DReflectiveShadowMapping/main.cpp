@@ -23,6 +23,7 @@ class WindowReflective : public Window
 protected:
 	Math::CMatrix4 m_matrixPerspective;
 	TShaderPtr m_GBufferShader;
+	TShaderPtr m_RSMSpotShader;
 	bool m_debug;
 	SpotLight m_light;
 public:
@@ -46,18 +47,20 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/Deferred");
+		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/RSM");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/2DShaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Shadow");
 		// Load shader
 		m_GBufferShader = glShaderManager::Instance().LoadShader("GBuffer.shader");
+		m_RSMSpotShader = glShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
 		// Create light
 		m_light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_light.Position = Math::TVector3F(-10,10,0);
-		m_light.LightRaduis = 4000.0;
+		m_light.Position = Math::TVector3F(0,5,10);
+		m_light.LightRaduis = 100.0;
 		m_light.LightIntensity = 1.0;
 		m_light.LightCutOff = 70;
-		m_light.Direction = Math::TVector3F(1.0,0.0,0.0);
+		m_light.Direction = Math::TVector3F(0.0,-0.3,-0.7);
+		m_light.Direction.Normalize();
 		// Load scene
 		// * Lucy loading
 		SceneGraph::AssimpNode* lucyModel = SceneGraph::AssimpNode::LoadFromFile("uv_lucy.ply");
@@ -100,11 +103,45 @@ public:
 
 	virtual void OnDraw(double delta)
 	{
+		// Fill in the GBuffer
 		m_GBufferShader->begin();
 		Window::OnDraw(delta);
 		m_GBufferShader->end();
 
-		m_GBufferShader->GetFBO()->DrawDebug();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Fill in RSM spot buffers
+		// * Matrix Setup
+		Math::CMatrix4 LightViewMatrix;
+		LightViewMatrix.LookAt(m_light.Position, m_light.Direction);
+		Math::CMatrix4 LightProjectionMatrix;
+		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff, 800.0/600.0, 1.0, m_light.LightRaduis);
+		Math::CMatrix4 oldProjectionMatrix;
+		Math::CMatrix4 oldViewMatrix;
+		// * Save old transformations
+		oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
+		oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
+		// * Go to the camera view
+		MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
+		MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
+		// * Enable Shader
+		m_RSMSpotShader->begin();
+		// *** Send all Uniform values
+		m_RSMSpotShader->setUniform1f("LightRaduis",m_light.LightRaduis);
+		m_RSMSpotShader->setUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
+		m_RSMSpotShader->setUniform1f("LightIntensity", m_light.LightIntensity);
+		m_RSMSpotShader->setUniform3f("LightPosition", m_light.Position.x, m_light.Position.y, m_light.Position.z);
+		m_RSMSpotShader->setUniform3f("LightSpotDirection", m_light.Direction.x, m_light.Direction.y, m_light.Direction.z);
+		m_RSMSpotShader->setUniform3f("LightColor", m_light.LightColor.R, m_light.LightColor.G, m_light.LightColor.B);
+		// * Draw the scene
+		GetSceneRoot().Draw();
+		m_RSMSpotShader->end();
+		// * Revert transformations
+		MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
+		MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_RSMSpotShader->GetFBO()->DrawDebug();
+
 	}
 };
 

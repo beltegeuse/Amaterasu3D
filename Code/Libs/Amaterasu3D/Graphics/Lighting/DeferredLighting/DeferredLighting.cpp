@@ -40,12 +40,12 @@ void DeferredLighting::SpotLightPass()
 		MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
 		MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
 		// * Draw the scene
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+//		glEnable(GL_CULL_FACE);
+//		glCullFace(GL_BACK);
 		m_simple_shader->begin();
 		m_window->GetSceneRoot().Draw(); // Draw the scene
 		m_simple_shader->end();
-		glDisable(GL_CULL_FACE);
+//		glDisable(GL_CULL_FACE);
 		// * Revert transformations
 		MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
 		MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
