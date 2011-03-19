@@ -41,7 +41,7 @@
 //namespace Yes
 //{
     ////////////////////////////////////////////////////////////
-    /// Cha�ne de caract�res graphique (affichable � l'�cran)
+    /// Chaine de caractere graphique (affichable a l ecran)
     ////////////////////////////////////////////////////////////
     class CGraphicString
     {
@@ -67,6 +67,7 @@
         std::string Text;     ///< Cha�ne de caract�res
         CColor      Color;    ///< Couleur du texte
         rat_texture_font* texture;
+        int Size;
     };
 
 //} // namespace Yes

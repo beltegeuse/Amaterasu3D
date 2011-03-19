@@ -9,6 +9,7 @@
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Graphics/MatrixManagement.h>
+#include <Graphics/Font/GraphicString.h>
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -24,12 +25,19 @@ protected:
 	Math::CMatrix4 m_matrixPerspective;
 	TShaderPtr m_gbuffer_shader;
 	DeferredLighting* m_GI;
+	CGraphicString m_Message;
 	bool m_debug;
 public:
 	WindowGBuffer() :
 		Window("Amaterasu3DTestApp"),
 		m_debug(false)
 	{
+		// Message d'aide
+		m_Message.Position = Math::TVector2F(5, 577);
+		m_Message.Text     = "F1 / F2 pour afficher / cacher la console | echap pour quitter";
+		m_Message.Color    = CColor(255, 255, 255, 100);
+		m_Message.Size     = 18;
+
 		// Camera Setup
 		CameraFly* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		cam->SetSpeed(200.0);
@@ -134,11 +142,16 @@ public:
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 
+		// Affichage du message d'aide
+		m_Message.Draw();
+
 	}
 };
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	// Add auto
+	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 	// TODO: Put into the Log system
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);

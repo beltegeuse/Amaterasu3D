@@ -61,7 +61,7 @@ class GraphicsEngine;
     public :
 
         //----------------------------------------------------------
-        // Metodes pour charger et decharger des fonts
+        // Methodes pour charger et decharger des fonts
         //----------------------------------------------------------
         void LoadFont(const std::string& FontName, const std::string& alias);
         void UnloadFonts();
@@ -80,7 +80,7 @@ class GraphicsEngine;
 		float rat_texture_font_glyph_length(rat_texture_font *font,char ch);
 
 		// ===== Render
-		void rat_texture_font_render_text(rat_texture_font *font,float x,float y, char *text);
+		void rat_texture_font_render_text(rat_texture_font *font,float x,float y, char *text, int size);
 		void rat_texture_font_render_text_notform(rat_texture_font *font,char *text);
 
         //----------------------------------------------------------
@@ -128,7 +128,6 @@ class GraphicsEngine;
 
         // Attributs Charly :
     	Math::TVector2F m_coordHG;
-    	float m_hauteur;
     	float m_profondeur;
     };
 

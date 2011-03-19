@@ -63,7 +63,7 @@ CGraphicString::~CGraphicString()
 ////////////////////////////////////////////////////////////
 void CGraphicString::Draw()
 {
-    CFontManager::Instance().rat_texture_font_render_text(texture, Position.x, Position.y, const_cast<char*>(Text.c_str()));
+    CFontManager::Instance().rat_texture_font_render_text(texture, Position.x, Position.y, const_cast<char*>(Text.c_str()), Size);
 }
 
 void CGraphicString::SetString(std::string text){

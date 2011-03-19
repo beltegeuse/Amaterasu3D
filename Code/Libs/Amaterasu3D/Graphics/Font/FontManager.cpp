@@ -106,7 +106,6 @@ CFontManager::CFontManager()
 
 	// Code Charly
 	m_coordHG = Math::TVector2F(0.0,0.0);
-	m_hauteur = 25.0;
 	m_profondeur = -1.0;
 }
 
@@ -275,7 +274,7 @@ float CFontManager::rat_texture_font_glyph_length(rat_texture_font *font,char ch
 	return font->wids[ch];
 }
 
-void CFontManager::rat_texture_font_render_text(rat_texture_font *font,float x,float y, char *text)
+void CFontManager::rat_texture_font_render_text(rat_texture_font *font,float x,float y, char *text, int size)
 {
 	char *ch;
 
@@ -291,13 +290,14 @@ void CFontManager::rat_texture_font_render_text(rat_texture_font *font,float x,f
 	glPushMatrix();
 	glScalef(1,-1,1);
 	// Code Charly
+	//float ratio = (size / 64.0); // On divise notre taille par 64.0 car c'est la taille par default
 	// On calcule le facteur de reduction de notre texte :
-	float ratio = m_hauteur /rat_texture_font_height(font);
+	float ratio = size /rat_texture_font_height(font);
 	float m_largeur = ratio * rat_texture_font_text_length(font,text);
 	//			float m_largeur = 1000.0;
 
 	Math::TVector2F coordHG = Math::TVector2F(x,y);
-	Math::TVector2F coordBD = Math::TVector2F(x + m_largeur,y + m_hauteur);
+	Math::TVector2F coordBD = Math::TVector2F(x + m_largeur,y + size);
 
 	// Calcul des coordonnees OpenGL correspondant aux coordonnees de la fenetre
 	//FIXME: Acces aux dimensions de l'ecran
@@ -333,7 +333,7 @@ void CFontManager::rat_texture_font_render_text(rat_texture_font *font,float x,f
 
 		// On calcule les coordonnees la lettre courante
 		Math::TVector2F HG = coordHG;
-		float ratio2 = (coordBD.x - coordHG.x) / (m_largeur * ratio);
+		float ratio2 = (coordBD.x - coordHG.x) / (m_largeur);
 		float parcouru2 = parcouru * ratio2;
 		HG.x += parcouru2;
 
@@ -350,6 +350,7 @@ void CFontManager::rat_texture_font_render_text(rat_texture_font *font,float x,f
 		float hauteur = BD.y - HG.y;
 
 		glTranslatef(HG.x + largeur/2, HG.y + hauteur/2, 0);
+		glScalef(ratio,ratio,ratio);
 		glBegin(GL_TRIANGLE_STRIP);
 		glTexCoord2f(0.0,0.0);
 		glVertex3f(-largeur/2, -hauteur/2, m_profondeur);
