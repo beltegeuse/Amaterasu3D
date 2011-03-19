@@ -25,6 +25,8 @@
 #ifndef SMARTPTRPOLICIES_H
 #define SMARTPTRPOLICIES_H
 
+#include <algorithm>
+
 //==========================================================
 // En-têtes
 //==========================================================
