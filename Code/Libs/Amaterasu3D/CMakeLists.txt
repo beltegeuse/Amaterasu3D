@@ -1,5 +1,6 @@
 SET(LIB_AMATERASU3D_SRCS
 	Addons/Console/Console.cpp
+	Addons/Console/DefaultLook.cpp
 	
 	Debug/Exceptions.cpp
 	Debug/OpenGLDebug.cpp

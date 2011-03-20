@@ -12,17 +12,21 @@
 #include <GL/gl.h>
 #include <Debug/OpenGLDebug.h>
 #include <System/SettingsManager.h>
+#include <Addons/Console/DefaultLook.h>
+#include <SDLUtilities.h>
 
 Window::Window(const std::string& name, const Math::TVector2I& windowSize, bool syncVertical) :
 	m_isRunning(false),
-	m_camera(NULL)
+	m_camera(NULL),
+	Console(CConsole::Instance())
 {
 	CreateWindow(name, windowSize,syncVertical);
 }
 
 Window::Window() :
 	m_isRunning(false),
-	m_camera(NULL)
+	m_camera(NULL),
+	Console(CConsole::Instance())
 {
 	CreateWindow("OpenGL Renderer", SettingsManager::Instance().GetSizeRenderingWindow(),false);
 }
@@ -36,6 +40,8 @@ Window::~Window()
 	// Camera delete
 	if(m_camera)
 		delete m_camera;
+	// Delete Managers
+	CConsole::Destroy();
 }
 
 void Window::CreateWindow(const std::string& name, const Math::TVector2I& windowSize, bool syncVertical)
@@ -68,7 +74,8 @@ void Window::CreateWindow(const std::string& name, const Math::TVector2I& window
 		SDL_GL_SetSwapInterval(1);
 	else
 		SDL_GL_SetSwapInterval(0);
-
+	// Enable Unicode support
+	// SDL_EnableUNICODE(1); <= Doesn't work
 	// **************************************
 	// ********* GLEW initialisation ********
 	// **************************************
@@ -126,6 +133,8 @@ void Window::Run()
 	    OnDraw(delta);
 	    // Swap buffers
 	    SDL_GL_SwapWindow(m_fenetre);
+	    // Create default console look
+	    Console.ChangeLook(new DefaultLook);
 	}
 }
 
@@ -133,6 +142,16 @@ void Window::OnEvent(SDL_Event& events, double delta)
 {
 	if(events.window.event == SDL_WINDOWEVENT_CLOSE)
 		m_isRunning = false;
+	if(events.type == SDL_KEYDOWN)
+	{
+		if(events.key.keysym.sym = SDLK_F12)
+		{
+			Console.Enable(!Console.IsEnable());
+		}
+		char c;
+		if(GetSDLChar(events.key.keysym.sym, &c))
+			Console.SendChar(c);
+	}
 	if(m_camera)
 		m_camera->OnEvent(events, delta);
 }

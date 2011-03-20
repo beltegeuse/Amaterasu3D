@@ -44,9 +44,10 @@
 /// \param StringSize :     Taille
 ///
 ////////////////////////////////////////////////////////////
-CGraphicString::CGraphicString(const Math::TVector2F& StringPosition, const std::string& StringText,  const std::string& StringFont) :
+CGraphicString::CGraphicString(const Math::TVector2F& StringPosition, const std::string& StringText,  const std::string& StringFont, int size) :
 Position(StringPosition),
-Text(StringText)
+Text(StringText),
+Size(size)
 {
 	texture = CFontManager::Instance().GetTexture(StringFont);
 }

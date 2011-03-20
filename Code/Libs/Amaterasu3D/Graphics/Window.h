@@ -6,9 +6,13 @@
 #include <Math/Vector2.h>
 #include <Graphics/SceneGraph/Group.h>
 #include <Graphics/Camera/CameraAbstract.h>
-
+#include <Addons/Console/Console.h>
 class Window
 {
+public:
+	// To get the Console
+	CConsole& Console;
+
 protected:
 	// Attributs
 	SDL_WindowID m_fenetre;

@@ -8,6 +8,8 @@
 #include <Graphics/Camera/CameraFly.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
+#include <System/SettingsManager.h>
+#include <Graphics/Font/FontManager.h>
 #include <Graphics/MatrixManagement.h>
 #include <windows.h>
 #include <GL/glew.h>
@@ -45,17 +47,6 @@ public:
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
 		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
-		// Config path
-		CMediaManager::Instance().AddSearchPath("../Donnees");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model/SponzaOther");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/RSM");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/2DShaders");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Shadow");
 		// Load shader
 		m_GBufferShader = glShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_RSMSpotShader = glShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
@@ -240,10 +231,9 @@ public:
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	// TODO: Put into the Log system
-	struct aiLogStream stream;
-	stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
-	aiAttachLogStream(&stream);
+	SettingsManager::Instance().LoadFile("../Donnees/Config.xml");
+	// FIXME: Add auto
+	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 
 	std::cout << "[INFO] Begin ..." << std::endl;
 	WindowReflective window;

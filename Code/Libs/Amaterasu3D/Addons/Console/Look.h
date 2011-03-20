@@ -52,7 +52,7 @@ namespace Console
 		//----------------------------------------------------------
 		// Fonction appelée lors de l'affichage de la console
 		//----------------------------------------------------------
-		virtual void Draw() const = 0;
+		virtual void Draw() = 0;  // FIXME add CONST
 
 		//----------------------------------------------------------
 		// Fonction appelée lors de l'activation / désactivation de la console

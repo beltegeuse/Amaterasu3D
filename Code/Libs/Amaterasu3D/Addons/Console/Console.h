@@ -76,7 +76,7 @@ public :
 	// Active ou désactive la console
 	//----------------------------------------------------------
 	void Enable(bool Enabled);
-
+	bool IsEnable() const;
 private :
 
 	//----------------------------------------------------------

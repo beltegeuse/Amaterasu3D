@@ -28,6 +28,7 @@
 #include <Addons/Console/Console.h>
 #include <Debug/Exceptions.h>
 #include <sstream>
+#include <Addons/Console/DefaultLook.h>
 
 ////////////////////////////////////////////////////////////
 // Implémentation des méthodes du singleton
@@ -147,6 +148,11 @@ void CConsole::Enable(bool Enabled)
 {
     m_Enabled = Enabled;
     m_Look->Show(Enabled);
+}
+
+bool CConsole::IsEnable() const
+{
+	return m_Enabled;
 }
 
 

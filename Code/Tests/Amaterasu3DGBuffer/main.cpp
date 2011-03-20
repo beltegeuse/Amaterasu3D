@@ -145,7 +145,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	SettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
-
 	std::cout << "[INFO] Begin ..." << std::endl;
 	WindowGBuffer window;
 	window.Run();

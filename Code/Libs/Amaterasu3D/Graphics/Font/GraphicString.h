@@ -50,7 +50,7 @@
         //----------------------------------------------------------
         // Constructeur par d�faut
         //----------------------------------------------------------
-        CGraphicString(const Math::TVector2F& StringPosition = Math::TVector2F(0, 0), const std::string& StringText = "Seagull", const std::string& font = "arial");
+        CGraphicString(const Math::TVector2F& StringPosition = Math::TVector2F(0, 0), const std::string& StringText = "Seagull", const std::string& font = "arial", int size = 18);
         virtual ~CGraphicString();
         //----------------------------------------------------------
         // Affiche la cha�ne de caract�res � l'�cran
