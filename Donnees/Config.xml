@@ -1,0 +1,5 @@
+<Config>
+	<Resolution x=800 y=600 />
+	<Data rootDir="../Donnees" />
+	<Logger type="Debug" file="log.out" />
+</Config>

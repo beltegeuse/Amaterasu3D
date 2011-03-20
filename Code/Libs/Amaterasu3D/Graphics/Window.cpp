@@ -1,7 +1,6 @@
 #include "Window.h"
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
-#include <Logger/LoggerDebug.h>
 #include <System/Loaders/Loaders.h>
 #ifdef WIN32
 #include <GL/glew.h>
@@ -12,19 +11,39 @@
 #endif
 #include <GL/gl.h>
 #include <Debug/OpenGLDebug.h>
+#include <System/SettingsManager.h>
 
 Window::Window(const std::string& name, const Math::TVector2I& windowSize, bool syncVertical) :
 	m_isRunning(false),
 	m_camera(NULL)
 {
-	// **************************************
-	// ******* Logger initialisation ********
-	// **************************************
-	Logger::SetLogger(new LoggerDebug);
+	CreateWindow(name, windowSize,syncVertical);
+}
+
+Window::Window() :
+	m_isRunning(false),
+	m_camera(NULL)
+{
+	CreateWindow("OpenGL Renderer", SettingsManager::Instance().GetSizeRenderingWindow(),false);
+}
+
+Window::~Window()
+{
+	// Kill SDL Window
+	SDL_GL_DeleteContext(m_contexteOpenGL);
+	SDL_DestroyWindow(m_fenetre);
+	SDL_Quit();
+	// Camera delete
+	if(m_camera)
+		delete m_camera;
+}
+
+void Window::CreateWindow(const std::string& name, const Math::TVector2I& windowSize, bool syncVertical)
+{
 	// **************************************
 	// ******* Media initialisation *********
 	// **************************************
-	Loaders::RegisterAllLoaders();
+	Loaders::RegisterAllLoaders(); // TODO: Think to move this
 	// **************************************
 	// ********* SDL initialisation *********
 	// **************************************
@@ -72,17 +91,6 @@ Window::Window(const std::string& name, const Math::TVector2I& windowSize, bool 
 	// ******** OpenGL initialisation
 	// *******************************
 	GLCheck(glEnable(GL_DEPTH_TEST));
-}
-
-Window::~Window()
-{
-	// Kill SDL Window
-	SDL_GL_DeleteContext(m_contexteOpenGL);
-	SDL_DestroyWindow(m_fenetre);
-	SDL_Quit();
-	// Camera delete
-	if(m_camera)
-		delete m_camera;
 }
 
 void Window::Run()

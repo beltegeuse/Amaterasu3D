@@ -2,6 +2,7 @@
 #include <Math/Matrix4.h>
 #include <System/MediaManager.h>
 #include <Graphics/Window.h>
+#include <System/SettingsManager.h>
 #include <Graphics/GLSLShader.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
@@ -29,7 +30,7 @@ protected:
 	bool m_debug;
 public:
 	WindowGBuffer() :
-		Window("Amaterasu3DTestApp"),
+		Window(),
 		m_debug(false)
 	{
 		// Message d'aide
@@ -141,12 +142,9 @@ public:
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	// Add auto
+	SettingsManager::Instance().LoadFile("../Donnees/Config.xml");
+	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
-	// TODO: Put into the Log system
-	struct aiLogStream stream;
-	stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
-	aiAttachLogStream(&stream);
 
 	std::cout << "[INFO] Begin ..." << std::endl;
 	WindowGBuffer window;

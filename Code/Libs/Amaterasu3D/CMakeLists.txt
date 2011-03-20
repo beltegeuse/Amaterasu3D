@@ -30,6 +30,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Window.cpp
 	Graphics/Texture.cpp
 	
+	System/SettingsManager.cpp
 	System/MediaManager.cpp
 	System/ResourceManager.cpp
 	System/Resource.cpp

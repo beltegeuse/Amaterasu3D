@@ -28,6 +28,7 @@
 //==========================================================
 #include <System/MediaManager.h>
 #include <boost/filesystem.hpp>
+#include <System/Loaders/Loaders.h>
 
 //////////////////////////////////////////////////////////////
 //// Implémentation des méthodes du singleton
