@@ -163,6 +163,9 @@ public:
 		{
 			m_ShadowShader->GetFBO()->DrawDebug();
 		}
+
+		// Draw Tow 2D things
+		Console.Draw();
 //
 //		glMatrixMode(GL_PROJECTION);
 //		glPushMatrix();

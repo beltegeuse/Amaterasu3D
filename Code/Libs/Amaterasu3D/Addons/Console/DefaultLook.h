@@ -98,11 +98,13 @@ private :
     // Données membres
     //----------------------------------------------------------
     static const std::string       s_Fonts[];     ///< Liste des polices disponibles
-    std::list<CGraphicString> m_Lines;       ///< Dernières lignes affichées sur la console
-    Math::CMatrix4                  m_Transfo;     ///< Matrice de transformation associée à l'affichage de la console
+    std::list<CGraphicString>      m_Lines;       ///< Dernières lignes affichées sur la console
+    Math::CMatrix4                 m_Transfo;     ///< Matrice de transformation associée à l'affichage de la console
     TState                         m_State;       ///< "Etat" de l'animation de la console
     std::size_t                    m_CurrentFont; ///< Police actuellement utilisée
     TTexturePtr					   m_BackgroundTexture;
+    bool 						   m_ShowText;
+    float						   m_Height;
 };
 
 #endif // MYCONSOLE_H

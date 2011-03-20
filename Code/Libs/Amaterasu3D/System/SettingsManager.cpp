@@ -76,7 +76,7 @@ void SettingsManager::LoadFile(const std::string& path)
 	{
 		std::string rootDataDir = std::string(nodeData->Attribute("rootDir"));
 		Logger::Log() << "[INFO] SettingsManager : Root data dir : " << rootDataDir << "\n";
-		CMediaManager::Instance().AddSearchPath(rootDataDir);
+		CMediaManager::Instance().AddSearchPathAndChilds(rootDataDir);
 	}
 }
 

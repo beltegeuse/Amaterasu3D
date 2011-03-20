@@ -98,6 +98,9 @@ void Window::CreateWindow(const std::string& name, const Math::TVector2I& window
 	// ******** OpenGL initialisation
 	// *******************************
 	GLCheck(glEnable(GL_DEPTH_TEST));
+
+	 // Create default console look
+	 Console.ChangeLook(new DefaultLook);
 }
 
 void Window::Run()
@@ -114,6 +117,7 @@ void Window::Run()
 		lastTime += delta*1000.0;
 		// Events ......
 		while(SDL_PollEvent(&evenements)) {
+//			std::cout << "Evenet" << std::endl;
 			OnEvent(evenements, delta);
 		}
 		// Mise a jour des FPS
@@ -133,8 +137,8 @@ void Window::Run()
 	    OnDraw(delta);
 	    // Swap buffers
 	    SDL_GL_SwapWindow(m_fenetre);
-	    // Create default console look
-	    Console.ChangeLook(new DefaultLook);
+	    // Console Update
+	    Console.Update();
 	}
 }
 
@@ -144,13 +148,18 @@ void Window::OnEvent(SDL_Event& events, double delta)
 		m_isRunning = false;
 	if(events.type == SDL_KEYDOWN)
 	{
-		if(events.key.keysym.sym = SDLK_F12)
+//		std::cout << "Key Down !" << std::endl;
+		if(events.key.keysym.sym == SDLK_F12)
 		{
 			Console.Enable(!Console.IsEnable());
 		}
 		char c;
-		if(GetSDLChar(events.key.keysym.sym, &c))
+		if(GetSDLChar(events, &c) && Console.IsEnable())
+		{
+//			std::cout << c << "\n";
 			Console.SendChar(c);
+			return;
+		}
 	}
 	if(m_camera)
 		m_camera->OnEvent(events, delta);
@@ -169,7 +178,6 @@ void Window::OnDraw(double DeltaTime)
 	// Do all graphics part here
 	// Draw the SceneGraph
 	m_root.Draw();
-
 
 }
 

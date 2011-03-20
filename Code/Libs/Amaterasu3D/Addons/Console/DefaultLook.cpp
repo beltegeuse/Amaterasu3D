@@ -31,6 +31,7 @@
 #include <Addons/Console/Functor.h>
 #include <Addons/Console/Console.h>
 
+#include <System/SettingsManager.h>
 
 ////////////////////////////////////////////////////////////
 // Données statiques
@@ -44,7 +45,8 @@ const std::string DefaultLook::s_Fonts[] =  {"arial"};
 ////////////////////////////////////////////////////////////
 DefaultLook::DefaultLook() :
 m_State      (STOPPED),
-m_CurrentFont(0)
+m_CurrentFont(0),
+m_ShowText(false)
 {
 
 	m_BackgroundTexture = Texture::LoadFromFile("ConsoleBG.tga");
@@ -58,6 +60,8 @@ m_CurrentFont(0)
     // Enregistrement des commandes spéciales console
     CConsole::Instance().RegisterCommand("clear", Console::Bind(&std::list<CGraphicString>::clear, m_Lines));
     CConsole::Instance().RegisterCommand("font",  Console::Bind(&DefaultLook::NextFont, *this));
+
+    m_Height = 1.0 - (210.0 / SettingsManager::Instance().GetSizeRenderingWindow().y)*2;
 }
 
 
@@ -81,10 +85,12 @@ void DefaultLook::Update()
             m_Transfo.SetScaling(1, 1, 1);
             m_State = STOPPED;
             Scale   = 1.0f;
+            m_ShowText = true;
         }
     }
     else if (m_State == HIDDING)
     {
+    	m_ShowText = false;
         m_Transfo.SetScaling(Scale, Scale, 1);
         Scale -= 0.01f;
 
@@ -104,38 +110,35 @@ void DefaultLook::Update()
 ////////////////////////////////////////////////////////////
 void DefaultLook::Draw()
 {
+
     // Envoi de la matrice de transformation de la console
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf((const float*)m_Transfo);
 
-    // Activation de l'alpha-blending
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
 	m_BackgroundTexture->activateTextureMapping();
 	m_BackgroundTexture->activateTexture();
 
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0);
-	glVertex2f(-1.0, -1.0);
+	glVertex2f(-1.0, m_Height);
 	glTexCoord2f(0.0, 1.0);
 	glVertex2f(-1.0, 1.0);
 	glTexCoord2f(1.0, 1.0);
 	glVertex2f(1.0, 1.0);
 	glTexCoord2f(1.0, 0.0);
-	glVertex2f(1.0, -1.0);
+	glVertex2f(1.0, m_Height);
 	glEnd();
 
     m_BackgroundTexture->desactivateTextureMapping();
 
-    // Désactivation de l'alpha-blending
-    //Renderer.Enable(RENDER_ALPHABLEND, false);
-
-    // Affichage des lignes de texte
-    for (std::list<CGraphicString>::iterator i = m_Lines.begin(); i != m_Lines.end(); ++i)
-        i->Draw();
+    if(m_ShowText)
+    {
+		// Affichage des lignes de texte
+		for (std::list<CGraphicString>::iterator i = m_Lines.begin(); i != m_Lines.end(); ++i)
+			i->Draw();
+    }
 
     // Restauration de la matrice de vue précédente
     //Renderer.PopMatrix(MAT_MODELVIEW);

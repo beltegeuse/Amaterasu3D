@@ -54,7 +54,8 @@ Size(size)
 
 CGraphicString::~CGraphicString()
 {
-	CFontManager::Instance().DeleteTexture(texture);
+	//FIXME: manage the gestion of the font
+	//CFontManager::Instance().DeleteTexture(texture);
 }
 
 
