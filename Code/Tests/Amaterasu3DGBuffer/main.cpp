@@ -47,16 +47,7 @@ public:
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 4000);
 		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Config path
-		CMediaManager::Instance().AddSearchPath("../Donnees");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model/SponzaOther");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/Deferred");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/2DShaders");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Shadow");
+		CMediaManager::Instance().AddSearchPathAndChilds("../Donnees");
 		// Load shader
 		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
 		// Load GI

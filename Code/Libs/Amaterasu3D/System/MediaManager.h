@@ -77,7 +77,7 @@ public :
 	// Ajoute un répertoire de recherche pour les médias
 	//----------------------------------------------------------
 	void AddSearchPath(const std::string& Path);
-
+	void AddSearchPathAndChilds(const std::string& Path);
 	//----------------------------------------------------------
 	// Enregistre un nouveau chargeur de T
 	//----------------------------------------------------------
