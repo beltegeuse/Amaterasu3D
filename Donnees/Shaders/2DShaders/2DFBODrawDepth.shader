@@ -7,6 +7,6 @@
     <Textures>
 		<Texture type="Diffuse" name="TextureDiffuse" />
 	</Textures>
-	<VertexShader filename="2DFBODrawDepth.vert" />
+	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="2DFBODrawDepth.frag" />
 </Shader>

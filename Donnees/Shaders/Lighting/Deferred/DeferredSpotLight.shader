@@ -7,6 +7,6 @@
 		<Texture type="Custom" name="PositionBuffer" id=3 />
 		<Texture type="Custom" name="ShadowBuffer" id=4 />
 	</Textures>
-	<VertexShader filename="DeferredPointLight.vert" />
+	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="DeferredSpotLight.frag" />
 </Shader>

@@ -31,6 +31,7 @@ float calcAO(vec2 uv, vec2 coord, vec3 pos, vec3 norm)
 }
 
 // Based on : http://www.gamerendering.com/2009/01/14/ssao/
+// And : http://encelo.netsons.org/blog/tag/glsl/
 void main()
 {
 	// Samples vectors
