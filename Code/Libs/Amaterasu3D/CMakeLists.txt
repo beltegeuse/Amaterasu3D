@@ -1,4 +1,7 @@
 SET(LIB_AMATERASU3D_SRCS
+	Addons/Console/Console.cpp
+	Addons/Console/DefaultLook.cpp
+	
 	Debug/Exceptions.cpp
 	Debug/OpenGLDebug.cpp
 	
@@ -28,6 +31,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Window.cpp
 	Graphics/Texture.cpp
 	
+	System/SettingsManager.cpp
 	System/MediaManager.cpp
 	System/ResourceManager.cpp
 	System/Resource.cpp

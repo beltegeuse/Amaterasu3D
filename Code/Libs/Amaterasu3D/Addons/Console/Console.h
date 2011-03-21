@@ -22,102 +22,87 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-#ifndef SMARTPTRPOLICIES_H
-#define SMARTPTRPOLICIES_H
-
-#include <algorithm>
+#ifndef CONSOLE_H
+#define CONSOLE_H
 
 //==========================================================
 // En-têtes
 //==========================================================
-
+#include <Singleton.h>
+#include <Addons/Console/Functor.h>
+#include <Addons/Console/Look.h>
+#include <map>
 
 ////////////////////////////////////////////////////////////
-/// Police de pointeur intelligent :
-/// comptage de référence externe
+/// Gestion de la console
 ////////////////////////////////////////////////////////////
-template <class T>
-class CRefCount
+class CConsole : public CSingleton<CConsole>
 {
+	MAKE_SINGLETON(CConsole)
+
 public :
 
 	//----------------------------------------------------------
 	// Constructeur par défaut
 	//----------------------------------------------------------
-	CRefCount() : m_Counter(new int(1))
-	{
-	}
+	CConsole();
 
 	//----------------------------------------------------------
-	// Clone la ressource
+	// Change l'apparence de la console
 	//----------------------------------------------------------
-	T* Clone(T* Ptr)
-	{
-		++*m_Counter;
-		return Ptr;
-	}
+	void ChangeLook(Console::ILook* NewLook);
 
 	//----------------------------------------------------------
-	// Gère la libération de la ressource
+	// Enregistre une nouvelle commande
 	//----------------------------------------------------------
-	void Release(T* Ptr)
-	{
-		if (--*m_Counter == 0)
-		{
-			delete m_Counter;
-			delete Ptr;
-		}
-	}
+	void RegisterCommand(const std::string& Name, const Console::CFunctor& Function);
 
 	//----------------------------------------------------------
-	// Echange deux instances
+	// Envoie un nouveau caractère à la console
 	//----------------------------------------------------------
-	void Swap(CRefCount& RefCount)
-	{
-		std::swap(RefCount.m_Counter, m_Counter);
-	}
+	void SendChar(char Character);
 
+	//----------------------------------------------------------
+	// Met à jour la console
+	//----------------------------------------------------------
+	void Update();
+
+	//----------------------------------------------------------
+	// Affiche la console
+	//----------------------------------------------------------
+	void Draw() const;
+
+	//----------------------------------------------------------
+	// Active ou désactive la console
+	//----------------------------------------------------------
+	void Enable(bool Enabled);
+	bool IsEnable() const;
 private :
 
-	int* m_Counter; ///< Pointeur sur le compteur de référence
-};
-
-////////////////////////////////////////////////////////////
-/// Police de pointeur intelligent :
-/// objets COM et ressources du moteur - comptage de référence intrusif
-////////////////////////////////////////////////////////////
-template <class T>
-class CResourceCOM
-{
-public :
+	//----------------------------------------------------------
+	// Donne la liste des commandes enregistrées
+	//----------------------------------------------------------
+	std::string GetCommands() const;
 
 	//----------------------------------------------------------
-	// Clone la ressource
+	// Traite la ligne courante et appelle la fonction correspondante
 	//----------------------------------------------------------
-	static T* Clone(T* Ptr)
-	{
-		if (Ptr)
-			Ptr->AddRef();
-		return Ptr;
-	}
+	void ProcessCurrent();
 
 	//----------------------------------------------------------
-	// Gère la libération de la ressource
+	// Types
 	//----------------------------------------------------------
-	static void Release(T* Ptr)
-	{
-		if (Ptr)
-			Ptr->Release();
-	}
+	typedef std::map<std::string, Console::CFunctor> TCommandTable;
 
 	//----------------------------------------------------------
-	// Echange deux instances - aucune donnée membre : ne fait rien
+	// Données membres
 	//----------------------------------------------------------
-	static void Swap(CResourceCOM&)
-	{
-	}
+	TCommandTable             m_Commands; ///< Table des commandes enregistrées
+	std::string               m_Current;  ///< Ligne courante
+	CSmartPtr<Console::ILook> m_Look;     ///< Pointeur sur la classe gérant l'apparence de la console
+	bool                      m_Enabled;  ///< Indique si la console est active ou non
 };
 
 
 
-#endif // SMARTPTRPOLICIES_H
+#endif // CONSOLE_H

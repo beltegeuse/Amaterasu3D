@@ -6,9 +6,13 @@
 #include <Math/Vector2.h>
 #include <Graphics/SceneGraph/Group.h>
 #include <Graphics/Camera/CameraAbstract.h>
-
+#include <Addons/Console/Console.h>
 class Window
 {
+public:
+	// To get the Console
+	CConsole& Console;
+
 protected:
 	// Attributs
 	SDL_WindowID m_fenetre;
@@ -22,7 +26,9 @@ protected:
 
 public:
 	// Constructor & Destructor
-	Window(const std::string& name = "OpenGL Renderer", const Math::TVector2I& windowSize = Math::TVector2I(800,600), bool syncVertical = false);
+	Window(const std::string& name, const Math::TVector2I& windowSize = Math::TVector2I(800,600), bool syncVertical = false);
+	Window();
+
 	virtual ~Window();
 
 	// Public methods
@@ -34,6 +40,10 @@ public:
 	virtual void OnEvent(SDL_Event& events, double delta);
 	//! Warning, stole the adress value
 	void SetCamera(CameraAbstract* camera);
+
+private:
+	// To initialise the rendering window
+	void CreateWindow(const std::string& name, const Math::TVector2I& windowSize, bool syncVertical);
 };
 
 #endif /* WINDOW_H_ */

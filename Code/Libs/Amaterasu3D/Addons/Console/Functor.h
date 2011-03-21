@@ -22,102 +22,67 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-#ifndef SMARTPTRPOLICIES_H
-#define SMARTPTRPOLICIES_H
-
-#include <algorithm>
+#ifndef FUNCTOR_H
+#define FUNCTOR_H
 
 //==========================================================
 // En-têtes
 //==========================================================
+#include <Utilities/SmartPtr.h>
+#include <Utilities/StringUtils.h>
+#include <Debug/Exceptions.h>
+#include <string>
 
-
+namespace Console
+{
 ////////////////////////////////////////////////////////////
-/// Police de pointeur intelligent :
-/// comptage de référence externe
+/// Classe de base pour les classes encapsulant des fonctions
 ////////////////////////////////////////////////////////////
-template <class T>
-class CRefCount
+class IFunction
 {
 public :
 
 	//----------------------------------------------------------
-	// Constructeur par défaut
+	// Destructeur virtuel
 	//----------------------------------------------------------
-	CRefCount() : m_Counter(new int(1))
-	{
-	}
+	virtual ~IFunction() {}
 
 	//----------------------------------------------------------
-	// Clone la ressource
+	// Effectue l'appel de fonction
 	//----------------------------------------------------------
-	T* Clone(T* Ptr)
-	{
-		++*m_Counter;
-		return Ptr;
-	}
+	virtual std::string Execute(const std::string& Params) = 0;
+};
+
+////////////////////////////////////////////////////////////
+/// Classe définissant un foncteur (objet fonction)
+////////////////////////////////////////////////////////////
+class CFunctor
+{
+public :
 
 	//----------------------------------------------------------
-	// Gère la libération de la ressource
+	// Construit le foncteur à partir d'une fonction
 	//----------------------------------------------------------
-	void Release(T* Ptr)
-	{
-		if (--*m_Counter == 0)
-		{
-			delete m_Counter;
-			delete Ptr;
-		}
-	}
+	CFunctor(IFunction* Func = NULL);
 
 	//----------------------------------------------------------
-	// Echange deux instances
+	// Effectue l'appel à la fonction
 	//----------------------------------------------------------
-	void Swap(CRefCount& RefCount)
-	{
-		std::swap(RefCount.m_Counter, m_Counter);
-	}
+	std::string operator ()(const std::string& Params = "") const;
 
 private :
 
-	int* m_Counter; ///< Pointeur sur le compteur de référence
+	//----------------------------------------------------------
+	// Données membres
+	//----------------------------------------------------------
+	CSmartPtr<IFunction> m_Function; ///< Pointeur sur l'objet stockant la fonction
 };
 
-////////////////////////////////////////////////////////////
-/// Police de pointeur intelligent :
-/// objets COM et ressources du moteur - comptage de référence intrusif
-////////////////////////////////////////////////////////////
-template <class T>
-class CResourceCOM
-{
-public :
-
-	//----------------------------------------------------------
-	// Clone la ressource
-	//----------------------------------------------------------
-	static T* Clone(T* Ptr)
-	{
-		if (Ptr)
-			Ptr->AddRef();
-		return Ptr;
-	}
-
-	//----------------------------------------------------------
-	// Gère la libération de la ressource
-	//----------------------------------------------------------
-	static void Release(T* Ptr)
-	{
-		if (Ptr)
-			Ptr->Release();
-	}
-
-	//----------------------------------------------------------
-	// Echange deux instances - aucune donnée membre : ne fait rien
-	//----------------------------------------------------------
-	static void Swap(CResourceCOM&)
-	{
-	}
-};
+#include "Functor.inl"
 
 
 
-#endif // SMARTPTRPOLICIES_H
+} // namespace Console
+
+
+#endif // FUNCTOR_H

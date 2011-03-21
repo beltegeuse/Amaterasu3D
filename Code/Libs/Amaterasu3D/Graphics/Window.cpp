@@ -1,7 +1,6 @@
 #include "Window.h"
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
-#include <Logger/LoggerDebug.h>
 #include <System/Loaders/Loaders.h>
 #ifdef WIN32
 #include <GL/glew.h>
@@ -12,19 +11,45 @@
 #endif
 #include <GL/gl.h>
 #include <Debug/OpenGLDebug.h>
+#include <System/SettingsManager.h>
+#include <Addons/Console/DefaultLook.h>
+#include <SDLUtilities.h>
 
 Window::Window(const std::string& name, const Math::TVector2I& windowSize, bool syncVertical) :
 	m_isRunning(false),
-	m_camera(NULL)
+	m_camera(NULL),
+	Console(CConsole::Instance())
 {
-	// **************************************
-	// ******* Logger initialisation ********
-	// **************************************
-	Logger::SetLogger(new LoggerDebug);
+	CreateWindow(name, windowSize,syncVertical);
+}
+
+Window::Window() :
+	m_isRunning(false),
+	m_camera(NULL),
+	Console(CConsole::Instance())
+{
+	CreateWindow("OpenGL Renderer", SettingsManager::Instance().GetSizeRenderingWindow(),false);
+}
+
+Window::~Window()
+{
+	// Kill SDL Window
+	SDL_GL_DeleteContext(m_contexteOpenGL);
+	SDL_DestroyWindow(m_fenetre);
+	SDL_Quit();
+	// Camera delete
+	if(m_camera)
+		delete m_camera;
+	// Delete Managers
+	CConsole::Destroy();
+}
+
+void Window::CreateWindow(const std::string& name, const Math::TVector2I& windowSize, bool syncVertical)
+{
 	// **************************************
 	// ******* Media initialisation *********
 	// **************************************
-	Loaders::RegisterAllLoaders();
+	Loaders::RegisterAllLoaders(); // TODO: Think to move this
 	// **************************************
 	// ********* SDL initialisation *********
 	// **************************************
@@ -49,7 +74,8 @@ Window::Window(const std::string& name, const Math::TVector2I& windowSize, bool 
 		SDL_GL_SetSwapInterval(1);
 	else
 		SDL_GL_SetSwapInterval(0);
-
+	// Enable Unicode support
+	// SDL_EnableUNICODE(1); <= Doesn't work
 	// **************************************
 	// ********* GLEW initialisation ********
 	// **************************************
@@ -72,17 +98,9 @@ Window::Window(const std::string& name, const Math::TVector2I& windowSize, bool 
 	// ******** OpenGL initialisation
 	// *******************************
 	GLCheck(glEnable(GL_DEPTH_TEST));
-}
 
-Window::~Window()
-{
-	// Kill SDL Window
-	SDL_GL_DeleteContext(m_contexteOpenGL);
-	SDL_DestroyWindow(m_fenetre);
-	SDL_Quit();
-	// Camera delete
-	if(m_camera)
-		delete m_camera;
+	 // Create default console look
+	 Console.ChangeLook(new DefaultLook);
 }
 
 void Window::Run()
@@ -99,6 +117,7 @@ void Window::Run()
 		lastTime += delta*1000.0;
 		// Events ......
 		while(SDL_PollEvent(&evenements)) {
+//			std::cout << "Evenet" << std::endl;
 			OnEvent(evenements, delta);
 		}
 		// Mise a jour des FPS
@@ -118,6 +137,8 @@ void Window::Run()
 	    OnDraw(delta);
 	    // Swap buffers
 	    SDL_GL_SwapWindow(m_fenetre);
+	    // Console Update
+	    Console.Update();
 	}
 }
 
@@ -125,6 +146,21 @@ void Window::OnEvent(SDL_Event& events, double delta)
 {
 	if(events.window.event == SDL_WINDOWEVENT_CLOSE)
 		m_isRunning = false;
+	if(events.type == SDL_KEYDOWN)
+	{
+//		std::cout << "Key Down !" << std::endl;
+		if(events.key.keysym.sym == SDLK_F12)
+		{
+			Console.Enable(!Console.IsEnable());
+		}
+		char c;
+		if(GetSDLChar(events, &c) && Console.IsEnable())
+		{
+//			std::cout << c << "\n";
+			Console.SendChar(c);
+			return;
+		}
+	}
 	if(m_camera)
 		m_camera->OnEvent(events, delta);
 }
@@ -142,7 +178,6 @@ void Window::OnDraw(double DeltaTime)
 	// Do all graphics part here
 	// Draw the SceneGraph
 	m_root.Draw();
-
 
 }
 

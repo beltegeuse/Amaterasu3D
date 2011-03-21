@@ -9,6 +9,8 @@
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Graphics/MatrixManagement.h>
+#include <System/SettingsManager.h>
+#include <Graphics/Font/FontManager.h>
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -46,18 +48,6 @@ public:
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 4000);
 		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
-		// Config path
-		CMediaManager::Instance().AddSearchPath("../Donnees");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model/SponzaOther");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Model/Sponza/textures");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/2DShaders");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/GBuffers");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Lighting/Deferred");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/BasicShaders");
-		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/Shadow");
 		// Shader loading
 		m_BasicShaderShadow = glShaderManager::Instance().LoadShader("DebugDrawShadowMapOnly.shader");
 		m_BasicShader = glShaderManager::Instance().LoadShader("BasicShader.shader");
@@ -173,6 +163,9 @@ public:
 		{
 			m_ShadowShader->GetFBO()->DrawDebug();
 		}
+
+		// Draw Tow 2D things
+		Console.Draw();
 //
 //		glMatrixMode(GL_PROJECTION);
 //		glPushMatrix();
@@ -193,6 +186,9 @@ public:
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	SettingsManager::Instance().LoadFile("../Donnees/Config.xml");
+	// FIXME: Add auto
+	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 	// TODO: Put into the Log system
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);

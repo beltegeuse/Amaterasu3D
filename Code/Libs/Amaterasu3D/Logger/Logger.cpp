@@ -1,9 +1,10 @@
 #include <iostream>
 
 #include <Logger/Logger.h>
+#include <Logger/LoggerDebug.h>
 
-
-Logger* Logger::_instance = NULL;
+// By default Logger => STDOUT
+Logger* Logger::_instance = new LoggerDebug;
 
 Logger::Logger()
 {

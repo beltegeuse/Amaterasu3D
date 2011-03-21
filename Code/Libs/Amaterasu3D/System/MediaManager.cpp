@@ -27,6 +27,8 @@
 // En-têtes
 //==========================================================
 #include <System/MediaManager.h>
+#include <boost/filesystem.hpp>
+#include <System/Loaders/Loaders.h>
 
 //////////////////////////////////////////////////////////////
 //// Implémentation des méthodes du singleton
@@ -69,6 +71,21 @@ void CMediaManager::AddSearchPath(const std::string& Path)
         m_Paths.insert(Path + "\\");
 }
 
+void CMediaManager::AddSearchPathAndChilds(const std::string& Path)
+{
+	// Add the root directory
+	AddSearchPath(Path);
+
+	// find childs directories to add...
+	boost::filesystem::directory_iterator end_itr;
+	for ( boost::filesystem::directory_iterator itr( Path ); itr != end_itr; ++itr )
+	{
+		if ( boost::filesystem::is_directory(itr->status()) )
+		{
+			AddSearchPathAndChilds(itr->string());
+		}
+	}
+}
 
 /////////////////////////////////////////////////////////////
 /// Cherche un fichier dans les répertoires de recherche

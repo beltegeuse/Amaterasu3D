@@ -69,6 +69,7 @@ Texture* ImagesLoader::LoadImageFromFile(const std::string& Filename)
 					GL_RGBA, GL_UNSIGNED_BYTE, textura);
 
 	FreeImage_Unload(imagen);
+	glBindTexture(GL_TEXTURE_2D,0);
 	delete[] textura;
 	return texture;
 }

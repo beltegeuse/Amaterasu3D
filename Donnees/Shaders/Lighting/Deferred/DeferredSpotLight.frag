@@ -105,5 +105,8 @@ void main()
 			Color = vec4(1.0, 0.0, 0.0, 0.0);
 		if ((SpotDot > LightCutOff - 0.001) &&  (SpotDot < LightCutOff + 0.001))
 			Color = vec4(0.0, 1.0, 0.0, 0.0);
+		
+		// Other Debug
+		Color = vec4(position.z, 0.0,0.0,1.0);
 	}
 }
