@@ -81,11 +81,6 @@ public:
 		GenerateRandomTexture(256);
 	}
 
-	float GetFloatRandom()
-	{
-		return (float)rand()/(float)RAND_MAX;
-	}
-
 	void GenerateRandomTexture(int size, float rMax = 0.3)
 	{
 		boost::mt19937 rng;                 // produces randomness out of thin air
@@ -113,7 +108,7 @@ public:
 		param.MinFiltering = GL_NEAREST;
 		param.MaxFiltering = GL_NEAREST;
 		param.applyParam();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, size, size, 0, GL_RGBA, GL_FLOAT, tab);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, size, size, 0, GL_RGBA, GL_FLOAT, tab);
 		m_textureRand->desactivateTextureMapping();
 	}
 

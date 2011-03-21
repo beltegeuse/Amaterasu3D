@@ -163,8 +163,8 @@ void main()
 	
 	// ============ Compute Indirect Illumination
 	vec4 IndirectTerm = vec4(0.0);
-	for(int j = 0; j < 20.0; j++)
-	for(int i = 0; i < 20.0; i++) // FIXME
+	for(int j = 0; j < 10.0; j++)
+	for(int i = 0; i < 10.0; i++) // FIXME
 		{
 			// Get and compute random access
 			vec2 coordOffset = (vec2(j/20.0,i/20.0)+20.0*shadowCoordinateWdivide.st);
@@ -193,7 +193,7 @@ void main()
 			float factor = factorNorm / ((1.0+pow(VPLDistance,4))*2*M_PI);
 
 			// ShadowFactorRSM *
-			vec4 RadianceFlux =  FluxVPL * max(0,dot(normal,VPLDirection)) * max(0,dot(NormalVPL,-VPLDirection));
+			vec4 RadianceFlux =  ShadowFactorRSM * FluxVPL * max(0,dot(normal,VPLDirection)) * max(0,dot(NormalVPL,-VPLDirection));
 			IndirectTerm += RadianceFlux * factor;
 			//IndirectTerm += vec4(CoordTexRSM,0.5,1.0) * ( 1.0 / 400.0 );
 		}
@@ -201,7 +201,7 @@ void main()
 	if(DebugMode)
 	{
 	   //float distanceFromLight = LinearizeDepth(ClosedLightDistance);
-	   Color = vec4(clamp(IndirectTerm,0.0,1.0)*1.0);
+	   Color = vec4(clamp(IndirectTerm,0.0,1.0)*40.0);
 		//vec4 Flux = texture(FluxRSM,shadowCoordinateWdivide.st);
 		//Color = Flux;
 	}

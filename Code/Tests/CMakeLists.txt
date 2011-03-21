@@ -7,6 +7,7 @@ ENDIF()
 ADD_SUBDIRECTORY(Amaterasu3DGBuffer)
 ADD_SUBDIRECTORY(Amaterasu3DShadowMap)
 ADD_SUBDIRECTORY(Amaterasu3DReflectiveShadowMapping)
+ADD_SUBDIRECTORY(Amaterasu3DSSAO)
 
 #ADD_SUBDIRECTORY(Amaterasu3DTestApp)
 #ADD_SUBDIRECTORY(Amaterasu3DTestFBO)
