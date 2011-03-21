@@ -8,6 +8,7 @@ uniform sampler2D NormalBuffer;
 uniform sampler2D DepthBuffer;
 uniform sampler2D RandomBuffer;
 uniform sampler2D RendererBuffer;
+uniform sampler2D PositionBuffer;
 
 // Entree
 smooth in vec2 outTexCoord;
@@ -16,52 +17,50 @@ smooth in vec2 outTexCoord;
 out vec4 Color;
 
 // SSAO config
-float totStrength = 1.38;
-float strength = 0.07;
-float falloff = 0.000002;
-float TextureOffset = 18.0;
-float Raduis = 0.006;
+float SampleRaduis = 1.0;
+float Scale = 1.0f;
+float Bias = 0.0f;
+float Intensity = 1.0f;
 
-#define SAMPLES 16 // 10 is good
-const float invSamples = 1.0/16.0;
-
+float calcAO(vec2 uv, vec2 coord, vec3 pos, vec3 norm)
+{
+	vec3 diff = texture2D(PositionBuffer, uv + coord).xyz - pos;
+	vec3 v = normalize(diff);
+	float d = length(diff) * Scale;
+	return max(0.0, dot(norm, v) - Bias) * (1.0 / (1.0 + d)) * Intensity;
+}
 
 // Based on : http://www.gamerendering.com/2009/01/14/ssao/
 void main()
 {
-	// 16 samples form an sphere
-	vec3 pSphere[16] = vec3[](vec3(0.53812504, 0.18565957, -0.43192),vec3(0.13790712, 0.24864247, 0.44301823),vec3(0.33715037, 0.56794053, -0.005789503),vec3(-0.6999805, -0.04511441, -0.0019965635),vec3(0.06896307, -0.15983082, -0.85477847),vec3(0.056099437, 0.006954967, -0.1843352),vec3(-0.014653638, 0.14027752, 0.0762037),vec3(0.010019933, -0.1924225, -0.034443386),vec3(-0.35775623, -0.5301969, -0.43581226),vec3(-0.3169221, 0.106360726, 0.015860917),vec3(0.010350345, -0.58698344, 0.0046293875),vec3(-0.08972908, -0.49408212, 0.3287904),vec3(0.7119986, -0.0154690035, -0.09183723),vec3(-0.053382345, 0.059675813, -0.5411899),vec3(0.035267662, -0.063188605, 0.54602677),vec3(-0.47761092, 0.2847911, -0.0271716));
+	// Samples vectors
+	vec2 vec[4];
+	vec[0] = vec2(1, 0);
+	vec[1] = vec2(-1, 0);
+	vec[2] = vec2(0, 1);
+	vec[3] = vec2(0, -1);
 
-	// Get the Random Normal vector
-	vec3 RandomNormal = normalize((texture(RandomBuffer,outTexCoord*TextureOffset).xyz*2.0) - 1.0);
+	vec2 Rand = normalize(texture(RandomBuffer, vec2(600,800) * outTexCoord / 64.0).xy* 2.0 - 1.0);
+	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz* 2.0 - 1.0);
+	vec3 Position = texture(PositionBuffer, outTexCoord).xyz;
+	float Depth = texture(DepthBuffer, outTexCoord).r;
 
-	// Get information from fragment
-	vec3 CurrentNormal = texture(NormalBuffer,outTexCoord).xyz*2.0 - vec3(1.0);
-	float CurrentDepth = texture(DepthBuffer,outTexCoord).r;
-	vec3 CurrentPositionSS = vec3(outTexCoord,CurrentDepth);
+	float AOFactor = 0.0;
+	float Raduis = SampleRaduis / (Depth*100.0);
 
-	// Adapt the size of the half sphere
-	float RaduisNormalized = Raduis; // / CurrentDepth; //FIXME: Depth non linear ??? => fix this
-
-	// All informations to compute SSAO
-	float OccFactor = 0.0;
-	for(int i=0; i<SAMPLES;++i) // Compute SSAO
+	int NbIteration = int(mix(4.0, 1.0, Depth));
+	for(int i = 0; i < NbIteration; i++)
 	{
-		// Get an random vector
-		vec3 Ray = RaduisNormalized*reflect(pSphere[i],RandomNormal);
+		vec2 coord1 = reflect(vec[i], Rand) * Raduis;
+		vec2 coord2 = vec2(coord1.x * 0.707 - coord1.y * 0.707, coord1.x * 0.707 + coord1.y * 0.707);
 
-		// Get the occluder fragment
-		vec2 TexCoordOccluder = outTexCoord + dot(Ray,CurrentNormal)*Ray.xy;//sign(
-		vec3 Occluder = texture(NormalBuffer, TexCoordOccluder).xyz;
-		float OccluderDepth = texture(NormalBuffer, TexCoordOccluder).r;
-		float DepthDiff = CurrentDepth - OccluderDepth;
-
-		OccFactor +=  step(falloff,DepthDiff)*(1.0-dot(Occluder.xyz,CurrentNormal))*(1.0-smoothstep(falloff,strength,DepthDiff));
+		AOFactor += calcAO(outTexCoord, coord1 * 0.25, Position, Normal);
+		AOFactor += calcAO(outTexCoord, coord2 * 0.5, Position, Normal);
+		AOFactor += calcAO(outTexCoord, coord1 * 0.75, Position, Normal);
+		AOFactor += calcAO(outTexCoord, coord2, Position, Normal);
 	}
 
-	// output the result
-	float SSAOFactor = clamp(1.0-totStrength*OccFactor*invSamples,0.0,1.0);
-	Color = vec4(SSAOFactor*texture(RendererBuffer,outTexCoord).xyz,1.0);
-
-
+	AOFactor /= float(NbIteration) * 4.0;
+	AOFactor = 1.0 - clamp(AOFactor,0.0,1.0);
+	Color = vec4(AOFactor*texture(RendererBuffer,outTexCoord).rgb,1.0);
 }

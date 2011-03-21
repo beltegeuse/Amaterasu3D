@@ -45,7 +45,7 @@ public:
 		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_SSAOBuffer = glShaderManager::Instance().LoadShader("SSAO.shader");
 		// Load textures
-		m_NoiseTex = Texture::LoadFromFile("noise.png");
+		m_NoiseTex = Texture::LoadFromFile("random_normals.png");
 		// Load scene
 		// * Lucy loading
 		SceneGraph::AssimpNode* lucyModel = SceneGraph::AssimpNode::LoadFromFile("hi_lucy.ply");
@@ -105,6 +105,7 @@ public:
 		m_gbuffer_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_NoiseTex->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+3);
+		m_gbuffer_shader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+4);
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);
 			glVertex2f(-1.0, -1.0);
@@ -119,6 +120,7 @@ public:
 		m_gbuffer_shader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_NoiseTex->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+		m_gbuffer_shader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 		m_SSAOBuffer->end();
 
 		if(m_debug)
