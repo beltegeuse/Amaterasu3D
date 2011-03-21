@@ -7,6 +7,6 @@
 		<Texture type="Custom" name="RendererBuffer" id=3 />
 		<Texture type="Custom" name="PositionBuffer" id=4 />
 	</Textures>
-	<VertexShader filename="SSAO.vert" />
+	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="SSAO.frag" />
 </Shader>
