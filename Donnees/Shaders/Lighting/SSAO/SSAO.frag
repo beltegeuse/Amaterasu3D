@@ -14,7 +14,7 @@ uniform sampler2D PositionBuffer;
 smooth in vec2 outTexCoord;
 
 // Output buffer
-out vec4 Color;
+out vec4 AmbiantOcculsion;
 
 // SSAO config
 float SampleRaduis = 1.0;
@@ -63,5 +63,5 @@ void main()
 
 	AOFactor /= float(NbIteration) * 4.0;
 	AOFactor = 1.0 - clamp(AOFactor,0.0,1.0);
-	Color = vec4(AOFactor*texture(RendererBuffer,outTexCoord).rgb,1.0);
+	AmbiantOcculsion = vec4(AOFactor,AOFactor,AOFactor,1.0);
 }

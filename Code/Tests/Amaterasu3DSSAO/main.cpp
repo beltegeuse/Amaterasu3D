@@ -26,6 +26,8 @@ protected:
 	Math::CMatrix4 m_matrixPerspective;
 	TShaderPtr m_gbuffer_shader;
 	TShaderPtr m_SSAOBuffer;
+	TShaderPtr m_BlurHShader;
+	TShaderPtr m_BlurVShader;
 	TTexturePtr m_NoiseTex;
 	bool m_debug;
 public:
@@ -44,6 +46,8 @@ public:
 		// Load shader
 		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_SSAOBuffer = glShaderManager::Instance().LoadShader("SSAO.shader");
+		m_BlurHShader = glShaderManager::Instance().LoadShader("GaussianBlurH.shader");
+		m_BlurVShader = glShaderManager::Instance().LoadShader("GaussianBlurV.shader");
 		// Load textures
 		m_NoiseTex = Texture::LoadFromFile("random_normals.png");
 		// Load scene
@@ -107,13 +111,9 @@ public:
 		m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+3);
 		m_gbuffer_shader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+4);
 		glBegin(GL_QUADS);
-			glTexCoord2f(0.0, 0.0);
 			glVertex2f(-1.0, -1.0);
-			glTexCoord2f(0.0, 1.0);
 			glVertex2f(-1.0, 1.0);
-			glTexCoord2f(1.0, 1.0);
 			glVertex2f(1.0, 1.0);
-			glTexCoord2f(1.0, 0.0);
 			glVertex2f(1.0, -1.0);
 		glEnd();
 		m_gbuffer_shader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+0);
@@ -122,6 +122,32 @@ public:
 		m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 		m_gbuffer_shader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 		m_SSAOBuffer->end();
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_BlurHShader->begin();
+		m_SSAOBuffer->GetFBO()->GetTexture("AmbiantOcculsion")->activateMultiTex(CUSTOM_TEXTURE+0);
+		glBegin(GL_QUADS);
+			glVertex2f(-1.0, -1.0);
+			glVertex2f(-1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+		m_SSAOBuffer->GetFBO()->GetTexture("AmbiantOcculsion")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_BlurHShader->end();
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_BlurVShader->begin();
+		m_BlurHShader->GetFBO()->GetTexture("Result")->activateMultiTex(CUSTOM_TEXTURE+0);
+		glBegin(GL_QUADS);
+			glVertex2f(-1.0, -1.0);
+			glVertex2f(-1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+		m_BlurHShader->GetFBO()->GetTexture("Result")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_BlurVShader->end();
+
+		m_BlurVShader->GetFBO()->DrawDebug();
 
 		if(m_debug)
 		{

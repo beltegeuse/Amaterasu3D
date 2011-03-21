@@ -1,5 +1,8 @@
 <?xml version="1.0" ?>
-<Shader name="BasicTextureShader" type="Basic">
+<Shader name="SSAO" type="Basic">
+	<OutputFrame depthType="None">
+		<Frame name="AmbiantOcculsion" type="RGBA" />
+	</OutputFrame>
 	<Textures>
 		<Texture type="Custom" name="NormalBuffer" id=0 />
 		<Texture type="Custom" name="DepthBuffer" id=1 />
