@@ -30,7 +30,6 @@ void CameraFly::OnEvent(SDL_Event& event, double DeltaTime)
 {
 	if(event.type == SDL_KEYDOWN)
 	{
-		std::cout << "Camera : Key Down !" << std::endl;
 		Math::CMatrix4 matrixTransform;
 		 switch(event.key.keysym.sym)
 		 {

@@ -82,7 +82,7 @@ void CMediaManager::AddSearchPathAndChilds(const std::string& Path)
 	{
 		if ( boost::filesystem::is_directory(itr->status()) )
 		{
-			AddSearchPathAndChilds(itr->string());
+			AddSearchPathAndChilds(itr->path().string());
 		}
 	}
 }
