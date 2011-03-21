@@ -17,6 +17,7 @@
 #include <sstream>
 #include <iostream>
 #include <stdlib.h>
+#include <boost/random.hpp>
 
 class WindowReflective : public Window
 {
@@ -62,18 +63,18 @@ public:
 		m_RSMCompositing = glShaderManager::Instance().LoadShader("RefectiveShadowMapCompositing.shader");
 		// Create light
 		m_light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_light.Position = Math::TVector3F(0,5,10);
+		m_light.Position = Math::TVector3F(0,10.0/3.0,6.0);
 		m_light.LightRaduis = 100.0;
 		m_light.LightIntensity = 1.0;
-		m_light.LightCutOff = 70;
-		m_light.Direction = Math::TVector3F(0.0,-0.3,-0.7);
+		m_light.LightCutOff = 50;
+		m_light.Direction = Math::TVector3F(0.0,-0.6,-1.4);
 		m_light.Direction.Normalize();
 		// Load scene
 		// * Lucy loading
 		SceneGraph::AssimpNode* lucyModel = SceneGraph::AssimpNode::LoadFromFile("uv_lucy.ply");
 		SceneGraph::AssimpMesh* lucyMesh = (SceneGraph::AssimpMesh*)lucyModel->GetChilds()[0];
 		Math::CMatrix4 lucyModelMatrix;
-		lucyModelMatrix.SetScaling(3.0,3.0,3.0);
+		lucyModelMatrix.SetScaling(1.0,1.0,1.0);
 		lucyModel->LoadTransformMatrix(lucyModelMatrix);
 		GetSceneRoot().AddChild(lucyModel);
 		lucyMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("marble.jpg"));
@@ -82,7 +83,7 @@ public:
 		SceneGraph::AssimpMesh* sceneMesh = (SceneGraph::AssimpMesh*)sceneModel->GetChilds()[0];
 		sceneMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("bricks2_color.jpg"));
 		Math::CMatrix4 sceneModelMatrix;
-		sceneModelMatrix.SetScaling(5.0,5.0,5.0);
+		sceneModelMatrix.SetScaling(5.0/3.0,5.0/3.0,5.0/3.0);
 		sceneModel->LoadTransformMatrix(sceneModelMatrix);
 		GetSceneRoot().AddChild(sceneModel);
 		// Generate the texture
@@ -94,13 +95,26 @@ public:
 		return (float)rand()/(float)RAND_MAX;
 	}
 
-	void GenerateRandomTexture(int size)
+	void GenerateRandomTexture(int size, float rMax = 0.3)
 	{
+		boost::mt19937 rng;                 // produces randomness out of thin air
+										  // see pseudo-random number generators
+		boost::uniform_real<> range(0.0,1.0);       // distribution that maps to 1..6
+										  // see random number distributions
+		boost::variate_generator<boost::mt19937&, boost::uniform_real<> >
+			   die(rng, range);             // glues randomness with mapping
 		m_textureRand = new Texture(Math::TVector2I(size,size));
 		float * tab = new float[size*size*4];
-		for(int i = 0; i < size*size*4; i++)
+		for(int i = 0; i < size*size; i++)
 		{
-			tab[i] = GetFloatRandom();
+			// Get two random number
+			float a = die();
+			float b = die();
+			tab[4*i] = rMax*a*sin(2*M_PI*b);
+			tab[4*i+1] = rMax*a*cos(2*M_PI*b);
+			//std::cout << tab[4*i] << " " << tab[4*i+1] << std::endl;
+			tab[4*i+2] = a*a;
+			tab[4*i+3] = 1.0;
 		}
 		m_textureRand->activateTextureMapping();
 		m_textureRand->activateTexture();
@@ -108,7 +122,7 @@ public:
 		param.MinFiltering = GL_NEAREST;
 		param.MaxFiltering = GL_NEAREST;
 		param.applyParam();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, size, 0, GL_RGBA, GL_FLOAT, tab);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, size, size, 0, GL_RGBA, GL_FLOAT, tab);
 		m_textureRand->desactivateTextureMapping();
 	}
 

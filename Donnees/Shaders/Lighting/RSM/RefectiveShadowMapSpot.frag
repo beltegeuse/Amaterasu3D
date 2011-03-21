@@ -35,6 +35,8 @@ uniform float LightRaduis;
 uniform float LightIntensity;
 uniform float LightCutOff; // cos value
 
+#define M_PI 3.14159265358979323846264
+
 void main()
 {
 	// Position buffer
@@ -78,7 +80,7 @@ void main()
 	else
 	{
 		// Compute light attenation
-	    float SpotAtt = pow(SpotDot, 12.0); //TODO: uniform ???
+	    float SpotAtt = pow(SpotDot, 9.0); //TODO: uniform ???
 		float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
 		
 		float NdotL = max(dot(vec3(Normal), LightDirection), 0.0);
