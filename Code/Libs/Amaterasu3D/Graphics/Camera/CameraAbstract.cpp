@@ -69,3 +69,13 @@ void CameraAbstract::SendInvMatrix()
 	matrix = matrix.Inverse();
 	glShaderManager::Instance().currentShader()->setUniformMatrix4fv("InvViewMatrix", matrix);
 }
+
+const Math::TVector3F& CameraAbstract::GetPosition() const
+{
+	return m_position;
+}
+
+const Math::TVector3F& CameraAbstract::GetTarget() const
+{
+	return m_target;
+}

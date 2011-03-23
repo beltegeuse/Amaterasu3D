@@ -27,6 +27,7 @@
 #include <Math/Vector3.h>
 #include <Math/Matrix4.h>
 #include <SDL/SDL_events.h>
+#include <iostream>
 
 class CameraAbstract
 {
@@ -48,6 +49,15 @@ public:
 	void SendInvMatrix();
 	const Math::CMatrix4& GetMatrix();
 	virtual void OnEvent(SDL_Event& events, double deltaTime) = 0;
+
+	const Math::TVector3F& GetPosition() const;
+	const Math::TVector3F& GetTarget() const;
 };
+
+inline std::ostream& operator<< (std::ostream& out, const CameraAbstract& cam)
+{
+	out << "Position : " << cam.GetPosition() << " | Target : " << cam.GetTarget();
+	return out;
+}
 
 #endif /* CAMERAABSTRACT_H_ */
