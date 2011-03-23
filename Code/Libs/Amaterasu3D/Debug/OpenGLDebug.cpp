@@ -2,6 +2,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <iostream>
+
+
 int CheckGLError(std::string file, int line)
 {
 	GLenum glErr;

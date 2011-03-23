@@ -38,39 +38,35 @@
 #include <map>
 #include <string>
 
-//namespace Yes
-//{
-    ////////////////////////////////////////////////////////////
-    /// Chaine de caractere graphique (affichable a l ecran)
-    ////////////////////////////////////////////////////////////
-    class CGraphicString
-    {
-    public :
+////////////////////////////////////////////////////////////
+/// Chaine de caractere graphique (affichable a l ecran)
+////////////////////////////////////////////////////////////
+class CGraphicString
+{
+public :
 
-        //----------------------------------------------------------
-        // Constructeur par d�faut
-        //----------------------------------------------------------
-        CGraphicString(const Math::TVector2F& StringPosition = Math::TVector2F(0, 0), const std::string& StringText = "Seagull", const std::string& font = "arial", int size = 18);
-        virtual ~CGraphicString();
-        //----------------------------------------------------------
-        // Affiche la cha�ne de caract�res � l'�cran
-        //----------------------------------------------------------
-        virtual void Draw();
+	//----------------------------------------------------------
+	// Constructeur par d�faut
+	//----------------------------------------------------------
+	CGraphicString(const Math::TVector2F& StringPosition = Math::TVector2F(0, 0), const std::string& StringText = "Seagull", const std::string& font = "arial", int size = 18);
+	virtual ~CGraphicString();
+	//----------------------------------------------------------
+	// Affiche la cha�ne de caract�res � l'�cran
+	//----------------------------------------------------------
+	virtual void Draw();
 
-        // Permet de changer la chaine de caractere
-        virtual void SetString(std::string text);
+	// Permet de changer la chaine de caractere
+	virtual void SetString(std::string text);
 
-        //----------------------------------------------------------
-        // Donnees membres
-        //----------------------------------------------------------
-        Math::TVector2F   Position; ///< Position du texte � l'�cran
-        std::string Text;     ///< Cha�ne de caract�res
-        CColor      Color;    ///< Couleur du texte
-        rat_texture_font* texture;
-        int Size;
-    };
-
-//} // namespace Yes
+	//----------------------------------------------------------
+	// Donnees membres
+	//----------------------------------------------------------
+	Math::TVector2F   Position; ///< Position du texte � l'�cran
+	std::string Text;     ///< Cha�ne de caract�res
+	CColor      Color;    ///< Couleur du texte
+	rat_texture_font* texture;
+	int Size;
+};
 
 
 #endif // GRAPHICSTRING_H
