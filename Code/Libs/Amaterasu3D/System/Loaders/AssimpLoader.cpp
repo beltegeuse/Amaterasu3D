@@ -64,11 +64,68 @@ SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 
 void AssimpLoader::GetMaterialPropreties(SceneGraph::AssimpMesh* assimpMesh, const struct aiMaterial *mtl)
 {
+	Color color;
+
+	// Manage the diffuse color
 	struct aiColor4D diffuseColor;
 	if(AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor))
 	{
-
+		color = Color(diffuseColor.r,diffuseColor.g, diffuseColor.b, diffuseColor.a);
+		assimpMesh->AddMaterial(DIFFUSE_MATERIAL, color);
 	}
+	else
+	{
+		color = Color(0,0,0,1);
+		assimpMesh->AddMaterial(DIFFUSE_MATERIAL, color);
+	}
+
+	// Manage the specular color
+	struct aiColor4D specularColor;
+	if(AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_SPECULAR, &specularColor))
+	{
+		color = Color(specularColor.r,specularColor.g, specularColor.b, 0);
+		// Try to extract Specular shininess
+		float shininess, strength;
+		unsigned int max = 1;
+		if(aiGetMaterialFloatArray(mtl, AI_MATKEY_SHININESS, &shininess, &max) == AI_SUCCESS &&
+		   aiGetMaterialFloatArray(mtl, AI_MATKEY_SHININESS_STRENGTH, &strength, &max) == AI_SUCCESS)
+		{
+			color.A = strength*shininess;
+		}
+		assimpMesh->AddMaterial(SPECULAR_MATERIAL, color);
+	}
+	else
+	{
+		color = Color(0,0,0,0);
+		assimpMesh->AddMaterial(SPECULAR_MATERIAL, color);
+	}
+
+	// Manage the Ambiant color
+	struct aiColor4D ambiantColor;
+	if(AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_AMBIENT, &ambiantColor))
+	{
+		color = Color(ambiantColor.r,ambiantColor.g, ambiantColor.b, ambiantColor.a);
+		assimpMesh->AddMaterial(AMBIANT_MATERIAL, color);
+	}
+	else
+	{
+		color = Color(0,0,0,1);
+		assimpMesh->AddMaterial(AMBIANT_MATERIAL, color);
+	}
+
+	// Manage emission color
+	struct aiColor4D emissionColor;
+	if(AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_EMISSIVE, &emissionColor))
+	{
+		color = Color(emissionColor.r,emissionColor.g, emissionColor.b, emissionColor.a);
+		assimpMesh->AddMaterial(EMISSION_MATERIAL, color);
+	}
+	else
+	{
+		color = Color(0,0,0,1);
+		assimpMesh->AddMaterial(EMISSION_MATERIAL, color);
+	}
+
 }
 
 void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scene, aiNode* nd)
@@ -227,11 +284,11 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 //					Logger::Log() << "[INFO] Normal texture : " << texturePath.Filename() << "\n";
 //					assimpMesh->AddTextureMap(NORMAL_TEXTURE, LoadTexture(texturePath));
 //				}
-
-
 			}
 		}
-		//FIXME : Faire le rechargement des materiaux
+
+		// Chargement des materiaux
+		GetMaterialPropreties(assimpMesh, scene->mMaterials[mesh->mMaterialIndex]);
 		// Compile all buffers
 		Logger::Log() << "[INFO] Compile all buffers ... \n";
 		assimpMesh->CompileBuffers();

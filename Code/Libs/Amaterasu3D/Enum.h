@@ -52,7 +52,10 @@ enum ShaderAttributType
 
 enum MaterialType
 {
-	DIFFUSECOLOR_MATERIAL
+	DIFFUSE_MATERIAL,
+	SPECULAR_MATERIAL,
+	AMBIANT_MATERIAL,
+	EMISSION_MATERIAL
 };
 
 enum TextureType
