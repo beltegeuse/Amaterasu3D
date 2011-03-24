@@ -40,7 +40,7 @@ public:
 		m_debugCompositing(false)
 	{
 		// Camera Setup
-		CameraFly* cam = new CameraFly(Math::TVector3F(-10,400,-10), Math::TVector3F(0,0,0));
+		CameraFly* cam = new CameraFly(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		cam->SetSpeed(100.0);
 		SetCamera(cam);
 		// Initialise OpenGL
@@ -65,12 +65,14 @@ public:
 		node->LoadTransformMatrix(transMatrix);
 		GetSceneRoot().AddChild(node);
 
-		Console.RegisterCommand("camera info",Console::Bind());
+		Console.RegisterCommand("camera",Console::Bind(&WindowLPV::ShowInfoCamera, *this));
 	}
 
-	void ShowInfoCamera()
+	std::string ShowInfoCamera()
 	{
-		Print("La liste des commandes est disponible via la commande");
+		std::stringstream ss;
+		ss << "Camera : " << *m_camera;
+		return ss.str();
 	}
 
 	virtual ~WindowLPV()

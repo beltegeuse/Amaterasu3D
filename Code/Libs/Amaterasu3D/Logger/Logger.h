@@ -57,5 +57,19 @@ Logger& Logger::operator <<(const T& ToLog)
 	return *(_instance);
 }
 
+struct Print
+{
+  Print(const std::string& Text) : m_Text(Text) {}
+
+  const std::string& operator ()() const
+  {
+	  return m_Text;
+  }
+
+private :
+
+  std::string m_Text;
+};
+
 
 #endif /* LOGGER_H_ */
