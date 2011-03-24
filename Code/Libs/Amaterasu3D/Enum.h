@@ -50,6 +50,11 @@ enum ShaderAttributType
 	COLOR_ATTRIBUT
 };
 
+enum MaterialType
+{
+	DIFFUSECOLOR_MATERIAL
+};
+
 enum TextureType
 {
 	DIFFUSE_TEXTURE = 0,

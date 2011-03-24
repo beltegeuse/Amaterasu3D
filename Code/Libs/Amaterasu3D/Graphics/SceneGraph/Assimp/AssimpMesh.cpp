@@ -46,6 +46,11 @@ void AssimpMesh::AddTextureMap(TextureType type, TTexturePtr texture)
 	m_textures_map[type] = texture;
 }
 
+void AssimpMesh::AddMaterial(MaterialType type, Color color)
+{
+	m_material_map[type] = color;
+}
+
 void AssimpMesh::CompileBuffers()
 {
 	Logger::Log() << "[INFO] Generate " << m_buffers.size()+1 << " buffers ... \n";

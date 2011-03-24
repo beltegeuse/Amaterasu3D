@@ -62,6 +62,15 @@ SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 	return group;
 }
 
+void AssimpLoader::GetMaterialPropreties(SceneGraph::AssimpMesh* assimpMesh, const struct aiMaterial *mtl)
+{
+	struct aiColor4D diffuseColor;
+	if(AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor))
+	{
+
+	}
+}
+
 void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scene, aiNode* nd)
 {
 	// Load transformation

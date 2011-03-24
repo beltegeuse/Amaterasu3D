@@ -45,6 +45,7 @@ public:
 	virtual ~AssimpLoader();
 	virtual SceneGraph::AssimpNode* LoadFromFile(const std::string& Filename);
 private:
+	void GetMaterialPropreties(SceneGraph::AssimpMesh* assimpMesh, const struct aiMaterial *mtl);
 	void BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scene, aiNode* nd);
 	TTexturePtr LoadTexture(const CFile& name);
 };
