@@ -1,7 +1,7 @@
 //==========================================================
 // Amaterasu3D - perceptual 3D engine
 //
-// Copyright (C) 2004-2005 Adrien Gruson
+// Copyright (C) 2010-2011 Adrien Gruson
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,38 +21,27 @@
 //
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
-#ifndef SETTINGSMANAGER_H_
-#define SETTINGSMANAGER_H_
 
-#include <Singleton.h>
-#include <Math/Vector2.h>
+#include "EventManager.h"
 
-/////////////////////////////////////////////
-// SettingsManager : Class which handle usefull
-// information for all the renderer
-/////////////////////////////////////////////
-class CSettingsManager : CSingleton<CSettingsManager>
+void CEventManager::OnEvent(SDL_Event& event)
 {
-	MAKE_SINGLETON(CSettingsManager)
-private:
-	// Attributs
-	Math::TVector2I m_SizeRenderingWindow;
-public:
-	CSettingsManager();
-	virtual ~CSettingsManager();
-
-	// Load the config file
-	// caution: Need the relative path
-	void LoadFile(const std::string& path);
-
-	// To manage the Size of the rendering window
-	const Math::TVector2I& GetSizeRenderingWindow() const;
-	void SetSizeRenderingWindow(const Math::TVector2I& newSize);
-
-	/*
-	 * Public attributs
-	 */
-	bool VerticalSync;
-};
-
-#endif /* SETTINGSMANAGER_H_ */
+	for(TListenerManagerMap::iterator it = m_Managers.begin(); it != m_Managers.end(); ++it)
+	{
+		it->second->OnEvent(event);
+	}
+}
+void CEventManager::OnUpdate(double delta)
+{
+	for(TListenerManagerMap::iterator it = m_Managers.begin(); it != m_Managers.end(); ++it)
+	{
+		it->second->OnUpdate(delta);
+	}
+}
+void CEventManager::OnEndRender()
+{
+	for(TListenerManagerMap::iterator it = m_Managers.begin(); it != m_Managers.end(); ++it)
+	{
+		it->second->OnEndRender();
+	}
+}

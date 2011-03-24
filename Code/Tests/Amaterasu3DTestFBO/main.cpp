@@ -47,7 +47,7 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/TestShaders");
 		// Load shader
-		m_shader = glShaderManager::Instance().LoadShader("TestFBOTextureShader.shader");
+		m_shader = CShaderManager::Instance().LoadShader("TestFBOTextureShader.shader");
 		m_shader->begin();
 		m_shader->setUniformMatrix4fv("ProjectionMatrix", m_matrixPerspective);
 		m_shader->end();

@@ -29,13 +29,14 @@
 #include <Logger/LoggerFile.h>
 #include <Logger/LoggerDebug.h>
 
-SINGLETON_IMPL(SettingsManager)
+SINGLETON_IMPL(CSettingsManager)
 
-SettingsManager::SettingsManager()
+CSettingsManager::CSettingsManager() :
+	VerticalSync(false)
 {
 }
 
-SettingsManager::~SettingsManager()
+CSettingsManager::~CSettingsManager()
 {
 	// The default values
 	m_SizeRenderingWindow = Math::TVector2I(800,600);
@@ -43,7 +44,7 @@ SettingsManager::~SettingsManager()
 
 // Load the config file
 // caution: Need the relative path
-void SettingsManager::LoadFile(const std::string& path)
+void CSettingsManager::LoadFile(const std::string& path)
 {
 	TiXmlDocument doc( path.c_str() );
 	if(!doc.LoadFile())
@@ -104,12 +105,12 @@ void SettingsManager::LoadFile(const std::string& path)
 }
 
 // To manage the Size of the rendering window
-const Math::TVector2I& SettingsManager::GetSizeRenderingWindow() const
+const Math::TVector2I& CSettingsManager::GetSizeRenderingWindow() const
 {
 	return m_SizeRenderingWindow;
 }
 
-void SettingsManager::SetSizeRenderingWindow(const Math::TVector2I& newSize)
+void CSettingsManager::SetSizeRenderingWindow(const Math::TVector2I& newSize)
 {
 	m_SizeRenderingWindow = newSize;
 }

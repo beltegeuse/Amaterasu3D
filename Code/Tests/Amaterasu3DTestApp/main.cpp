@@ -97,7 +97,7 @@ public:
 		std::cout <<matrix<< std::endl;
 		std::cout << m_matrixPerspective << std::endl;
 
-		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
+		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Path search
 		// Load the Shader
 		CMediaManager::Instance().AddSearchPath("../Donnees");
@@ -107,7 +107,7 @@ public:
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/OldOpenGL");
 		CMediaManager::Instance().AddSearchPath("../Donnees/Shaders/BasicShaders");
-		m_shader = glShaderManager::Instance().LoadShader("BasicTextureShader.shader");
+		m_shader = CShaderManager::Instance().LoadShader("BasicTextureShader.shader");
 //		m_shader = glShaderManager::Instance().LoadShader("BasicShader.shader");
 		// Create the Cube ...
 		//CreateCubes();

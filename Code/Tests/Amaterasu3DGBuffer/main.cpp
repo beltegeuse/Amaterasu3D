@@ -46,11 +46,11 @@ public:
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 4000);
-		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
+		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Config path
 		CMediaManager::Instance().AddSearchPathAndChilds("../Donnees");
 		// Load shader
-		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
+		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		// Load GI
 		m_GI = new DeferredLighting(this);
 		m_GI->SetFBOGraphicBuffer(m_gbuffer_shader->GetFBO());
@@ -142,7 +142,7 @@ public:
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	SettingsManager::Instance().LoadFile("../Donnees/Config.xml");
+	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 	std::cout << "[INFO] Begin ..." << std::endl;

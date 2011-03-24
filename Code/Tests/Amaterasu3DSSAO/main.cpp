@@ -42,12 +42,12 @@ public:
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
-		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
+		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Load shader
-		m_gbuffer_shader = glShaderManager::Instance().LoadShader("GBuffer.shader");
-		m_SSAOBuffer = glShaderManager::Instance().LoadShader("SSAO.shader");
-		m_BlurHShader = glShaderManager::Instance().LoadShader("GaussianBlurH.shader");
-		m_BlurVShader = glShaderManager::Instance().LoadShader("GaussianBlurV.shader");
+		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
+		m_SSAOBuffer = CShaderManager::Instance().LoadShader("SSAO.shader");
+		m_BlurHShader = CShaderManager::Instance().LoadShader("GaussianBlurH.shader");
+		m_BlurVShader = CShaderManager::Instance().LoadShader("GaussianBlurV.shader");
 		// Load textures
 		m_NoiseTex = Texture::LoadFromFile("random_normals.png");
 		// Load scene
@@ -171,7 +171,7 @@ public:
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	SettingsManager::Instance().LoadFile("../Donnees/Config.xml");
+	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 	std::cout << "[INFO] Begin ..." << std::endl;

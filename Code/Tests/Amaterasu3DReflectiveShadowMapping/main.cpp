@@ -47,11 +47,11 @@ public:
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
-		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
+		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Load shader
-		m_GBufferShader = glShaderManager::Instance().LoadShader("GBuffer.shader");
-		m_RSMSpotShader = glShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
-		m_RSMCompositing = glShaderManager::Instance().LoadShader("RefectiveShadowMapCompositing.shader");
+		m_GBufferShader = CShaderManager::Instance().LoadShader("GBuffer.shader");
+		m_RSMSpotShader = CShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
+		m_RSMCompositing = CShaderManager::Instance().LoadShader("RefectiveShadowMapCompositing.shader");
 		// Create light
 		m_light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_light.Position = Math::TVector3F(0,10.0/3.0,6.0);
@@ -157,11 +157,11 @@ public:
 		Math::CMatrix4 oldProjectionMatrix;
 		Math::CMatrix4 oldViewMatrix;
 		// * Save old transformations
-		oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
-		oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
+		oldProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
+		oldViewMatrix = CMatrixManager::Instance().GetMatrix(VIEW_MATRIX);
 		// * Go to the camera view
-		MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
-		MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
+		CMatrixManager::Instance().SetProjectionMatrix(LightProjectionMatrix);
+		CMatrixManager::Instance().SetViewMatrix(LightViewMatrix);
 		// * Enable Shader
 		m_RSMSpotShader->begin();
 		// *** Send all Uniform values
@@ -175,8 +175,8 @@ public:
 		GetSceneRoot().Draw();
 		m_RSMSpotShader->end();
 		// * Revert transformations
-		MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
-		MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
+		CMatrixManager::Instance().SetProjectionMatrix(oldProjectionMatrix);
+		CMatrixManager::Instance().SetViewMatrix(oldViewMatrix);
 
 		// ========= Third STEPS : Compositing
 		// Bind all texture location
@@ -240,7 +240,7 @@ public:
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	SettingsManager::Instance().LoadFile("../Donnees/Config.xml");
+	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 

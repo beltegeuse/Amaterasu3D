@@ -58,7 +58,7 @@ FBO::FBO(const Math::TVector2I& size,
 		Logger::Log() << "   * Depth buffer creation ... \n";
 		if(type == FBODEPTH_TEXTURE)
 		{
-			m_shader_depth = glShaderManager::Instance().LoadShader("2DFBODrawDepth.shader");
+			m_shader_depth = CShaderManager::Instance().LoadShader("2DFBODrawDepth.shader");
 			glGenTextures(1,&m_depth_id);
 			glBindTexture(GL_TEXTURE_2D, m_depth_id);
 			paramDepth.applyParam();

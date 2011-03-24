@@ -99,21 +99,21 @@ void AssimpMesh::CompileBuffers()
 void AssimpMesh::Draw()
 {
 	// pas de shader
-	if(!glShaderManager::Instance().activedShader())
+	if(!CShaderManager::Instance().activedShader())
 	{
 		Logger::Log() << "[Warning] No actived shader. Nothings to render ... \n";
 	}
 	// Material activation
 	for(MaterialMap::iterator it = m_material_map.begin(); it != m_material_map.end(); it++)
 	{
-		if(!glShaderManager::Instance().currentShader()->materialAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->materialAvailable(it->first))
 			continue;
-		glShaderManager::Instance().currentShader()->setMaterialValue(it->first,it->second);
+		CShaderManager::Instance().currentShader()->setMaterialValue(it->first,it->second);
 	}
 	// Textures activation
 	for(TexturesMap::iterator it = m_textures_map.begin(); it != m_textures_map.end(); it++)
 	{
-		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->textureAvailable(it->first))
 			continue;
 		it->second->activateMultiTex(it->first);
 	}
@@ -121,7 +121,7 @@ void AssimpMesh::Draw()
 	int i = 1;
 	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
-		if(!glShaderManager::Instance().currentShader()->attributAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->attributAvailable(it->first))
 			continue;
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
 		glEnableVertexAttribArray (it->first);
@@ -129,20 +129,20 @@ void AssimpMesh::Draw()
 		i++;
 	}
 	// Drawing
-	glShaderManager::Instance().currentShader()->OnDraw();
+	CShaderManager::Instance().currentShader()->OnDraw();
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_buffers[0]));
 	GLCheck(glDrawElements(GL_TRIANGLES, m_indices_size, GL_UNSIGNED_INT, 0));
 	// Buffer desactivation
 	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
-		if(!glShaderManager::Instance().currentShader()->attributAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->attributAvailable(it->first))
 			continue;
 		glDisableVertexAttribArray (it->first);
 	}
 	// Textures desactivations
 	for(TexturesMap::reverse_iterator it = m_textures_map.rbegin(); it != m_textures_map.rend(); it++)
 	{
-		if(!glShaderManager::Instance().currentShader()->textureAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->textureAvailable(it->first))
 			continue;
 		it->second->desactivateMultiTex(it->first);
 	}

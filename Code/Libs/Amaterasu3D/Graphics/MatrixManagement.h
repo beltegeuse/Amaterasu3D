@@ -29,9 +29,9 @@
 #include <Singleton.h>
 #include <sigc++/signal.h>
 
-class MatrixManagement : public CSingleton<MatrixManagement>
+class CMatrixManager : public CSingleton<CMatrixManager>
 {
-	MAKE_SINGLETON(MatrixManagement);
+	MAKE_SINGLETON(CMatrixManager);
 private:
 	// Attributs
 	int m_maxMatrix;
@@ -44,9 +44,9 @@ private:
 	sigc::signal<void, MatrixType> m_signal_event;
 
 	// Singleton implements
-	MatrixManagement(int maxMatrix = 50);
+	CMatrixManager(int maxMatrix = 50);
 	// Destructor ...
-	virtual ~MatrixManagement();
+	virtual ~CMatrixManager();
 public:
 
 	/**

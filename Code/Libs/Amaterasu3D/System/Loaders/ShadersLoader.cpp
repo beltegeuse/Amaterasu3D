@@ -108,7 +108,7 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 	TinyXMLGetAttributeValue<std::string>(rootFBO,"size",&typeSize);
 	if(typeSize == "Screen")
 	{
-		Math::TVector2I sizeScreen = SettingsManager::Instance().GetSizeRenderingWindow();
+		Math::TVector2I sizeScreen = CSettingsManager::Instance().GetSizeRenderingWindow();
 		X = sizeScreen.x;
 		Y = sizeScreen.y;
 	}
@@ -375,7 +375,7 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	vertexShadername = CMediaManager::Instance().FindMedia(vertexShadername).Fullname();
 	fragmentShadername = CMediaManager::Instance().FindMedia(fragmentShadername).Fullname();
 	// Shader creation ....
-	glShader* shader = glShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType);
+	glShader* shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType);
 	// Attrib blinding ...
 	LoadShaderAttributs(shader, root);
 	// Textures uniform

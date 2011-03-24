@@ -21,7 +21,7 @@ Last update: 2006/11/12 (Geometry Shader Support)
 #include <System/MediaManager.h>
 
 
-SINGLETON_IMPL(glShaderManager)
+SINGLETON_IMPL(CShaderManager)
 
 using namespace std;
 
@@ -392,7 +392,7 @@ void glShader::begin(void)
 	if (is_linked)
 	{
 		glUseProgram(ProgramObject);
-		glShaderManager::Instance().Push(this);
+		CShaderManager::Instance().Push(this);
 		CHECK_GL_ERROR();
 	}
 
@@ -417,7 +417,7 @@ void glShader::end(void)
 		m_FBO->UnBind();
 	}
 
-	glShaderManager::Instance().Pop();
+	CShaderManager::Instance().Pop();
 }
 
 //----------------------------------------------------------------------------- 
@@ -1375,7 +1375,7 @@ void glShader::UpdateMatrix(MatrixType type)
 {
 	if(matrixModeAvailable(type))
 	{
-		setUniformMatrix4fv(type, MatrixManagement::Instance().GetMatrix(type));
+		setUniformMatrix4fv(type, CMatrixManager::Instance().GetMatrix(type));
 	}
 }
 
@@ -1657,17 +1657,17 @@ aGeometryShader::~aGeometryShader()
 // ----------------------------------------------------------------------------
 // ShaderManager: Easy use of (multiple) Shaders
 
-glShaderManager::glShaderManager()
+CShaderManager::CShaderManager()
 {
 	InitOpenGLExtensions();
 	_nInputPrimitiveType = GL_TRIANGLES;
 	_nOutputPrimitiveType = GL_TRIANGLE_STRIP;
 	_nVerticesOut = 3;
 
-	MatrixManagement::Instance().GetSignalEvent().connect(sigc::mem_fun(*this, &glShaderManager::UpdateMatrix));
+	CMatrixManager::Instance().GetSignalEvent().connect(sigc::mem_fun(*this, &CShaderManager::UpdateMatrix));
 }
 
-glShaderManager::~glShaderManager()
+CShaderManager::~CShaderManager()
 {
 	// free objects
 	vector<glShader*>::iterator  i=_shaderObjectList.begin();
@@ -1681,25 +1681,25 @@ glShaderManager::~glShaderManager()
 
 // ----------------------------------------------------------------------------
 
-void glShaderManager::SetInputPrimitiveType(int nInputPrimitiveType)
+void CShaderManager::SetInputPrimitiveType(int nInputPrimitiveType)
 {
 	_nInputPrimitiveType = nInputPrimitiveType;
 
 }
 
-void glShaderManager::SetOutputPrimitiveType(int nOutputPrimitiveType)
+void CShaderManager::SetOutputPrimitiveType(int nOutputPrimitiveType)
 {
 	_nOutputPrimitiveType = nOutputPrimitiveType;
 
 }
 
-void glShaderManager::SetVerticesOut(int nVerticesOut)
+void CShaderManager::SetVerticesOut(int nVerticesOut)
 {
 	_nVerticesOut = nVerticesOut;
 }
 
 // ----------------------------------------------------------------------------
-glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type)
+glShader* CShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type)
 {
 	glShader* o;
 	if(type == BASIC_SHADER)
@@ -1813,7 +1813,7 @@ glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* frag
 }
 
 
-glShader* glShaderManager::loadfromFile(char* vertexFile, char* geometryFile, char* fragmentFile)
+glShader* CShaderManager::loadfromFile(char* vertexFile, char* geometryFile, char* fragmentFile)
 {
 	glShader* o = new glShader();
 	o->UsesGeometryShader(true);
@@ -1940,7 +1940,7 @@ glShader* glShaderManager::loadfromFile(char* vertexFile, char* geometryFile, ch
 }
 // ----------------------------------------------------------------------------
 
-glShader* glShaderManager::loadfromMemory(const char* vertexMem, const char* fragmentMem)
+glShader* CShaderManager::loadfromMemory(const char* vertexMem, const char* fragmentMem)
 {
 	glShader* o = new glShader();
 	o->UsesGeometryShader(false);
@@ -2008,7 +2008,7 @@ glShader* glShaderManager::loadfromMemory(const char* vertexMem, const char* fra
 	return o;
 }
 
-glShader* glShaderManager::loadfromMemory(const char* vertexMem, const char* geometryMem, const char* fragmentMem)
+glShader* CShaderManager::loadfromMemory(const char* vertexMem, const char* geometryMem, const char* fragmentMem)
 {
 	glShader* o = new glShader();
 	o->UsesGeometryShader(true);
@@ -2105,7 +2105,7 @@ glShader* glShaderManager::loadfromMemory(const char* vertexMem, const char* geo
 
 // ----------------------------------------------------------------------------
 
-bool  glShaderManager::free(glShader* o)
+bool  CShaderManager::free(glShader* o)
 {
 	vector<glShader*>::iterator  i=_shaderObjectList.begin();
 	while (i!=_shaderObjectList.end())
@@ -2121,7 +2121,7 @@ bool  glShaderManager::free(glShader* o)
 	return false;
 }
 
-void glShaderManager::Push(glShader* shader)
+void CShaderManager::Push(glShader* shader)
 {
 	if(m_shader_stack.size() > m_max_stack)
 		throw CException("shader stack is full");
@@ -2129,7 +2129,7 @@ void glShaderManager::Push(glShader* shader)
 	m_shader_stack.back()->UpdateMatrixAll();
 }
 
-void glShaderManager::Pop()
+void CShaderManager::Pop()
 {
 	if(m_shader_stack.empty())
 		throw CException("shader stack is empty");
@@ -2142,7 +2142,7 @@ void glShaderManager::Pop()
 	}
 }
 
-void glShaderManager::UpdateMatrix(MatrixType type)
+void CShaderManager::UpdateMatrix(MatrixType type)
 {
 	if(!m_shader_stack.empty())
 	{
@@ -2150,7 +2150,7 @@ void glShaderManager::UpdateMatrix(MatrixType type)
 	}
 }
 
-TShaderPtr glShaderManager::LoadShader(const std::string& filename)
+TShaderPtr CShaderManager::LoadShader(const std::string& filename)
 {
 	TShaderPtr Resource = CResourceManager::Instance().Get<glShader>(filename);
 	if(Resource == NULL)
@@ -2161,14 +2161,14 @@ TShaderPtr glShaderManager::LoadShader(const std::string& filename)
 	return Resource;
 }
 
-glShader* glShaderManager::currentShader()
+glShader* CShaderManager::currentShader()
 {
 	if(!activedShader())
 		throw CException("No activated shader...");
 	return m_shader_stack.back();
 }
 
-bool glShaderManager::activedShader()
+bool CShaderManager::activedShader()
 {
 	return m_shader_stack.size() != 0;
 }

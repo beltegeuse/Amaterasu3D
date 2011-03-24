@@ -24,21 +24,21 @@
 #include "MatrixManagement.h"
 #include <Debug/Exceptions.h>
 
-SINGLETON_IMPL(MatrixManagement)
+SINGLETON_IMPL(CMatrixManager)
 
-MatrixManagement::MatrixManagement(int maxMatrix) :
+CMatrixManager::CMatrixManager(int maxMatrix) :
 m_maxMatrix(maxMatrix)
 {
 	m_identityMatrix.Identity();
 }
 
-MatrixManagement::~MatrixManagement()
+CMatrixManager::~CMatrixManager()
 {
 	if(!m_matrix.empty())
 		std::cout << "[WARNING] There still somes matrix in the stack..." << std::endl;
 }
 
-void MatrixManagement::PushMatrix(const Math::CMatrix4& matrix)
+void CMatrixManager::PushMatrix(const Math::CMatrix4& matrix)
 {
 	// Debug limit
 	if(m_maxMatrix < m_matrix.size())
@@ -55,7 +55,7 @@ void MatrixManagement::PushMatrix(const Math::CMatrix4& matrix)
 
 }
 
-void MatrixManagement::PopMatrix()
+void CMatrixManager::PopMatrix()
 {
 	if(m_matrix.empty())
 		throw CException("Matrix stack is empty. Unable to pop matrix");
@@ -65,17 +65,17 @@ void MatrixManagement::PopMatrix()
 	m_signal_event.emit(NORMAL_MATRIX);
 }
 
-bool MatrixManagement::IsEmpty() const
+bool CMatrixManager::IsEmpty() const
 {
 	return m_matrix.empty();
 }
 
-int MatrixManagement::StackSize() const
+int CMatrixManager::StackSize() const
 {
 	return m_matrix.size();
 }
 
-const Math::CMatrix4& MatrixManagement::GetMatrix(MatrixType type)
+const Math::CMatrix4& CMatrixManager::GetMatrix(MatrixType type)
 {
 	if(type == MODEL_MATRIX)
 	{
@@ -103,19 +103,19 @@ const Math::CMatrix4& MatrixManagement::GetMatrix(MatrixType type)
 	}
 }
 
-void MatrixManagement::SetProjectionMatrix(const Math::CMatrix4& matrix)
+void CMatrixManager::SetProjectionMatrix(const Math::CMatrix4& matrix)
 {
 	m_projectionMatrix = matrix;
 	m_signal_event.emit(PROJECTION_MATRIX);
 }
 
-void MatrixManagement::SetViewMatrix(const Math::CMatrix4& matrix)
+void CMatrixManager::SetViewMatrix(const Math::CMatrix4& matrix)
 {
 	m_viewMatrix = matrix;
 	m_signal_event.emit(VIEW_MATRIX);
 }
 
-sigc::signal<void, MatrixType>& MatrixManagement::GetSignalEvent()
+sigc::signal<void, MatrixType>& CMatrixManager::GetSignalEvent()
 {
 	return m_signal_event;
 }

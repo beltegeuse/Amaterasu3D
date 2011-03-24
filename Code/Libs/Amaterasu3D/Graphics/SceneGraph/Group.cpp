@@ -48,12 +48,12 @@ void Group::AddChild(DrawObject * object)
 /** \brief Gestion de l'affichage OpenGL */
 void Group::Draw()
 {
-	MatrixManagement::Instance().PushMatrix(m_matrix_transform);
+	CMatrixManager::Instance().PushMatrix(m_matrix_transform);
 	for(unsigned int cpt=0 ; cpt<m_objects.size() ; cpt++)
 	{
 		m_objects[cpt]->Draw();
 	}
-	MatrixManagement::Instance().PopMatrix();
+	CMatrixManager::Instance().PopMatrix();
 }
 
 void Group::LoadTransformMatrix(const Math::CMatrix4& matrix)

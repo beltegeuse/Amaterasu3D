@@ -1,7 +1,7 @@
 //==========================================================
 // Amaterasu3D - perceptual 3D engine
 //
-// Copyright (C) 2004-2005 Adrien Gruson
+// Copyright (C) 2010-2011 Adrien Gruson
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,38 +21,51 @@
 //
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
-#ifndef SETTINGSMANAGER_H_
-#define SETTINGSMANAGER_H_
 
-#include <Singleton.h>
-#include <Math/Vector2.h>
+#ifndef EVENTLISTENERS_H_
+#define EVENTLISTENERS_H_
 
-/////////////////////////////////////////////
-// SettingsManager : Class which handle usefull
-// information for all the renderer
-/////////////////////////////////////////////
-class CSettingsManager : CSingleton<CSettingsManager>
+#include <SDL/SDL.h>
+
+class EventListener
 {
-	MAKE_SINGLETON(CSettingsManager)
-private:
-	// Attributs
-	Math::TVector2I m_SizeRenderingWindow;
 public:
-	CSettingsManager();
-	virtual ~CSettingsManager();
-
-	// Load the config file
-	// caution: Need the relative path
-	void LoadFile(const std::string& path);
-
-	// To manage the Size of the rendering window
-	const Math::TVector2I& GetSizeRenderingWindow() const;
-	void SetSizeRenderingWindow(const Math::TVector2I& newSize);
-
-	/*
-	 * Public attributs
-	 */
-	bool VerticalSync;
+	virtual ~EventListener() {}
 };
 
-#endif /* SETTINGSMANAGER_H_ */
+//XXX: Give the button
+class MouseListener : public EventListener
+{
+public:
+	virtual void MousePressed() = 0;
+	virtual void MouseReleased() = 0;
+};
+
+class KeyListener : public EventListener
+{
+public:
+	virtual void KeyPressed(SDL_Keycode& key) = 0;
+	virtual void KeyReleased(SDL_Keycode& key) = 0;
+};
+
+class MouseMotionListener : public EventListener
+{
+public:
+	virtual void MouseMoved(int x, int y) = 0;
+};
+
+class FrameListener : public EventListener
+{
+public:
+	//! delta represent the time between two rendering
+	virtual void FrameStarted(double delta) = 0;
+	virtual void FrameEnded() = 0;
+};
+
+//XXX: not implemented
+class WindowListener: public EventListener
+{
+
+};
+
+#endif /* EVENTLISTENERS_H_ */

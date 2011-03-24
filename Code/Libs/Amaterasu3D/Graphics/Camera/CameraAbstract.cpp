@@ -59,7 +59,7 @@ void CameraAbstract::ComputeMatrix(double delta)
 
 void CameraAbstract::GetView()
 {
-	MatrixManagement::Instance().SetViewMatrix(m_matrix);
+	CMatrixManager::Instance().SetViewMatrix(m_matrix);
 }
 
 void CameraAbstract::SendInvMatrix()
@@ -67,7 +67,7 @@ void CameraAbstract::SendInvMatrix()
 	Math::CMatrix4 matrix;
 	matrix.LookAt(m_position, m_target);
 	matrix = matrix.Inverse();
-	glShaderManager::Instance().currentShader()->setUniformMatrix4fv("InvViewMatrix", matrix);
+	CShaderManager::Instance().currentShader()->setUniformMatrix4fv("InvViewMatrix", matrix);
 }
 
 const Math::TVector3F& CameraAbstract::GetPosition() const

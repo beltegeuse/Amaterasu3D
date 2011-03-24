@@ -69,15 +69,15 @@ DebugPlaneLeaf::~DebugPlaneLeaf()
 void DebugPlaneLeaf::Draw()
 {
 	// pas de shader
-	if(!glShaderManager::Instance().activedShader())
+	if(!CShaderManager::Instance().activedShader())
 	{
 		Logger::Log() << "[Warning] No actived shader. Nothings to render ... \n";
 	}
 	//  * Les differents blindings ...
 	GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_planebuffers[0]));
 	// Les disponibilites du shaders
-	bool vertexSupport = glShaderManager::Instance().currentShader()->attributAvailable(VERTEX_ATTRIBUT);
-	bool colorSupport = glShaderManager::Instance().currentShader()->attributAvailable(COLOR_ATTRIBUT);
+	bool vertexSupport = CShaderManager::Instance().currentShader()->attributAvailable(VERTEX_ATTRIBUT);
+	bool colorSupport = CShaderManager::Instance().currentShader()->attributAvailable(COLOR_ATTRIBUT);
 
 	if(!(vertexSupport || colorSupport))
 	{

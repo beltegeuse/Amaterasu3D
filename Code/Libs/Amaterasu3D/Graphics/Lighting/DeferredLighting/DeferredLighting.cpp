@@ -30,11 +30,11 @@ DeferredLighting::DeferredLighting(Window* win) :
 {
 	// Load shader
 	// * Point Light
-	m_point_light_shader = glShaderManager::Instance().LoadShader("DeferredPointLight.shader");;
+	m_point_light_shader = CShaderManager::Instance().LoadShader("DeferredPointLight.shader");;
 	// * Spot Light
-	m_spot_light_shader = glShaderManager::Instance().LoadShader("DeferredSpotLight.shader");
+	m_spot_light_shader = CShaderManager::Instance().LoadShader("DeferredSpotLight.shader");
 	// * simple shader for the shadow map
-	m_simple_shader = glShaderManager::Instance().LoadShader("ShadowMap.shader");
+	m_simple_shader = CShaderManager::Instance().LoadShader("ShadowMap.shader");
 	SetDebugMode(m_debug_mode);
 }
 
@@ -54,14 +54,14 @@ void DeferredLighting::SpotLightPass()
 	{
 		// Generate the Shadow Map
 		// * Transformations
-		Math::CMatrix4 oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
-		Math::CMatrix4 oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
+		Math::CMatrix4 oldProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
+		Math::CMatrix4 oldViewMatrix = CMatrixManager::Instance().GetMatrix(VIEW_MATRIX);
 		Math::CMatrix4 LightViewMatrix;
 		LightViewMatrix.LookAt(m_spots_lights[i].Position, m_spots_lights[i].Direction);
 		Math::CMatrix4 LightProjectionMatrix;
 		LightProjectionMatrix.PerspectiveFOV(m_spots_lights[i].LightCutOff, 512.0/512.0, 1.0, m_spots_lights[i].LightRaduis); //FIXME: Automatic size
-		MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
-		MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
+		CMatrixManager::Instance().SetProjectionMatrix(LightProjectionMatrix);
+		CMatrixManager::Instance().SetViewMatrix(LightViewMatrix);
 		// * Draw the scene
 //		glEnable(GL_CULL_FACE);
 //		glCullFace(GL_BACK);
@@ -70,8 +70,8 @@ void DeferredLighting::SpotLightPass()
 		m_simple_shader->end();
 //		glDisable(GL_CULL_FACE);
 		// * Revert transformations
-		MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
-		MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
+		CMatrixManager::Instance().SetProjectionMatrix(oldProjectionMatrix);
+		CMatrixManager::Instance().SetViewMatrix(oldViewMatrix);
 		// * Give Depth Texture
 		m_simple_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4);
 

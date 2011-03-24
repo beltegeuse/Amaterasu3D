@@ -66,7 +66,7 @@ struct CShaderException : public CException
 	CShaderException(const std::string& message);
 };
 
-class glShaderManager;
+class CShaderManager;
 
 //! Shader Object holds the Shader Source, the OpenGL "Shader Object" and provides some methods to load shaders.
 /*!
@@ -137,7 +137,7 @@ public:
 //! \brief Controlling compiled and linked GLSL program. \ingroup GLSL \author Martin Christen
 class GLSLAPI glShader : public IResource
 {
-	friend class glShaderManager;
+	friend class CShaderManager;
 public:
 	glShader();
 	virtual    ~glShader();
@@ -358,12 +358,12 @@ public:
 //-----------------------------------------------------------------------------
 
 //! To simplify the process loading/compiling/linking shaders this high level interface to simplify setup of a vertex/fragment shader was created. \ingroup GLSL \author Martin Christen
-class GLSLAPI glShaderManager : public CSingleton<glShaderManager>
+class CShaderManager : public CSingleton<CShaderManager>
 {
-	MAKE_SINGLETON(glShaderManager);
+	MAKE_SINGLETON(CShaderManager);
 	// Implements Singleton
-	glShaderManager();
-	virtual ~glShaderManager();
+	CShaderManager();
+	virtual ~CShaderManager();
 
 	friend class ShadersLoader;
 	// Only the MediaManager can call this methods

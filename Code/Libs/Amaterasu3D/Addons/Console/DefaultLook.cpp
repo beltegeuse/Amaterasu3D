@@ -61,7 +61,7 @@ m_ShowText(false)
     CConsole::Instance().RegisterCommand("clear", Console::Bind(&std::list<CGraphicString>::clear, m_Lines));
     CConsole::Instance().RegisterCommand("font",  Console::Bind(&DefaultLook::NextFont, *this));
 
-    m_Height = 1.0 - (210.0 / SettingsManager::Instance().GetSizeRenderingWindow().y)*2;
+    m_Height = 1.0 - (210.0 / CSettingsManager::Instance().GetSizeRenderingWindow().y)*2;
 }
 
 

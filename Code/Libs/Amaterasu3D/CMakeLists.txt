@@ -31,6 +31,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Window.cpp
 	Graphics/Texture.cpp
 	
+	System/EventManager.cpp
 	System/SettingsManager.cpp
 	System/MediaManager.cpp
 	System/ResourceManager.cpp
@@ -41,6 +42,8 @@ SET(LIB_AMATERASU3D_SRCS
 	System/Loaders/ImagesLoader.cpp
 	
 	Utilities/File.cpp
+	
+	Application.cpp
 )
 
 SET(LIB_AMATERASU3D_HEADERS

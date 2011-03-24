@@ -47,11 +47,11 @@ public:
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
-		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
+		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Shader loading
-		m_BasicShaderShadow = glShaderManager::Instance().LoadShader("DebugDrawShadowMapOnly.shader");
-		m_BasicShader = glShaderManager::Instance().LoadShader("BasicShader.shader");
-		m_ShadowShader = glShaderManager::Instance().LoadShader("ShadowMap.shader");
+		m_BasicShaderShadow = CShaderManager::Instance().LoadShader("DebugDrawShadowMapOnly.shader");
+		m_BasicShader = CShaderManager::Instance().LoadShader("BasicShader.shader");
+		m_ShadowShader = CShaderManager::Instance().LoadShader("ShadowMap.shader");
 
 		// Create Light
 		m_light.LightColor = Color(1.0,1.0,1.0,0.0);
@@ -191,7 +191,7 @@ public:
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	SettingsManager::Instance().LoadFile("../Donnees/Config.xml");
+	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 	// TODO: Put into the Log system

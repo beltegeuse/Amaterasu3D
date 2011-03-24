@@ -27,7 +27,7 @@ struct CTinyXMLAttributException : public CTinyXMLException
 };
 
 // Function helper to check TinyXML node
-template< typename T> void TinyXMLGetAttributeValue(TiXmlElement* element, const std::string nameAttribute, T* value)
+template< typename T> inline void TinyXMLGetAttributeValue(TiXmlElement* element, const std::string nameAttribute, T* value)
 {
 	int error = element->QueryValueAttribute<T>(nameAttribute, value);
 	if(error != TIXML_SUCCESS)

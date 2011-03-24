@@ -51,7 +51,7 @@ Window::Window() :
 	m_camera(NULL),
 	Console(CConsole::Instance())
 {
-	CreateWindow("OpenGL Renderer", SettingsManager::Instance().GetSizeRenderingWindow(),false);
+	CreateWindow("OpenGL Renderer", CSettingsManager::Instance().GetSizeRenderingWindow(),false);
 }
 
 Window::~Window()
