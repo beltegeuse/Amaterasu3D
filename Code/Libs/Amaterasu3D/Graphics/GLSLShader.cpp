@@ -1397,6 +1397,11 @@ bool glShader::materialAvailable(MaterialType type)
 	return m_material_bind.find(type) != m_material_bind.end();
 }
 
+void glShader::setMaterialValue(MaterialType type, Color& color)
+{
+	setUniform4f(m_material_bind[type].c_str(), color.R,color.G,color.B,color.A);
+}
+
 void glShader::OnDraw()
 {
   // Nothing to do ....

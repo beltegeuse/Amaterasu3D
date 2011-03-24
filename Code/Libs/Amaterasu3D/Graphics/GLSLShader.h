@@ -38,6 +38,7 @@ Make sure to check extension "GL_EXT_geometry_shader4" before using Geometry sha
 //! \defgroup GLSL libglsl
 //#include "glslSettings.h"
 #include <Graphics/MatrixManagement.h>
+#include <Graphics/Color.h>
 #include <Debug/Exceptions.h>
 #include <Debug/OpenGLDebug.h>
 #include <Utilities/SmartPtr.h>
@@ -47,7 +48,6 @@ Make sure to check extension "GL_EXT_geometry_shader4" before using Geometry sha
 #include <Enum.h>
 #include <Graphics/Texture.h>
 #include <Graphics/FBO.h>
-
 
 #include <map>
 #include <vector>
@@ -161,6 +161,7 @@ public:
 	// * materials
 	void addMaterialBinding(MaterialType type, const std::string& name);
 	bool materialAvailable(MaterialType type);
+	void setMaterialValue(MaterialType type, Color& color);
 	// To know before drawing
 	virtual void OnDraw();
 	virtual void UpdateAll();

@@ -39,13 +39,14 @@ void main()
 	Position = vec4(outPosition,1.0);
 
     // Diffuse buffer
+	Diffuse = MaterialDiffuseColor;
     if(UseDiffuseTex == 1)
     {
-		Diffuse = texture(TextureDiffuse, outTexCoord.st);
+		Diffuse *= texture(TextureDiffuse, outTexCoord.st);
 	}
-	else
+	else if(outColor != vec3(0.0)) // FIXME: Impossible couleur noire ???
 	{
-	    Diffuse = vec4(outColor,1.0);
+	    Diffuse *= vec4(outColor,1.0);
 	}
 	
 	// Normals buffer
@@ -65,10 +66,10 @@ void main()
 	if(UseSpecularTex == 1)
 	{
 	    // Warning use the end element of SpecularValue ton know the shininess
-		Specular = vec4(texture(TextureSpecular, outTexCoord.st).rgb, SpecularValue.w);
+		Specular = vec4(texture(TextureSpecular, outTexCoord.st).rgb, MaterialSpecularColor.a);
 	}
 	else
 	{
-	    Specular  = vec4(1.0);
+	    Specular  = MaterialSpecularColor;
 	}
 }

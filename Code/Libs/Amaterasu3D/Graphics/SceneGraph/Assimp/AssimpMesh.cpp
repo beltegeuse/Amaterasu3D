@@ -103,6 +103,13 @@ void AssimpMesh::Draw()
 	{
 		Logger::Log() << "[Warning] No actived shader. Nothings to render ... \n";
 	}
+	// Material activation
+	for(MaterialMap::iterator it = m_material_map.begin(); it != m_material_map.end(); it++)
+	{
+		if(!glShaderManager::Instance().currentShader()->materialAvailable(it->first))
+			continue;
+		glShaderManager::Instance().currentShader()->setMaterialValue(it->first,it->second);
+	}
 	// Textures activation
 	for(TexturesMap::iterator it = m_textures_map.begin(); it != m_textures_map.end(); it++)
 	{
