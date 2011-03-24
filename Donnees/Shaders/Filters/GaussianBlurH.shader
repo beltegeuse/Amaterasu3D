@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Shader name="GaussianBlurH" type="Basic">
-	<OutputFrame depthType="None">
+	<OutputFrame depthType="None" size="Screen">
 		<Frame name="Result" type="RGBA" />
 	</OutputFrame>
 	<Textures>

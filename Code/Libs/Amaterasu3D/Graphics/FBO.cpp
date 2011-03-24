@@ -32,7 +32,8 @@ FBO::FBO(const Math::TVector2I& size,
 		FBODepthBufferParam& paramDepth) :
 		m_depth_type(type),
 		m_depth_id(0),
-		m_is_activated(false)
+		m_is_activated(false),
+		m_size(size)
 {
 	Logger::Log() << "[INFO] FBO Creation ... \n";
 	// On verifie que l'on a assez de Color Attachement
@@ -151,8 +152,12 @@ FBO::FBO(const Math::TVector2I& size,
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
-
+	if(sizeBufferDraw == 0)
+	{
+		//FIXME: Only for double buffer (GL_FRONT otherwise)
+		glDrawBuffer(GL_BACK);
+		glReadBuffer(GL_BACK);
+	}
 }
 
 FBO::~FBO()
@@ -166,10 +171,9 @@ void FBO::Bind()
 	if(m_is_activated)
 		return;
 
-	//	Logger::Log() << "FBO Bind " << m_fbo_id << "\n";
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
-	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//	glViewport(0,0,m_size.y, m_size.x);
+	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_VIEWPORT_BIT);
+	glViewport(0,0,m_size.y, m_size.x);
 
 	GLbitfield flags = 0;
 	if(m_depth_type != FBODEPTH_NONE)
@@ -191,10 +195,8 @@ void FBO::UnBind()
 	if(!m_is_activated)
 		return;
 
-	//	Logger::Log() << "FBO UnBind " << m_fbo_id << "\n";
-
-	glPopAttrib();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glPopAttrib();
 
 	if(m_textures.empty())
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -219,11 +221,7 @@ void FBO::DrawDebug()
 {
 	// Compute Grid need
 	// * Compute how many slot need
-	int nbElementsToDraw = 0;
-	if(m_depth_type == FBODEPTH_TEXTURE)
-		nbElementsToDraw++;
-	nbElementsToDraw += m_textures.size();
-//	Logger::Log() << "ElemeentDraw : " << nbElementsToDraw << "\n";
+	int nbElementsToDraw = m_textures.size();
 	// * Compute the grid dimension
 	int nbHeight = nbElementsToDraw / 2;
 	if(nbElementsToDraw % 2 != 0)
@@ -232,6 +230,8 @@ void FBO::DrawDebug()
 	int nbWidth = nbHeight;
 	if(nbHeight*nbHeight < nbElementsToDraw)
 		nbWidth++;
+
+	glDisable(GL_DEPTH_TEST);
 
 	glPushAttrib(GL_VIEWPORT_BIT);
 
@@ -244,70 +244,45 @@ void FBO::DrawDebug()
 	glLoadIdentity();
 
 	// Draw the Grid
-	const int WindowHeight = 600; // FIXME: Add to an manager
+	const int WindowHeight = 600;
 	const int WindowWidth = 800;
 	// Compute factors width
 	const int factorWidth = (WindowWidth / nbWidth);
 	const int factorHeight = (WindowHeight / nbHeight);
-//	Logger::Log() << "Nb : " << nbHeight << "x" << nbWidth << "\n";
-//	Logger::Log() << "Factors : " << factorHeight << "x" << factorWidth << "\n";
-	glEnable (GL_SCISSOR_TEST);
 	int nbElementDrew = 0;
-	//glViewport(0,0, factorWidth,  factorHeight);
-	if(m_depth_type == FBODEPTH_TEXTURE)
-	{
-		// Setup scissor
-		//glScissor(0,0, factorWidth,  factorHeight);
-		glViewport(0,0, factorWidth,  factorHeight);
-		// Active the texture
-		m_shader_depth->begin();
-		glEnable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE0+DIFFUSE_TEXTURE);
-		glBindTexture(GL_TEXTURE_2D, m_depth_id);
-		// Draw the texture
-		glBegin(GL_QUADS);
-		glTexCoord2f(0.0, 0.0);
-		glVertex2f(-1.0, -1.0);
-		glTexCoord2f(0.0, 1.0);
-		glVertex2f(-1.0, 1.0);
-		glTexCoord2f(1.0, 1.0);
-		glVertex2f(1.0, 1.0);
-		glTexCoord2f(1.0, 0.0);
-		glVertex2f(1.0, -1.0);
-		glEnd();
-		m_shader_depth->end();
-		// Desactive textures
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE0);
-		nbElementDrew++;
-	}
 	// Draw others textures
 	for(std::map<std::string, Texture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
 	{
 		int idWidth = nbElementDrew / nbWidth;
 		int idHeight = nbElementDrew % nbHeight;
-//		Logger::Log() << it->first << " : " << idHeight*factorHeight << "x" << idWidth*factorWidth << "\n";
-		// Setup scissor
-		//glScissor(idWidth*factorWidth,idHeight*factorHeight, (idWidth+1)*factorWidth,(idHeight+1)*factorHeight);
+//		Logger::Log() << it->first << " : " << idHeight*factorHeight << "x" << idWidth*factorWidth << " ( " <<factorHeight << "x" << factorWidth << ") \n";
+
+		if(it->first == "Depth")
+			m_shader_depth->begin();
+
 		glViewport(idWidth*factorWidth,idHeight*factorHeight, factorWidth,  factorHeight);
+
 		it->second->activateTextureMapping();
 		it->second->activateTexture();
 		glBegin(GL_QUADS);
-		glTexCoord2f(0.0, 0.0);
-		glVertex2f(-1.0, -1.0);
-		glTexCoord2f(0.0, 1.0);
-		glVertex2f(-1.0, 1.0);
-		glTexCoord2f(1.0, 1.0);
-		glVertex2f(1.0, 1.0);
-		glTexCoord2f(1.0, 0.0);
-		glVertex2f(1.0, -1.0);
+			glTexCoord2f(0.0, 0.0);
+			glVertex2f(-1.0, -1.0);
+			glTexCoord2f(0.0, 1.0);
+			glVertex2f(-1.0, 1.0);
+			glTexCoord2f(1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glTexCoord2f(1.0, 0.0);
+			glVertex2f(1.0, -1.0);
 		glEnd();
+
+		if(it->first == "Depth")
+			m_shader_depth->end();
+
 		it->second->desactivateTextureMapping();
 		nbElementDrew++;
 	}
 
-	glDisable ( GL_SCISSOR_TEST);
+	glEnable(GL_DEPTH_TEST);
 
 	// Undo transform
 	glPopMatrix();

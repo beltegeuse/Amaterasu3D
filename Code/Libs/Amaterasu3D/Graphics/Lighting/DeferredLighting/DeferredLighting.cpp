@@ -59,7 +59,7 @@ void DeferredLighting::SpotLightPass()
 		Math::CMatrix4 LightViewMatrix;
 		LightViewMatrix.LookAt(m_spots_lights[i].Position, m_spots_lights[i].Direction);
 		Math::CMatrix4 LightProjectionMatrix;
-		LightProjectionMatrix.PerspectiveFOV(m_spots_lights[i].LightCutOff, 800.0/600.0, 1.0, m_spots_lights[i].LightRaduis);
+		LightProjectionMatrix.PerspectiveFOV(m_spots_lights[i].LightCutOff, 512.0/512.0, 1.0, m_spots_lights[i].LightRaduis); //FIXME: Automatic size
 		MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
 		MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
 		// * Draw the scene

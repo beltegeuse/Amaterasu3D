@@ -26,7 +26,7 @@
 #include <Logger/Logger.h>
 #include <System/MediaManager.h>
 #include <TinyXMLHelper.h>
-
+#include <System/SettingsManager.h>
 ShadersLoader::ShadersLoader()
 {
 }
@@ -101,6 +101,26 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 	}
 	else
 		throw CException("invalid buffer type");
+	// Get the size of buffer
+	std::string typeSize;
+	int X = 0;
+	int Y = 0;
+	TinyXMLGetAttributeValue<std::string>(rootFBO,"size",&typeSize);
+	if(typeSize == "Screen")
+	{
+		Math::TVector2I sizeScreen = SettingsManager::Instance().GetSizeRenderingWindow();
+		X = sizeScreen.x;
+		Y = sizeScreen.y;
+	}
+	else if(typeSize == "Custom")
+	{
+		TinyXMLGetAttributeValue<int>(rootFBO,"width",&X);
+		TinyXMLGetAttributeValue<int>(rootFBO,"height",&Y);
+	}
+	else
+	{
+		throw CException("unknow type of size");
+	}
 	// Get all buffers
 	std::map<std::string, FBOTextureBufferParam> buffers;
 	Logger::Log() << "   * Chargement des differents buffers .... \n";
@@ -147,7 +167,7 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 	}
 	shader->end();
 	FBODepthBufferParam bufferDepth;
-	FBO* fbo = new FBO(Math::TVector2I(600,800), buffers, typeDepth, bufferDepth); // FIXME
+	FBO* fbo = new FBO(Math::TVector2I(Y,X), buffers, typeDepth, bufferDepth); // FIXME: Inversion des tailles ???
 	shader->SetFBO(fbo);
 }
 

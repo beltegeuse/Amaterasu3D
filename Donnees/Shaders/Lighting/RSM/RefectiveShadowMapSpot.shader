@@ -6,7 +6,7 @@
        <Matrix type="Normal" name="NormalMatrix" />
        <Matrix type="View" name="ViewMatrix" />
     </MatrixInput>
-    <OutputFrame depthType="Texture" height=512 width=512>
+    <OutputFrame depthType="Texture" size="Custom" height=512 width=512>
     	<Frame name="Flux" type="RGBA" />
     	<Frame name="Normal" type="RGBA32" />
     	<Frame name="Position" type="RGBA32" />

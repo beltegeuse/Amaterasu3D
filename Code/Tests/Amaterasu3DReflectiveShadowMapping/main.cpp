@@ -153,7 +153,7 @@ public:
 		Math::CMatrix4 LightViewMatrix;
 		LightViewMatrix.LookAt(m_light.Position, m_light.Direction);
 		Math::CMatrix4 LightProjectionMatrix;
-		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff, 800.0/600.0, 1.0, m_light.LightRaduis);
+		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff,512.0/512.0, 1.0, m_light.LightRaduis);
 		Math::CMatrix4 oldProjectionMatrix;
 		Math::CMatrix4 oldViewMatrix;
 		// * Save old transformations

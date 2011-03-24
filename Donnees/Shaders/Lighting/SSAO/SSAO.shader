@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Shader name="SSAO" type="Basic">
-	<OutputFrame depthType="None">
+	<OutputFrame depthType="None" size="Screen">
 		<Frame name="AmbiantOcculsion" type="RGBA" />
 	</OutputFrame>
 	<Textures>

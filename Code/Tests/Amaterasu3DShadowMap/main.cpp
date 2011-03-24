@@ -46,7 +46,7 @@ public:
 		SetCamera(cam);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 4000);
+		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
 		MatrixManagement::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Shader loading
 		m_BasicShaderShadow = glShaderManager::Instance().LoadShader("DebugDrawShadowMapOnly.shader");
@@ -106,63 +106,68 @@ public:
 		Math::CMatrix4 LightProjectionMatrix;
 		Math::CMatrix4 oldProjectionMatrix;
 		Math::CMatrix4 oldViewMatrix;
-		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff, 800.0/600.0, 1.0, m_light.LightRaduis);
-		{
-			// Generate the Shadow Map
-			// * Transformations
-			oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
-			oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
-			MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
-			MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
-			// * Draw the scene
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_BACK);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			m_ShadowShader->begin();
-			GetSceneRoot().Draw(); // Draw the scene
-			m_ShadowShader->end();
-			glDisable(GL_CULL_FACE);
-			// * Revert transformations
-			MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
-			MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
-		}
+//		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff, 512.0/512.0, 1.0, m_light.LightRaduis);
+//		{
+//			// Generate the Shadow Map
+//			// * Transformations
+//			oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
+//			oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
+//			MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
+//			MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
+//			// * Draw the scene
+//			glEnable(GL_CULL_FACE);
+//			glCullFace(GL_BACK);
+//			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//			m_ShadowShader->begin();
+//			GetSceneRoot().Draw(); // Draw the scene
+//			m_ShadowShader->end();
+//			glDisable(GL_CULL_FACE);
+//			// * Revert transformations
+//			MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
+//			MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
+//		}
+//
+//		m_ShadowShader->GetFBO()->DrawDebug();
 
-		{
-			if(m_cameraView)
-			{
-				oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
-				oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
-				MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
-				MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
-			}
+//		if(true)
+//		{
+//
+//		}
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			m_ShadowShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_BACK);
-			m_BasicShaderShadow->begin();
-			m_BasicShaderShadow->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
-			m_BasicShaderShadow->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
-			m_BasicShaderShadow->setUniform1i("DebugMode", m_debug);
-			if(!m_cameraView)
-			{
-				m_camera->GetView();
-			}
-			GetSceneRoot().Draw();
-			m_BasicShaderShadow->end();
-			m_ShadowShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-			if(m_cameraView)
-			{
-				MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
-				MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
-			}
-			glDisable(GL_CULL_FACE);
-		}
+//		{
+//			if(m_cameraView)
+//			{
+//				oldProjectionMatrix = MatrixManagement::Instance().GetMatrix(PROJECTION_MATRIX);
+//				oldViewMatrix = MatrixManagement::Instance().GetMatrix(VIEW_MATRIX);
+//				MatrixManagement::Instance().SetProjectionMatrix(LightProjectionMatrix);
+//				MatrixManagement::Instance().SetViewMatrix(LightViewMatrix);
+//			}
+//
+//			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//			m_ShadowShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
+//			glEnable(GL_CULL_FACE);
+//			glCullFace(GL_BACK);
+//			m_BasicShaderShadow->begin();
+//			m_BasicShaderShadow->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
+//			m_BasicShaderShadow->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
+//			m_BasicShaderShadow->setUniform1i("DebugMode", m_debug);
+//			if(!m_cameraView)
+//			{
+//				m_camera->GetView();
+//			}
+//			GetSceneRoot().Draw();
+//			m_BasicShaderShadow->end();
+//			m_ShadowShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//			if(m_cameraView)
+//			{
+//				MatrixManagement::Instance().SetProjectionMatrix(oldProjectionMatrix);
+//				MatrixManagement::Instance().SetViewMatrix(oldViewMatrix);
+//			}
+//			glDisable(GL_CULL_FACE);
+//		}
 
-		if(m_showDepth)
-		{
-			m_ShadowShader->GetFBO()->DrawDebug();
-		}
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Draw Tow 2D things
 		Console.Draw();
@@ -174,7 +179,7 @@ public:
 //		glPushMatrix();
 //		glLoadIdentity();
 //
-//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //
 //		glPopMatrix();
 //		glMatrixMode(GL_PROJECTION);
