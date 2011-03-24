@@ -25,6 +25,7 @@
 #include <tinyxml.h>
 #include <Logger/Logger.h>
 #include <System/MediaManager.h>
+#include <TinyXMLHelper.h>
 
 ShadersLoader::ShadersLoader()
 {
@@ -45,8 +46,10 @@ void ShadersLoader::LoadMaterials(glShader* shader, TiXmlElement *root)
 	TiXmlElement *materialNode = rootMaterial->FirstChildElement("Material");
 	while(materialNode)
 	{
-		std::string name = std::string(materialNode->Attribute("name"));
-		std::string type = std::string(materialNode->Attribute("type"));
+		std::string name;
+		std::string type;
+		TinyXMLGetAttributeValue<std::string>(materialNode,"name",&name);
+		TinyXMLGetAttributeValue<std::string>(materialNode,"type",&type);
 		if(type == "Diffuse")
 		{
 			shader->addMaterialBinding(DIFFUSE_MATERIAL, name);
@@ -80,7 +83,8 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 		return;
 	}
 	// Get the depth buffer type
-	std::string typeDepthString = std::string(rootFBO->Attribute("depthType"));
+	std::string typeDepthString;
+	TinyXMLGetAttributeValue<std::string>(rootFBO,"depthType",&typeDepthString);
 	Logger::Log() << "   * Depth buffer type " << typeDepthString << "\n";
 	FBODepthType typeDepth;
 	if(typeDepthString == "None")
@@ -102,11 +106,12 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 	Logger::Log() << "   * Chargement des differents buffers .... \n";
 	TiXmlElement *frameNode = rootFBO->FirstChildElement("Frame");
 	shader->begin();
-//	int i = 0;
 	while(frameNode)
 	{
-		std::string name = std::string(frameNode->Attribute("name"));
-		std::string typeString = std::string(frameNode->Attribute("type"));
+		std::string name;
+		std::string typeString;
+		TinyXMLGetAttributeValue<std::string>(frameNode,"name",&name);
+		TinyXMLGetAttributeValue<std::string>(frameNode,"type",&typeString);
 		Logger::Log() << "      * Create buffer : " << name << " ( " << typeString << " ) \n";
 		FBOTextureBufferParam param;
 		if(typeString == "RGBA")
@@ -135,12 +140,10 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 		}
 		else
 			throw CException("unknow buffer type");
-//		glBindFragDataLocation(shader->GetProgramObject(),i,name.c_str());
 		param.Attachment = glGetFragDataLocation(shader->GetProgramObject(),name.c_str());
 		Logger::Log() << "           * Attachment : " << param.Attachment << "\n";
 		buffers[name] = param;
 		frameNode = frameNode->NextSiblingElement("Frame");
-//		i++;
 	}
 	shader->end();
 	FBODepthBufferParam bufferDepth;
@@ -160,9 +163,10 @@ void ShadersLoader::LoadShaderMatrix(glShader* shader, TiXmlElement *root)
 	Logger::Log() << "[INFO] Matrix : \n";
 	while(matrixNode)
 	{
-		//TODO: Faire les exceptions si attributs absent
-		std::string nameMatrix = std::string(matrixNode->Attribute("name"));
-		std::string typeMatrix= std::string(matrixNode->Attribute("type"));
+		std::string nameMatrix;
+		std::string typeMatrix;
+		TinyXMLGetAttributeValue<std::string>(matrixNode,"name",&nameMatrix);
+		TinyXMLGetAttributeValue<std::string>(matrixNode,"type",&typeMatrix);
 		MatrixType type;
 		//TODO: Faire une factory ???
 		if(typeMatrix == "Model")
@@ -206,9 +210,10 @@ void ShadersLoader::LoadShaderAttributs(glShader* shader, TiXmlElement *root)
 	Logger::Log() << "[INFO] Attribut : \n";
 	while(attributNode)
 	{
-		//TODO: Faire les exceptions si attributs absent
-		std::string nameAttrib = std::string(attributNode->Attribute("name"));
-		std::string typeAttrib = std::string(attributNode->Attribute("type"));
+		std::string nameAttrib;
+		std::string typeAttrib;
+		TinyXMLGetAttributeValue<std::string>(attributNode,"name",&nameAttrib);
+		TinyXMLGetAttributeValue<std::string>(attributNode,"type",&typeAttrib);
 		ShaderAttributType type;
 		//TODO: Faire une factory ???
 		if(typeAttrib == "Vertex")
@@ -262,9 +267,10 @@ void ShadersLoader::LoadShaderTextures(glShader* shader, TiXmlElement *root)
 	Logger::Log() << "[INFO] Textures : \n";
 	while(textureNode)
 	{
-		//TODO: Faire les exceptions si attributs absent
-		std::string nameAttrib = std::string(textureNode->Attribute("name"));
-		std::string typeAttrib = std::string(textureNode->Attribute("type"));
+		std::string nameAttrib;
+		std::string typeAttrib;
+		TinyXMLGetAttributeValue<std::string>(textureNode,"name",&nameAttrib);
+		TinyXMLGetAttributeValue<std::string>(textureNode,"type",&typeAttrib);
 		int typeID;
 	    int id;
 		//TODO: Faire une factory ???
@@ -315,8 +321,10 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 		throw CLoadingFailed(Filename, "unable to find root (Shader)");
 	}
 	// Get the shader name and display it
-	std::string name = std::string(root->Attribute("name"));
-	std::string shaderTypeName = std::string(root->Attribute("type"));
+	std::string name;
+	std::string shaderTypeName;
+	TinyXMLGetAttributeValue<std::string>(root,"name",&name);
+	TinyXMLGetAttributeValue<std::string>(root,"type",&shaderTypeName);
 	Logger::Log() << "[INFO] Load shader : " << name << " ( " << shaderTypeName << " ) ... \n";
 	ShaderType shaderType;
 	if(shaderTypeName == "Basic")
