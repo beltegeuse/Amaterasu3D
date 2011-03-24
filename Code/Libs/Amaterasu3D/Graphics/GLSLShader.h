@@ -158,6 +158,9 @@ public:
 	virtual bool matrixModeAvailable(MatrixType type);
 	void UpdateMatrix(MatrixType mat);
 	void UpdateMatrixAll();
+	// * materials
+	void addMaterialBinding(MaterialType type, const std::string& name);
+	bool materialAvailable(MaterialType type);
 	// To know before drawing
 	virtual void OnDraw();
 	virtual void UpdateAll();
@@ -217,8 +220,9 @@ public:
 	bool       setUniformMatrix2fv(const GLcharARB* varname, GLsizei count, GLboolean transpose, GLfloat *value, GLint index = -1); //!< Specify values of uniform 2x2 matrix. \param varname The name of the uniform variable.
 	bool       setUniformMatrix3fv(const GLcharARB* varname, GLsizei count, GLboolean transpose, GLfloat *value, GLint index = -1); //!< Specify values of uniform 3x3 matrix. \param varname The name of the uniform variable.
 	bool       setUniformMatrix4fv(const GLcharARB* varname, const Math::CMatrix4& matrix);
-	bool       setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix);
 	bool       setUniformMatrix3fv(const GLcharARB* varname, const Math::CMatrix3& matrix);
+	bool       setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix);
+
 	// Receive Uniform variables:
 	void       getUniformfv(const GLcharARB* varname, GLfloat* values, GLint index = -1); //!< Receive value of uniform variable. \param varname The name of the uniform variable.
 	void       getUniformiv(const GLcharARB* varname, GLint* values, GLint index = -1); //!< Receive value of uniform variable. \param varname The name of the uniform variable.
@@ -304,9 +308,12 @@ protected:
 	typedef std::map<ShaderAttributType,std::string> MapAttributs;
 	typedef std::map<int,std::string> MapTexture;
 	typedef std::map<MatrixType,std::string> MapMatrix;
+	typedef std::map<MaterialType,std::string> MapMaterials;
 	MapAttributs m_attributs_bind;
 	MapTexture m_textures_bind;
 	MapMatrix m_matrix_bind;
+	MapMaterials m_material_bind;
+
 	// Differents buffers
 	//TODO: Changes things ...
 	FBO* m_FBO;

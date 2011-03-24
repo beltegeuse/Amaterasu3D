@@ -16,6 +16,10 @@ uniform sampler2D TextureDiffuse;
 uniform sampler2D TextureNormal;
 uniform sampler2D TextureSpecular;
 
+// Material
+uniform vec4 MaterialDiffuseColor;
+uniform vec4 MaterialSpecularColor;
+
 // Shader input
 smooth in vec3 outPosition;
 smooth in vec2 outTexCoord;

@@ -1387,7 +1387,15 @@ void glShader::UpdateMatrixAll()
 	}
 }
 
-void UpdateMatrixAll();
+void glShader::addMaterialBinding(MaterialType type, const std::string& name)
+{
+	m_material_bind[type] = name;
+}
+
+bool glShader::materialAvailable(MaterialType type)
+{
+	return m_material_bind.find(type) != m_material_bind.end();
+}
 
 void glShader::OnDraw()
 {

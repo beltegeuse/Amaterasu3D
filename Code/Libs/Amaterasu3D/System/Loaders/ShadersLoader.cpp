@@ -34,6 +34,43 @@ ShadersLoader::~ShadersLoader()
 {
 }
 
+void ShadersLoader::LoadMaterials(glShader* shader, TiXmlElement *root)
+{
+	TiXmlElement *rootMaterial = root->FirstChildElement("Materials");
+	if(!rootMaterial)
+	{
+		Logger::Log() << "[INFO] No Materials is available ... \n";
+		return;
+	}
+	TiXmlElement *materialNode = rootMaterial->FirstChildElement("Material");
+	while(materialNode)
+	{
+		std::string name = std::string(materialNode->Attribute("name"));
+		std::string type = std::string(materialNode->Attribute("type"));
+		if(type == "Diffuse")
+		{
+			shader->addMaterialBinding(DIFFUSE_MATERIAL, name);
+		}
+		else if(type == "Specular")
+		{
+			shader->addMaterialBinding(SPECULAR_MATERIAL, name);
+		}
+		else if(type == "Ambiant")
+		{
+			shader->addMaterialBinding(AMBIANT_MATERIAL, name);
+		}
+		else if(type == "Emissive")
+		{
+			shader->addMaterialBinding(EMISSION_MATERIAL, name);
+		}
+		else
+		{
+			throw CException("invalid material type");
+		}
+		materialNode = materialNode->NextSiblingElement();
+	}
+}
+
 void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 {
 	TiXmlElement *rootFBO = root->FirstChildElement("OutputFrame");
@@ -319,6 +356,8 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	LoadShaderMatrix(shader, root);
 	// FBO
 	LoadShaderFBO(shader, root);
+	// Materials
+	LoadMaterials(shader, root);
 	// Update all bindings
 	// * Warning : Need to relink after
 	shader->UpdateAll();

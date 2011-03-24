@@ -25,6 +25,10 @@
     	<Attribut type="TexCoord" name="VertexTexCoord" />
     	<Attribut type="Color" name="VertexColor" />
     </Attributs>
+    <Materials>
+    	<Material type="Diffuse" name="MaterialDiffuseColor" />
+    	<Material type="Specular" name="MaterialSpecularColor" />
+    </Materials>
 	<VertexShader filename="GBuffer.vert" />
 	<FragmentShader filename="GBuffer.frag" />
 </Shader>

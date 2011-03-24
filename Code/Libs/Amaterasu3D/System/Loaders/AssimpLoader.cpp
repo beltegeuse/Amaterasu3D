@@ -75,7 +75,7 @@ void AssimpLoader::GetMaterialPropreties(SceneGraph::AssimpMesh* assimpMesh, con
 	}
 	else
 	{
-		color = Color(0,0,0,1);
+		color = Color(1,1,1,1);
 		assimpMesh->AddMaterial(DIFFUSE_MATERIAL, color);
 	}
 
@@ -96,7 +96,7 @@ void AssimpLoader::GetMaterialPropreties(SceneGraph::AssimpMesh* assimpMesh, con
 	}
 	else
 	{
-		color = Color(0,0,0,0);
+		color = Color(1,1,1,0);
 		assimpMesh->AddMaterial(SPECULAR_MATERIAL, color);
 	}
 
@@ -109,7 +109,7 @@ void AssimpLoader::GetMaterialPropreties(SceneGraph::AssimpMesh* assimpMesh, con
 	}
 	else
 	{
-		color = Color(0,0,0,1);
+		color = Color(1,1,1,1);
 		assimpMesh->AddMaterial(AMBIANT_MATERIAL, color);
 	}
 
@@ -122,7 +122,7 @@ void AssimpLoader::GetMaterialPropreties(SceneGraph::AssimpMesh* assimpMesh, con
 	}
 	else
 	{
-		color = Color(0,0,0,1);
+		color = Color(1,1,1,1);
 		assimpMesh->AddMaterial(EMISSION_MATERIAL, color);
 	}
 
