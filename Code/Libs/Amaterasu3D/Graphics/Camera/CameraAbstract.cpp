@@ -39,7 +39,6 @@ CameraAbstract::~CameraAbstract()
 
 const Math::CMatrix4& CameraAbstract::GetMatrix()
 {
-//	std::cout << m_matrix << std::endl;
 	return m_ViewMatrixTransform;
 }
 

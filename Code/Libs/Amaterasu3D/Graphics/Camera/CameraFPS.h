@@ -64,6 +64,7 @@ public:
 	/*
 	 * Public methods
 	 */
+	//! To change the speed of the camera
 	void SetSpeed(float moveSec);
 
 	/*

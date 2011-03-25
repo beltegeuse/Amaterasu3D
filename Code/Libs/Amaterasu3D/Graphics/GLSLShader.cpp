@@ -248,6 +248,9 @@ glShader::~glShader()
 		CHECK_GL_ERROR();
 	}
 
+	// Delete the FBO
+	if(m_FBO)
+		delete m_FBO;
 }
 
 //----------------------------------------------------------------------------- 

@@ -55,7 +55,7 @@ CResourceManager::~CResourceManager()
     // S'il reste des ressources dans la liste, on le signale
     if (!m_Resources.empty())
     {
-        Logger::Log() << "** warning ** Des ressources non pas été libérées :\n";
+        Logger::Log() << "** warning ** leak resources :\n";
 
         for (TResourcesMap::const_iterator i = m_Resources.begin(); i != m_Resources.end(); ++i)
         {
