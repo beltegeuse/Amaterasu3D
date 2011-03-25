@@ -127,6 +127,15 @@ void Application::Event(SDL_Event& event)
 {
 	if(event.window.event == SDL_WINDOWEVENT_CLOSE)
 		Exit();
+	if(event.type == SDL_KEYDOWN)
+	{
+		 switch(event.key.keysym.sym)
+		 {
+			 case SDLK_F12:
+				 Console.Enable(!Console.IsEnable());
+				 break;
+		 }
+	}
 }
 
 void Application::MainLoop()
@@ -143,7 +152,8 @@ void Application::MainLoop()
 		 while(SDL_PollEvent(&event))
 		 {
 			 Event(event);
-			 EventManager.OnEvent(event);
+			 if(!Console.IsEnable()) // Console catch all events
+				 EventManager.OnEvent(event);
 		 }
 
 		 // Update the scene
