@@ -24,6 +24,8 @@
 
 #include "Application.h"
 
+#include <System/Loaders/Loaders.h>
+
 Application* Application::s_Application = NULL;
 
 Application::Application() :

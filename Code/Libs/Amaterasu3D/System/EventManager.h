@@ -28,6 +28,7 @@
 #include <Singleton.h>
 #include <System/EventListeners.h>
 #include <vector>
+#include <map>
 #include <algorithm>
 #include <Debug/Exceptions.h>
 #include <Utilities/GenHierarchies.h>
@@ -67,7 +68,8 @@ public:
 	 */
 	void AddListener(T* listener) { m_Listeners.push_back(listener); }
 	void RemoveListener(T* listener){
-		TListenerVector::iterator it = std::find(m_Listeners.begin(), m_Listeners.end(), listener);
+		typename TListenerVector::iterator it;
+		it = std::find(m_Listeners.begin(), m_Listeners.end(), listener);
 		if(it == m_Listeners.end())
 			throw CException("Enable to find listener to delete");
 		m_Listeners.erase(it);
@@ -175,7 +177,7 @@ class CWindowListenerManager : public CNoFrameListenerManager<MouseMotionListene
 ////////////////////////////////
 class CEventManager : public CSingleton<CEventManager>
 {
-	SINGLETON_IMPL(CEventManager)
+	MAKE_SINGLETON(CEventManager)
 private:
 	typedef std::map<std::string,CListenerManagerAbstract*> TListenerManagerMap;
 	TListenerManagerMap m_Managers;

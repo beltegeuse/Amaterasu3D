@@ -31,7 +31,7 @@
 // SettingsManager : Class which handle usefull
 // information for all the renderer
 /////////////////////////////////////////////
-class CSettingsManager : CSingleton<CSettingsManager>
+class CSettingsManager : public CSingleton<CSettingsManager>
 {
 	MAKE_SINGLETON(CSettingsManager)
 private:

@@ -24,6 +24,8 @@
 
 #include "EventManager.h"
 
+SINGLETON_IMPL(CEventManager)
+
 void CEventManager::OnEvent(SDL_Event& event)
 {
 	for(TListenerManagerMap::iterator it = m_Managers.begin(); it != m_Managers.end(); ++it)
