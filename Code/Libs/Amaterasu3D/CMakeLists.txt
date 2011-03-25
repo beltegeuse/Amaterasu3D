@@ -30,6 +30,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/GLSLShader.cpp
 	Graphics/Texture.cpp
 	
+	System/EventListeners.cpp
 	System/EventManager.cpp
 	System/SettingsManager.cpp
 	System/MediaManager.cpp

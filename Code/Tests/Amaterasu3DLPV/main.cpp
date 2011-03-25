@@ -78,6 +78,7 @@ private:
 		m_DebugCompositing = false;
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
+		m_Camera->SetSpeed(100.0);
 		// Initialise OpenGL
 		glClearColor(0.0f,0.0f,0.0f,1.f);
 		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::PerspectiveFOV(70, (double)800/600, 1.0, 400));

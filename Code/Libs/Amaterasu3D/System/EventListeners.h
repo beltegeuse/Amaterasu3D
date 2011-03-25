@@ -37,6 +37,9 @@ public:
 class MouseListener : public EventListener
 {
 public:
+	MouseListener();
+	virtual ~MouseListener();
+
 	virtual void MousePressed() = 0;
 	virtual void MouseReleased() = 0;
 };
@@ -44,6 +47,9 @@ public:
 class KeyListener : public EventListener
 {
 public:
+	KeyListener();
+	virtual ~KeyListener();
+
 	virtual void KeyPressed(SDL_Keycode& key) = 0;
 	virtual void KeyReleased(SDL_Keycode& key) = 0;
 };
@@ -51,12 +57,18 @@ public:
 class MouseMotionListener : public EventListener
 {
 public:
+	MouseMotionListener();
+	virtual ~MouseMotionListener();
+
 	virtual void MouseMoved(int x, int y) = 0;
 };
 
 class FrameListener : public EventListener
 {
 public:
+	FrameListener();
+	virtual ~FrameListener();
+
 	//! delta represent the time between two rendering
 	virtual void FrameStarted(double delta) = 0;
 	virtual void FrameEnded() = 0;
@@ -65,7 +77,8 @@ public:
 //XXX: not implemented
 class WindowListener: public EventListener
 {
-
+	WindowListener();
+	virtual ~WindowListener();
 };
 
 #endif /* EVENTLISTENERS_H_ */

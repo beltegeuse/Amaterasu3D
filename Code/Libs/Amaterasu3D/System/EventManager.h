@@ -33,8 +33,6 @@
 #include <Debug/Exceptions.h>
 #include <Utilities/GenHierarchies.h>
 
-typedef TYPELIST_5(MouseListener, KeyListener, MouseMotionListener, FrameListener, WindowListener) ListenerList;
-
 ////////////////////////////////////////////////////////////
 /// Methods to add listeners manager
 ////////////////////////////////////////////////////////////
