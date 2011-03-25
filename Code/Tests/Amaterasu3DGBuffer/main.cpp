@@ -1,16 +1,4 @@
 #include <iostream>
-#include <Math/Matrix4.h>
-#include <System/MediaManager.h>
-#include <Graphics/Window.h>
-#include <System/SettingsManager.h>
-#include <Graphics/GLSLShader.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
-#include <Graphics/Camera/CameraFly.h>
-#include <Logger/LoggerFile.h>
-#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
-#include <Graphics/MatrixManagement.h>
-#include <Graphics/Font/GraphicString.h>
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -20,39 +8,44 @@
 #include <iostream>
 #include <stdlib.h>
 
-class WindowGBuffer : public Window
+#include <Math/Matrix4.h>
+#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
+#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Logger/LoggerFile.h>
+#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
+#include <Application.h>
+#include <Graphics/Camera/CameraFPS.h>
+
+class ApplicationDeferred : public Application
 {
 protected:
-	Math::CMatrix4 m_matrixPerspective;
+	CameraFPS* m_Camera;
 	TShaderPtr m_gbuffer_shader;
 	DeferredLighting* m_GI;
-	CGraphicString m_Message;
 	bool m_debug;
 public:
-	WindowGBuffer() :
-		Window(),
+	ApplicationDeferred() :
 		m_debug(false)
 	{
-		// Message d'aide
-		m_Message.Position = Math::TVector2F(5, 577);
-		m_Message.Text     = "F1 / F2 pour afficher / cacher la console | echap pour quitter";
-		m_Message.Color    = CColor(255, 255, 255, 100);
-		m_Message.Size     = 18;
 
+	}
+
+	virtual ~ApplicationDeferred()
+	{
+	}
+
+	virtual void OnInitialize()
+	{
 		// Camera Setup
-		CameraFPS* cam = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
-		cam->SetSpeed(200.0);
-		SetCamera(cam);
+		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_Camera->SetSpeed(200.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 4000);
-		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
-		// Config path
-		CMediaManager::Instance().AddSearchPathAndChilds("../Donnees");
+		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::PerspectiveFOV(70, (double)800/600, 0.1, 4000));
 		// Load shader
 		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		// Load GI
-		m_GI = new DeferredLighting(this);
+		m_GI = new DeferredLighting(RootSceneGraph);
 		m_GI->SetFBOGraphicBuffer(m_gbuffer_shader->GetFBO());
 		// Create light 1
 		PointLight light1;
@@ -72,23 +65,14 @@ public:
 		m_GI->AddSpotLight(light2);
 		// Load scene
 		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-		GetSceneRoot().AddChild(node1);
-//		SceneGraph::AssimpNode* node2 = SceneGraph::AssimpNode::LoadFromFile("lion.obj");
-//		SceneGraph::Group* nodeGroup = new SceneGraph::Group;
-//		nodeGroup->AddChild(node2);
-//		Math::CMatrix4 mat;
-//		mat.SetTranslation(0,0,-1000.0);
-//		nodeGroup->LoadTransformMatrix(mat);
-//		GetSceneRoot().AddChild(nodeGroup);
+		RootSceneGraph.AddChild(node1);
 	}
 
-	virtual ~WindowGBuffer()
-	{
-	}
+	virtual void OnUpdate(double delta)
+	{}
 
-	virtual void OnEvent(SDL_Event& event, double delta)
+	virtual void OnEvent(SDL_Event& event)
 	{
-		Window::OnEvent(event, delta);
 		if(event.type == SDL_KEYDOWN)
 		{
 			Math::CMatrix4 matrixTransform;
@@ -105,11 +89,11 @@ public:
 
 	}
 
-	virtual void OnDraw(double delta)
+	virtual void OnRender()
 	{
 		m_gbuffer_shader->begin();
-		//m_camera->SendInvMatrix();
-		Window::OnDraw(delta);
+		m_Camera->GetView();
+		RootSceneGraph.Draw();
 		m_gbuffer_shader->end();
 
 		glMatrixMode(GL_PROJECTION);
@@ -125,7 +109,7 @@ public:
 			m_gbuffer_shader->GetFBO()->DrawDebug();
 		else
 		{
-			m_camera->GetView();
+			m_Camera->GetView();
 			m_GI->ComputeIllumination();
 		}
 
@@ -134,19 +118,18 @@ public:
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 
-		// Affichage du message d'aide
-		m_Message.Draw();
-
+		Console.Draw();
 	}
 };
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
+
 	std::cout << "[INFO] Begin ..." << std::endl;
-	WindowGBuffer window;
+
+	ApplicationDeferred window;
 	window.Run();
 	std::cout << "[INFO] ... end." << std::endl;
 	return 0;

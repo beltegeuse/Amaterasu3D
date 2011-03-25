@@ -24,9 +24,9 @@
 #include "DeferredLighting.h"
 #include <math.h>
 
-DeferredLighting::DeferredLighting(Window* win) :
-	m_debug_mode(false),
-	m_window(win)
+DeferredLighting::DeferredLighting(SceneGraph::Group& scene) :
+	m_Scene(scene),
+	m_debug_mode(false)
 {
 	// Load shader
 	// * Point Light
@@ -66,7 +66,7 @@ void DeferredLighting::SpotLightPass()
 //		glEnable(GL_CULL_FACE);
 //		glCullFace(GL_BACK);
 		m_simple_shader->begin();
-		m_window->GetSceneRoot().Draw(); // Draw the scene
+		m_Scene.Draw(); // Draw the scene
 		m_simple_shader->end();
 //		glDisable(GL_CULL_FACE);
 		// * Revert transformations

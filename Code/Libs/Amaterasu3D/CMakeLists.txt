@@ -14,7 +14,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Math/SphericalCoordinates.cpp
 	
 	Graphics/Lighting/LightingPassAbstract.cpp
-	#Graphics/Lighting/DeferredLighting/DeferredLighting.cpp
+	Graphics/Lighting/DeferredLighting/DeferredLighting.cpp
 	Graphics/Camera/CameraAbstract.cpp
 	Graphics/Camera/CameraFPS.cpp
 	Graphics/SceneGraph/DrawObject.cpp
