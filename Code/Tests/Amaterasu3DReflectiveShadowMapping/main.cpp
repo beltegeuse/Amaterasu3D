@@ -1,16 +1,4 @@
 #include <iostream>
-#include <Math/Matrix4.h>
-#include <System/MediaManager.h>
-#include <Graphics/Window.h>
-#include <Graphics/GLSLShader.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
-#include <Graphics/Camera/CameraFly.h>
-#include <Logger/LoggerFile.h>
-#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
-#include <System/SettingsManager.h>
-#include <Graphics/Font/FontManager.h>
-#include <Graphics/MatrixManagement.h>
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -21,33 +9,52 @@
 #include <stdlib.h>
 #include <boost/random.hpp>
 
-class WindowReflective : public Window
+#include <Math/Matrix4.h>
+#include <Application.h>
+#include <Graphics/GLSLShader.h>
+#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
+#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Logger/LoggerFile.h>
+#include <Graphics/Camera/CameraFPS.h>
+#include <Graphics/Lighting/LightingStructures.h>
+#include <Addons/FPS/FPS.h>
+
+class ApplicationReflective : public Application
 {
 protected:
-	Math::CMatrix4 m_matrixPerspective;
+	FPS m_FPS;
+	CameraFPS* m_Camera;
 	TShaderPtr m_GBufferShader;
 	TShaderPtr m_RSMSpotShader;
 	TShaderPtr m_RSMCompositing;
+
 	Texture * m_textureRand;
+
 	bool m_debug;
 	bool m_debugGBuffer;
 	bool m_debugCompositing;
+
 	SpotLight m_light;
 public:
-	WindowReflective() :
-		Window("Amaterasu3DTestApp"),
-		m_debug(false),
-		m_debugGBuffer(false),
-		m_debugCompositing(false)
+	ApplicationReflective()
 	{
+	}
+
+	virtual ~ApplicationReflective()
+	{
+	}
+
+	void OnInitialize()
+	{
+		m_debug = false;
+		m_debugGBuffer = false;
+		m_debugCompositing = false;
 		// Camera Setup
-		CameraFPS* cam = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
-		cam->SetSpeed(10.0);
-		SetCamera(cam);
+		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_Camera->SetSpeed(10.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
-		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
+		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::PerspectiveFOV(70, (double)800/600, 0.1, 100));
 		// Load shader
 		m_GBufferShader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_RSMSpotShader = CShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
@@ -67,7 +74,7 @@ public:
 		Math::CMatrix4 lucyModelMatrix;
 		lucyModelMatrix.SetScaling(1.0,1.0,1.0);
 		lucyModel->LoadTransformMatrix(lucyModelMatrix);
-		GetSceneRoot().AddChild(lucyModel);
+		RootSceneGraph.AddChild(lucyModel);
 		lucyMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("marble.jpg"));
 		// * Scene loading
 		SceneGraph::AssimpNode* sceneModel = SceneGraph::AssimpNode::LoadFromFile("uv_room.ply");
@@ -76,9 +83,13 @@ public:
 		Math::CMatrix4 sceneModelMatrix;
 		sceneModelMatrix.SetScaling(5.0/3.0,5.0/3.0,5.0/3.0);
 		sceneModel->LoadTransformMatrix(sceneModelMatrix);
-		GetSceneRoot().AddChild(sceneModel);
+		RootSceneGraph.AddChild(sceneModel);
 		// Generate the texture
 		GenerateRandomTexture(256);
+	}
+
+	virtual void OnUpdate(double deltaTime)
+	{
 	}
 
 	void GenerateRandomTexture(int size, float rMax = 0.3)
@@ -112,13 +123,8 @@ public:
 		m_textureRand->desactivateTextureMapping();
 	}
 
-	virtual ~WindowReflective()
+	virtual void OnEvent(SDL_Event& event)
 	{
-	}
-
-	virtual void OnEvent(SDL_Event& event, double delta)
-	{
-		Window::OnEvent(event, delta);
 		if(event.type == SDL_KEYDOWN)
 		{
 			Math::CMatrix4 matrixTransform;
@@ -138,12 +144,13 @@ public:
 
 	}
 
-	virtual void OnDraw(double delta)
+	virtual void OnRender()
 	{
 		// =========== First STEPS (GBuffer generation)
 		// Fill in the GBuffer
 		m_GBufferShader->begin();
-		Window::OnDraw(delta);
+		m_Camera->GetView();
+		RootSceneGraph.Draw();
 		m_GBufferShader->end();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -172,7 +179,7 @@ public:
 		m_RSMSpotShader->setUniform3f("LightSpotDirection", m_light.Direction.x, m_light.Direction.y, m_light.Direction.z);
 		m_RSMSpotShader->setUniform3f("LightColor", m_light.LightColor.R, m_light.LightColor.G, m_light.LightColor.B);
 		// * Draw the scene
-		GetSceneRoot().Draw();
+		RootSceneGraph.Draw();
 		m_RSMSpotShader->end();
 		// * Revert transformations
 		CMatrixManager::Instance().SetProjectionMatrix(oldProjectionMatrix);
@@ -241,11 +248,10 @@ public:
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 
 	std::cout << "[INFO] Begin ..." << std::endl;
-	WindowReflective window;
+	ApplicationReflective window;
 	window.Run();
 	std::cout << "[INFO] ... end." << std::endl;
 	return 0;

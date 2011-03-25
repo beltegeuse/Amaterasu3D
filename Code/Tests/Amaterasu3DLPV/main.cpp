@@ -42,6 +42,13 @@ public:
 		return ss.str();
 	}
 
+	void UpdateLightPosition()
+	{
+		m_Light.Position = m_Camera->GetPosition();
+		m_Light.Direction = m_Camera->GetTarget();
+		m_Light.Direction.Normalize();
+	}
+
 	virtual ~ApplicationLPV()
 	{
 	}
@@ -90,11 +97,11 @@ private:
 		m_RSMSpotShader = ShaderManager.LoadShader("RefectiveShadowMapSpot.shader");
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_Light.Position = Math::TVector3F(0,10.0/3.0,6.0);
+		m_Light.Position = Math::TVector3F(59.452,123.893,61.3002);
 		m_Light.LightRaduis = 100.0;
 		m_Light.LightIntensity = 1.0;
 		m_Light.LightCutOff = 300;
-		m_Light.Direction = Math::TVector3F(0.0,-0.6,-1.4);
+		m_Light.Direction = Math::TVector3F(-58.5615,-123.439,-61.2961);
 		m_Light.Direction.Normalize();
 		// Load scene
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("TestScene2.obj");
@@ -102,8 +109,9 @@ private:
 		transMatrix.SetScaling(0.1,0.1,0.1);
 		node->LoadTransformMatrix(transMatrix);
 		RootSceneGraph.AddChild(node);
-
+		// Console commands
 		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
+		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
 	}
 
 	//! Draw the scene
@@ -149,6 +157,11 @@ private:
 		MatrixManager.SetViewMatrix(oldViewMatrix);
 
 		m_GBufferShader->GetFBO()->DrawDebug();
+
+		if(m_DebugGBuffer)
+		{
+			m_RSMSpotShader->GetFBO()->DrawDebug();
+		}
 
 		Console.Draw();
 

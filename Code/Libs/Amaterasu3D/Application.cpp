@@ -161,6 +161,7 @@ void Application::MainLoop()
 		 while(SDL_PollEvent(&event))
 		 {
 			 Event(event);
+			 OnEvent(event); ///< To call child method
 			 if(!Console.IsEnable()) // Console catch all events
 				 EventManager.OnEvent(event);
 		 }
