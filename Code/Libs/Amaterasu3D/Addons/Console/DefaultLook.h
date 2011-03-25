@@ -50,7 +50,7 @@ public :
     //----------------------------------------------------------
     // Fonction appelée lors de la mise à jour de la console
     //----------------------------------------------------------
-    virtual void Update();
+    void Update(double delta);
 
     //----------------------------------------------------------
     // Fonction appelée lors de l'affichage de la console

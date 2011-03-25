@@ -33,10 +33,12 @@
 #include <Addons/Console/Look.h>
 #include <map>
 
+#include <System/EventListeners.h>
+
 ////////////////////////////////////////////////////////////
 /// Gestion de la console
 ////////////////////////////////////////////////////////////
-class CConsole : public CSingleton<CConsole>
+class CConsole : public CSingleton<CConsole>, public FrameListener
 {
 	MAKE_SINGLETON(CConsole)
 
@@ -65,7 +67,8 @@ public :
 	//----------------------------------------------------------
 	// Met à jour la console
 	//----------------------------------------------------------
-	void Update();
+	virtual void FrameStarted(double delta);
+	virtual void FrameEnded() {} ///< Doesn't need
 
 	//----------------------------------------------------------
 	// Affiche la console

@@ -31,6 +31,7 @@
 #include <Addons/Console/Functor.h>
 #include <Addons/Console/Console.h>
 
+#include <Logger/Logger.h>
 #include <System/SettingsManager.h>
 
 ////////////////////////////////////////////////////////////
@@ -69,7 +70,7 @@ m_ShowText(false)
 /// Fonction appelée lors de la mise à jour de la console
 ///
 ////////////////////////////////////////////////////////////
-void DefaultLook::Update()
+void DefaultLook::Update(double delta)
 {
     static float Scale = 0.0f;
 
@@ -78,7 +79,7 @@ void DefaultLook::Update()
     if (m_State == SHOWING)
     {
         m_Transfo.SetScaling(Scale, Scale, 1);
-        Scale += 0.01f;
+        Scale += delta*4.0;
 
         if (Scale > 1.0f)
         {
@@ -92,7 +93,7 @@ void DefaultLook::Update()
     {
     	m_ShowText = false;
         m_Transfo.SetScaling(Scale, Scale, 1);
-        Scale -= 0.01f;
+        Scale -= delta*4.0;
 
         if (Scale < 0.01f)
         {
@@ -117,6 +118,8 @@ void DefaultLook::Draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf((const float*)m_Transfo);
 
+//	Logger::Log() << m_Transfo << "\n";
+
 	m_BackgroundTexture->activateTextureMapping();
 	m_BackgroundTexture->activateTexture();
 
@@ -139,9 +142,6 @@ void DefaultLook::Draw()
 		for (std::list<CGraphicString>::iterator i = m_Lines.begin(); i != m_Lines.end(); ++i)
 			i->Draw();
     }
-
-    // Restauration de la matrice de vue précédente
-    //Renderer.PopMatrix(MAT_MODELVIEW);
 }
 
 

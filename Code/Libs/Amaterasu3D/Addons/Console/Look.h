@@ -45,9 +45,9 @@ namespace Console
 		virtual ~ILook() {}
 
 		//----------------------------------------------------------
-		// Fonction appelée lors de la mise à jour de la console
+		// Fonction appelée lors de la mise à jour de la console (Listener functions)
 		//----------------------------------------------------------
-		virtual void Update() = 0;
+		virtual void Update(double delta) = 0;
 
 		//----------------------------------------------------------
 		// Fonction appelée lors de l'affichage de la console

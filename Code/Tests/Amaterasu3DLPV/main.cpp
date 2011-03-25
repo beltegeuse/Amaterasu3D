@@ -37,7 +37,8 @@ public:
 	std::string ShowInfoCamera()
 	{
 		std::stringstream ss;
-		ss << "Camera : " << *m_Camera;
+		ss << "Pos : " << m_Camera->GetPosition() << "\n";
+		ss << "Target : " << m_Camera->GetTarget();
 		return ss.str();
 	}
 
@@ -83,10 +84,10 @@ private:
 		m_Camera->SetSpeed(100.0);
 		// Initialise OpenGL
 		glClearColor(0.0f,0.0f,0.0f,1.f);
-		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::PerspectiveFOV(70, (double)800/600, 1.0, 400));
+		MatrixManager.SetProjectionMatrix(Math::CMatrix4::PerspectiveFOV(70, (double)800/600, 1.0, 400));
 		// Load shader
-		m_GBufferShader = CShaderManager::Instance().LoadShader("GBuffer.shader");
-		m_RSMSpotShader = CShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
+		m_GBufferShader = ShaderManager.LoadShader("GBuffer.shader");
+		m_RSMSpotShader = ShaderManager.LoadShader("RefectiveShadowMapSpot.shader");
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(0,10.0/3.0,6.0);
@@ -115,38 +116,38 @@ private:
 		RootSceneGraph.Draw();
 		m_GBufferShader->end();
 
-//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//		// ========== Second STEPS (RSM generation buffers)
-//		// Fill in RSM spot buffers
-//		// * Matrix Setup
-//		Math::CMatrix4 LightViewMatrix;
-//		LightViewMatrix.LookAt(m_light.Position, m_light.Direction);
-//		Math::CMatrix4 LightProjectionMatrix;
-//		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff, 800.0/600.0, 1.0, m_light.LightRaduis);
-//		Math::CMatrix4 oldProjectionMatrix;
-//		Math::CMatrix4 oldViewMatrix;
-//		// * Save old transformations
-//		oldProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
-//		oldViewMatrix = CMatrixManager::Instance().GetMatrix(VIEW_MATRIX);
-//		// * Go to the camera view
-//		CMatrixManager::Instance().SetProjectionMatrix(LightProjectionMatrix);
-//		CMatrixManager::Instance().SetViewMatrix(LightViewMatrix);
-//		// * Enable Shader
-//		m_RSMSpotShader->begin();
-//		// *** Send all Uniform values
-//		m_RSMSpotShader->setUniform1f("LightRaduis",m_light.LightRaduis);
-//		m_RSMSpotShader->setUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
-//		m_RSMSpotShader->setUniform1f("LightIntensity", m_light.LightIntensity);
-//		m_RSMSpotShader->setUniform3f("LightPosition", m_light.Position.x, m_light.Position.y, m_light.Position.z);
-//		m_RSMSpotShader->setUniform3f("LightSpotDirection", m_light.Direction.x, m_light.Direction.y, m_light.Direction.z);
-//		m_RSMSpotShader->setUniform3f("LightColor", m_light.LightColor.R, m_light.LightColor.G, m_light.LightColor.B);
-//		// * Draw the scene
-//		GetSceneRoot().Draw();
-//		m_RSMSpotShader->end();
-//		// * Revert transformations
-//		CMatrixManager::Instance().SetProjectionMatrix(oldProjectionMatrix);
-//		CMatrixManager::Instance().SetViewMatrix(oldViewMatrix);
-//
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// ========== Second STEPS (RSM generation buffers)
+		// Fill in RSM spot buffers
+		// * Matrix Setup
+		Math::CMatrix4 LightViewMatrix;
+		LightViewMatrix.LookAt(m_Light.Position, m_Light.Direction);
+		Math::CMatrix4 LightProjectionMatrix;
+		LightProjectionMatrix.PerspectiveFOV(m_Light.LightCutOff, 512.0/512.0, 1.0, m_Light.LightRaduis);
+		Math::CMatrix4 oldProjectionMatrix;
+		Math::CMatrix4 oldViewMatrix;
+		// * Save old transformations
+		oldProjectionMatrix = MatrixManager.GetMatrix(PROJECTION_MATRIX);
+		oldViewMatrix = MatrixManager.GetMatrix(VIEW_MATRIX);
+		// * Go to the camera view
+		MatrixManager.SetProjectionMatrix(LightProjectionMatrix);
+		MatrixManager.SetViewMatrix(LightViewMatrix);
+		// * Enable Shader
+		m_RSMSpotShader->begin();
+		// *** Send all Uniform values
+		m_RSMSpotShader->setUniform1f("LightRaduis",m_Light.LightRaduis);
+		m_RSMSpotShader->setUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
+		m_RSMSpotShader->setUniform1f("LightIntensity", m_Light.LightIntensity);
+		m_RSMSpotShader->setUniform3f("LightPosition", m_Light.Position.x, m_Light.Position.y, m_Light.Position.z);
+		m_RSMSpotShader->setUniform3f("LightSpotDirection", m_Light.Direction.x, m_Light.Direction.y, m_Light.Direction.z);
+		m_RSMSpotShader->setUniform3f("LightColor", m_Light.LightColor.R, m_Light.LightColor.G, m_Light.LightColor.B);
+		// * Draw the scene
+		RootSceneGraph.Draw();
+		m_RSMSpotShader->end();
+		// * Revert transformations
+		MatrixManager.SetProjectionMatrix(oldProjectionMatrix);
+		MatrixManager.SetViewMatrix(oldViewMatrix);
+
 		m_GBufferShader->GetFBO()->DrawDebug();
 
 		Console.Draw();

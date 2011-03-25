@@ -27,6 +27,8 @@
 #include <System/Loaders/Loaders.h>
 #include <Addons/Console/DefaultLook.h>
 
+#include <SDLUtilities.h>
+
 Application* Application::s_Application = NULL;
 
 Application::Application() :
@@ -134,6 +136,13 @@ void Application::Event(SDL_Event& event)
 			 case SDLK_F12:
 				 Console.Enable(!Console.IsEnable());
 				 break;
+		 }
+
+		 if(Console.IsEnable())
+		 {
+			 char c;
+			 if(GetSDLChar(event, &c))
+				 Console.SendChar(c);
 		 }
 	}
 }

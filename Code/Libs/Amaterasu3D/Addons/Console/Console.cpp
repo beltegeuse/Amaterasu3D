@@ -122,9 +122,9 @@ void CConsole::SendChar(char Character)
 /// Met à jour la console
 ///
 ////////////////////////////////////////////////////////////
-void CConsole::Update()
+void CConsole::FrameStarted(double delta)
 {
-    m_Look->Update();
+    m_Look->Update(delta);
 }
 
 
