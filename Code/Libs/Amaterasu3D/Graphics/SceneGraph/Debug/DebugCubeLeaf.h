@@ -39,6 +39,8 @@ private:
 public:
 	DebugCubeLeaf();
 	virtual ~DebugCubeLeaf();
+
+	virtual void Draw();
 };
 
 #endif /* DEBUGCUBELEAF_H_ */

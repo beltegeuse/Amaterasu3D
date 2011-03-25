@@ -33,7 +33,7 @@ Application* Application::s_Application = NULL;
 
 Application::Application() :
 	SettingsManager(CSettingsManager::Instance()),
-	Console(CConsole::Instance()),
+//	Console(CConsole::Instance()),
 	MediaManager(CMediaManager::Instance()),
 	ResourceManager(CResourceManager::Instance()),
 	FontManager(CFontManager::Instance()),
@@ -58,7 +58,7 @@ Application::~Application()
 
 	// Destroy all manager
 	// * Destroy less important Managers
-	CConsole::Destroy();
+//	CConsole::Destroy();
 	CMatrixManager::Destroy();
 	// * Destroy specials managers (Ressources)
 	CFontManager::Destroy();
@@ -134,16 +134,16 @@ void Application::Event(SDL_Event& event)
 		 switch(event.key.keysym.sym)
 		 {
 			 case SDLK_F12:
-				 Console.Enable(!Console.IsEnable());
+//				 Console.Enable(!Console.IsEnable());
 				 break;
 		 }
 
-		 if(Console.IsEnable())
-		 {
-			 char c;
-			 if(GetSDLChar(event, &c))
-				 Console.SendChar(c);
-		 }
+//		 if(Console.IsEnable())
+//		 {
+//			 char c;
+//			 if(GetSDLChar(event, &c))
+//				 Console.SendChar(c);
+//		 }
 	}
 }
 
@@ -162,7 +162,7 @@ void Application::MainLoop()
 		 {
 			 Event(event);
 			 OnEvent(event); ///< To call child method
-			 if(!Console.IsEnable()) // Console catch all events
+//			 if(!Console.IsEnable()) // Console catch all events
 				 EventManager.OnEvent(event);
 		 }
 
@@ -188,7 +188,7 @@ void Application::Run()
 	InitializeOpenGL();
 
 	// Setup default look
-	Console.ChangeLook(new DefaultLook);
+//	Console.ChangeLook(new DefaultLook);
 
 	// Event for child class
 	OnInitialize();

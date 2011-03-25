@@ -78,3 +78,9 @@ DebugCubeLeaf::DebugCubeLeaf()
 DebugCubeLeaf::~DebugCubeLeaf()
 {
 }
+
+void DebugCubeLeaf::Draw()
+{
+	Logger::Log() << "Draw ... \n";
+	SceneGraph::AssimpMesh::Draw();
+}

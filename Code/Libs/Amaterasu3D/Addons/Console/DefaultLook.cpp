@@ -56,7 +56,7 @@ m_ShowText(false)
     m_Transfo.SetScaling(0, 0, 0);
 
     // Création de la première ligne
-    AddLine();
+//    AddLine(); // FIXME
 
     // Enregistrement des commandes spéciales console
     CConsole::Instance().RegisterCommand("clear", Console::Bind(&std::list<CGraphicString>::clear, m_Lines));

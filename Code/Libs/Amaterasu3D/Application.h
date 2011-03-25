@@ -46,7 +46,7 @@ public:
 
 	// Managers
 	CSettingsManager& SettingsManager;
-	CConsole& Console;
+//	CConsole& Console;
 	CMediaManager& MediaManager;
 	CResourceManager& ResourceManager;
 	CFontManager& FontManager;

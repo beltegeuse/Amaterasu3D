@@ -171,9 +171,11 @@ void FBO::Bind()
 	if(m_is_activated)
 		return;
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
 	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //GL_VIEWPORT_BIT
+	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
 //	glViewport(0,0,m_size.y, m_size.x);
+
+	Logger::Log() << "BIND FBO\n";
 
 	GLbitfield flags = 0;
 	if(m_depth_type != FBODEPTH_NONE)
@@ -195,6 +197,7 @@ void FBO::UnBind()
 	if(!m_is_activated)
 		return;
 
+	Logger::Log() << "UNBIND FBO\n";
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glPopAttrib();
 
