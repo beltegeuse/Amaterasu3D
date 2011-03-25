@@ -24,7 +24,7 @@ public:
 		Window("Amaterasu3DTestApp")
 	{
 		// Camera
-		m_cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_cam = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		SetCamera(m_cam);
 		// OpenGL Flags ...
 		GLCheck(glClearColor(0.1f,0.1f,0.1f,1.f));

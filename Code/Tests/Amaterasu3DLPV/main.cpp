@@ -1,16 +1,10 @@
 #include <iostream>
 #include <Math/Matrix4.h>
 #include <System/MediaManager.h>
-#include <Graphics/Window.h>
-#include <Graphics/GLSLShader.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
-#include <Graphics/Camera/CameraFly.h>
+#include <Graphics/Camera/CameraFPS.h>
 #include <Logger/LoggerFile.h>
-#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
-#include <System/SettingsManager.h>
-#include <Graphics/Font/FontManager.h>
-#include <Graphics/MatrixManagement.h>
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -18,129 +12,138 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <stdlib.h>
-#include <boost/random.hpp>
 
-class WindowLPV : public Window
+#include <Application.h>
+#include <Graphics/Lighting/LightingStructures.h>
+
+class ApplicationLPV : public Application
 {
 protected:
-	Math::CMatrix4 m_matrixPerspective;
+	// Shaders
 	TShaderPtr m_GBufferShader;
 	TShaderPtr m_RSMSpotShader;
-	Texture * m_textureRand;
-	bool m_debug;
-	bool m_debugGBuffer;
-	bool m_debugCompositing;
-	SpotLight m_light;
+	// Camera
+	CameraFPS* m_Camera;
+	// Light
+	SpotLight m_Light;
+	// Debug
+	bool m_Debug;
+	bool m_DebugGBuffer;
+	bool m_DebugCompositing;
 public:
-	WindowLPV() :
-		Window("Amaterasu3DTestApp"),
-		m_debug(false),
-		m_debugGBuffer(false),
-		m_debugCompositing(false)
+
+	std::string ShowInfoCamera()
 	{
+		std::stringstream ss;
+		//ss << "Camera : " << *m_camera;
+		return ss.str();
+	}
+
+	virtual ~ApplicationLPV()
+	{
+	}
+
+private:
+	/*
+	 * Virtual functions
+	 */
+	//! Update all scene objects
+	virtual void OnUpdate(double deltaTime)
+	{
+	}
+
+	virtual void OnEvent(SDL_Event& event){
+		if(event.type == SDL_KEYDOWN)
+		{
+			 switch(event.key.keysym.sym)
+			 {
+				 case SDLK_F1:
+					 m_Debug = !m_Debug;
+					 break;
+				 case SDLK_F2:
+					 m_DebugGBuffer = !m_DebugGBuffer;
+					 break;
+				 case SDLK_F3:
+					 m_DebugCompositing = !m_DebugCompositing;
+					 break;
+			 }
+		}
+	}
+	//! Make all initializations
+	virtual void OnInitialize()
+	{
+		// Setup variables
+		m_Debug = false;
+		m_DebugGBuffer = false;
+		m_DebugCompositing = false;
 		// Camera Setup
-		CameraFly* cam = new CameraFly(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
-		cam->SetSpeed(100.0);
-		SetCamera(cam);
+		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		// Initialise OpenGL
-		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 1.0, 400);
-		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
+		glClearColor(0.0f,0.0f,0.0f,1.f);
+		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::PerspectiveFOV(70, (double)800/600, 1.0, 400));
 		// Load shader
 		m_GBufferShader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_RSMSpotShader = CShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
 		// Create light
-		m_light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_light.Position = Math::TVector3F(0,10.0/3.0,6.0);
-		m_light.LightRaduis = 100.0;
-		m_light.LightIntensity = 1.0;
-		m_light.LightCutOff = 300;
-		m_light.Direction = Math::TVector3F(0.0,-0.6,-1.4);
-		m_light.Direction.Normalize();
+		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
+		m_Light.Position = Math::TVector3F(0,10.0/3.0,6.0);
+		m_Light.LightRaduis = 100.0;
+		m_Light.LightIntensity = 1.0;
+		m_Light.LightCutOff = 300;
+		m_Light.Direction = Math::TVector3F(0.0,-0.6,-1.4);
+		m_Light.Direction.Normalize();
 		// Load scene
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("TestScene2.obj");
 		Math::CMatrix4 transMatrix;
 		transMatrix.SetScaling(0.1,0.1,0.1);
 		node->LoadTransformMatrix(transMatrix);
-		GetSceneRoot().AddChild(node);
+		RootSceneGraph.AddChild(node);
 
-		Console.RegisterCommand("camera",Console::Bind(&WindowLPV::ShowInfoCamera, *this));
+		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
 	}
 
-	std::string ShowInfoCamera()
-	{
-		std::stringstream ss;
-		ss << "Camera : " << *m_camera;
-		return ss.str();
-	}
-
-	virtual ~WindowLPV()
-	{
-	}
-
-	virtual void OnEvent(SDL_Event& event, double delta)
-	{
-		Window::OnEvent(event, delta);
-		if(event.type == SDL_KEYDOWN)
-		{
-			Math::CMatrix4 matrixTransform;
-			 switch(event.key.keysym.sym)
-			 {
-				 case SDLK_F1:
-					 m_debug = !m_debug;
-					 break;
-				 case SDLK_F2:
-					 m_debugGBuffer = !m_debugGBuffer;
-					 break;
-				 case SDLK_F3:
-					 m_debugCompositing = !m_debugCompositing;
-					 break;
-			 }
-		}
-
-	}
-
-	virtual void OnDraw(double delta)
+	//! Draw the scene
+	virtual void OnRender()
 	{
 		// =========== First STEPS (GBuffer generation)
 		// Fill in the GBuffer
 		m_GBufferShader->begin();
-		Window::OnDraw(delta);
+		m_Camera->GetView();
+		RootSceneGraph.Draw();
 		m_GBufferShader->end();
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// ========== Second STEPS (RSM generation buffers)
-		// Fill in RSM spot buffers
-		// * Matrix Setup
-		Math::CMatrix4 LightViewMatrix;
-		LightViewMatrix.LookAt(m_light.Position, m_light.Direction);
-		Math::CMatrix4 LightProjectionMatrix;
-		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff, 800.0/600.0, 1.0, m_light.LightRaduis);
-		Math::CMatrix4 oldProjectionMatrix;
-		Math::CMatrix4 oldViewMatrix;
-		// * Save old transformations
-		oldProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
-		oldViewMatrix = CMatrixManager::Instance().GetMatrix(VIEW_MATRIX);
-		// * Go to the camera view
-		CMatrixManager::Instance().SetProjectionMatrix(LightProjectionMatrix);
-		CMatrixManager::Instance().SetViewMatrix(LightViewMatrix);
-		// * Enable Shader
-		m_RSMSpotShader->begin();
-		// *** Send all Uniform values
-		m_RSMSpotShader->setUniform1f("LightRaduis",m_light.LightRaduis);
-		m_RSMSpotShader->setUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
-		m_RSMSpotShader->setUniform1f("LightIntensity", m_light.LightIntensity);
-		m_RSMSpotShader->setUniform3f("LightPosition", m_light.Position.x, m_light.Position.y, m_light.Position.z);
-		m_RSMSpotShader->setUniform3f("LightSpotDirection", m_light.Direction.x, m_light.Direction.y, m_light.Direction.z);
-		m_RSMSpotShader->setUniform3f("LightColor", m_light.LightColor.R, m_light.LightColor.G, m_light.LightColor.B);
-		// * Draw the scene
-		GetSceneRoot().Draw();
-		m_RSMSpotShader->end();
-		// * Revert transformations
-		CMatrixManager::Instance().SetProjectionMatrix(oldProjectionMatrix);
-		CMatrixManager::Instance().SetViewMatrix(oldViewMatrix);
-
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//		// ========== Second STEPS (RSM generation buffers)
+//		// Fill in RSM spot buffers
+//		// * Matrix Setup
+//		Math::CMatrix4 LightViewMatrix;
+//		LightViewMatrix.LookAt(m_light.Position, m_light.Direction);
+//		Math::CMatrix4 LightProjectionMatrix;
+//		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff, 800.0/600.0, 1.0, m_light.LightRaduis);
+//		Math::CMatrix4 oldProjectionMatrix;
+//		Math::CMatrix4 oldViewMatrix;
+//		// * Save old transformations
+//		oldProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
+//		oldViewMatrix = CMatrixManager::Instance().GetMatrix(VIEW_MATRIX);
+//		// * Go to the camera view
+//		CMatrixManager::Instance().SetProjectionMatrix(LightProjectionMatrix);
+//		CMatrixManager::Instance().SetViewMatrix(LightViewMatrix);
+//		// * Enable Shader
+//		m_RSMSpotShader->begin();
+//		// *** Send all Uniform values
+//		m_RSMSpotShader->setUniform1f("LightRaduis",m_light.LightRaduis);
+//		m_RSMSpotShader->setUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
+//		m_RSMSpotShader->setUniform1f("LightIntensity", m_light.LightIntensity);
+//		m_RSMSpotShader->setUniform3f("LightPosition", m_light.Position.x, m_light.Position.y, m_light.Position.z);
+//		m_RSMSpotShader->setUniform3f("LightSpotDirection", m_light.Direction.x, m_light.Direction.y, m_light.Direction.z);
+//		m_RSMSpotShader->setUniform3f("LightColor", m_light.LightColor.R, m_light.LightColor.G, m_light.LightColor.B);
+//		// * Draw the scene
+//		GetSceneRoot().Draw();
+//		m_RSMSpotShader->end();
+//		// * Revert transformations
+//		CMatrixManager::Instance().SetProjectionMatrix(oldProjectionMatrix);
+//		CMatrixManager::Instance().SetViewMatrix(oldViewMatrix);
+//
 		m_GBufferShader->GetFBO()->DrawDebug();
 
 		Console.Draw();
@@ -155,8 +158,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 
 	std::cout << "[INFO] Begin ..." << std::endl;
-	WindowLPV window;
-	window.Run();
+	ApplicationLPV application;
+	application.Run();
 	std::cout << "[INFO] ... end." << std::endl;
 	return 0;
 }

@@ -25,6 +25,7 @@
 #include "Application.h"
 
 #include <System/Loaders/Loaders.h>
+#include <Addons/Console/DefaultLook.h>
 
 Application* Application::s_Application = NULL;
 
@@ -69,7 +70,7 @@ Application::~Application()
 	CEventManager::Instance();
 }
 
-void Application::CreateWindow()
+void Application::CreateSDLWindow()
 {
 	// **************************************
 	// ********* SDL initialisation *********
@@ -161,10 +162,13 @@ void Application::MainLoop()
 void Application::Run()
 {
 	// Create the Window
-	CreateWindow();
+	CreateSDLWindow();
 
 	// Initialise the renderer
 	InitializeOpenGL();
+
+	// Setup default look
+	Console.ChangeLook(new DefaultLook);
 
 	// Event for child class
 	OnInitialize();

@@ -160,7 +160,7 @@ public:
 		{
 			for(TListenerVector::iterator it = m_Listeners.begin(); it != m_Listeners.end(); it++)
 			{
-				(*it)->MouseMoved(event.motion.x,event.motion.y);
+				(*it)->MouseMoved(event.motion.xrel,event.motion.yrel);
 			}
 		}
 	}

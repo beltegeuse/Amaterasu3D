@@ -94,7 +94,7 @@ namespace Math
         //----------------------------------------------------------
         // Construit une matrice de projection perspective
         //----------------------------------------------------------
-        void PerspectiveFOV(float Fov, float Ratio, float Near, float Far);
+        static CMatrix4 PerspectiveFOV(float Fov, float Ratio, float Near, float Far);
 
         //----------------------------------------------------------
         // Construit une matrice de vue

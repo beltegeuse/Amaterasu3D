@@ -353,23 +353,17 @@ inline void CMatrix4::OrthoOffCenter(float Left, float Top, float Right, float B
 /// \param Far :   Valeur du plan éloigné
 ///
 ////////////////////////////////////////////////////////////
-inline void CMatrix4::PerspectiveFOV(float Fov, float Ratio, float Near, float Far)
+inline CMatrix4 CMatrix4::PerspectiveFOV(float Fov, float Ratio, float Near, float Far)
 {
-    //float YScale = 1.0f / std::tan((Fov / 2) * M_PI / 180.0);
-    //float XScale = YScale / Ratio;
-    //float Coeff  = Far / (Far - Near);
+	CMatrix4 res;
 
 	float f = 1 / tan((Fov / 2) * M_PI / 180);
-	a11 = f / Ratio; a12 = 0.0f;   a13 = 0.0f;  a14 = 0.0f;
-	a21 = 0.0f;   a22 = f; a23 = 0.0f;  a24 = 0.0f;
-	a31 = 0.0f;   a32 = 0.0f;   a33 = (Near + Far) / (Near - Far); a34 = (2 * Near * Far) / (Near - Far);
-    a41 = 0.0f;   a42 = 0.0f;   a43 = -1.0f;  a44 = 0.0f;
-
-
-    //a11 = XScale; a12 = 0.0f;   a13 = 0.0f;  a14 = 0.0f;
-    //a21 = 0.0f;   a22 = YScale; a23 = 0.0f;  a24 = 0.0f;
-    //a31 = 0.0f;   a32 = 0.0f;   a33 = Coeff; a34 = Near * -Coeff;
-    //a41 = 0.0f;   a42 = 0.0f;   a43 = 1.0f;  a44 = 0.0f;
+	res.a11 = f / Ratio; res.a12 = 0.0f;   res.a13 = 0.0f;  res.a14 = 0.0f;
+	res.a21 = 0.0f;   res.a22 = f; res.a23 = 0.0f;  res.a24 = 0.0f;
+	res.a31 = 0.0f;   res.a32 = 0.0f;   res.a33 = (Near + Far) / (Near - Far); res.a34 = (2 * Near * Far) / (Near - Far);
+    res.a41 = 0.0f;   res.a42 = 0.0f;   res.a43 = -1.0f;  res.a44 = 0.0f;
+    
+    return res;
 }
 
 

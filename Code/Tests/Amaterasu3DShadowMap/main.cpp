@@ -41,7 +41,7 @@ public:
 	{
 //		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Camera Setup
-		CameraFly* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		CameraFPS* cam = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		cam->SetSpeed(20.0);
 		SetCamera(cam);
 		// Initialise OpenGL

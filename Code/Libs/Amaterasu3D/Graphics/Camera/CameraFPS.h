@@ -27,9 +27,12 @@
 #include <Graphics/Camera/CameraAbstract.h>
 #include <Math/Vector3.h>
 
-class CameraFly : public CameraAbstract
+class CameraFPS : public CameraAbstract
 {
 private:
+	/*
+	 * Attributes
+	 */
 	// Pour bouger...
 	Math::TVector3F m_forward;
 	Math::TVector3F m_left;
@@ -50,13 +53,29 @@ private:
 	bool m_down_press;
 	bool m_left_press;
 	bool m_right_press;
-public:
-	CameraFly(const Math::TVector3F& pos, const Math::TVector3F& target, const Math::TVector3F& up = Math::TVector3F(0,1,0));
-	virtual ~CameraFly();
 
-	virtual void OnEvent(SDL_Event& event, double deltaTime);
-	virtual void ComputeMatrix(double delta);
+public:
+	/*
+	 * Constructors & Destructors
+	 */
+	CameraFPS(const Math::TVector3F& pos, const Math::TVector3F& target, const Math::TVector3F& up = Math::TVector3F(0,1,0));
+	virtual ~CameraFPS();
+
+	/*
+	 * Public methods
+	 */
 	void SetSpeed(float moveSec);
+
+	/*
+	 * Listener methods
+	 */
+	virtual void MousePressed();
+	virtual void MouseReleased();
+	virtual void KeyPressed(SDL_Keycode& key);
+	virtual void KeyReleased(SDL_Keycode& key);
+	virtual void MouseMoved(int x, int y);
+	virtual void FrameStarted(double delta);
+	virtual void FrameEnded() {} // Doesn't need
 
 private:
 	void ComputeAngles();

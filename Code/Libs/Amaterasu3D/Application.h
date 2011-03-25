@@ -53,6 +53,8 @@ public:
 	CShaderManager& ShaderManager;
 	CMatrixManager& MatrixManager;
 	CEventManager& EventManager;
+	/// SceneGraph
+	SceneGraph::Group RootSceneGraph;
 protected:
 	/*
 	 * Constructors and destructors
@@ -61,12 +63,13 @@ protected:
 	virtual ~Application();
 
 	virtual void Exit();
+
 private:
 	/*
 	 * Private functions
 	 */
 	//! Create the SDL window
-	void CreateWindow();
+	void CreateSDLWindow();
 	//! Initialize good states for OpenGL
 	void InitializeOpenGL();
 	//! Main render loop
@@ -97,8 +100,6 @@ private:
 	SDL_GLContext m_SDLOpenGLContext;
 	/// To know how much time between to pass
 	double m_TimeElapse;
-	/// SceneGraph
-	SceneGraph::Group m_RootSceneGraph;
 	bool m_IsRunning; ///< If the application is on
 };
 

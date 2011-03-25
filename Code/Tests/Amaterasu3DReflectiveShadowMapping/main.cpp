@@ -41,7 +41,7 @@ public:
 		m_debugCompositing(false)
 	{
 		// Camera Setup
-		CameraFly* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		CameraFPS* cam = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		cam->SetSpeed(10.0);
 		SetCamera(cam);
 		// Initialise OpenGL

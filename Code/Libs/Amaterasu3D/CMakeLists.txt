@@ -13,9 +13,9 @@ SET(LIB_AMATERASU3D_SRCS
 	Math/SphericalCoordinates.cpp
 	
 	Graphics/Lighting/LightingPassAbstract.cpp
-	Graphics/Lighting/DeferredLighting/DeferredLighting.cpp
+	#Graphics/Lighting/DeferredLighting/DeferredLighting.cpp
 	Graphics/Camera/CameraAbstract.cpp
-	Graphics/Camera/CameraFly.cpp
+	Graphics/Camera/CameraFPS.cpp
 	Graphics/SceneGraph/DrawObject.cpp
 	Graphics/SceneGraph/Group.cpp
 	Graphics/SceneGraph/Debug/DebugCubeLeaf.cpp
@@ -28,7 +28,6 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Color.cpp
 	Graphics/FBO.cpp
 	Graphics/GLSLShader.cpp
-	Graphics/Window.cpp
 	Graphics/Texture.cpp
 	
 	System/EventManager.cpp

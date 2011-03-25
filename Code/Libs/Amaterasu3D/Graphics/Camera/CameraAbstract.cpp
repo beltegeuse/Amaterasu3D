@@ -27,9 +27,9 @@
 #include <Graphics/MatrixManagement.h>
 
 CameraAbstract::CameraAbstract(const Math::TVector3F& pos, const Math::TVector3F& target, const Math::TVector3F& up) :
-	m_position(pos),
-	m_target(target),
-	m_up(m_up)
+	m_Position(pos),
+	m_Target(target),
+	m_Up(up)
 {
 }
 
@@ -40,42 +40,30 @@ CameraAbstract::~CameraAbstract()
 const Math::CMatrix4& CameraAbstract::GetMatrix()
 {
 //	std::cout << m_matrix << std::endl;
-	return m_matrix;
+	return m_ViewMatrixTransform;
 }
 
 void CameraAbstract::SetMatrix(const Math::CMatrix4& matrix)
 {
-	m_matrix = matrix;
+	m_ViewMatrixTransform = matrix;
 }
 
-void CameraAbstract::ComputeMatrix(double delta)
+void CameraAbstract::ComputeMatrix()
 {
-//	std::cout << "[DEBUG] Look at : " << std::endl;
-//	std::cout << "  * position : " << m_position << std::endl;
-//	std::cout << "  * target : " << m_target << std::endl;
-	m_matrix.LookAt(m_position, m_target);
-	//m_matrix = m_matrix.Transpose();
+	m_ViewMatrixTransform.LookAt(m_Position, m_Target);
 }
 
 void CameraAbstract::GetView()
 {
-	CMatrixManager::Instance().SetViewMatrix(m_matrix);
-}
-
-void CameraAbstract::SendInvMatrix()
-{
-	Math::CMatrix4 matrix;
-	matrix.LookAt(m_position, m_target);
-	matrix = matrix.Inverse();
-	CShaderManager::Instance().currentShader()->setUniformMatrix4fv("InvViewMatrix", matrix);
+	CMatrixManager::Instance().SetViewMatrix(m_ViewMatrixTransform);
 }
 
 const Math::TVector3F& CameraAbstract::GetPosition() const
 {
-	return m_position;
+	return m_Position;
 }
 
 const Math::TVector3F& CameraAbstract::GetTarget() const
 {
-	return m_target;
+	return m_Target;
 }

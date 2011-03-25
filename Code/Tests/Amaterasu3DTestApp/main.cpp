@@ -84,7 +84,7 @@ public:
 		//TODO: Mettre dans OnEvent
 //		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 		// Camera
-		CameraAbstract* cam = new CameraFly(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		CameraAbstract* cam = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		SetCamera(cam);
 		// OpenGL Flags ...
 		GLCheck(glClearColor(0.1f,0.1f,0.1f,1.f));

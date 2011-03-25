@@ -29,29 +29,54 @@
 #include <SDL/SDL_events.h>
 #include <iostream>
 
-class CameraAbstract
+#include <System/EventListeners.h>
+
+///////////////////////////////////////////////////
+/// This class describe an Abstract camera.
+/// Use this class to create camera easily.
+///////////////////////////////////////////////////
+class CameraAbstract : public MouseMotionListener, public MouseListener, public KeyListener, public FrameListener
 {
 protected:
-	// Attributs
-	Math::CMatrix4 m_matrix;
+	/*
+	 * Attributes
+	 */
+	Math::CMatrix4 m_ViewMatrixTransform; ///< Matrix correspond to the View transform matrix
 	// * Pour le GluLookAt
-	Math::TVector3F m_position;
-	Math::TVector3F m_target;
-	Math::TVector3F m_up;
+	Math::TVector3F m_Position; ///< Camera position
+	Math::TVector3F m_Target; ///< Camera direction
+	Math::TVector3F m_Up; ///< Camera orientation
 public:
-	// Constructor & destructors
+	/*
+	 * Constructors & Destructors
+	 */
 	CameraAbstract(const Math::TVector3F& pos, const Math::TVector3F& target, const Math::TVector3F& up = Math::TVector3F(0,0,1));
 	virtual ~CameraAbstract();
 
+	/*
+	 * Public methods
+	 */
+	// Methods to manage View matrix
 	void SetMatrix(const Math::CMatrix4& matrix);
-	virtual void ComputeMatrix(double delta);
-	void GetView();
-	void SendInvMatrix();
 	const Math::CMatrix4& GetMatrix();
-	virtual void OnEvent(SDL_Event& events, double deltaTime) = 0;
-
+	//! method to update the m_ViewMatrixTransform
+	void ComputeMatrix();
+	//! method to send the m_ViewMatrixTransform to the MatrixManager
+	void GetView();
+	// Methods to get somes imformations about the camera
 	const Math::TVector3F& GetPosition() const;
 	const Math::TVector3F& GetTarget() const;
+
+	/*
+	 * Abstract methods (heritated by Listeners)
+	 */
+	virtual void MousePressed() = 0;
+	virtual void MouseReleased() = 0;
+	virtual void KeyPressed(SDL_Keycode& key) = 0;
+	virtual void KeyReleased(SDL_Keycode& key) = 0;
+	virtual void MouseMoved(int x, int y) = 0;
+	virtual void FrameStarted(double delta) = 0;
+	virtual void FrameEnded() = 0;
 };
 
 inline std::ostream& operator<< (std::ostream& out, const CameraAbstract& cam)
