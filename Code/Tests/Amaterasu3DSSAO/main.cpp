@@ -1,16 +1,4 @@
 #include <iostream>
-#include <Math/Matrix4.h>
-#include <System/MediaManager.h>
-#include <Graphics/Window.h>
-#include <System/SettingsManager.h>
-#include <Graphics/GLSLShader.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
-#include <Graphics/Camera/CameraFly.h>
-#include <Logger/LoggerFile.h>
-#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
-#include <Graphics/MatrixManagement.h>
-#include <Graphics/Font/GraphicString.h>
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -20,10 +8,17 @@
 #include <iostream>
 #include <stdlib.h>
 
-class WindowSSAO : public Window
+#include <Math/Matrix4.h>
+#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Logger/LoggerFile.h>
+#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
+#include <Application.h>
+#include <Graphics/Camera/CameraFPS.h>
+
+class ApplicationSSAO : public Application
 {
 protected:
-	Math::CMatrix4 m_matrixPerspective;
+	CameraFPS* m_Camera;
 	TShaderPtr m_gbuffer_shader;
 	TShaderPtr m_SSAOBuffer;
 	TShaderPtr m_BlurHShader;
@@ -31,18 +26,24 @@ protected:
 	TTexturePtr m_NoiseTex;
 	bool m_debug;
 public:
-	WindowSSAO() :
-		Window(),
+	ApplicationSSAO() :
 		m_debug(false)
 	{
+
+	}
+
+	virtual ~ApplicationSSAO()
+	{
+	}
+
+	virtual void OnInitialize()
+	{
 		// Camera Setup
-		CameraFPS* cam = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
-		cam->SetSpeed(10.0);
-		SetCamera(cam);
+		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_Camera->SetSpeed(10.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
-		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
+		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::PerspectiveFOV(70, (double)800/600, 0.1, 100));
 		// Load shader
 		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_SSAOBuffer = CShaderManager::Instance().LoadShader("SSAO.shader");
@@ -57,7 +58,7 @@ public:
 		Math::CMatrix4 lucyModelMatrix;
 		lucyModelMatrix.SetScaling(1.0,1.0,1.0);
 		lucyModel->LoadTransformMatrix(lucyModelMatrix);
-		GetSceneRoot().AddChild(lucyModel);
+		RootSceneGraph.AddChild(lucyModel);
 		lucyMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("marble.jpg"));
 		// * Scene loading
 		SceneGraph::AssimpNode* sceneModel = SceneGraph::AssimpNode::LoadFromFile("uv_room.ply");
@@ -66,16 +67,15 @@ public:
 		Math::CMatrix4 sceneModelMatrix;
 		sceneModelMatrix.SetScaling(5.0/3.0,5.0/3.0,5.0/3.0);
 		sceneModel->LoadTransformMatrix(sceneModelMatrix);
-		GetSceneRoot().AddChild(sceneModel);
+		RootSceneGraph.AddChild(sceneModel);
 	}
 
-	virtual ~WindowSSAO()
+	virtual void OnUpdate(double delta)
 	{
 	}
 
-	virtual void OnEvent(SDL_Event& event, double delta)
+	virtual void OnEvent(SDL_Event& event)
 	{
-		Window::OnEvent(event, delta);
 		if(event.type == SDL_KEYDOWN)
 		{
 			 switch(event.key.keysym.sym)
@@ -88,10 +88,11 @@ public:
 
 	}
 
-	virtual void OnDraw(double delta)
+	virtual void OnRender()
 	{
 		m_gbuffer_shader->begin();
-		Window::OnDraw(delta);
+		m_Camera->GetView();
+		RootSceneGraph.Draw();
 		m_gbuffer_shader->end();
 
 
@@ -172,10 +173,9 @@ public:
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 	std::cout << "[INFO] Begin ..." << std::endl;
-	WindowSSAO window;
+	ApplicationSSAO window;
 	window.Run();
 	std::cout << "[INFO] ... end." << std::endl;
 	return 0;

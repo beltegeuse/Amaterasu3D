@@ -1,16 +1,4 @@
 #include <iostream>
-#include <Math/Matrix4.h>
-#include <System/MediaManager.h>
-#include <Graphics/Window.h>
-#include <Graphics/GLSLShader.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
-#include <Graphics/Camera/CameraFly.h>
-#include <Logger/LoggerFile.h>
-#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
-#include <Graphics/MatrixManagement.h>
-#include <System/SettingsManager.h>
-#include <Graphics/Font/FontManager.h>
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -20,9 +8,18 @@
 #include <iostream>
 #include <stdlib.h>
 
-class WindowShadow : public Window
+#include <Math/Matrix4.h>
+#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
+#include <Logger/LoggerFile.h>
+#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
+#include <Application.h>
+#include <Graphics/Camera/CameraFPS.h>
+
+class ApplicationShadow : public Application
 {
 protected:
+	CameraFPS* m_Camera;
 	TShaderPtr m_BasicShaderShadow;
 	TShaderPtr m_BasicShader;
 	TShaderPtr m_ShadowShader;
@@ -33,17 +30,19 @@ protected:
 	bool m_showDepth;
 	bool m_cameraView;
 public:
-	WindowShadow() :
-		Window("WindowShadow"),
+	ApplicationShadow() :
 		m_debug(false),
 		m_showDepth(false),
 		m_cameraView(false)
 	{
-//		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	virtual void OnInitialize()
+	{
+		//		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Camera Setup
-		CameraFPS* cam = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
-		cam->SetSpeed(20.0);
-		SetCamera(cam);
+		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_Camera->SetSpeed(20.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		m_matrixPerspective.PerspectiveFOV(70, (double)800/600, 0.1, 100);
@@ -75,13 +74,12 @@ public:
 		matFloor.SetScaling(10,1,10);
 		cubeFloor->LoadTransformMatrix(matFloor);
 		// Add to root
-		GetSceneRoot().AddChild(cubeGroup);
-		GetSceneRoot().AddChild(cubeFloor);
+		RootSceneGraph.AddChild(cubeGroup);
+		RootSceneGraph.AddChild(cubeFloor);
 	}
 
-	virtual void OnEvent(SDL_Event& event, double delta)
+	virtual void OnEvent(SDL_Event& event)
 	{
-		Window::OnEvent(event, delta);
 		if(event.type == SDL_KEYDOWN)
 		{
 			Math::CMatrix4 matrixTransform;
@@ -99,7 +97,10 @@ public:
 
 	}
 
-	virtual void OnDraw(double delta)
+	virtual void OnUpdate(double delta)
+	{}
+
+	virtual void OnRender()
 	{
 		Math::CMatrix4 LightViewMatrix;
 		LightViewMatrix.LookAt(m_light.Position, m_light.Direction);
@@ -192,15 +193,10 @@ public:
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	// FIXME: Add auto
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
-	// TODO: Put into the Log system
-	struct aiLogStream stream;
-	stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
-	aiAttachLogStream(&stream);
 
 	std::cout << "[INFO] Begin ..." << std::endl;
-	WindowShadow window;
+	ApplicationShadow window;
 	window.Run();
 	std::cout << "[INFO] ... end." << std::endl;
 	return 0;
