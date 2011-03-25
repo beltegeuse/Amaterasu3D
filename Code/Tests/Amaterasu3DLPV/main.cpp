@@ -15,7 +15,7 @@
 
 #include <Application.h>
 #include <Graphics/Lighting/LightingStructures.h>
-
+#include <Addons/FPS/FPS.h>
 class ApplicationLPV : public Application
 {
 protected:
@@ -24,6 +24,8 @@ protected:
 	TShaderPtr m_RSMSpotShader;
 	// Camera
 	CameraFPS* m_Camera;
+	// FPS Counter
+	FPS m_FPS;
 	// Light
 	SpotLight m_Light;
 	// Debug
@@ -35,7 +37,7 @@ public:
 	std::string ShowInfoCamera()
 	{
 		std::stringstream ss;
-		//ss << "Camera : " << *m_camera;
+		ss << "Camera : " << *m_Camera;
 		return ss.str();
 	}
 
