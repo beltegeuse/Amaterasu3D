@@ -41,7 +41,7 @@ CMatrixManager::~CMatrixManager()
 void CMatrixManager::PushMatrix(const Math::CMatrix4& matrix)
 {
 	// Debug limit
-	if(m_maxMatrix < m_matrix.size())
+	if(m_maxMatrix < (int)m_matrix.size())
 		throw CException("Matrix stack is full.");
 
 	// stack the new matrix

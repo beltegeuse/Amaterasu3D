@@ -32,12 +32,12 @@ FBO::FBO(const Math::TVector2I& size,
 		FBODepthBufferParam& paramDepth) :
 		m_DepthType(type),
 		m_DepthID(0),
-		m_IsActivated(false),
-		m_SizeBuffers(size)
+		m_SizeBuffers(size),
+		m_IsActivated(false)
 {
 	Logger::Log() << "[INFO] FBO Creation ... \n";
 	// On verifie que l'on a assez de Color Attachement
-	if(GetMaxColorAttachement() < buffers.size())
+	if(GetMaxColorAttachement() < (int)buffers.size())
 		throw CException("Pas assez de Color attachement");
 
 	// ==== Construction du FBO pour les color
@@ -86,7 +86,7 @@ FBO::FBO(const Math::TVector2I& size,
 	// ==== Ajout au FBO les couleurs
 	int sizeBufferDraw = buffers.size();
 
-	GLenum buffersDraw[sizeBufferDraw];
+	GLenum* buffersDraw = new GLenum[sizeBufferDraw];
 	int i = 0;
 	Logger::Log() << " * Attach textures ... \n";
 	for(std::map<std::string, FBOTextureBufferParam>::iterator it = buffers.begin(); it != buffers.end(); it++)
@@ -255,7 +255,6 @@ void FBO::DrawDebug()
 	{
 		int idWidth = nbElementDrew / nbWidth;
 		int idHeight = nbElementDrew % nbHeight;
-//		Logger::Log() << it->first << " : " << idHeight*factorHeight << "x" << idWidth*factorWidth << " ( " <<factorHeight << "x" << factorWidth << ") \n";
 
 		if(it->first == "Depth")
 			m_DepthShader->begin();

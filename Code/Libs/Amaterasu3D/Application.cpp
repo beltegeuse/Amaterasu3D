@@ -136,6 +136,8 @@ void Application::Event(SDL_Event& event)
 			 case SDLK_F12:
 				 Console.Enable(!Console.IsEnable());
 				 break;
+			 default:
+				 break;
 		 }
 
 		 if(Console.IsEnable())
@@ -201,3 +203,6 @@ void Application::Exit()
 {
 	m_IsRunning = false;
 }
+
+
+

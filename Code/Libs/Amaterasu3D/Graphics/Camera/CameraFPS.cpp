@@ -75,6 +75,8 @@ void CameraFPS::KeyPressed(SDL_Keycode& key)
 		case SDLK_s:
 			m_down_press = true;
 			break;
+		default:
+			break;
 	 }
 }
 
@@ -93,6 +95,8 @@ void CameraFPS::KeyReleased(SDL_Keycode& key)
 			break;
 		case SDLK_s:
 			m_down_press = false;
+			break;
+		default:
 			break;
 	 }
 }

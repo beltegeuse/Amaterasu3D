@@ -978,22 +978,25 @@ bool glShader::setUniformMatrix3fv(const GLcharARB* varname, GLsizei count, GLbo
 
 //----------------------------------------------------------------------------- 
 
+//TODO: Implements Check
 bool glShader::setUniformMatrix4fv(const GLcharARB* varname, const Math::CMatrix4& matrix)
 {
 	GLint loc = GetUniformLocation(varname);
 	glUniformMatrix4fv(loc,1, GL_FALSE, (const float*) matrix);
+	return true;
 }
 
 bool glShader:: setUniformMatrix3fv(const GLcharARB* varname, const Math::CMatrix3& matrix)
 {
 	GLint loc = GetUniformLocation(varname);
 	glUniformMatrix3fv(loc,1, GL_TRUE, (const float*) matrix);
+	return true;
 }
 
 bool glShader::setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix)
 {
 	Assert(matrixModeAvailable(type));
-	setUniformMatrix4fv(m_matrix_bind[type].c_str(), matrix);
+	return setUniformMatrix4fv(m_matrix_bind[type].c_str(), matrix);
 }
 
 //----------------------------------------------------------------------------- 
@@ -1473,7 +1476,7 @@ unsigned long getFileLength(ifstream& file)
 {
 	if(!file.good()) return 0;
 
-	unsigned long pos=file.tellg();
+//	unsigned long pos=file.tellg();
 	file.seekg(0,ios::end);
 	unsigned long len = file.tellg();
 	file.seekg(ios::beg);
@@ -2126,7 +2129,7 @@ bool  CShaderManager::free(glShader* o)
 
 void CShaderManager::Push(glShader* shader)
 {
-	if(m_shader_stack.size() > m_max_stack)
+	if((int)m_shader_stack.size() > m_max_stack)
 		throw CException("shader stack is full");
 	m_shader_stack.push_back(shader);
 	m_shader_stack.back()->UpdateMatrixAll();
