@@ -41,7 +41,7 @@ public:
 		m_Camera->SetSpeed(200.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::PerspectiveFOV(70, (double)800/600, 0.1, 4000));
+		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::CreatePerspectiveFOV(70, (double)800/600, 0.1, 4000));
 		// Load shader
 		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		// Load GI
@@ -118,7 +118,7 @@ public:
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 
-		Console.Draw();
+		//Console.Draw();
 	}
 };
 

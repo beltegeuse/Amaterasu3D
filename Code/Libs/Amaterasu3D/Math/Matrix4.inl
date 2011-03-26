@@ -353,7 +353,7 @@ inline void CMatrix4::OrthoOffCenter(float Left, float Top, float Right, float B
 /// \param Far :   Valeur du plan éloigné
 ///
 ////////////////////////////////////////////////////////////
-inline CMatrix4 CMatrix4::PerspectiveFOV(float Fov, float Ratio, float Near, float Far)
+inline CMatrix4 CMatrix4::CreatePerspectiveFOV(float Fov, float Ratio, float Near, float Far)
 {
 	CMatrix4 res;
 

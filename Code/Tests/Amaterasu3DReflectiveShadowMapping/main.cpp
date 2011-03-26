@@ -54,7 +54,7 @@ public:
 		m_Camera->SetSpeed(10.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::PerspectiveFOV(70, (double)800/600, 0.1, 100));
+		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::CreatePerspectiveFOV(70, (double)800/600, 0.1, 100));
 		// Load shader
 		m_GBufferShader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_RSMSpotShader = CShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
@@ -152,8 +152,7 @@ public:
 		// * Matrix Setup
 		Math::CMatrix4 LightViewMatrix;
 		LightViewMatrix.LookAt(m_light.Position, m_light.Direction);
-		Math::CMatrix4 LightProjectionMatrix;
-		LightProjectionMatrix.PerspectiveFOV(m_light.LightCutOff,800.0/600.0, 1.0, m_light.LightRaduis);
+		Math::CMatrix4 LightProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(m_light.LightCutOff,800.0/600.0, 1.0, m_light.LightRaduis);
 		Math::CMatrix4 oldProjectionMatrix;
 		Math::CMatrix4 oldViewMatrix;
 		// * Save old transformations
