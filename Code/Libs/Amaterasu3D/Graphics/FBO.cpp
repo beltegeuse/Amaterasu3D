@@ -32,8 +32,8 @@ FBO::FBO(const Math::TVector2I& size,
 		FBODepthBufferParam& paramDepth) :
 		m_depth_type(type),
 		m_depth_id(0),
-		m_is_activated(false)//,
-		//m_size(size)
+		m_is_activated(false),
+		m_size(size)
 {
 	Logger::Log() << "[INFO] FBO Creation ... \n";
 	// On verifie que l'on a assez de Color Attachement
@@ -171,11 +171,9 @@ void FBO::Bind()
 	if(m_is_activated)
 		return;
 
-	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //GL_VIEWPORT_BIT
+	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_VIEWPORT_BIT);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo_id);
-//	glViewport(0,0,m_size.y, m_size.x);
-
-	Logger::Log() << "BIND FBO\n";
+	glViewport(0,0,m_size.y, m_size.x);
 
 	GLbitfield flags = 0;
 	if(m_depth_type != FBODEPTH_NONE)
@@ -197,7 +195,6 @@ void FBO::UnBind()
 	if(!m_is_activated)
 		return;
 
-	Logger::Log() << "UNBIND FBO\n";
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glPopAttrib();
 
