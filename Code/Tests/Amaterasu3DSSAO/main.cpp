@@ -165,7 +165,7 @@ public:
 
 
 		// Affichage du message d'aide
-		//Console.Draw();
+		Console.Draw();
 
 	}
 };

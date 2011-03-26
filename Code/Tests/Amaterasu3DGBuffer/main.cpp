@@ -118,7 +118,7 @@ public:
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 
-		//Console.Draw();
+		Console.Draw();
 	}
 };
 

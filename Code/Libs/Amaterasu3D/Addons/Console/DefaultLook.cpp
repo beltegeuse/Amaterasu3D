@@ -56,7 +56,7 @@ m_ShowText(false)
     m_Transfo.SetScaling(0, 0, 0);
 
     // Création de la première ligne
-//    AddLine(); // FIXME
+    AddLine(); // FIXME
 
     // Enregistrement des commandes spéciales console
     CConsole::Instance().RegisterCommand("clear", Console::Bind(&std::list<CGraphicString>::clear, m_Lines));
@@ -118,7 +118,7 @@ void DefaultLook::Draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf((const float*)m_Transfo);
 
-//	Logger::Log() << m_Transfo << "\n";
+	glDisable(GL_DEPTH_TEST);
 
 	m_BackgroundTexture->activateTextureMapping();
 	m_BackgroundTexture->activateTexture();
@@ -133,6 +133,8 @@ void DefaultLook::Draw()
 	glTexCoord2f(1.0, 0.0);
 	glVertex2f(1.0, m_Height);
 	glEnd();
+
+	glEnable(GL_DEPTH_TEST);
 
     m_BackgroundTexture->desactivateTextureMapping();
 

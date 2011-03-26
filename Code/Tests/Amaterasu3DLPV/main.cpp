@@ -110,8 +110,8 @@ private:
 		node->LoadTransformMatrix(transMatrix);
 		RootSceneGraph.AddChild(node);
 		// Console commands
-//		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
-//		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
+		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
+		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
 	}
 
 	//! Draw the scene
@@ -163,7 +163,7 @@ private:
 //			m_RSMSpotShader->GetFBO()->DrawDebug();
 //		}
 
-//		Console.Draw();
+		Console.Draw();
 
 	}
 };
@@ -172,7 +172,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	// FIXME: Add auto
-//	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
+	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 
 	std::cout << "[INFO] Begin ..." << std::endl;
 	ApplicationLPV application;

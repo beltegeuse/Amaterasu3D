@@ -241,6 +241,8 @@ public:
 			m_GBufferShader->GetFBO()->DrawDebug();
 		}
 
+		Console.Draw();
+
 	}
 };
 
