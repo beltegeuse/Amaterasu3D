@@ -25,6 +25,4 @@ set(BOOST_LIBS unit_test_framework filesystem system random)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 MESSAGE("Boost libraries link is ${Boost_LIBRARIES}")
 
-ADD_DEFINITIONS("-Wall -W") #Pour afficher les warning lors de la compilation
-
 ADD_SUBDIRECTORY(Code)

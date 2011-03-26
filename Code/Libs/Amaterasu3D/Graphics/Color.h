@@ -82,22 +82,22 @@ public :
 	unsigned long ToRGBA() const;
 
 	//----------------------------------------------------------------
-	// R�cup�re le canal alpha
+	// Get le canal alpha
 	//----------------------------------------------------------------
 	unsigned char GetAlpha() const;
 
 	//----------------------------------------------------------------
-	// R�cup�re le canal rouge
+	// Get le canal rouge
 	//----------------------------------------------------------------
 	unsigned char GetRed() const;
 
 	//----------------------------------------------------------------
-	// R�cup�re le canal vert
+	// Get le canal vert
 	//----------------------------------------------------------------
 	unsigned char GetGreen() const;
 
 	//----------------------------------------------------------------
-	// R�cup�re le canal bleu
+	// Get le canal bleu
 	//----------------------------------------------------------------
 	unsigned char GetBlue() const;
 
@@ -127,42 +127,42 @@ public :
 	bool operator !=(const CColor& c) const;
 
 	//----------------------------------------------------------------
-	// Op�rateur +=
+	// Operator +=
 	//----------------------------------------------------------------
 	const CColor& operator +=(const CColor& c);
 
 	//----------------------------------------------------------------
-	// Op�rateur -=
+	// Operator -=
 	//----------------------------------------------------------------
 	const CColor& operator -=(const CColor& c);
 
 	//----------------------------------------------------------------
-	// Op�rateur +
+	// Operator +
 	//----------------------------------------------------------------
 	CColor operator +(const CColor& c) const;
 
 	//----------------------------------------------------------------
-	// Op�rateur -
+	// Operator -
 	//----------------------------------------------------------------
 	CColor operator -(const CColor& c) const;
 
 	//----------------------------------------------------------------
-	// Op�rateur *
+	// Operator *
 	//----------------------------------------------------------------
 	CColor operator *(float v) const;
 
 	//----------------------------------------------------------------
-	// Op�rateur *=
+	// Operator *=
 	//----------------------------------------------------------------
 	const CColor& operator *=(float v);
 
 	//----------------------------------------------------------------
-	// Op�rateur /
+	// Operator /
 	//----------------------------------------------------------------
 	CColor operator /(float v) const;
 
 	//----------------------------------------------------------------
-	// Op�rateur /=
+	// Operator /=
 	//----------------------------------------------------------------
 	const CColor& operator /=(float v);
 
@@ -177,16 +177,16 @@ public :
 	CColor Modulate(const CColor& c) const;
 
 	//----------------------------------------------------------------
-	// Couleurs pr�d�finies
+	// Couleurs predefines
 	//----------------------------------------------------------------
-	static const CColor White; ///< Couleur pr�d�finie : blanc
-	static const CColor Black; ///< Couleur pr�d�finie : noir
-	static const CColor Red;   ///< Couleur pr�d�finie : rouge
-	static const CColor Green; ///< Couleur pr�d�finie : vert
-	static const CColor Blue;  ///< Couleur pr�d�finie : bleu
+	static const CColor White; ///< Couleur predefine : blanc
+	static const CColor Black; ///< Couleur predefine : noir
+	static const CColor Red;   ///< Couleur predefine : rouge
+	static const CColor Green; ///< Couleur predefine : vert
+	static const CColor Blue;  ///< Couleur predefine : bleu
 
 	//----------------------------------------------------------------
-	// Surcharges des op�rateurs pour les flux
+	// Surcharges des Operators pour les flux
 	//----------------------------------------------------------------
 	friend std::istream& operator >>(std::istream& Stream, CColor& Color);
 	friend std::ostream& operator <<(std::ostream& Stream, const CColor& Color);

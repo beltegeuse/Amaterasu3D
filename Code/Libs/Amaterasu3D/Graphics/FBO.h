@@ -30,9 +30,18 @@
 #include <map>
 #include <string>
 
+// To solve mutual inclusion
 class glShader;
 typedef CSmartPtr<glShader, CResourceCOM> TShaderPtr;
 
+///////////////////////////////////////////
+/// Differents type of Buffer
+///////////////////////////////////////////
+
+/**
+ * \class FBOBufferParam
+ * \brief based class for all FBO buffers parameters
+ */
 class FBOBufferParam : public TextureParams
 {
 public:
@@ -52,6 +61,10 @@ public:
 	}
 };
 
+/**
+ * \class FBOTextureBufferParam
+ * \brief Describe texture parameters for the Depth buffer
+ */
 class FBOTextureBufferParam : public FBOBufferParam
 {
 public:
@@ -62,6 +75,10 @@ public:
 	}
 };
 
+/**
+ * \class FBODepthBufferParam
+ * \brief Describe texture attributs for Colored buffers
+ */
 class FBODepthBufferParam : public FBOBufferParam
 {
 public:
@@ -78,33 +95,54 @@ public:
 	}
 };
 
+/**
+ * \class FBO
+ * \brief describe an FBO object. With buffers and others stuffs.
+ */
 class FBO
 {
 private:
-	// Attributs
-	Math::TVector2I m_size;
-	std::map<std::string, Texture*> m_textures;
-	FBODepthType m_depth_type;
-	GLuint m_depth_id;
-	GLuint m_fbo_id;
-	bool m_is_activated;
-	// To Avoid reloading shader
-	TShaderPtr m_shader_depth;
+	/*
+	 * Attributes
+	 */
+	//! Color buffers
+	std::map<std::string, Texture*> m_ColoredBuffers;
+	// Attributs for the depth buffer
+	FBODepthType m_DepthType; ///< the type of the depth buffer
+	GLuint m_DepthID; ///< The id of the depth buffer
+	// Other attributes
+	GLuint m_FBO_ID; ///< OpenGL FBO id
+	Math::TVector2I m_SizeBuffers; ///< The size of associated buffers
+	bool m_IsActivated; ///< To know if the FBO is activated
+	TShaderPtr m_DepthShader; ///< To display the Depth buffer in more good conditions
 public:
+	/*
+	 * Constructors & Destructors
+	 */
 	FBO(const Math::TVector2I& size,
 	    std::map<std::string, FBOTextureBufferParam>& buffers,
 	    FBODepthType type,
 	    FBODepthBufferParam& paramDepth);
 	virtual ~FBO();
 
+	/*
+	 * Public methods
+	 */
+	//! To enable the FBO
 	void Bind();
+	//! To disable the FBO
 	void UnBind();
+	//! Draw all associates buffer in a single frame (EXPERIMENTAL)
+	void DrawDebug();
+	//! To get Color buffers form the FBO. It possible to get in this way the Depth buffer if is type is FBODEPTH_TEXTURE (ID: "Depth").
 	Texture* GetTexture(const std::string& nameBuffer);
+	//! Other technique to get the depth buffer
 	GLuint GetDepthID();
 
-	//! Draw all associates buffer in a single frame
-	void DrawDebug();
 private:
+	/*
+	 * Private methods
+	 */
 	int GetMaxColorAttachement();
 };
 

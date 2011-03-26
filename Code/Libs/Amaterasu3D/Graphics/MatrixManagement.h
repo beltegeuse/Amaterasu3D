@@ -31,7 +31,7 @@
 
 class CMatrixManager : public CSingleton<CMatrixManager>
 {
-	MAKE_SINGLETON(CMatrixManager);
+	MAKE_SINGLETON(CMatrixManager)
 private:
 	// Attributs
 	int m_maxMatrix;

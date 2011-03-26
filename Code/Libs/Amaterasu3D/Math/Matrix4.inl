@@ -23,6 +23,9 @@
 //==========================================================
 
 
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
 
 /////////////////////////////////////////////////////////////
 /// Constructeur par défaut
@@ -34,10 +37,10 @@ inline CMatrix4::CMatrix4(float m11, float m12, float m13, float m14,
                           float m21, float m22, float m23, float m24,
                           float m31, float m32, float m33, float m34,
                           float m41, float m42, float m43, float m44) :
-a11(m11), a12(m12), a13(m13), a14(m14),
-a21(m21), a22(m22), a23(m23), a24(m24),
-a31(m31), a32(m32), a33(m33), a34(m34),
-a41(m41), a42(m42), a43(m43), a44(m44)
+a11(m11), a21(m21), a31(m31), a41(m41),
+a12(m12), a22(m22), a32(m32), a42(m42),
+a13(m13), a23(m23), a33(m33), a43(m43),
+a14(m14), a24(m24), a34(m34), a44(m44)
 {
 
 }
@@ -357,7 +360,7 @@ inline CMatrix4 CMatrix4::CreatePerspectiveFOV(float Fov, float Ratio, float Nea
 {
 	CMatrix4 res;
 
-	float f = 1 / tan((Fov / 2) * M_PI / 180);
+	float f = 1.0 / tan((Fov / 2) * M_PI / 180);
 	res.a11 = f / Ratio; res.a12 = 0.0f;   res.a13 = 0.0f;  res.a14 = 0.0f;
 	res.a21 = 0.0f;   res.a22 = f; res.a23 = 0.0f;  res.a24 = 0.0f;
 	res.a31 = 0.0f;   res.a32 = 0.0f;   res.a33 = (Near + Far) / (Near - Far); res.a34 = (2 * Near * Far) / (Near - Far);

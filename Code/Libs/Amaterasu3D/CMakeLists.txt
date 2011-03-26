@@ -1,3 +1,5 @@
+ADD_DEFINITIONS("-ansi -Wall -Wextra -Wfatal-errors -pedantic -Wmain -Wswitch-default -Wunreachable-code -Winit-self -Wshadow -Wwrite-strings -Wuninitialized") #Pour afficher les warning lors de la compilation
+
 SET(LIB_AMATERASU3D_SRCS
 	Addons/Console/Console.cpp
 	Addons/Console/DefaultLook.cpp

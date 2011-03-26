@@ -360,7 +360,7 @@ public:
 //! To simplify the process loading/compiling/linking shaders this high level interface to simplify setup of a vertex/fragment shader was created. \ingroup GLSL \author Martin Christen
 class CShaderManager : public CSingleton<CShaderManager>
 {
-	MAKE_SINGLETON(CShaderManager);
+	MAKE_SINGLETON(CShaderManager)
 	// Implements Singleton
 	CShaderManager();
 	virtual ~CShaderManager();
