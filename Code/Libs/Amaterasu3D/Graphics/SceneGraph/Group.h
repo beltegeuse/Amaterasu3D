@@ -55,6 +55,10 @@ namespace SceneGraph
 		void LoadTransformMatrix(const Math::CMatrix4& matrix);
 		void MultTransformMatrix(const Math::CMatrix4& matrix);
 		const Math::CMatrix4& GetTransformMatrix() const;
+		/**
+		 * \brief Clear all childs
+		 */
+		void ClearAllChilds();
 
 	} ;
 

@@ -56,6 +56,16 @@ void Group::Draw()
 	CMatrixManager::Instance().PopMatrix();
 }
 
+void Group::ClearAllChilds()
+{
+	for(unsigned int cpt=0, size=(unsigned int)m_objects.size() ; cpt<size ; ++cpt)
+	{
+		delete m_objects[cpt] ;
+	}
+
+	m_objects.erase(m_objects.begin(), m_objects.end());
+}
+
 void Group::LoadTransformMatrix(const Math::CMatrix4& matrix)
 {
 	m_matrix_transform = matrix;

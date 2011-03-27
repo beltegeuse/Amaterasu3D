@@ -56,6 +56,9 @@ Application::~Application()
 	SDL_DestroyWindow(m_SDLFenetre);
 	SDL_Quit();
 
+	// Delete the Scene
+	RootSceneGraph.ClearAllChilds();
+
 	// Destroy all manager
 	// * Destroy less important Managers
 	CConsole::Destroy();
