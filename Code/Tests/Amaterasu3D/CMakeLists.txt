@@ -5,6 +5,7 @@ SET(TEST_Amaterasu3D
 	test_helper.cpp
 	Math/test_vector2.cpp
 	Math/test_vector3.cpp
+	Math/test_matrix4.cpp
 	
 	# Old test version
 	#System/test_mediamanager.cpp
