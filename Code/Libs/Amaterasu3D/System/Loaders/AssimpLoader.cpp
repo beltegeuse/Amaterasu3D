@@ -30,7 +30,6 @@
 #include <iostream>
 #include <algorithm>
 #include <Enum.h>
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
 #include <Graphics/Texture.h>
 #include <Utilities/File.h>
 
@@ -62,7 +61,7 @@ SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 	return group;
 }
 
-void AssimpLoader::GetMaterialPropreties(SceneGraph::AssimpMesh* assimpMesh, const struct aiMaterial *mtl)
+void AssimpLoader::GetMaterialPropreties(SceneGraph::Model* assimpMesh, const struct aiMaterial *mtl)
 {
 	Color color;
 
@@ -158,7 +157,7 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 			group->AddChild(m_cached_geom[nd->mMeshes[n]]);
 			continue;
 		}
-		SceneGraph::AssimpMesh* assimpMesh = new SceneGraph::AssimpMesh;
+		SceneGraph::Model* assimpMesh = new SceneGraph::Model;
 		// Build the indice faces
 		std::vector<unsigned int> indicesVector;
 		std::vector<float> vertexVector;
@@ -191,7 +190,7 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		assimpMesh->SetIndiceBuffer(indiceArray, indicesVector.size());
 		// * Vertex buffer
 		Logger::Log() << "[INFO] Add Vertex buffer ... \n";
-		SceneGraph::AssimpMeshBuffer buffer;
+		SceneGraph::ModelBuffer buffer;
 		buffer.buffer = &mesh->mVertices[0].x;
 		buffer.dimension = 3;
 		buffer.size = maxIndice*3+3;

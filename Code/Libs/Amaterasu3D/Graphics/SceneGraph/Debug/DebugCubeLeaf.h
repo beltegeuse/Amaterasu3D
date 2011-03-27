@@ -24,12 +24,12 @@
 #ifndef DEBUGCUBELEAF_H_
 #define DEBUGCUBELEAF_H_
 
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Graphics/SceneGraph/Model.h>
 #include <Graphics/SceneGraph/DrawObject.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-class DebugCubeLeaf : public SceneGraph::AssimpMesh
+class DebugCubeLeaf : public SceneGraph::Model
 {
 private:
 	// Dessin de la geometrie

@@ -64,7 +64,7 @@ GLuint DebugCubeLeaf::IndiceArray[36] = {
 DebugCubeLeaf::DebugCubeLeaf()
 {
 	SetIndiceBuffer(IndiceArray, 36);
-	SceneGraph::AssimpMeshBuffer buffer;
+	SceneGraph::ModelBuffer buffer;
 	buffer.buffer = CubeArray;
 	buffer.dimension = 3;
 	buffer.size = 24;
@@ -82,5 +82,5 @@ DebugCubeLeaf::~DebugCubeLeaf()
 void DebugCubeLeaf::Draw()
 {
 	Logger::Log() << "Draw ... \n";
-	SceneGraph::AssimpMesh::Draw();
+	SceneGraph::Model::Draw();
 }

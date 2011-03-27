@@ -10,7 +10,7 @@
 
 #include <Math/Matrix4.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Graphics/SceneGraph/Model.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>

@@ -23,7 +23,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/SceneGraph/Group.cpp
 	Graphics/SceneGraph/Debug/DebugCubeLeaf.cpp
 	Graphics/SceneGraph/Debug/DebugPlaneLeaf.cpp
-	Graphics/SceneGraph/Assimp/AssimpMesh.cpp
+	Graphics/SceneGraph/Model.cpp
 	Graphics/SceneGraph/Assimp/AssimpNode.cpp
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp

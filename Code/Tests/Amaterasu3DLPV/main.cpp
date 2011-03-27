@@ -2,7 +2,7 @@
 #include <Math/Matrix4.h>
 #include <System/MediaManager.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Graphics/SceneGraph/Model.h>
 #include <Graphics/Camera/CameraFPS.h>
 #include <Logger/LoggerFile.h>
 #include <windows.h>

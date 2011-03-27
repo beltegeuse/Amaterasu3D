@@ -24,7 +24,7 @@
 
 #ifndef ASSIMPLOADER_H_
 #define ASSIMPLOADER_H_
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Graphics/SceneGraph/Model.h>
 #include <Graphics/SceneGraph/Assimp/AssimpNode.h>
 #include <System/Loaders/Loader.h>
 #include <Utilities/File.h>
@@ -38,14 +38,14 @@ class AssimpLoader : public ILoader<SceneGraph::AssimpNode>
 private:
 	// Attributs
 	struct aiLogStream m_assimp_stream;
-	typedef std::map<int, SceneGraph::AssimpMesh*> CachedAssimpMeshMap;
+	typedef std::map<int, SceneGraph::Model*> CachedAssimpMeshMap;
 	CachedAssimpMeshMap m_cached_geom;
 public:
 	AssimpLoader();
 	virtual ~AssimpLoader();
 	virtual SceneGraph::AssimpNode* LoadFromFile(const std::string& Filename);
 private:
-	void GetMaterialPropreties(SceneGraph::AssimpMesh* assimpMesh, const struct aiMaterial *mtl);
+	void GetMaterialPropreties(SceneGraph::Model* assimpMesh, const struct aiMaterial *mtl);
 	void BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scene, aiNode* nd);
 	TTexturePtr LoadTexture(const CFile& name);
 };

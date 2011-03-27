@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 #include <Math/Matrix4.h>
-#include <Graphics/SceneGraph/Assimp/AssimpMesh.h>
+#include <Graphics/SceneGraph/Model.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
@@ -54,7 +54,7 @@ public:
 		// Load scene
 		// * Lucy loading
 		SceneGraph::AssimpNode* lucyModel = SceneGraph::AssimpNode::LoadFromFile("hi_lucy.ply");
-		SceneGraph::AssimpMesh* lucyMesh = (SceneGraph::AssimpMesh*)lucyModel->GetChilds()[0];
+		SceneGraph::Model* lucyMesh = (SceneGraph::Model*)lucyModel->GetChilds()[0];
 		Math::CMatrix4 lucyModelMatrix;
 		lucyModelMatrix.SetScaling(1.0,1.0,1.0);
 		lucyModel->LoadTransformMatrix(lucyModelMatrix);
@@ -62,7 +62,7 @@ public:
 		lucyMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("marble.jpg"));
 		// * Scene loading
 		SceneGraph::AssimpNode* sceneModel = SceneGraph::AssimpNode::LoadFromFile("uv_room.ply");
-		SceneGraph::AssimpMesh* sceneMesh = (SceneGraph::AssimpMesh*)sceneModel->GetChilds()[0];
+		SceneGraph::Model* sceneMesh = (SceneGraph::Model*)sceneModel->GetChilds()[0];
 		sceneMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("bricks2_color.jpg"));
 		Math::CMatrix4 sceneModelMatrix;
 		sceneModelMatrix.SetScaling(5.0/3.0,5.0/3.0,5.0/3.0);
