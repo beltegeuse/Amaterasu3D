@@ -1663,7 +1663,8 @@ aGeometryShader::~aGeometryShader()
 // ----------------------------------------------------------------------------
 // ShaderManager: Easy use of (multiple) Shaders
 
-CShaderManager::CShaderManager()
+CShaderManager::CShaderManager() :
+	m_max_stack(100)
 {
 	InitOpenGLExtensions();
 	_nInputPrimitiveType = GL_TRIANGLES;
@@ -2130,7 +2131,11 @@ bool  CShaderManager::free(glShader* o)
 void CShaderManager::Push(glShader* shader)
 {
 	if((int)m_shader_stack.size() > m_max_stack)
-		throw CException("shader stack is full");
+	{
+		std::stringstream ss;
+		ss << m_shader_stack.size() << "(" << m_max_stack << ")";
+		throw CException("shader stack is full "+ss.str());
+	}
 	m_shader_stack.push_back(shader);
 	m_shader_stack.back()->UpdateMatrixAll();
 }
