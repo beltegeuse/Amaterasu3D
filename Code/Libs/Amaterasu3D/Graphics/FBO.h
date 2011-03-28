@@ -42,7 +42,7 @@ typedef CSmartPtr<glShader, CResourceCOM> TShaderPtr;
  * \class FBOBufferParam
  * \brief based class for all FBO buffers parameters
  */
-class FBOBufferParam : public TextureParams
+class FBOBufferParam : public Texture2DParams
 {
 public:
 	GLenum ExternalFormat;

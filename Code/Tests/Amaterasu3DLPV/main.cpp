@@ -119,7 +119,9 @@ private:
 
 	void CreateGridTexture()
 	{
-		m_GridTexture = new Texture();
+		m_GridTexture = new Texture(true,0,GL_TEXTURE_3D);
+		m_GridTexture->activateTexture();
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, 32, 32, 32, 0, GL_RGBA, GL_FLOAT, 0);
 	}
 
 	//! Draw the scene

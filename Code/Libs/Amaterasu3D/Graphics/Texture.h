@@ -37,31 +37,49 @@ public:
 	GLint MinFiltering;
 	GLint MaxFiltering;
 	GLint EnvMode;
+	GLenum TextureMode;
 
-	TextureParams() :
+	TextureParams(GLenum textureMode) :
 		SWrap(GL_REPEAT),
 		TWrap(GL_REPEAT),
 		MinFiltering(GL_LINEAR),
 		MaxFiltering(GL_LINEAR),
-		EnvMode(0)
+		EnvMode(0),
+		TextureMode(textureMode)
 	{
 	}
 
 	virtual void applyParam()
 	{
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, SWrap);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TWrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, MaxFiltering);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, MinFiltering);
+		glTexParameterf(TextureMode, GL_TEXTURE_WRAP_S, SWrap);
+		glTexParameterf(TextureMode, GL_TEXTURE_WRAP_T, TWrap);
+		glTexParameteri(TextureMode, GL_TEXTURE_MAG_FILTER, MaxFiltering);
+		glTexParameteri(TextureMode, GL_TEXTURE_MIN_FILTER, MinFiltering);
 		if(EnvMode)
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, EnvMode);
 	}
 };
 
-class TextureMipmapsParams : public TextureParams
+class Texture2DParams : public TextureParams
 {
 public:
-	TextureMipmapsParams()
+	Texture2DParams() :
+		TextureParams(GL_TEXTURE_2D)
+	{}
+};
+
+class Texture3DParams : public TextureParams
+{
+public:
+	Texture3DParams() :
+		TextureParams(GL_TEXTURE_3D)
+	{}
+};
+
+class Texture2DMipmapsParams : public Texture2DParams
+{
+public:
+	Texture2DMipmapsParams()
 	{
 		MinFiltering = GL_LINEAR_MIPMAP_LINEAR;
 	}

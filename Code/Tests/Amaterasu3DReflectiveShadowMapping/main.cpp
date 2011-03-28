@@ -115,7 +115,7 @@ public:
 		}
 		m_textureRand->activateTextureMapping();
 		m_textureRand->activateTexture();
-		TextureParams param;
+		Texture2DParams param;
 		param.MinFiltering = GL_NEAREST;
 		param.MaxFiltering = GL_NEAREST;
 		param.applyParam();
