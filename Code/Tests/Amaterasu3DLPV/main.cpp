@@ -22,6 +22,7 @@ protected:
 	// Shaders
 	TShaderPtr m_GBufferShader;
 	TShaderPtr m_RSMSpotShader;
+	TShaderPtr m_DeferredSpotShader;
 	// Camera
 	CameraFPS* m_Camera;
 	// FPS Counter
@@ -46,7 +47,7 @@ public:
 	{
 		m_Light.Position = m_Camera->GetPosition();
 		m_Light.Direction = m_Camera->GetTarget();
-		m_Light.Direction.Normalize();
+		//m_Light.Direction.Normalize();
 	}
 
 	virtual ~ApplicationLPV()
@@ -95,13 +96,14 @@ private:
 		// Load shader
 		m_GBufferShader = ShaderManager.LoadShader("GBuffer.shader");
 		m_RSMSpotShader = ShaderManager.LoadShader("RefectiveShadowMapSpot.shader");
+		m_DeferredSpotShader = ShaderManager.LoadShader("DeferredSpotLight.shader");
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_Light.Position = Math::TVector3F(80,125,60);
+		m_Light.Position = Math::TVector3F(143.7,90.9,113.7);
 		m_Light.LightRaduis = 300.0;
 		m_Light.LightIntensity = 1.0;
 		m_Light.LightCutOff = 70;
-		m_Light.Direction = Math::TVector3F(0.0,0.0,-400);
+		m_Light.Direction = Math::TVector3F(143,90.6,113);
 //		m_Light.Direction.Normalize();
 		// Load scene
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("TestScene2.obj");
@@ -117,6 +119,9 @@ private:
 	//! Draw the scene
 	virtual void OnRender()
 	{
+		/*
+		 * 3D Drawing
+		 */
 		MatrixManager.SetModeMatrix(MATRIX_3D);
 
 		// =========== First STEPS (GBuffer generation)
@@ -158,12 +163,56 @@ private:
 		MatrixManager.SetProjectionMatrix(oldProjectionMatrix);
 		MatrixManager.SetViewMatrix(oldViewMatrix);
 
-		m_GBufferShader->GetFBO()->DrawDebug();
+		// ============= Compute Direct lighting only
+		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
+		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+3);
+		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4);
+		m_DeferredSpotShader->begin();
+		// Go to spot pass
+		// * Light propreties
+		m_DeferredSpotShader->setUniform1f("LightRaduis",m_Light.LightRaduis);
+		m_DeferredSpotShader->setUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
+		m_DeferredSpotShader->setUniform1f("LightIntensity", m_Light.LightIntensity);
+		m_DeferredSpotShader->setUniform3f("LightPosition", m_Light.Position.x, m_Light.Position.y, m_Light.Position.z);
+		m_DeferredSpotShader->setUniform3f("LightSpotDirection", m_Light.Direction.x, m_Light.Direction.y, m_Light.Direction.z);
+		m_DeferredSpotShader->setUniform3f("LightColor", m_Light.LightColor.R, m_Light.LightColor.G, m_Light.LightColor.B);
+		// * Shadow Map propreties
+		m_DeferredSpotShader->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
+		m_DeferredSpotShader->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
+		// Draw ...
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0, 0.0);
+			glVertex2f(-1.0, -1.0);
+			glTexCoord2f(0.0, 1.0);
+			glVertex2f(-1.0, 1.0);
+			glTexCoord2f(1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glTexCoord2f(1.0, 0.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Specular")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+4);
+		m_DeferredSpotShader->end();
 
-		if(m_DebugGBuffer)
+
+		if(m_DebugCompositing)
 		{
 			m_RSMSpotShader->GetFBO()->DrawDebug();
 		}
+		if(m_DebugGBuffer)
+		{
+			m_GBufferShader->GetFBO()->DrawDebug();
+		}
+
+
+		/*
+		 * 2D Drawing
+		 */
 		MatrixManager.SetModeMatrix(MATRIX_2D);
 		Console.Draw();
 

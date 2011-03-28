@@ -155,6 +155,9 @@ void DeferredLighting::ComputeIllumination()
 	//PointLightPass();
 	SpotLightPass();
 
+	/*if(m_debug_mode)
+		m_simple_shader->GetFBO()->DrawDebug();*/
+
 	glBlendFunc(GL_SRC_ALPHA,GL_ZERO);
 	glDisable(GL_BLEND);
 }

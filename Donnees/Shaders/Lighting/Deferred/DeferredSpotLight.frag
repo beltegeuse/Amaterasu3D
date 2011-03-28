@@ -107,6 +107,7 @@ void main()
 			Color = vec4(0.0, 1.0, 0.0, 0.0);
 		
 		// Other Debug
-		Color = vec4(position.z, 0.0,0.0,1.0);
+		//Color = vec4(position.z, 0.0,0.0,1.0);
+		Color = vec4(vec3(LinearizeDepth(shadowCoordinateWdivide.st)),1.0);
 	}
 }

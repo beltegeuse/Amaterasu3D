@@ -15,6 +15,7 @@
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
 #include <Graphics/Camera/CameraFPS.h>
+#include <Addons/FPS/FPS.h>
 
 class ApplicationDeferred : public Application
 {
@@ -22,6 +23,7 @@ protected:
 	CameraFPS* m_Camera;
 	TShaderPtr m_gbuffer_shader;
 	DeferredLighting* m_GI;
+	FPS m_FPS;
 	bool m_debug;
 public:
 	ApplicationDeferred() :
@@ -41,19 +43,19 @@ public:
 		m_Camera->SetSpeed(200.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::CreatePerspectiveFOV(70, (double)800/600, 0.1, 4000));
+		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::CreatePerspectiveFOV(70, (double)800/600, 1.0, 4000));
 		// Load shader
 		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		// Load GI
 		m_GI = new DeferredLighting(RootSceneGraph);
 		m_GI->SetFBOGraphicBuffer(m_gbuffer_shader->GetFBO());
 		// Create light 1
-		PointLight light1;
-		light1.LightColor = Color(1.0,1.0,1.0,0.0);
-		light1.Position = Math::TVector3F(0,20,0);
-		light1.LightRaduis = 100.0;
-		light1.LightIntensity = 1.0;
-		m_GI->AddPointLight(light1);
+//		PointLight light1;
+//		light1.LightColor = Color(1.0,1.0,1.0,0.0);
+//		light1.Position = Math::TVector3F(0,20,0);
+//		light1.LightRaduis = 100.0;
+//		light1.LightIntensity = 1.0;
+//		m_GI->AddPointLight(light1);
 		// Create light 2
 		SpotLight light2;
 		light2.LightColor = Color(1.0,1.0,1.0,0.0);
@@ -66,6 +68,20 @@ public:
 		// Load scene
 		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 		RootSceneGraph.AddChild(node1);
+
+		Console.RegisterCommand("addlight",Console::Bind(&ApplicationDeferred::AddLight, *this));
+	}
+
+	void AddLight()
+	{
+		SpotLight light2;
+		light2.LightColor = Color(1.0,1.0,1.0,0.0);
+		light2.Position = m_Camera->GetPosition();
+		light2.LightRaduis = 4000.0;
+		light2.LightIntensity = 1.0;
+		light2.LightCutOff = 70;
+		light2.Direction = m_Camera->GetTarget();
+		m_GI->AddSpotLight(light2);
 	}
 
 	virtual void OnUpdate(double delta)
