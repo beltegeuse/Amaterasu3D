@@ -74,6 +74,7 @@ void DeferredLighting::SpotLightPass()
 		// * Give Depth Texture
 		m_simple_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4);
 
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Go to spot pass
 		m_spot_light_shader->begin();
 		// * Light propreties
@@ -151,6 +152,7 @@ void DeferredLighting::ComputeIllumination()
 	// Initialise OpenGL states
 	glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+//    glDisable(GL_DEPTH_TEST);
 	// Points light pass
 	//PointLightPass();
 	SpotLightPass();
@@ -160,6 +162,7 @@ void DeferredLighting::ComputeIllumination()
 
 	glBlendFunc(GL_SRC_ALPHA,GL_ZERO);
 	glDisable(GL_BLEND);
+//	glEnable(GL_DEPTH_TEST);
 }
 
 bool DeferredLighting::isDebugMode() const

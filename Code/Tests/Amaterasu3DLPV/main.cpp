@@ -99,11 +99,11 @@ private:
 		m_DeferredSpotShader = ShaderManager.LoadShader("DeferredSpotLight.shader");
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_Light.Position = Math::TVector3F(143.7,90.9,113.7);
+		m_Light.Position = Math::TVector3F(80,125,60);
 		m_Light.LightRaduis = 300.0;
-		m_Light.LightIntensity = 1.0;
+		m_Light.LightIntensity = 10.0;
 		m_Light.LightCutOff = 70;
-		m_Light.Direction = Math::TVector3F(143,90.6,113);
+		m_Light.Direction = Math::TVector3F(0.0,0.0,-400);
 //		m_Light.Direction.Normalize();
 		// Load scene
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("TestScene2.obj");
@@ -172,6 +172,7 @@ private:
 		m_DeferredSpotShader->begin();
 		// Go to spot pass
 		// * Light propreties
+		m_DeferredSpotShader->setUniform1i("DebugMode", m_Debug);
 		m_DeferredSpotShader->setUniform1f("LightRaduis",m_Light.LightRaduis);
 		m_DeferredSpotShader->setUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
 		m_DeferredSpotShader->setUniform1f("LightIntensity", m_Light.LightIntensity);

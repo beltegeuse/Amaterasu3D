@@ -73,7 +73,7 @@ public:
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
-		m_Camera->SetSpeed(2.0);
+		m_Camera->SetSpeed(20.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		m_matrixPerspective = m_matrixPerspective.CreatePerspectiveFOV(70, (double)800/600, 1.0, 400);
