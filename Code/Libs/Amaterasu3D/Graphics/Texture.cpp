@@ -32,8 +32,9 @@
 #include <System/ResourceManager.h>
 
 //Constructeur
-Texture::Texture(const Math::TVector2I& size, bool create, GLuint id) :
-	m_size(size)
+Texture::Texture(const Math::TVector2I& size, bool create, GLuint id, GLenum textureMode) :
+	m_size(size),
+	m_TextureMode(textureMode)
 {
 	if(create)
 		glGenTextures(1,&m_idTex);
@@ -51,20 +52,20 @@ Texture::~Texture()
 //Fonction qui active le texturage
 void Texture::activateTextureMapping()
 {
-	glEnable(GL_TEXTURE_2D);
+	glEnable(m_TextureMode);
 }
 
 //Fonction qui desactive le texturage
 void Texture::desactivateTextureMapping()
 {
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_TEXTURE_2D);
+	glBindTexture(m_TextureMode, 0);
+	glDisable(m_TextureMode);
 }
 
 //Fonction qui active la texture courante
 void Texture::activateTexture()
 {
-	glBindTexture(GL_TEXTURE_2D, m_idTex);
+	glBindTexture(m_TextureMode, m_idTex);
 }
 
 //Getter

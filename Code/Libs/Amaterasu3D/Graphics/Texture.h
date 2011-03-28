@@ -77,11 +77,12 @@ protected:
 	GLuint m_idTex;
 	//Donnees
 	Math::TVector2I m_size;
+	GLenum  m_TextureMode;
 
 public :
 
 	// ======== Constructeurs & Destructeur
-	Texture(const Math::TVector2I& size, bool create = true, GLuint id = 0);
+	Texture(const Math::TVector2I& size, bool create = true, GLuint id = 0, GLenum textureMode = GL_TEXTURE_2D);
 	virtual ~Texture();
 
 	// Static methods to load textures

@@ -163,6 +163,9 @@ private:
 		MatrixManager.SetProjectionMatrix(oldProjectionMatrix);
 		MatrixManager.SetViewMatrix(oldViewMatrix);
 
+		// ============= Compute Indirect lighting only
+
+
 		// ============= Compute Direct lighting only
 		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+1);
