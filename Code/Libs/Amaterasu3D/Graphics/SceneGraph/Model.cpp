@@ -150,7 +150,7 @@ void Model::Draw()
 	}
 }
 
-bool Model::IsInstance(const Model& model) const
+bool Model::IsInstance(Model& model)
 {
 	// First test is the number of indices
 	if(m_indices_size != model.m_indices_size)
@@ -170,6 +170,40 @@ bool Model::IsInstance(const Model& model) const
 			return false;
 	}
 	// Last step : Check buffer contents
+	// * Check if they needs to compute the transformation
+	bool needTransformation = false;
+	Math::CMatrix4 transformationMatrix;
+	if(m_buffers.find(VERTEX_ATTRIBUT) != m_buffers.end() && m_buffers[VERTEX_ATTRIBUT].size >= 11)
+	{
+		Logger::Log() << "[INFO] Try to find the transformations ... \n";
+		ModelBuffer b1 = m_buffers[VERTEX_ATTRIBUT];
+		ModelBuffer b2 = model.m_buffers[VERTEX_ATTRIBUT];
+		if(b1.buffer[0] != b2.buffer[0])
+		{
+			needTransformation = true;
+			// Frist matrix
+			Math::TVector3F v1(b1.buffer[0], b1.buffer[1], b1.buffer[2]);
+			Math::TVector3F v2(b1.buffer[3], b1.buffer[4], b1.buffer[5]);
+			Math::TVector3F v3(b1.buffer[6], b1.buffer[7], b1.buffer[8]);
+			Math::TVector3F v4 = v1 + ((v2-v1)^(v3-v1));
+			Math::CMatrix4 t1(v1.x, v2.x, v3.x, v4.x,
+					          v1.y, v2.y, v3.y, v4.y,
+					          v1.z, v2.z, v3.z, v4.z,
+					          1, 1, 1, 1);
+			// second matrix
+			Math::TVector3F v1p(b2.buffer[0], b2.buffer[1], b2.buffer[2]);
+			Math::TVector3F v2p(b2.buffer[3], b2.buffer[4], b2.buffer[5]);
+			Math::TVector3F v3p(b2.buffer[6], b2.buffer[7], b2.buffer[8]);
+			Math::TVector3F v4p = v1p + ((v2p-v1p)^(v3p-v1p));
+			Math::CMatrix4 t2(v1p.x, v2p.x, v3p.x, v4p.x,
+							  v1p.y, v2p.y, v3p.y, v4p.y,
+							  v1p.z, v2p.z, v3p.z, v4p.z,
+							  1, 1, 1, 1);
+
+			transformationMatrix = t1.Inverse()*t2;
+			Logger::Log() << "[INFO] Transform matrice : \n" << transformationMatrix;
+		}
+	}
 	for(BufferMap::const_iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
 
@@ -177,11 +211,43 @@ bool Model::IsInstance(const Model& model) const
 		Logger::Log() << "[INFO] INSTANCE : " << it->first << " buffer check instance ... \n";
 		for(int i = 0; i < it->second.size; i++)
 		{
-			if(it->second.buffer[i] != it2->second.buffer[i])
+			if(!needTransformation)
 			{
-				Logger::Log() << "[INFO] Buffer difference detected : " << i
-						<< " ( " << it->second.buffer[i] << " != " << it2->second.buffer[i] << " )\n";
-				return false;
+				if(it->second.buffer[i] != it2->second.buffer[i])
+				{
+					Logger::Log() << "[INFO] Buffer difference detected : " << i
+							<< " ( " << it->second.buffer[i] << " != " << it2->second.buffer[i] << " )\n";
+					return false;
+				}
+			}
+			else
+			{
+				if(it->first == VERTEX_ATTRIBUT || it->first == NORMAL_ATTRIBUT || it->first == TANGENT_ATTRIBUT || it->first == BITANGENT_ATTRIBUT)
+				{
+					// Construct the Vector
+					Math::TVector4F v1(it->second.buffer[i],it->second.buffer[i+1],it->second.buffer[i+2],1.0);
+					Math::TVector4F v2(it2->second.buffer[i],it2->second.buffer[i+1],it2->second.buffer[i+2],1.0);
+					Math::TVector4F vTrans = transformationMatrix.Transform(v1);
+					vTrans /= vTrans.w;
+					if(v2 != vTrans)
+					{
+						Logger::Log() << "[INFO] Buffer difference detected : " << i
+									  << " ( " << v2 << " != " << vTrans << " )\n";
+						return false;
+					}
+					// Must add two steps
+					i += 2;
+				}
+				else
+				{
+					// XXX: Somes copy from other tests
+					if(it->second.buffer[i] != it2->second.buffer[i])
+					{
+						Logger::Log() << "[INFO] Buffer difference detected : " << i
+								<< " ( " << it->second.buffer[i] << " != " << it2->second.buffer[i] << " )\n";
+						return false;
+					}
+				}
 			}
 		}
 	}
