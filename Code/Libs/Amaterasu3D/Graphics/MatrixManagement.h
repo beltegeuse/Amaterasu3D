@@ -33,16 +33,25 @@ class CMatrixManager : public CSingleton<CMatrixManager>
 {
 	MAKE_SINGLETON(CMatrixManager)
 private:
-	// Attributs
-	int m_maxMatrix;
-	std::vector<Math::CMatrix4> m_matrix;
-	Math::CMatrix4 m_projectionMatrix;
-	Math::CMatrix4 m_viewMatrix;
-	Math::CMatrix4 m_identityMatrix;
-	Math::CMatrix4 m_normalMatrix;
+	/*
+	 * Attributes
+	 */
+	// World Matrix
+	int m_MaxMatrix; ///< Max world matrix
+	std::vector<Math::CMatrix4> m_Matrix; ///< World matrix stack
+	Math::CMatrix4 m_IdentityMatrix; ///< Matrix when the stack is empty
+	// Other matrix
+	Math::CMatrix4 m_ProjectionMatrix; ///< Projection matrix
+	Math::CMatrix4 m_ProjectionMatrixOld; ///< To save the matrix
+	Math::CMatrix4 m_ViewMatrix; ///< View matrix
+	Math::CMatrix4 m_NormalMatrix; ///< Normal matrix
+	// Others attributes
+	MatrixMode m_MatrixMode; ///< To know the matrix mode
+	sigc::signal<void, MatrixType> m_signal_event; ///< To update all shaders Matrix attributes
 
-	sigc::signal<void, MatrixType> m_signal_event;
-
+	/*
+	 * Constructors & Destructors
+	 */
 	// Singleton implements
 	CMatrixManager(int maxMatrix = 50);
 	// Destructor ...
@@ -69,6 +78,11 @@ public:
 	 * View matrix
 	 */
 	void SetViewMatrix(const Math::CMatrix4& matrix);
+
+	/**
+	 * Matrix Mode
+	 */
+	void SetModeMatrix(MatrixMode mode);
 
 	//** to subscribe to the signal
 	sigc::signal<void, MatrixType>& GetSignalEvent();

@@ -39,6 +39,12 @@ enum MatrixType
 	NORMAL_MATRIX
 };
 
+enum MatrixMode
+{
+	MATRIX_3D,
+	MATRIX_2D
+};
+
 //FIXME: Just compute the direction for Tangante and store in vec4 (last comp)
 enum ShaderAttributType
 {
