@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Shader name="ShadowMap" type="Basic">
-    <OutputFrame depthType="Texture" size="Screen" height=1024 width=1024>
+    <OutputFrame depthType="Texture" size="Custom" height=1024 width=1024>
     </OutputFrame>
     <MatrixInput>
        <Matrix type="Model" name="ModelMatrix" />
