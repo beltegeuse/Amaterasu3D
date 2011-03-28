@@ -23,6 +23,7 @@ protected:
 	TShaderPtr m_GBufferShader;
 	TShaderPtr m_RSMSpotShader;
 	TShaderPtr m_DeferredSpotShader;
+	TShaderPtr m_LPVInjectVPL;
 	// Camera
 	CameraFPS* m_Camera;
 	Texture* m_GridTexture;
@@ -98,6 +99,7 @@ private:
 		m_GBufferShader = ShaderManager.LoadShader("GBuffer.shader");
 		m_RSMSpotShader = ShaderManager.LoadShader("RefectiveShadowMapSpot.shader");
 		m_DeferredSpotShader = ShaderManager.LoadShader("DeferredSpotLight.shader");
+		m_LPVInjectVPL = ShaderManager.LoadShader("LPVInjectVPL.shader");
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(80,125,60);
@@ -115,13 +117,30 @@ private:
 		// Console commands
 		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
+		// Create Grid
+		CreateGridTexture();
 	}
 
 	void CreateGridTexture()
 	{
 		m_GridTexture = new Texture(true,0,GL_TEXTURE_3D);
 		m_GridTexture->activateTexture();
+		Texture3DParams param;
+		param.applyParam();
 		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, 32, 32, 32, 0, GL_RGBA, GL_FLOAT, 0);
+	}
+
+	void DrawGrid(float resX, float resY)
+	{
+		glBegin(GL_POINTS);
+		for(int i = 0; i < resX; i++)
+			for(int j = 0; j < resY; j++)
+			{
+				float k = i/resX;
+				float l = j/resY;
+				glVertex2d(k,l);
+			}
+		glEnd();
 	}
 
 	//! Draw the scene
@@ -172,7 +191,22 @@ private:
 		MatrixManager.SetViewMatrix(oldViewMatrix);
 
 		// ============= Compute Indirect lighting only
+		// ****** 1st Step : VPL Injection
+		m_LPVInjectVPL->begin();
+		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
+		DrawGrid(512.0,512.0);
+		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+		m_LPVInjectVPL->end();
 
+		// ******* 2nd Step : Geometry injection
+
+		// ******* 3th Step : Diffusion
+
+		// ******* 4th Step : Filtrage pass
 
 		// ============= Compute Direct lighting only
 		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+0);
