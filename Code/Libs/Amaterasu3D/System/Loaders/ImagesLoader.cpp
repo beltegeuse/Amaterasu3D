@@ -78,11 +78,11 @@ Texture* ImagesLoader::LoadImageFromFile(const std::string& Filename)
 
 
 	// Send all information in TextureFile
-	Texture* texture = new Texture(Math::TVector2I(h,w));
+	Texture* texture = new Texture();
 	TextureMipmapsParams param;
 	glBindTexture(GL_TEXTURE_2D,texture->getIdTex());
 	param.applyParam();
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, texture->getTailleY(), texture->getTailleX(),
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h,
 					GL_RGBA, GL_UNSIGNED_BYTE, textura);
 
 	FreeImage_Unload(imagen);

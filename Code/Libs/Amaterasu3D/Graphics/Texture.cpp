@@ -32,8 +32,7 @@
 #include <System/ResourceManager.h>
 
 //Constructeur
-Texture::Texture(const Math::TVector2I& size, bool create, GLuint id, GLenum textureMode) :
-	m_size(size),
+Texture::Texture(bool create, GLuint id, GLenum textureMode) :
 	m_TextureMode(textureMode)
 {
 	if(create)
@@ -68,17 +67,6 @@ void Texture::activateTexture()
 	glBindTexture(m_TextureMode, m_idTex);
 }
 
-//Getter
-int Texture::getTailleX() const
-{
-	return m_size.x;
-}
-
-int Texture::getTailleY() const
-{
-	return m_size.y;
-}
-
 GLuint Texture::getIdTex()
 {
 	return m_idTex;
@@ -107,10 +95,4 @@ TTexturePtr Texture::LoadFromFile(const std::string& filename)
 		CResourceManager::Instance().Add(filename, Resource);
 	}
 	return Resource;
-}
-
-
-void Texture::SetSize(const Math::TVector2I& dim)
-{
-	m_size = dim;
 }

@@ -100,7 +100,7 @@ public:
 										  // see random number distributions
 		boost::variate_generator<boost::mt19937&, boost::uniform_real<> >
 			   die(rng, range);             // glues randomness with mapping
-		m_textureRand = new Texture(Math::TVector2I(size,size));
+		m_textureRand = new Texture();
 		float * tab = new float[size*size*4];
 		for(int i = 0; i < size*size; i++)
 		{

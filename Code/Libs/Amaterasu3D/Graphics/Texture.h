@@ -76,13 +76,12 @@ protected:
 	//Pointeur sur la texture
 	GLuint m_idTex;
 	//Donnees
-	Math::TVector2I m_size;
 	GLenum  m_TextureMode;
 
 public :
 
 	// ======== Constructeurs & Destructeur
-	Texture(const Math::TVector2I& size, bool create = true, GLuint id = 0, GLenum textureMode = GL_TEXTURE_2D);
+	Texture(bool create = true, GLuint id = 0, GLenum textureMode = GL_TEXTURE_2D);
 	virtual ~Texture();
 
 	// Static methods to load textures
@@ -102,12 +101,7 @@ public :
 	void desactivateMultiTex(int texUnit);
 
 	// ======== Get information
-	int getTailleX() const;
-	int getTailleY() const;
 	GLuint getIdTex();
-
-	// Setters
-	void SetSize(const Math::TVector2I& dim);
 
 };
 

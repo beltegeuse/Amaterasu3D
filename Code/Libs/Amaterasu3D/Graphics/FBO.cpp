@@ -45,7 +45,7 @@ FBO::FBO(const Math::TVector2I& size,
 	for(std::map<std::string, FBOTextureBufferParam>::iterator it = buffers.begin(); it != buffers.end(); it++)
 	{
 
-		Texture* tex = new Texture(size);
+		Texture* tex = new Texture();
 		m_ColoredBuffers[it->first] = tex;
 		glBindTexture(GL_TEXTURE_2D, tex->getIdTex());
 		it->second.applyParam();
@@ -64,7 +64,7 @@ FBO::FBO(const Math::TVector2I& size,
 			paramDepth.applyParam();
 			glTexImage2D( GL_TEXTURE_2D, 0, paramDepth.InternalFormat, size.y, size.x, 0, paramDepth.ExternalFormat, paramDepth.Precision, 0);
 			Logger::Log() <<" * Generate Depth Texture : " << m_DepthID << "\n";
-			m_ColoredBuffers["Depth"] = new Texture(size, false, m_DepthID);
+			m_ColoredBuffers["Depth"] = new Texture(false, m_DepthID);
 		}
 		else if(type == FBODEPTH_RENDERTARGET)
 		{

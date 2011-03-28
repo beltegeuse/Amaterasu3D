@@ -25,6 +25,7 @@ protected:
 	TShaderPtr m_DeferredSpotShader;
 	// Camera
 	CameraFPS* m_Camera;
+	Texture* m_GridTexture;
 	// FPS Counter
 	FPS m_FPS;
 	// Light
@@ -114,6 +115,11 @@ private:
 		// Console commands
 		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
+	}
+
+	void CreateGridTexture()
+	{
+		m_GridTexture = new Texture();
 	}
 
 	//! Draw the scene
