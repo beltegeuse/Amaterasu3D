@@ -33,6 +33,7 @@
 
 #include <Logger/Logger.h>
 #include <System/SettingsManager.h>
+#include <Graphics/MatrixManagement.h>
 
 ////////////////////////////////////////////////////////////
 // Données statiques
@@ -47,6 +48,7 @@ const std::string DefaultLook::s_Fonts[] =  {"arial"};
 DefaultLook::DefaultLook() :
 m_State      (STOPPED),
 m_CurrentFont(0),
+m_Rectangle(0),
 m_ShowText(false)
 {
 
@@ -65,6 +67,13 @@ m_ShowText(false)
     m_Height = 1.0 - (210.0 / CSettingsManager::Instance().GetSizeRenderingWindow().y)*2;
 }
 
+DefaultLook::~DefaultLook()
+{
+	if(m_Rectangle != 0)
+	{
+		delete m_Rectangle;
+	}
+}
 
 ////////////////////////////////////////////////////////////
 /// Fonction appelée lors de la mise à jour de la console
@@ -111,32 +120,22 @@ void DefaultLook::Update(double delta)
 ////////////////////////////////////////////////////////////
 void DefaultLook::Draw()
 {
+	// On initialise au premier appel
+	if(m_Rectangle == 0)
+	{
 
+		m_Rectangle = new Rectangle2D(Math::TVector2I(0,0),
+		              Math::TVector2I(CSettingsManager::Instance().GetSizeRenderingWindow().x,210.0));
+		m_Rectangle->AddTextureMap(DIFFUSE_TEXTURE, m_BackgroundTexture);
+		m_2DShader = CShaderManager::Instance().LoadShader("2DDraw.shader");
+	}
+
+	m_2DShader->begin();
     // Envoi de la matrice de transformation de la console
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf((const float*)m_Transfo);
+	CMatrixManager::Instance().PushMatrix(m_Transfo);
+	m_Rectangle->Draw();
 
-	glDisable(GL_DEPTH_TEST);
-
-	m_BackgroundTexture->activateTextureMapping();
-	m_BackgroundTexture->activateTexture();
-
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0, 0.0);
-	glVertex2f(-1.0, m_Height);
-	glTexCoord2f(0.0, 1.0);
-	glVertex2f(-1.0, 1.0);
-	glTexCoord2f(1.0, 1.0);
-	glVertex2f(1.0, 1.0);
-	glTexCoord2f(1.0, 0.0);
-	glVertex2f(1.0, m_Height);
-	glEnd();
-
-	glEnable(GL_DEPTH_TEST);
-
-    m_BackgroundTexture->desactivateTextureMapping();
+	m_2DShader->end(); ///FIXME: Normally add for texts
 
     if(m_ShowText)
     {
@@ -144,6 +143,8 @@ void DefaultLook::Draw()
 		for (std::list<CGraphicString>::iterator i = m_Lines.begin(); i != m_Lines.end(); ++i)
 			i->Draw();
     }
+
+    CMatrixManager::Instance().PopMatrix();
 }
 
 

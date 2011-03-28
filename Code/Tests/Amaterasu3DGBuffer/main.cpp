@@ -91,19 +91,12 @@ public:
 
 	virtual void OnRender()
 	{
+		MatrixManager.SetModeMatrix(MATRIX_3D);
+
 		m_gbuffer_shader->begin();
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
 		m_gbuffer_shader->end();
-
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if(m_debug)
 			m_gbuffer_shader->GetFBO()->DrawDebug();
@@ -113,10 +106,7 @@ public:
 			m_GI->ComputeIllumination();
 		}
 
-		glPopMatrix();
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
+		MatrixManager.SetModeMatrix(MATRIX_2D);
 
 		Console.Draw();
 	}

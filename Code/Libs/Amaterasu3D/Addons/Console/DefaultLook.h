@@ -29,6 +29,8 @@
 // En-têtes
 //==========================================================
 #include <Graphics/Font/GraphicString.h>
+#include <Graphics/SceneGraph/Rectangle2D.h>
+#include <Graphics/GLSLShader.h>
 #include <Addons/Console/Look.h>
 #include <Math/Matrix4.h>
 #include <list>
@@ -46,7 +48,7 @@ public :
     // Constructeur par défaut
     //----------------------------------------------------------
     DefaultLook();
-
+    virtual ~DefaultLook();
     //----------------------------------------------------------
     // Fonction appelée lors de la mise à jour de la console
     //----------------------------------------------------------
@@ -103,6 +105,8 @@ private :
     TState                         m_State;       ///< "Etat" de l'animation de la console
     std::size_t                    m_CurrentFont; ///< Police actuellement utilisée
     TTexturePtr					   m_BackgroundTexture;
+    TShaderPtr					   m_2DShader;
+    Rectangle2D*				   m_Rectangle;
     bool 						   m_ShowText;
     float						   m_Height;
 };

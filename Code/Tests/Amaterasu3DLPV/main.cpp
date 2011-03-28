@@ -117,6 +117,8 @@ private:
 	//! Draw the scene
 	virtual void OnRender()
 	{
+		MatrixManager.SetModeMatrix(MATRIX_3D);
+
 		// =========== First STEPS (GBuffer generation)
 		// Fill in the GBuffer
 		m_GBufferShader->begin();
@@ -162,7 +164,7 @@ private:
 //		{
 //			m_RSMSpotShader->GetFBO()->DrawDebug();
 //		}
-
+		MatrixManager.SetModeMatrix(MATRIX_2D);
 		Console.Draw();
 
 	}

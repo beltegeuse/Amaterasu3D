@@ -130,11 +130,13 @@ void CMatrixManager::SetModeMatrix(MatrixMode mode)
 		mat.OrthoOffCenter(0,0,size.x,size.y);
 		m_ProjectionMatrixOld = m_ProjectionMatrix;
 		SetProjectionMatrix(mat);
+		glDisable(GL_DEPTH_TEST);
 	}
 	else if(mode == MATRIX_3D)
 	{
 		// Revert good perpective matrix
 		SetProjectionMatrix(m_ProjectionMatrixOld);
+		glEnable(GL_DEPTH_TEST);
 	}
 	else
 	{
