@@ -6,6 +6,9 @@
        <Matrix type="Normal" name="NormalMatrix" />
        <Matrix type="View" name="ViewMatrix" />
     </MatrixInput>
+    <Materials>
+    	<Material type="Diffuse" name="MaterialDiffuseColor" />
+    </Materials>
     <OutputFrame depthType="Texture" size="Custom" height=512 width=512>
     	<Frame name="Flux" type="RGBA" />
     	<Frame name="Normal" type="RGBA32" />

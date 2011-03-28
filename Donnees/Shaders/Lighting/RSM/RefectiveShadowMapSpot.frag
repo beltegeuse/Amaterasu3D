@@ -22,6 +22,9 @@ smooth in mat3 outtbnMatrix;
 smooth in vec3 outColor;
 smooth in vec3 outNormal;
 
+// Material
+uniform vec4 MaterialDiffuseColor;
+
 // Shader output
 out vec4 Normal;
 out vec4 Position;
@@ -43,12 +46,12 @@ void main()
 	Position = vec4(outPosition,1.0);
 
     // Diffuse buffer
-    vec4 diffuseColor;
+    vec4 diffuseColor = MaterialDiffuseColor;
     if(UseDiffuseTex == 1)
     {
-		diffuseColor = texture(TextureDiffuse, outTexCoord.st);
+		diffuseColor *= texture(TextureDiffuse, outTexCoord.st);
 	}
-	else
+    else if(outColor != vec3(0.0)) // FIXME: Impossible couleur noire ???
 	{
 	    diffuseColor = vec4(outColor,1.0);
 	}
@@ -81,8 +84,8 @@ void main()
 	{
 		// Compute light attenation
 	    float SpotAtt = pow(SpotDot, 9.0); //TODO: uniform ???
-		float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
-		
+	    float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
+
 		float NdotL = max(dot(vec3(Normal), LightDirection), 0.0);
 		if (NdotL > 0.0) {
 			// Add diffuse compoment
