@@ -47,11 +47,12 @@ AssimpLoader::~AssimpLoader()
 
 SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 {
-	//TODO: Add automatic path append for textures
+	//XXX: Add automatic path append for textures
 	// Empty cache
 	m_cached_geom.erase(m_cached_geom.begin(), m_cached_geom.end());
 	// Load
-	const struct aiScene* scene = aiImportFile(Filename.c_str(),aiProcessPreset_TargetRealtime_Quality | aiProcess_TransformUVCoords | aiProcess_FindInstances | aiProcess_Triangulate );
+	const struct aiScene* scene = aiImportFile(Filename.c_str(), aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices |
+			aiProcess_Triangulate | aiProcess_RemoveRedundantMaterials | aiProcess_GenUVCoords);
 	if(!scene)
 		throw CException("assimp library can load model.");
 	SceneGraph::AssimpNode* group = new SceneGraph::AssimpNode;
@@ -140,21 +141,13 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 
 	// draw all meshes assigned to this node
 	for (unsigned int n = 0; n < nd->mNumMeshes; ++n) {
-		if(m_cached_geom.find(nd->mMeshes[n]) != m_cached_geom.end())
-		{
-			Logger::Log() << "[INFO] Found an instance ... Skip loading \n";
-			group->AddChild(m_cached_geom.find(nd->mMeshes[n])->second );
-		}
+		/*
+		 * Construct the Object
+		 */
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
 		if(mesh->mNumFaces == 0)
 		{
 			Logger::Log() << "[INFO] Skip assimp mesh. No faces. \n";
-			continue;
-		}
-		if(m_cached_geom.find(nd->mMeshes[n]) != m_cached_geom.end())
-		{
-			Logger::Log() << "[INFO] Find cached resources : " << nd->mMeshes[n] << "\n";
-			group->AddChild(m_cached_geom[nd->mMeshes[n]]);
 			continue;
 		}
 		SceneGraph::Model* assimpMesh = new SceneGraph::Model;
@@ -288,14 +281,34 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 
 		// Chargement des materiaux
 		GetMaterialPropreties(assimpMesh, scene->mMaterials[mesh->mMaterialIndex]);
-		// Compile all buffers
-		Logger::Log() << "[INFO] Compile all buffers ... \n";
-		assimpMesh->CompileBuffers();
+		// Check if is an Instance
+		bool foundInstance = false;
+		for(CachedAssimpMeshMap::iterator it = m_cached_geom.begin(); it != m_cached_geom.end(); it++)
+		{
+			if((*it)->IsInstance(*assimpMesh))
+			{
+				(*it)->SetInstance(*assimpMesh);
+				foundInstance = true;
+				break;
+			}
+		}
+
+		if(foundInstance)
+		{
+			Logger::Log() << "[INFO] Found an Instance ... \n";
+			Assert(false);
+		}
+		else
+		{
+			// Compile all buffers
+			Logger::Log() << "[INFO] Compile all buffers ... \n";
+			assimpMesh->CompileBuffers();
+			Logger::Log() << "[INFO] Add cached resources : " << nd->mMeshes[n] << "\n";
+			m_cached_geom.push_back(assimpMesh);
+		}
 		// Attach to group
 		Logger::Log() << "[INFO] Add to father node... \n";
 		group->AddChild(assimpMesh);
-		Logger::Log() << "[INFO] Add cached resources : " << nd->mMeshes[n] << "\n";
-		m_cached_geom[nd->mMeshes[n]] = assimpMesh;
 
 	}
 

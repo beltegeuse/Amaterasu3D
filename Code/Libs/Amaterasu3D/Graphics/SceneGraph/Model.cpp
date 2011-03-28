@@ -35,14 +35,16 @@ namespace SceneGraph
 Model::Model() :
 		m_indices_buffers(NULL),
 		m_indices(NULL),
-		m_is_compiled(false)
+		m_is_compiled(false),
+		m_IsInstance(false)
 {
 }
 
 Model::~Model()
 {
-	//FIXME: Si mise en place du cache, alors attention a la destructions des differents objets.
-	// solution : Smart pointeurs
+	if(m_IsInstance)
+		return;
+
 	glDeleteBuffers(m_buffers.size()+1, m_indices_buffers);
 	delete[] m_indices_buffers;
 	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
@@ -146,6 +148,69 @@ void Model::Draw()
 			continue;
 		it->second->desactivateMultiTex(it->first);
 	}
+}
+
+bool Model::IsInstance(const Model& model) const
+{
+	// First test is the number of indices
+	if(m_indices_size != model.m_indices_size)
+		return false;
+	// Second test is the number of buffers
+	if(m_buffers.size() != model.m_buffers.size())
+		return false;
+	// Third test buffers size
+	for(BufferMap::const_iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
+	{
+		BufferMap::const_iterator it2 = model.m_buffers.find(it->first);
+		if(it2 == model.m_buffers.end())
+			return false;
+		if(it2->second.dimension != it->second.dimension)
+			return false;
+		if(it2->second.size != it->second.size)
+			return false;
+	}
+	// Last step : Check buffer contents
+	for(BufferMap::const_iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
+	{
+
+		BufferMap::const_iterator it2 = model.m_buffers.find(it->first);
+		Logger::Log() << "[INFO] INSTANCE : " << it->first << " buffer check instance ... \n";
+		for(int i = 0; i < it->second.size; i++)
+		{
+			if(it->second.buffer[i] != it2->second.buffer[i])
+			{
+				Logger::Log() << "[INFO] Buffer difference detected : " << i
+						<< " ( " << it->second.buffer[i] << " != " << it2->second.buffer[i] << " )\n";
+				return false;
+			}
+		}
+	}
+	// All tests is Ok so Model is an instance
+	return true;
+}
+
+void Model::SetInstance(Model& model) const
+{
+	// Clear all model buffers
+	for(BufferMap::iterator it = model.m_buffers.begin(); it != model.m_buffers.end(); it++)
+	{
+		if(it->second.owner)
+		{
+			delete[] it->second.buffer;
+		}
+	}
+	model.m_buffers.erase(model.m_buffers.begin(), model.m_buffers.end());
+	// Set all new buffers
+	for(BufferMap::const_iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
+	{
+		ModelBuffer buffer = it->second;
+		// Specify is not the owner
+		buffer.owner = false;
+		model.m_buffers[it->first] = buffer;
+	}
+	model.m_IsInstance = true;
+	model.m_is_compiled = true;
+	model.m_indices_buffers = m_indices_buffers;
 }
 
 } // namespace SceneGraph

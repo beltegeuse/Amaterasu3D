@@ -38,7 +38,7 @@ class AssimpLoader : public ILoader<SceneGraph::AssimpNode>
 private:
 	// Attributs
 	struct aiLogStream m_assimp_stream;
-	typedef std::map<int, SceneGraph::Model*> CachedAssimpMeshMap;
+	typedef std::vector<SceneGraph::Model*> CachedAssimpMeshMap;
 	CachedAssimpMeshMap m_cached_geom;
 public:
 	AssimpLoader();
