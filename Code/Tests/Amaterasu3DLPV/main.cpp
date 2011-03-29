@@ -24,6 +24,7 @@ protected:
 	TShaderPtr m_RSMSpotShader;
 	TShaderPtr m_DeferredSpotShader;
 	TShaderPtr m_LPVInjectVPL;
+	TShaderPtr m_LPVShowVPL;
 	// Camera
 	CameraFPS* m_Camera;
 	Texture* m_GridTexture;
@@ -35,6 +36,7 @@ protected:
 	bool m_Debug;
 	bool m_DebugGBuffer;
 	bool m_DebugCompositing;
+	bool m_DebugInjection;
 public:
 
 	std::string ShowInfoCamera()
@@ -79,6 +81,9 @@ private:
 				 case SDLK_F3:
 					 m_DebugCompositing = !m_DebugCompositing;
 					 break;
+				 case SDLK_F4:
+					 m_DebugInjection = !m_DebugInjection;
+					 break;
 			 }
 		}
 	}
@@ -89,6 +94,8 @@ private:
 		m_Debug = false;
 		m_DebugGBuffer = false;
 		m_DebugCompositing = false;
+		m_DebugInjection = false;
+		glPointSize(10.0);
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
@@ -100,6 +107,7 @@ private:
 		m_RSMSpotShader = ShaderManager.LoadShader("RefectiveShadowMapSpot.shader");
 		m_DeferredSpotShader = ShaderManager.LoadShader("DeferredSpotLight.shader");
 		m_LPVInjectVPL = ShaderManager.LoadShader("LPVInjectVPL.shader");
+		m_LPVShowVPL = ShaderManager.LoadShader("LPVShowVPL.shader");
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(80,125,60);
@@ -118,7 +126,7 @@ private:
 		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
 		// Create Grid
-		CreateGridTexture();
+//		CreateGridTexture();
 	}
 
 	void CreateGridTexture()
@@ -136,10 +144,12 @@ private:
 		for(int i = 0; i < resX; i++)
 			for(int j = 0; j < resY; j++)
 			{
-				float k = i/resX;
-				float l = j/resY;
+				double k = i/resX;
+				double l = j/resY;
+				glColor3ub(255,0,0);
 				glVertex2d(k,l);
 			}
+		glColor3ub(255,255,255);
 		glEnd();
 	}
 
@@ -254,12 +264,25 @@ private:
 		{
 			m_GBufferShader->GetFBO()->DrawDebug();
 		}
-
+		if(m_DebugInjection)
+		{
+			Logger::Log() << "Draw Injection ... \n";
+			m_LPVShowVPL->begin();
+			m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+0);
+			DrawGrid(256.0,128.0);
+			m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+			m_LPVShowVPL->end();
+		}
 
 		/*
 		 * 2D Drawing
 		 */
 		MatrixManager.SetModeMatrix(MATRIX_2D);
+//		glMatrixMode(GL_PROJECTION);
+//		glPushMatrix();
+//		glLoadMatrixf(MatrixManager.GetMatrix(PROJECTION_MATRIX));
+//		DrawGrid(800.0/2.0,600.0/2.0);
+//		glPopMatrix();
 		Console.Draw();
 
 	}

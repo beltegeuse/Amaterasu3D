@@ -53,5 +53,5 @@ void main()
 	vec3 GridCoords = ComputeGridCoordinates(Position+(Normal*CellDemiSize));
 
 	outNormal = Normal.xyz;
-	gl_Position = vec4(Map3DPosTo2D(GridCoords)*2.0-1.0,0.0,1.0);
+	gl_Position = vec4(Map3DPosTo2D(GridCoords).xy*2.0-1.0,0.0,1.0);
 }
