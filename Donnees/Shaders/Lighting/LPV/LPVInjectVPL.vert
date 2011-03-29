@@ -9,39 +9,25 @@ uniform sampler2D PositionBuffer;
 uniform sampler2D NormalBuffer;
 
 // Parametres
-uniform vec3 GridPosition;
-uniform vec2 GridTextureSize;
-
-float CellDemiSize = 5.0;
-float CellSizeFactor = 1.0/10.0;
-float CellPrecision = 1.0/32.0;
-float LPVNumberCellX = 8.0;
-float LPVNumberCellY = 4.0;
+uniform vec3 LPVPosition; // position of the grid
+uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
+uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
 
 // Sortie shader
 smooth out vec2 outTexCoord;
 smooth out vec3 outNormal;
 invariant gl_Position;
 
-vec3 ComputeGridCoordinates(vec3 Position)
-{
-	//TODO: Add boundary tests
-	vec3 coords;
-	coords.x = floor((Position.x-GridPosition.x)*CellSizeFactor);
-	coords.y = floor((Position.y-GridPosition.y)*CellSizeFactor);
-	coords.z = floor((Position.z-GridPosition.z)*CellSizeFactor);
-	return coords;
-}
-
-vec2 Map3DPosTo2D(vec3 GridCoords)
+vec2 Map3DPosTo2D(in vec3 GridCoords)
 {
 	// Compute the indice of SubTexture
-	float Xz = floor(GridCoords.z / LPVNumberCellY);
-	float Yz = GridCoords.z - (Xz*LPVNumberCellY);
+	float row = floor(GridCoords.z / LPVSize.z);
+	float col = GridCoords.z - (row*LPVSize.z);
 	// Compute Offset
-	vec2 Coord = vec2(GridCoords.x+Xz*(1/CellPrecision),GridCoords.y+Yz*(1/CellPrecision));
-	return Coord / GridTextureSize;
+	vec2 Coord = vec2(GridCoords.x+col*LPVCellSize.w,GridCoords.y+row*LPVCellSize.w);
+	return Coord / LPVSize.xy;
 }
+
 void main()
 {	
 	outTexCoord.x = gl_Vertex.x;
@@ -50,10 +36,10 @@ void main()
 	// Get data
 	vec3 Position = texture(PositionBuffer, outTexCoord).xyz;
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
+	Position += (Normal*LPVCellSize.xyz*0.5);
 
-	// Get Grid Coordinates //FIXME
-	vec3 GridCoords = ComputeGridCoordinates(Position+(Normal*CellDemiSize));
+	Position = (Position-LPVPosition) / LPVCellSize.xyz;
 
 	outNormal = Normal.xyz;
-	gl_Position = vec4(Map3DPosTo2D(GridCoords).xy*2.0-1.0,0.0,1.0);
+	gl_Position = vec4(Map3DPosTo2D(Position).xy*2.0-1.0,0.0,1.0);
 }
