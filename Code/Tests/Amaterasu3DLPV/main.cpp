@@ -163,15 +163,14 @@ private:
 	void CreateGridModel()
 	{
 		// Allocation des buffers
-		float * vertexBuffer = new float[3*32*32*3*2];
-		float * colorBuffer = new float[3*32*32*3*2];
-		unsigned int* indiceBuffer = new unsigned int[3*32*32*2];
+		float * vertexBuffer = new float[3*m_NbCellDim*m_NbCellDim*3*2];
+		float * colorBuffer = new float[3*m_NbCellDim*m_NbCellDim*3*2];
+		unsigned int* indiceBuffer = new unsigned int[3*m_NbCellDim*m_NbCellDim*2];
 		int i = 0;
-		int m_CellCount = 32;
 		Color color(0.0,0.0,1.0);
 		// Fill in buffers
-		for(int z=0;z<=32;z++){
-			for(int x=0;x<=32;x++){
+		for(int z=0;z<=m_NbCellDim;z++){
+			for(int x=0;x<=m_NbCellDim;x++){
 //				Logger::Log() << i << '\n';
 				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
 				vertexBuffer[i+1] = 0+m_GirdPosition.y;
@@ -182,7 +181,7 @@ private:
 				i += 3;
 
 				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
-				vertexBuffer[i+1] = m_CellCount*m_CellSize.y+m_GirdPosition.y;
+				vertexBuffer[i+1] = m_NbCellDim*m_CellSize.y+m_GirdPosition.y;
 				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
 				colorBuffer[i] = color.R;
 				colorBuffer[i+1] = color.G;
@@ -190,7 +189,7 @@ private:
 				i += 3;
 			}
 
-			for(int y=0;y<=32;y++){
+			for(int y=0;y<=m_NbCellDim;y++){
 				vertexBuffer[i] = 0+m_GirdPosition.x;
 				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
 				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
@@ -199,7 +198,7 @@ private:
 				colorBuffer[i+2] = color.B;
 				i += 3;
 
-				vertexBuffer[i] = m_CellCount*m_CellSize.x+m_GirdPosition.x;
+				vertexBuffer[i] = m_NbCellDim*m_CellSize.x+m_GirdPosition.x;
 				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
 				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
 				colorBuffer[i] = color.R;
@@ -209,8 +208,8 @@ private:
 			}
 		}
 
-		for(int y=0;y<=32;y++){
-			for(int x=0;x<32;x++){
+		for(int y=0;y<=m_NbCellDim;y++){
+			for(int x=0;x<m_NbCellDim;x++){
 				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
 				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
 				vertexBuffer[i+2] = 0+m_GirdPosition.z;
@@ -221,7 +220,7 @@ private:
 
 				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
 				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
-				vertexBuffer[i+2] = m_CellCount*m_CellSize.z+m_GirdPosition.z;
+				vertexBuffer[i+2] = m_NbCellDim*m_CellSize.z+m_GirdPosition.z;
 				colorBuffer[i] = color.R;
 				colorBuffer[i+1] = color.G;
 				colorBuffer[i+2] = color.B;
@@ -229,17 +228,17 @@ private:
 			}
 		}
 
-		for(int l=0; l < 3*32*32*2; l++)
+		for(int l=0; l < 3*m_NbCellDim*m_NbCellDim*2; l++)
 		{
 			indiceBuffer[l] = l;
 		}
 
 		m_GridModel = new SceneGraph::Model;
 		m_GridModel->SetDrawMode(GL_LINES);
-		m_GridModel->SetIndiceBuffer(indiceBuffer, 3*32*32*2);
+		m_GridModel->SetIndiceBuffer(indiceBuffer, 3*m_NbCellDim*m_NbCellDim*2);
 		SceneGraph::ModelBuffer buffer;
 		buffer.buffer = vertexBuffer;
-		buffer.size = 3*32*32*3*2;
+		buffer.size = 3*m_NbCellDim*m_NbCellDim*3*2;
 		buffer.dimension = 3;
 		buffer.owner = true;
 		m_GridModel->AddBuffer(buffer, VERTEX_ATTRIBUT);
@@ -266,7 +265,7 @@ private:
 			{
 				double k = i/resX;
 				double l = j/resY;
-				glColor3ub(255,0,0);
+				//glColor3ub(255,0,0);
 				glVertex2d(k,l);
 			}
 		glColor3ub(255,255,255);
@@ -276,6 +275,11 @@ private:
 	//! Draw the scene
 	virtual void OnRender()
 	{
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
 		/*
 		 * 3D Drawing
 		 */

@@ -38,7 +38,7 @@ void main()
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
 	Position += (Normal*LPVCellSize.xyz*0.5);
 
-	Position = (Position-LPVPosition) / LPVCellSize.xyz;
+	Position = floor((Position-LPVPosition) / LPVCellSize.xyz);
 
 	outNormal = Normal.xyz;
 	gl_Position = vec4(Map3DPosTo2D(Position).xy*2.0-1.0,0.0,1.0);

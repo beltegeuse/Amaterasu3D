@@ -1,5 +1,13 @@
 #version 130
 
+//this is c = vec4(c0,-c1,c1,-c1)
+//with c0 = 1 / ( 2 * sqrt(PI))
+//     c1 = sqrt(3) / ( 2 * sqrt(PI))
+#define SH_c vec4(0.282094792,-0.488602512,0.488602512,0.488602512)
+//#define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,1.02332671)
+#define SH_cosLobe_c vec4(0.25,-0.5,0.5,0.5)
+//#define SH_cosLobe_c vec4(0.4,-0.8,0.8,0.8)
+
 // Precision qualifier
 precision highp float;
 
@@ -19,6 +27,11 @@ smooth in vec2 outTexCoord;
 // Sortie
 out vec4 Color;
 
+//Evaluates a SH
+vec4 SH_evaluate(vec3 dir){
+  return SH_c * vec4(1.0, dir.y, dir.z, dir.x);
+}
+
 vec2 Map3DPosTo2D(in vec3 GridCoords)
 {
 	// Compute the indice of SubTexture
@@ -35,13 +48,14 @@ void main()
 	vec3 Position = texture(PositionBuffer, outTexCoord).xyz;
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
 
-	// Get Grid Coordinates FIXME
-	Position = (Position-LPVPosition) / LPVCellSize.xyz;
+	// Get Grid Coordinates
+	Position = floor((Position-LPVPosition) / LPVCellSize.xyz);
 
 	vec2 TexCoordGrid = Map3DPosTo2D(Position);
 	vec4 CoeffGrid = texture2D(Grid, TexCoordGrid);
-	if(CoeffGrid == vec4(0,0,0,1))
-		Color = CoeffGrid;
-	else
-		Color = vec4(1.0,0.0,0.0,1.0); // FIXME
+//	if(CoeffGrid == vec4(0,0,0,1))
+//		Color = CoeffGrid;
+//	else
+//		Color = SH_evaluate(-Normal); // FIXME
+	Color = CoeffGrid;
 }
