@@ -66,3 +66,13 @@ const Math::TVector3F& CameraAbstract::GetTarget() const
 {
 	return m_Target;
 }
+
+void CameraAbstract::SetPosition(const Math::TVector3F& position)
+{
+	m_Position = position;
+}
+
+void CameraAbstract::SetTarget(const Math::TVector3F& target)
+{
+	m_Target = target;
+}

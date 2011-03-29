@@ -40,6 +40,7 @@ vec3 ComputeRealGridCoordinates(vec3 Position)
 	return coords;
 }
 
+//FIXME
 vec3 Map2DPosTo3D(vec2 TexCoord)
 {
 	vec3 res;
@@ -53,6 +54,7 @@ vec3 Map2DPosTo3D(vec2 TexCoord)
 	return res;
 }
 
+//FIXME
 vec2 Map3DPosTo2D(vec3 GridCoords)
 {
 	// Compute the indice of SubTexture

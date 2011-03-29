@@ -66,7 +66,9 @@ public:
 	// Methods to get somes imformations about the camera
 	const Math::TVector3F& GetPosition() const;
 	const Math::TVector3F& GetTarget() const;
-
+	// Methods to configure the camera
+	void SetPosition(const Math::TVector3F& position);
+	void SetTarget(const Math::TVector3F& target);
 	/*
 	 * Abstract methods (heritated by Listeners)
 	 */

@@ -62,6 +62,12 @@ public:
 		//m_Light.Direction.Normalize();
 	}
 
+	void LightView()
+	{
+		m_Camera->SetPosition(m_Light.Position);
+		m_Camera->SetTarget(m_Light.Direction);
+	}
+
 	virtual ~ApplicationLPV()
 	{
 		delete m_GridModel;
@@ -146,6 +152,7 @@ private:
 		// Console commands
 		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
+		Console.RegisterCommand("lightview",Console::Bind(&ApplicationLPV::LightView, *this));
 		// Create Grid
 //		CreateGridTexture();
 		CreateGridModel();
@@ -324,6 +331,7 @@ private:
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->setUniform3f("GridPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
+		m_LPVInjectVPL->setUniform2f("GridTextureSize",256.0,128.0);
 		DrawGrid(512.0,512.0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
@@ -341,6 +349,7 @@ private:
 		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVLightingShader->setUniform3f("GridPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
+		m_LPVInjectVPL->setUniform2f("GridTextureSize",256.0,128.0);
 		// Draw ...
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);
