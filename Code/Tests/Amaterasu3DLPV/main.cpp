@@ -25,6 +25,8 @@ protected:
 	TShaderPtr m_DeferredSpotShader;
 	TShaderPtr m_LPVInjectVPL;
 	TShaderPtr m_LPVShowVPL;
+	TShaderPtr m_BasicShader;
+	SceneGraph::Model* m_GridModel;
 	// Camera
 	CameraFPS* m_Camera;
 	Texture* m_GridTexture;
@@ -37,6 +39,10 @@ protected:
 	bool m_DebugGBuffer;
 	bool m_DebugCompositing;
 	bool m_DebugInjection;
+	bool m_ShowGrid;
+	// Grid params
+	Math::TVector3F m_CellSize;
+	Math::TVector3F m_GirdPosition;
 public:
 
 	std::string ShowInfoCamera()
@@ -56,6 +62,7 @@ public:
 
 	virtual ~ApplicationLPV()
 	{
+		delete m_GridModel;
 	}
 
 private:
@@ -84,6 +91,9 @@ private:
 				 case SDLK_F4:
 					 m_DebugInjection = !m_DebugInjection;
 					 break;
+				 case SDLK_F5:
+					 m_ShowGrid = !m_ShowGrid;
+					 break;
 			 }
 		}
 	}
@@ -95,7 +105,10 @@ private:
 		m_DebugGBuffer = false;
 		m_DebugCompositing = false;
 		m_DebugInjection = false;
+		m_ShowGrid = true;
 		glPointSize(10.0);
+		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
+		m_GirdPosition = Math::TVector3F(-100.0,-100.0,-200.0);
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
@@ -108,6 +121,7 @@ private:
 		m_DeferredSpotShader = ShaderManager.LoadShader("DeferredSpotLight.shader");
 		m_LPVInjectVPL = ShaderManager.LoadShader("LPVInjectVPL.shader");
 		m_LPVShowVPL = ShaderManager.LoadShader("LPVShowVPL.shader");
+		m_BasicShader = ShaderManager.LoadShader("BasicShader.shader");
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(80,125,60);
@@ -127,6 +141,96 @@ private:
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
 		// Create Grid
 //		CreateGridTexture();
+		CreateGridModel();
+	}
+
+	void CreateGridModel()
+	{
+		// Allocation des buffers
+		float * vertexBuffer = new float[3*32*32*3*2];
+		float * colorBuffer = new float[3*32*32*3*2];
+		unsigned int* indiceBuffer = new unsigned int[3*32*32*2];
+		int i = 0;
+		int m_CellCount = 32;
+		Color color(0.0,0.0,1.0);
+		// Fill in buffers
+		for(int z=0;z<=32;z++){
+			for(int x=0;x<=32;x++){
+//				Logger::Log() << i << '\n';
+				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
+				vertexBuffer[i+1] = 0+m_GirdPosition.y;
+				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
+				colorBuffer[i] = color.R;
+				colorBuffer[i+1] = color.G;
+				colorBuffer[i+2] = color.B;
+				i += 3;
+
+				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
+				vertexBuffer[i+1] = m_CellCount*m_CellSize.y+m_GirdPosition.y;
+				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
+				colorBuffer[i] = color.R;
+				colorBuffer[i+1] = color.G;
+				colorBuffer[i+2] = color.B;
+				i += 3;
+			}
+
+			for(int y=0;y<=32;y++){
+				vertexBuffer[i] = 0+m_GirdPosition.x;
+				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
+				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
+				colorBuffer[i] = color.R;
+				colorBuffer[i+1] = color.G;
+				colorBuffer[i+2] = color.B;
+				i += 3;
+
+				vertexBuffer[i] = m_CellCount*m_CellSize.x+m_GirdPosition.x;
+				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
+				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
+				colorBuffer[i] = color.R;
+				colorBuffer[i+1] = color.G;
+				colorBuffer[i+2] = color.B;
+				i += 3;
+			}
+		}
+
+		for(int y=0;y<=32;y++){
+			for(int x=0;x<32;x++){
+				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
+				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
+				vertexBuffer[i+2] = 0+m_GirdPosition.z;
+				colorBuffer[i] = color.R;
+				colorBuffer[i+1] = color.G;
+				colorBuffer[i+2] = color.B;
+				i += 3;
+
+				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
+				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
+				vertexBuffer[i+2] = m_CellCount*m_CellSize.z+m_GirdPosition.z;
+				colorBuffer[i] = color.R;
+				colorBuffer[i+1] = color.G;
+				colorBuffer[i+2] = color.B;
+				i += 3;
+			}
+		}
+
+		for(int l=0; l < 3*32*32*2; l++)
+		{
+			indiceBuffer[l] = l;
+		}
+
+		m_GridModel = new SceneGraph::Model;
+		m_GridModel->SetDrawMode(GL_LINES);
+		m_GridModel->SetIndiceBuffer(indiceBuffer, 3*32*32*2);
+		SceneGraph::ModelBuffer buffer;
+		buffer.buffer = vertexBuffer;
+		buffer.size = 3*32*32*3*2;
+		buffer.dimension = 3;
+		buffer.owner = true;
+		m_GridModel->AddBuffer(buffer, VERTEX_ATTRIBUT);
+		buffer.buffer = colorBuffer;
+		m_GridModel->AddBuffer(buffer, COLOR_ATTRIBUT);
+		m_GridModel->CompileBuffers();
+		m_GridModel->AddMaterial(DIFFUSE_MATERIAL,color);
 	}
 
 	void CreateGridTexture()
@@ -164,6 +268,12 @@ private:
 		// =========== First STEPS (GBuffer generation)
 		// Fill in the GBuffer
 		m_GBufferShader->begin();
+		if(m_ShowGrid)
+		{
+//			m_BasicShader->begin();
+			m_GridModel->Draw();
+//			m_BasicShader->end();
+		}
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
 		m_GBufferShader->end();
@@ -206,6 +316,7 @@ private:
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
+		m_LPVInjectVPL->setUniform3f("GridPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
 		DrawGrid(512.0,512.0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
@@ -255,7 +366,6 @@ private:
 		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 		m_DeferredSpotShader->end();
 
-
 		if(m_DebugCompositing)
 		{
 			m_RSMSpotShader->GetFBO()->DrawDebug();
@@ -266,6 +376,7 @@ private:
 		}
 		if(m_DebugInjection)
 		{
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			Logger::Log() << "Draw Injection ... \n";
 			m_LPVShowVPL->begin();
 			m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+0);

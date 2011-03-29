@@ -5,6 +5,7 @@ precision highp float;
 
 // Entree
 smooth in vec4 Value;
+
 // Sortie
 out vec4 Color;
 

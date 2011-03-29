@@ -36,7 +36,8 @@ Model::Model() :
 		m_indices_buffers(NULL),
 		m_indices(NULL),
 		m_is_compiled(false),
-		m_IsInstance(false)
+		m_IsInstance(false),
+		m_DrawMode(GL_TRIANGLES)
 {
 }
 
@@ -133,7 +134,7 @@ void Model::Draw()
 	// Drawing
 	CShaderManager::Instance().currentShader()->OnDraw();
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_buffers[0]));
-	GLCheck(glDrawElements(GL_TRIANGLES, m_indices_size, GL_UNSIGNED_INT, 0));
+	GLCheck(glDrawElements(m_DrawMode, m_indices_size, GL_UNSIGNED_INT, 0));
 	// Buffer desactivation
 	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
@@ -148,6 +149,11 @@ void Model::Draw()
 			continue;
 		it->second->desactivateMultiTex(it->first);
 	}
+}
+
+void Model::SetDrawMode(GLenum mode)
+{
+	m_DrawMode = mode;
 }
 
 bool Model::IsInstance(Model& model)

@@ -9,6 +9,7 @@ uniform sampler2D PositionBuffer;
 uniform sampler2D NormalBuffer;
 
 // Parametres
+uniform vec3 GridPosition;
 float CellDemiSize = 5.0;
 float CellSizeFactor = 1.0/10.0;
 float CellPrecision = 1.0/32.0;
@@ -24,9 +25,9 @@ vec3 ComputeGridCoordinates(vec4 Position)
 {
 	//TODO: Add boundary tests
 	vec3 coords;
-	coords.x = floor(Position.x*CellSizeFactor);
-	coords.y = floor(Position.y*CellSizeFactor);
-	coords.z = floor(Position.z*CellSizeFactor);
+	coords.x = floor((Position.x-GridPosition.x)*CellSizeFactor);
+	coords.y = floor((Position.y-GridPosition.y)*CellSizeFactor);
+	coords.z = floor((Position.z-GridPosition.z)*CellSizeFactor);
 	return coords;
 }
 

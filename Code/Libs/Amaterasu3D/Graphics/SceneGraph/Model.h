@@ -65,7 +65,7 @@ private:
 	// To know if all buffers is compiled
 	bool m_is_compiled;
 	bool m_IsInstance;
-
+	GLenum m_DrawMode;
 public:
 	/*
 	 * Constructor & Destructor
@@ -90,6 +90,8 @@ public:
 	// To clean up all buffers and link to the instance one
 	// Model is the object to set on Instance
 	void SetInstance(Model& model) const;
+
+	void SetDrawMode(GLenum mode);
 
 };
 }
