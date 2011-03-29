@@ -26,6 +26,7 @@ protected:
 	TShaderPtr m_LPVInjectVPL;
 	TShaderPtr m_LPVShowVPL;
 	TShaderPtr m_BasicShader;
+	TShaderPtr m_LPVLightingShader;
 	SceneGraph::Model* m_GridModel;
 	// Camera
 	CameraFPS* m_Camera;
@@ -40,6 +41,7 @@ protected:
 	bool m_DebugCompositing;
 	bool m_DebugInjection;
 	bool m_ShowGrid;
+	bool m_DebugShowDirectOnly;
 	// Grid params
 	Math::TVector3F m_CellSize;
 	Math::TVector3F m_GirdPosition;
@@ -94,6 +96,9 @@ private:
 				 case SDLK_F5:
 					 m_ShowGrid = !m_ShowGrid;
 					 break;
+				 case SDLK_F6:
+					 m_DebugShowDirectOnly = !m_DebugShowDirectOnly;
+					 break;
 			 }
 		}
 	}
@@ -106,6 +111,7 @@ private:
 		m_DebugCompositing = false;
 		m_DebugInjection = false;
 		m_ShowGrid = true;
+		m_DebugShowDirectOnly = false;
 		glPointSize(10.0);
 		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
 		m_GirdPosition = Math::TVector3F(-100.0,-100.0,-200.0);
@@ -122,6 +128,7 @@ private:
 		m_LPVInjectVPL = ShaderManager.LoadShader("LPVInjectVPL.shader");
 		m_LPVShowVPL = ShaderManager.LoadShader("LPVShowVPL.shader");
 		m_BasicShader = ShaderManager.LoadShader("BasicShader.shader");
+		m_LPVLightingShader = ShaderManager.LoadShader("LPVLighting.shader");
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(80,125,60);
@@ -328,8 +335,31 @@ private:
 		// ******* 3th Step : Diffusion
 
 		// ******* 4th Step : Filtrage pass
+		// WARNING : Don't forgot to add uniform
+		m_LPVLightingShader->begin();
+		m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
+		m_LPVLightingShader->setUniform3f("GridPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
+		// Draw ...
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0, 0.0);
+			glVertex2f(-1.0, -1.0);
+			glTexCoord2f(0.0, 1.0);
+			glVertex2f(-1.0, 1.0);
+			glTexCoord2f(1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glTexCoord2f(1.0, 0.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+		m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+		m_LPVLightingShader->end();
 
 		// ============= Compute Direct lighting only
+		if(m_DebugShowDirectOnly)
+			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);

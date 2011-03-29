@@ -3,8 +3,8 @@
 // Precision qualifier
 precision highp float;
 
-//uniform mat4 ProjectionMatrix;
-//uniform mat4 ViewMatrix;
+uniform mat4 ProjectionMatrix;
+uniform mat4 ViewMatrix;
 
 // Textures
 uniform sampler2D Grid; ///< Reprensent SH Grid
@@ -68,5 +68,6 @@ void main()
 	vec4 GridValue = texture(Grid,gl_Vertex.xy);
 	if(GridValue != vec4(0.0))
 		Value=vec4(1.0,0.0,0.0,1.0);
-	gl_Position = vec4(ComputeRealGridCoordinates(gl_Vertex.xyz*vec3(256.0,128.0,1.0)),1.0); //ProjectionMatrix*ViewMatrix*
+	vec4 Position = vec4(ComputeRealGridCoordinates(gl_Vertex.xyz*vec3(256.0,128.0,1.0)),1.0);
+	gl_Position = Position;
 }
