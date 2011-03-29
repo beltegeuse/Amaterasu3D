@@ -257,14 +257,14 @@ private:
 		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, 32, 32, 32, 0, GL_RGBA, GL_FLOAT, 0);
 	}
 
-	void DrawGrid(float resX, float resY)
+	void DrawGrid(float resX, float resY, float offset = 0.0)
 	{
 		glBegin(GL_POINTS);
 		for(int i = 0; i < resX; i++)
 			for(int j = 0; j < resY; j++)
 			{
-				double k = i/resX;
-				double l = j/resY;
+				double k = i/(resX+offset);
+				double l = j/(resY+offset);
 				//glColor3ub(255,0,0);
 				glVertex2d(k,l);
 			}
@@ -339,7 +339,7 @@ private:
 		m_LPVInjectVPL->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
 		m_LPVInjectVPL->setUniform4f("LPVSize",256.0,128.0,8.0,4.0);
 		m_LPVInjectVPL->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
-		DrawGrid(512.0,512.0);
+		DrawGrid(512.0,512.0,0.5/512.0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
