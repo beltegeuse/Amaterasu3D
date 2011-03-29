@@ -49,7 +49,7 @@ FBO::FBO(const Math::TVector2I& size,
 		m_ColoredBuffers[it->first] = tex;
 		glBindTexture(GL_TEXTURE_2D, tex->getIdTex());
 		it->second.applyParam();
-		glTexImage2D(GL_TEXTURE_2D, 0, it->second.InternalFormat, size.y, size.x, 0, it->second.ExternalFormat, it->second.Precision, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, it->second.InternalFormat, size.x, size.y, 0, it->second.ExternalFormat, it->second.Precision, 0);
 		Logger::Log() << "   * Create new texture : " << it->first <<  " ( " << tex->getIdTex() << " )\n";
 	}
 	// ==== Construction de FBO pour Depth
@@ -62,7 +62,7 @@ FBO::FBO(const Math::TVector2I& size,
 			glGenTextures(1,&m_DepthID);
 			glBindTexture(GL_TEXTURE_2D, m_DepthID);
 			paramDepth.applyParam();
-			glTexImage2D( GL_TEXTURE_2D, 0, paramDepth.InternalFormat, size.y, size.x, 0, paramDepth.ExternalFormat, paramDepth.Precision, 0);
+			glTexImage2D( GL_TEXTURE_2D, 0, paramDepth.InternalFormat, size.x, size.y, 0, paramDepth.ExternalFormat, paramDepth.Precision, 0);
 			Logger::Log() <<" * Generate Depth Texture : " << m_DepthID << "\n";
 			m_ColoredBuffers["Depth"] = new Texture(false, m_DepthID);
 		}
@@ -70,7 +70,7 @@ FBO::FBO(const Math::TVector2I& size,
 		{
 			glGenRenderbuffers(1, &m_DepthID);
 			glBindRenderbuffer(GL_RENDERBUFFER, m_DepthID);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, size.y, size.x);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, size.x, size.y);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 			Logger::Log() << " * Generate Depth Render target : " <<  m_DepthID << "\n";
 		}
@@ -173,7 +173,7 @@ void FBO::Bind()
 
 	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_VIEWPORT_BIT);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO_ID);
-	glViewport(0,0,m_SizeBuffers.y, m_SizeBuffers.x);
+	glViewport(0,0,m_SizeBuffers.x, m_SizeBuffers.y);
 
 	GLbitfield flags = 0;
 	if(m_DepthType != FBODEPTH_NONE)

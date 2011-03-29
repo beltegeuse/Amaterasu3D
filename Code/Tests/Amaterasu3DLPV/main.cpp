@@ -45,6 +45,7 @@ protected:
 	// Grid params
 	Math::TVector3F m_CellSize;
 	Math::TVector3F m_GirdPosition;
+	Math::TVector2I m_TextureSize;
 	int m_NbCellDim;
 public:
 
@@ -123,6 +124,7 @@ private:
 		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
 		m_GirdPosition = Math::TVector3F(-100.0,-100.0,-200.0);
 		m_NbCellDim = 32;
+		m_TextureSize = Math::TVector2I(256,128);
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
@@ -337,7 +339,7 @@ private:
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-		m_LPVInjectVPL->setUniform4f("LPVSize",256.0,128.0,8.0,4.0);
+		m_LPVInjectVPL->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,4.0,8.0);
 		m_LPVInjectVPL->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
 		DrawGrid(512.0,512.0,0.5/512.0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+0);
@@ -356,7 +358,7 @@ private:
 		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-		m_LPVInjectVPL->setUniform4f("LPVSize",256.0,128.0,8.0,4.0);
+		m_LPVInjectVPL->setUniform4f("LPVSize",256.0,128.0,4.0,8.0);
 		m_LPVInjectVPL->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
 		// Draw ...
 		glBegin(GL_QUADS);

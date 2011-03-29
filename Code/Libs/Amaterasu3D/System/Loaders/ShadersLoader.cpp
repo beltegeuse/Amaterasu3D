@@ -167,7 +167,7 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 	}
 	shader->end();
 	FBODepthBufferParam bufferDepth;
-	FBO* fbo = new FBO(Math::TVector2I(Y,X), buffers, typeDepth, bufferDepth); // FIXME: Inversion des tailles ???
+	FBO* fbo = new FBO(Math::TVector2I(X,Y), buffers, typeDepth, bufferDepth); // FIXME: Inversion des tailles ???
 	shader->SetFBO(fbo);
 }
 
