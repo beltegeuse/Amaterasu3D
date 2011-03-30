@@ -375,7 +375,10 @@ private:
 		// ******* 3th Step : Diffusion
 		for(int i = 0; i < m_NbPropagationStep; i++)
 		{
+			//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+			//Logger::Log() << "Propagation : " << i << "\n";
 			m_LPVPropagationShader->SetFBO(m_PropagationFBOs[i], false);
+			m_LPVPropagationShader->begin();
 			if(i == 0)
 			{
 				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
@@ -388,7 +391,6 @@ private:
 				m_PropagationFBOs[i-1]->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+1);
 				m_PropagationFBOs[i-1]->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+2);
 			}
-			m_LPVPropagationShader->begin();
 			glBegin(GL_QUADS);
 				glTexCoord2f(0.0, 0.0);
 				glVertex2f(-1.0, -1.0);
@@ -399,7 +401,6 @@ private:
 				glTexCoord2f(1.0, 0.0);
 				glVertex2f(1.0, -1.0);
 			glEnd();
-			m_LPVPropagationShader->end();
 			if(i == 0)
 			{
 				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+0);
@@ -412,6 +413,7 @@ private:
 				m_PropagationFBOs[i-1]->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 				m_PropagationFBOs[i-1]->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			}
+			m_LPVPropagationShader->end();
 		}
 
 		// ******* 4th Step : Filtrage pass

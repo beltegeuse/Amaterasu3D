@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <Shader name="2DDraw" type="Basic">
     <OutputFrame depthType="None" size="Custom" width=256 height=128>
-    	<Frame name="GridRed" type="RGBA32" />
-    	<Frame name="GridGreen" type="RGBA32" />
-    	<Frame name="GridBlue" type="RGBA32" />
+    	<Frame name="GridRed" type="RGBA16" />
+    	<Frame name="GridGreen" type="RGBA16" />
+    	<Frame name="GridBlue" type="RGBA16" />
     </OutputFrame>
     <Textures>
 		<Texture type="Custom" name="LPVRed" id=0 />
