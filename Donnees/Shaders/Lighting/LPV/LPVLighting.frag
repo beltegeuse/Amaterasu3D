@@ -65,7 +65,7 @@ vec4 TrilinearInterpolation(sampler2D s, vec3 Position)
 
 vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position)
 {
-	vec3 PositionGrid = ((Position-LPVPosition) / LPVCellSize.xyz) - LPVCellSize.xyz*0.5;
+	vec3 PositionGrid = ((Position-LPVPosition) / LPVCellSize.xyz)-0.5;
 	return TrilinearInterpolation(s,PositionGrid);
 }
 
