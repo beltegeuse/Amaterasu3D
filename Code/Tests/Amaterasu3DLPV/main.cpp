@@ -42,7 +42,7 @@ protected:
 	bool m_DebugInjection;
 	bool m_ShowGrid;
 	bool m_DebugShowDirectOnly;
-	bool m_DebugVPL;
+	bool m_TriInterpolation;
 	// Grid params
 	Math::TVector3F m_CellSize;
 	Math::TVector3F m_GirdPosition;
@@ -109,7 +109,8 @@ private:
 					 m_DebugShowDirectOnly = !m_DebugShowDirectOnly;
 					 break;
 				 case SDLK_F7:
-					 m_DebugVPL = !m_DebugVPL;
+					 m_TriInterpolation = !m_TriInterpolation;
+					 break;
 			 }
 		}
 	}
@@ -123,7 +124,7 @@ private:
 		m_DebugInjection = false;
 		m_ShowGrid = true;
 		m_DebugShowDirectOnly = false;
-		m_DebugVPL = false;
+		m_TriInterpolation = false;
 		glPointSize(1.0);
 		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
 		m_GirdPosition = Math::TVector3F(-100.0,-100.0,-200.0);
@@ -338,6 +339,8 @@ private:
 
 		// ============= Compute Indirect lighting only
 		// ****** 1st Step : VPL Injection
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE,GL_ONE);
 		m_LPVInjectVPL->begin();
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
@@ -350,6 +353,7 @@ private:
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->end();
+		glDisable(GL_BLEND);
 
 		// ******* 2nd Step : Geometry injection
 
@@ -361,9 +365,10 @@ private:
 		m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
-		m_LPVInjectVPL->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-		m_LPVInjectVPL->setUniform4f("LPVSize",256.0,128.0,4.0,8.0);
-		m_LPVInjectVPL->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
+		m_LPVLightingShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
+		m_LPVLightingShader->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,4.0,8.0);
+		m_LPVLightingShader->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
+		m_LPVLightingShader->setUniform1i("EnableTrilinearInterpolation",m_TriInterpolation);
 		// Draw ...
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);

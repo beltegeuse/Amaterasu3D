@@ -69,7 +69,7 @@ void main()
 	// Compute SH
 	vec4 SH = SHCreateHemi(normalize(outNormal));
 	// Put into buffers
-	//Grid = SH * Luminance(Flux);
+	Grid = SH * Luminance(Flux);
 	//Grid = vec4(1.0,0.0,0.0,1.0);
-	Grid = Flux;
+	//Grid = Flux;
 }

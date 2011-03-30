@@ -20,6 +20,7 @@ uniform sampler2D NormalBuffer;
 uniform vec3 LPVPosition; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
+uniform bool EnableTrilinearInterpolation;
 
 // Entree
 smooth in vec2 outTexCoord;
@@ -40,7 +41,32 @@ vec2 Convert3Dto2D(in vec3 pos){
 	// Check is right Boundaries
 	vec2 over = (pos.xy - clamp(pos.xy,vec2(0,0),vec2(LPVCellSize.w-1.0,LPVCellSize.w-1.0))) * 100.0; // 100.0 ? nbCell ?
 
-	return vec2(col * LPVCellSize.w + pos.x + over.x * LPVSize.x,row * LPVCellSize.w + pos.y + over.y * LPVSize.y);
+	return vec2(col * LPVCellSize.w + pos.x + over.x * LPVSize.x,row * LPVCellSize.w + pos.y + over.y * LPVSize.y) / LPVSize.xy; // Warining : Normalisation Done
+}
+
+// Trilinear interpolation
+// \position : It's grid position
+//TODO: Add border support
+vec4 TrilinearInterpolation(sampler2D s, vec3 Position)
+{
+	vec3 IndiceCase = floor(Position);
+	vec3 Offset = Position - IndiceCase;
+
+	vec4 i1 = texture(s, Convert3Dto2D(IndiceCase))*(1-Offset.z)+texture(s, Convert3Dto2D(IndiceCase+vec3(0,0,1)))*Offset.z;
+	vec4 i2 = texture(s, Convert3Dto2D(IndiceCase+vec3(0,1,0)))*(1-Offset.z)+texture(s, Convert3Dto2D(IndiceCase+vec3(0,1,1)))*Offset.z;
+	vec4 j1 = texture(s, Convert3Dto2D(IndiceCase+vec3(1,0,0)))*(1-Offset.z)+texture(s, Convert3Dto2D(IndiceCase+vec3(1,0,1)))*Offset.z;
+	vec4 j2 = texture(s, Convert3Dto2D(IndiceCase+vec3(1,1,0)))*(1-Offset.z)+texture(s, Convert3Dto2D(IndiceCase+vec3(1,1,1)))*Offset.z;
+
+	vec4 w1 = i1*(1 - Offset.y) + i2 * Offset.y;
+	vec4 w2 = j1*(1 - Offset.y) + j2 * Offset.y;
+
+	return w1*(1 - Offset.x) + w2 * Offset.x;
+}
+
+vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position)
+{
+	vec3 PositionGrid = ((Position-LPVPosition) / LPVCellSize.xyz) - LPVCellSize.xyz*0.5;
+	return TrilinearInterpolation(s,PositionGrid);
 }
 
 void main()
@@ -49,15 +75,24 @@ void main()
 	vec3 Position = texture(PositionBuffer, outTexCoord).xyz;
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
 
-	// Get Grid Coordinates
-	Position = floor((Position-LPVPosition) / LPVCellSize.xyz);
+	vec4 CoeffGrid;
+	if(EnableTrilinearInterpolation)
+	{
+		CoeffGrid = TrilinearInterpolationWorld(Grid,Position);
+	}
+	else
+	{
+		// Get Grid Coordinates
+		Position = floor((Position-LPVPosition) / LPVCellSize.xyz);
 
-	// Get texture coordinates
-	vec2 TexCoordGrid = Convert3Dto2D(Position) / LPVSize.xy;
-	vec4 CoeffGrid = texture2D(Grid, TexCoordGrid); ///< And get coeff value
-//	if(CoeffGrid == vec4(0,0,0,1))
-//		Color = CoeffGrid;
-//	else
-//		Color = SH_evaluate(-Normal); // FIXME
-	Color = CoeffGrid;
+		// Get texture coordinates
+		vec2 TexCoordGrid = Convert3Dto2D(Position);
+		CoeffGrid = texture2D(Grid, TexCoordGrid); ///< And get coeff value
+	}
+
+	if(CoeffGrid == vec4(0,0,0,1))
+		Color = vec4(0.0);
+	else
+		Color = vec4(vec3(dot(CoeffGrid,SH_evaluate(-Normal))),1.0); // FIXME
+	//Color = CoeffGrid;
 }
