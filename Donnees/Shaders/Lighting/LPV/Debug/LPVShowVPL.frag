@@ -3,12 +3,16 @@
 // Precision qualifier
 precision highp float;
 
+uniform sampler2D FluxBuffer;
+
+smooth in vec2 outTexCoord;
+
 // Sortie
 out vec4 Color;
 
 void main()
 {	
 	// Put into buffers
-	Color = vec4(1.0,0.0,0.0,1.0);
+	Color = texture2D(FluxBuffer,outTexCoord);
 
 }

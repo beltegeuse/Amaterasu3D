@@ -15,12 +15,12 @@ uniform vec3 LPVPosition; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
 
+smooth out vec2 outTexCoord;
 
 invariant gl_Position;
 
 void main()
 {	
-	vec2 outTexCoord;
 	outTexCoord.x = gl_Vertex.x;
 	outTexCoord.y = gl_Vertex.y;
 

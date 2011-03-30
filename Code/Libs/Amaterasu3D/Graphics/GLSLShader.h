@@ -167,7 +167,7 @@ public:
 	virtual void UpdateAll();
 
 	FBO* GetFBO();
-	void SetFBO(FBO* fbo);
+	void SetFBO(FBO* fbo, bool wantDelete = true);
 	bool isFBOAvaliable() const;
 	//!< Returns the OpenGL Program Object (only needed if you want to control everything yourself) \return The OpenGL Program Object
 	GLuint     GetProgramObject(){return ProgramObject;}

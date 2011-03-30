@@ -1192,9 +1192,9 @@ FBO* glShader::GetFBO()
 	return m_FBO;
 }
 
-void glShader::SetFBO(FBO* fbo)
+void glShader::SetFBO(FBO* fbo, bool wantDelete)
 {
-	if(m_FBO)
+	if(m_FBO && wantDelete)
 		delete m_FBO;
 	m_FBO = fbo;
 }

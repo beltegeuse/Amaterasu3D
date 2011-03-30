@@ -115,6 +115,11 @@ private:
 	Math::TVector2I m_SizeBuffers; ///< The size of associated buffers
 	bool m_IsActivated; ///< To know if the FBO is activated
 	TShaderPtr m_DepthShader; ///< To display the Depth buffer in more good conditions
+	// Attributes for copy
+	// XXX: Revoir comment faire pour eviter ses attributs
+	// peut etre en ajoutant une methode CShaderManager ??? LoadFileMultiple ?
+	std::map<std::string, FBOTextureBufferParam> m_BuffersParams;
+	FBODepthBufferParam m_DepthParams;
 public:
 	/*
 	 * Constructors & Destructors
@@ -138,7 +143,8 @@ public:
 	Texture* GetTexture(const std::string& nameBuffer);
 	//! Other technique to get the depth buffer
 	GLuint GetDepthID();
-
+	//! Return an copy of this FBO
+	FBO* Copy();
 private:
 	/*
 	 * Private methods

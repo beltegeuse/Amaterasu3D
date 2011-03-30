@@ -27,6 +27,8 @@ protected:
 	TShaderPtr m_LPVShowVPL;
 	TShaderPtr m_BasicShader;
 	TShaderPtr m_LPVLightingShader;
+	TShaderPtr m_LPVPropagationShader;
+	FBO** m_PropagationFBOs;
 	SceneGraph::Model* m_GridModel;
 	// Camera
 	CameraFPS* m_Camera;
@@ -48,6 +50,7 @@ protected:
 	Math::TVector3F m_GirdPosition;
 	Math::TVector2I m_TextureSize;
 	int m_NbCellDim;
+	int m_NbPropagationStep;
 public:
 
 	std::string ShowInfoCamera()
@@ -74,6 +77,7 @@ public:
 	virtual ~ApplicationLPV()
 	{
 		delete m_GridModel;
+		delete[] m_PropagationFBOs;
 	}
 
 private:
@@ -130,6 +134,7 @@ private:
 		m_GirdPosition = Math::TVector3F(-100.0,-100.0,-200.0);
 		m_NbCellDim = 32;
 		m_TextureSize = Math::TVector2I(256,128);
+		m_NbPropagationStep = 8;
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
@@ -144,6 +149,15 @@ private:
 		m_LPVShowVPL = ShaderManager.LoadShader("LPVShowVPL.shader");
 		m_BasicShader = ShaderManager.LoadShader("BasicShader.shader");
 		m_LPVLightingShader = ShaderManager.LoadShader("LPVLighting.shader");
+		m_LPVPropagationShader = ShaderManager.LoadShader("LPVPropagation.shader");
+		// Copy buffer
+		m_PropagationFBOs = new FBO*[m_NbPropagationStep];
+		m_PropagationFBOs[0] = m_LPVPropagationShader->GetFBO();
+		for(int i = 1; i < m_NbPropagationStep; i++)
+		{
+			Logger::Log() << "[INFO] Create Copy Propagation FBO : " << i << "\n";
+			m_PropagationFBOs[i] = m_LPVPropagationShader->GetFBO()->Copy();
+		}
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(80,125,60);
@@ -359,6 +373,46 @@ private:
 		// ******* 2nd Step : Geometry injection
 
 		// ******* 3th Step : Diffusion
+		for(int i = 0; i < m_NbPropagationStep; i++)
+		{
+			m_LPVPropagationShader->SetFBO(m_PropagationFBOs[i], false);
+			if(i == 0)
+			{
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+1);
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+2);
+			}
+			else
+			{
+				m_PropagationFBOs[i-1]->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
+				m_PropagationFBOs[i-1]->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+1);
+				m_PropagationFBOs[i-1]->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+2);
+			}
+			m_LPVPropagationShader->begin();
+			glBegin(GL_QUADS);
+				glTexCoord2f(0.0, 0.0);
+				glVertex2f(-1.0, -1.0);
+				glTexCoord2f(0.0, 1.0);
+				glVertex2f(-1.0, 1.0);
+				glTexCoord2f(1.0, 1.0);
+				glVertex2f(1.0, 1.0);
+				glTexCoord2f(1.0, 0.0);
+				glVertex2f(1.0, -1.0);
+			glEnd();
+			m_LPVPropagationShader->end();
+			if(i == 0)
+			{
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+			}
+			else
+			{
+				m_PropagationFBOs[i-1]->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+				m_PropagationFBOs[i-1]->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+				m_PropagationFBOs[i-1]->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+			}
+		}
 
 		// ******* 4th Step : Filtrage pass
 		// WARNING : Don't forgot to add uniform
@@ -445,9 +499,11 @@ private:
 			m_LPVShowVPL->begin();
 			m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
+			m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+3);
 			DrawGrid(512.0,512.0,0.5/512.0);
 			m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+			m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 			m_LPVShowVPL->end();
 		}
 

@@ -33,7 +33,9 @@ FBO::FBO(const Math::TVector2I& size,
 		m_DepthType(type),
 		m_DepthID(0),
 		m_SizeBuffers(size),
-		m_IsActivated(false)
+		m_IsActivated(false),
+		m_BuffersParams(buffers),
+		m_DepthParams(paramDepth)
 {
 	Logger::Log() << "[INFO] FBO Creation ... \n";
 	// On verifie que l'on a assez de Color Attachement
@@ -44,7 +46,6 @@ FBO::FBO(const Math::TVector2I& size,
 	Logger::Log() << "  * Color buffer creation ... \n";
 	for(std::map<std::string, FBOTextureBufferParam>::iterator it = buffers.begin(); it != buffers.end(); it++)
 	{
-
 		Texture* tex = new Texture();
 		m_ColoredBuffers[it->first] = tex;
 		glBindTexture(GL_TEXTURE_2D, tex->getIdTex());
@@ -297,4 +298,9 @@ GLuint FBO::GetDepthID()
 {
 	Assert(m_DepthType == FBODEPTH_TEXTURE);
 	return m_DepthID;
+}
+
+FBO* FBO::Copy()
+{
+	return new FBO(m_SizeBuffers,m_BuffersParams,m_DepthType,m_DepthParams);
 }

@@ -7,6 +7,7 @@
 	<Textures>
 		<Texture type="Custom" name="PositionBuffer" id=1 />
 		<Texture type="Custom" name="NormalBuffer" id=2 />
+		<Texture type="Custom" name="FluxBuffer" id=3 />
 	</Textures>
 	<VertexShader filename="LPVShowVPL.vert" />
 	<FragmentShader filename="LPVShowVPL.frag" />
