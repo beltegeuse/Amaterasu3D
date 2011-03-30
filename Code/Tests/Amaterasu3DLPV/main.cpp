@@ -338,6 +338,7 @@ private:
 		MatrixManager.SetViewMatrix(oldViewMatrix);
 
 		// ============= Compute Indirect lighting only
+		glClearColor(0.0f,0.0f,0.0f,0.f);
 		// ****** 1st Step : VPL Injection
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE,GL_ONE);
@@ -362,9 +363,11 @@ private:
 		// ******* 4th Step : Filtrage pass
 		// WARNING : Don't forgot to add uniform
 		m_LPVLightingShader->begin();
-		m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+0);
-		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
-		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
+		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+2);
+		m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+3);
+		m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+4);
 		m_LPVLightingShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
 		m_LPVLightingShader->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,4.0,8.0);
 		m_LPVLightingShader->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
@@ -380,11 +383,14 @@ private:
 			glTexCoord2f(1.0, 0.0);
 			glVertex2f(1.0, -1.0);
 		glEnd();
-		m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+		m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+		m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+		m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+4);
+		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_LPVLightingShader->end();
 
+		glClearColor(0.0f,0.0f,0.0f,1.f);
 		// ============= Compute Direct lighting only
 		if(m_DebugShowDirectOnly)
 			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);

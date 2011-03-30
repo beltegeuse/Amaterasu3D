@@ -21,7 +21,9 @@ float CellSize = 10.0;
 smooth in vec2 outTexCoord;
 smooth in vec3 outNormal;
 // Sortie
-out vec4 Grid;
+out vec4 GridRed;
+out vec4 GridGreen;
+out vec4 GridBlue;
 
 // Pick from Paper : Light Propagation Volumes in CryEngine3
 vec4 SHRotate(vec3 vcDir, vec2 vZHCoeffs)
@@ -67,9 +69,11 @@ void main()
 	// Get all data
 	vec4 Flux = texture(FluxBuffer, outTexCoord);
 	// Compute SH
-	vec4 SH = SHCreateHemi(normalize(outNormal));
+	vec4 SH = SHProjectCone(normalize(outNormal));
 	// Put into buffers
-	Grid = SH * Luminance(Flux);
-	//Grid = vec4(1.0,0.0,0.0,1.0);
-	//Grid = Flux;
+	//Grid = SH * Luminance(Flux);
+
+	GridRed = SH * Flux.r;
+	GridGreen = SH * Flux.g;
+	GridBlue = SH * Flux.b;
 }

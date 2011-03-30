@@ -12,7 +12,10 @@
 precision highp float;
 
 // Textures
-uniform sampler2D Grid; ///< Reprensent SH Grid
+uniform sampler2D GridRed;
+uniform sampler2D GridGreen; ///< Reprensent SH Grid
+uniform sampler2D GridBlue;
+
 uniform sampler2D PositionBuffer;
 uniform sampler2D NormalBuffer;
 
@@ -75,10 +78,14 @@ void main()
 	vec3 Position = texture(PositionBuffer, outTexCoord).xyz;
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
 
-	vec4 CoeffGrid;
+	vec4 CoeffGridRed;
+	vec4 CoeffGridGreen;
+	vec4 CoeffGridBlue;
 	if(EnableTrilinearInterpolation)
 	{
-		CoeffGrid = TrilinearInterpolationWorld(Grid,Position);
+		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position);
+		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position);
+		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position);
 	}
 	else
 	{
@@ -87,12 +94,19 @@ void main()
 
 		// Get texture coordinates
 		vec2 TexCoordGrid = Convert3Dto2D(Position);
-		CoeffGrid = texture2D(Grid, TexCoordGrid); ///< And get coeff value
+		CoeffGridRed = texture2D(GridRed, TexCoordGrid); ///< And get coeff value
+		CoeffGridGreen = texture2D(GridGreen, TexCoordGrid);
+		CoeffGridBlue = texture2D(GridBlue, TexCoordGrid);
 	}
 
-	if(CoeffGrid == vec4(0,0,0,1))
+	if(CoeffGridRed == vec4(0,0,0,1) && CoeffGridGreen == vec4(0,0,0,1) && CoeffGridBlue == vec4(0,0,0,1))
 		Color = vec4(0.0);
 	else
-		Color = vec4(vec3(dot(CoeffGrid,SH_evaluate(-Normal))),1.0); // FIXME
+	{
+		vec4 SHEv = SH_evaluate(-Normal);
+		Color = vec4(dot(CoeffGridRed,SHEv),
+				     dot(CoeffGridGreen,SHEv),
+				     dot(CoeffGridBlue,SHEv),1.0);
+	}
 	//Color = CoeffGrid;
 }
