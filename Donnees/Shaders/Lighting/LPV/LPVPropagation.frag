@@ -95,23 +95,20 @@ vec4 SHCone90(in vec3 dir){
 float SHDotAbs(vec4 sh1, vec4 sh2){
    return sh1.x * sh2.x + abs(dot(sh1.yzw,sh2.yzw));
 }
-ivec2 GetLoadPos2DOffset3D(in vec2 coords, in vec3 offset){
-  vec2 c = floor(coords * LPVSize.xy);
-  float row = floor(c.y / LPVCellSize.w);
-  float col = floor(c.x / LPVCellSize.w);
-  c = clamp(vec2(c.x - col * LPVCellSize.w,c.y - row * LPVCellSize.w) + offset.xy,0.0,LPVCellSize.w-1.0);
-  col += offset.z;
-  float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
-  float newrow = clamp(row+coldiff,0.0,LPVSize.w-1.0);
-  col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
-  col = clamp(col,0.0,LPVSize.z-1.0);
-  vec2 spos = vec2(col * LPVCellSize.w + c.x,newrow * LPVCellSize.w + c.y);// / LPVSize.xy;
-  return ivec2(spos);
-}
 
-vec4 Load2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
-  return texelFetch2D(s,GetLoadPos2DOffset3D(coords,offset),0);
-}
+//ivec2 GetLoadPos2DOffset3D(in vec2 coords, in vec3 offset){
+//  vec2 c = floor(coords * LPVSize.xy);
+//  float row = floor(c.y / LPVCellSize.w);
+//  float col = floor(c.x / LPVCellSize.w);
+//  c = clamp(vec2(c.x - col * LPVCellSize.w,c.y - row * LPVCellSize.w) + offset.xy,0.0,LPVCellSize.w-1.0);
+//  col += offset.z;
+//  float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
+//  float newrow = clamp(row+coldiff,0.0,LPVSize.w-1.0);
+//  col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
+//  col = clamp(col,0.0,LPVSize.z-1.0);
+//  vec2 spos = vec2(col * LPVCellSize.w + c.x,newrow * LPVCellSize.w + c.y);//
+//  return ivec2(spos);
+//}
 
 vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset){
   vec2 c = coords * LPVSize.xy;
@@ -143,10 +140,10 @@ void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec
   vec4 MainDirectionHemi = SH_evaluateCosineLobe_direct(MainDirection);
 
   //Get neighbour SHs
-  ivec2 loadPos = GetLoadPos2DOffset3D(pos,-MainDirection);
-  vec4 NeighbourRed = texelFetch2D(LPVRed,loadPos, 0);
-  vec4 NeighbourGreen = texelFetch2D(LPVGreen,loadPos, 0);
-  vec4 NeighbourBlue = texelFetch2D(LPVBlue,loadPos, 0);
+  vec2 loadPos = GetSamplePos2DOffset3D(pos,-MainDirection);
+  vec4 NeighbourRed = texture2D(LPVRed,loadPos);
+  vec4 NeighbourGreen = texture2D(LPVGreen,loadPos);
+  vec4 NeighbourBlue = texture2D(LPVBlue,loadPos);
 
   //Get Occlusion SH
   #ifdef DO_OCCLUSION
@@ -271,10 +268,14 @@ void main(){
                             0.0, 0.0,-1.0,
                             0.0, 1.0, 0.0),resultRed,resultGreen,resultBlue);
   //Data for next propagation step
-  GridRed = resultRed;
-  GridGreen = resultGreen;
-  GridBlue = resultBlue;
+  GridRed = resultRed * 4;
+  GridGreen = resultGreen * 4;
+  GridBlue = resultBlue * 4;
 
+//  vec2 loadPos = GetSamplePos2DOffset3D(outTexCoord,vec3(0.0,0.0,0.0));
+//  GridRed += texture2D(LPVRed, loadPos);
+//  GridGreen += texture2D(LPVGreen, loadPos);
+//  GridBlue += texture2D(LPVBlue, loadPos);
 //  //Final data
 //  #ifdef FIRST_STEP
 //    //On first step add initial injected data

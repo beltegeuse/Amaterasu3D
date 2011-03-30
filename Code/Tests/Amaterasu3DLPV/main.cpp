@@ -51,6 +51,7 @@ protected:
 	Math::TVector2I m_TextureSize;
 	int m_NbCellDim;
 	int m_NbPropagationStep;
+	int m_PropagatedShow;
 public:
 
 	std::string ShowInfoCamera()
@@ -115,6 +116,16 @@ private:
 				 case SDLK_F7:
 					 m_TriInterpolation = !m_TriInterpolation;
 					 break;
+				 case SDLK_UP:
+					 if(m_PropagatedShow < m_NbPropagationStep-1)
+						 m_PropagatedShow++;
+					 Logger::Log() << "[SHOW] Propagated Grid : " << m_PropagatedShow << "\n";
+					 break;
+				 case SDLK_DOWN:
+					 if(m_PropagatedShow > -1)
+						 m_PropagatedShow--;
+					 Logger::Log() << "[SHOW] Propagated Grid : " << m_PropagatedShow << "\n";
+					 break;
 			 }
 		}
 	}
@@ -129,12 +140,13 @@ private:
 		m_ShowGrid = true;
 		m_DebugShowDirectOnly = false;
 		m_TriInterpolation = false;
+		m_PropagatedShow = -1;
 		glPointSize(1.0);
 		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
 		m_GirdPosition = Math::TVector3F(-100.0,-100.0,-200.0);
 		m_NbCellDim = 32;
 		m_TextureSize = Math::TVector2I(256,128);
-		m_NbPropagationStep = 8;
+		m_NbPropagationStep = 16;
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
@@ -361,7 +373,7 @@ private:
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-		m_LPVInjectVPL->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,4.0,8.0);
+		m_LPVInjectVPL->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
 		m_LPVInjectVPL->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
 		DrawGrid(512.0,512.0,0.5/512.0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+0);
@@ -379,6 +391,9 @@ private:
 			//Logger::Log() << "Propagation : " << i << "\n";
 			m_LPVPropagationShader->SetFBO(m_PropagationFBOs[i], false);
 			m_LPVPropagationShader->begin();
+			//m_LPVPropagationShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
+			m_LPVPropagationShader->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
+			m_LPVPropagationShader->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
 			if(i == 0)
 			{
 				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
@@ -421,11 +436,20 @@ private:
 		m_LPVLightingShader->begin();
 		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
+		if(m_PropagatedShow < 0)
+		{
 		m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+3);
 		m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+4);
+		}
+		else
+		{
+			m_PropagationFBOs[m_PropagatedShow]->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+2);
+			m_PropagationFBOs[m_PropagatedShow]->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+3);
+			m_PropagationFBOs[m_PropagatedShow]->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+4);
+		}
 		m_LPVLightingShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-		m_LPVLightingShader->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,4.0,8.0);
+		m_LPVLightingShader->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
 		m_LPVLightingShader->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
 		m_LPVLightingShader->setUniform1i("EnableTrilinearInterpolation",m_TriInterpolation);
 		// Draw ...
@@ -439,6 +463,7 @@ private:
 			glTexCoord2f(1.0, 0.0);
 			glVertex2f(1.0, -1.0);
 		glEnd();
+		//FIXME: Same pattern ???
 		m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 		m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+4);
