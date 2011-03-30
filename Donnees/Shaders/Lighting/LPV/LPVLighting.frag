@@ -52,8 +52,9 @@ void main()
 	// Get Grid Coordinates
 	Position = floor((Position-LPVPosition) / LPVCellSize.xyz);
 
+	// Get texture coordinates
 	vec2 TexCoordGrid = Convert3Dto2D(Position) / LPVSize.xy;
-	vec4 CoeffGrid = texture2D(Grid, TexCoordGrid);
+	vec4 CoeffGrid = texture2D(Grid, TexCoordGrid); ///< And get coeff value
 //	if(CoeffGrid == vec4(0,0,0,1))
 //		Color = CoeffGrid;
 //	else

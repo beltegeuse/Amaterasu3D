@@ -3,15 +3,12 @@
 // Precision qualifier
 precision highp float;
 
-// Entree
-smooth in vec4 Value;
-
 // Sortie
 out vec4 Color;
 
 void main()
 {	
 	// Put into buffers
-	Color = Value;
+	Color = vec4(1.0,0.0,0.0,1.0);
 
 }

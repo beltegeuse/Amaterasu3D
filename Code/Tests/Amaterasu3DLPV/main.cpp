@@ -42,6 +42,7 @@ protected:
 	bool m_DebugInjection;
 	bool m_ShowGrid;
 	bool m_DebugShowDirectOnly;
+	bool m_DebugVPL;
 	// Grid params
 	Math::TVector3F m_CellSize;
 	Math::TVector3F m_GirdPosition;
@@ -107,6 +108,8 @@ private:
 				 case SDLK_F6:
 					 m_DebugShowDirectOnly = !m_DebugShowDirectOnly;
 					 break;
+				 case SDLK_F7:
+					 m_DebugVPL = !m_DebugVPL;
 			 }
 		}
 	}
@@ -120,7 +123,8 @@ private:
 		m_DebugInjection = false;
 		m_ShowGrid = true;
 		m_DebugShowDirectOnly = false;
-		glPointSize(10.0);
+		m_DebugVPL = false;
+		glPointSize(1.0);
 		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
 		m_GirdPosition = Math::TVector3F(-100.0,-100.0,-200.0);
 		m_NbCellDim = 32;
@@ -428,9 +432,11 @@ private:
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			Logger::Log() << "Draw Injection ... \n";
 			m_LPVShowVPL->begin();
-			m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+0);
-			DrawGrid(256.0,128.0);
-			m_LPVInjectVPL->GetFBO()->GetTexture("Grid")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+			m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
+			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
+			DrawGrid(512.0,512.0,0.5/512.0);
+			m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			m_LPVShowVPL->end();
 		}
 

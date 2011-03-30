@@ -4,7 +4,6 @@
 precision highp float;
 
 // Textures
-uniform sampler2D Grid; ///< Reprensent SH Grid
 uniform sampler2D PositionBuffer;
 uniform sampler2D NormalBuffer;
 
