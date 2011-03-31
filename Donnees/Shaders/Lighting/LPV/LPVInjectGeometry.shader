@@ -3,6 +3,9 @@
     <OutputFrame depthType="None" size="Custom" width=256 height=128>
     	<Frame name="Grid" type="RGBA16" />
     </OutputFrame>
+    <Attributs>
+    	<Attribut type="Vertex" name="VertexPosition" />
+    </Attributs>
     <Textures>
 		<Texture type="Custom" name="PositionBuffer" id=0 />
 		<Texture type="Custom" name="NormalBuffer" id=1 />

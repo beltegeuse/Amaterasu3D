@@ -7,6 +7,8 @@ precision highp float;
 uniform sampler2D PositionBuffer;
 uniform sampler2D NormalBuffer;
 
+in vec2 VertexPosition;
+
 // Parametres
 uniform vec3 LPVPosition; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
@@ -31,8 +33,8 @@ vec2 Convert3Dto2D(in vec3 pos){
 
 void main()
 {	
-	outTexCoord.x = gl_Vertex.x;
-	outTexCoord.y = gl_Vertex.y;
+	outTexCoord.x = VertexPosition.x;
+	outTexCoord.y = VertexPosition.y;
 
 	// Get data
 	vec3 Position = texture(PositionBuffer, outTexCoord).xyz;

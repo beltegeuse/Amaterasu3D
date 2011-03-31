@@ -5,6 +5,9 @@
     	<Frame name="GridGreen" type="RGBA16" />
     	<Frame name="GridBlue" type="RGBA16" />
     </OutputFrame>
+    <Attributs>
+    	<Attribut type="Vertex" name="VertexPosition" />
+    </Attributs>
     <Textures>
 		<Texture type="Custom" name="FluxBuffer" id=0 />
 		<Texture type="Custom" name="PositionBuffer" id=1 />
