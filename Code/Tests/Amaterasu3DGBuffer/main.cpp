@@ -131,7 +131,7 @@ public:
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
+	CFontManager::Instance().LoadFont("../Donnees/Fonts/eve.ttf", "arial");
 
 	std::cout << "[INFO] Begin ..." << std::endl;
 
