@@ -4,6 +4,9 @@
        <Matrix type="Projection" name="ProjectionMatrix" />
        <Matrix type="View" name="ViewMatrix" />
     </MatrixInput>
+    <Attributs>
+    	<Attribut type="Vertex" name="VertexPosition" />
+    </Attributs>
 	<Textures>
 		<Texture type="Custom" name="PositionBuffer" id=1 />
 		<Texture type="Custom" name="NormalBuffer" id=2 />
