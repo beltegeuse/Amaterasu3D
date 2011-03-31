@@ -49,7 +49,7 @@ void main()
 	//Position -= (LPVCellSize.xyz*0.5);
 
 	// Prevent self shadowing
-	Position += (Normal*LPVCellSize.xyz*0.5);
+	Position -= (Normal*LPVCellSize.xyz*0.5);
 
 	Position = floor((Position-LPVPosition) / LPVCellSize.xyz);
 

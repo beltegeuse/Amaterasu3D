@@ -421,7 +421,7 @@ private:
 		if(m_DoOcclusion)
 		{
 		glEnable(GL_BLEND);
-//		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
 		glBlendFunc(GL_ONE,GL_ONE);
 		m_LPVInjectGeomerty->begin();
 		m_LPVInjectGeomerty->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
@@ -439,13 +439,13 @@ private:
 //		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
 //		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
 //		m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
-//		DrawGrid(800.0,600.0);
+//		m_SamplePointCamera->Draw();
 //		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 //		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 //		m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-//		// --------- Restore all states
+		// --------- Restore all states
 		m_LPVInjectGeomerty->end();
-//		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
 		}
 		// ******* 3th Step : Diffusion

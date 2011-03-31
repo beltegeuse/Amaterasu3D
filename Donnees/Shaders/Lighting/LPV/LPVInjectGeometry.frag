@@ -56,8 +56,8 @@ void main()
 {	
 
 	// Compute SH
-	vec4 SH = SHProjectCone(normalize(-outNormal)); // FIXME
+	vec4 SH = SHProjectCone(normalize(outNormal)); // FIXME
 
-	Grid = SH * SurfelArea; //
+	Grid = SH; //SurfelArea
 
 }

@@ -279,9 +279,9 @@ void main(){
                             0.0, 0.0,-1.0,
                             0.0, 1.0, 0.0),resultRed,resultGreen,resultBlue);
   //Data for next propagation step
-  GridRed = resultRed * 3.9;
-  GridGreen = resultGreen * 3.9;
-  GridBlue = resultBlue * 3.9;
+  GridRed = resultRed*3.9;
+  GridGreen = resultGreen*3.9;
+  GridBlue = resultBlue*3.9;
 
 //  vec2 loadPos = GetSamplePos2DOffset3D(outTexCoord,vec3(0.0,0.0,0.0));
 //  GridRed += texture2D(LPVRed, loadPos);
