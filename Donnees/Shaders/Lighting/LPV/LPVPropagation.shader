@@ -9,6 +9,7 @@
 		<Texture type="Custom" name="LPVRed" id=0 />
 		<Texture type="Custom" name="LPVGreen" id=1 />
 		<Texture type="Custom" name="LPVBlue" id=2 />
+		<Texture type="Custom" name="Occlusion" id=3 />
 	</Textures>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="LPVPropagation.frag" />

@@ -28,6 +28,7 @@ protected:
 	TShaderPtr m_BasicShader;
 	TShaderPtr m_LPVLightingShader;
 	TShaderPtr m_LPVPropagationShader;
+	TShaderPtr m_LPVInjectGeomerty;
 	FBO** m_PropagationFBOs;
 	SceneGraph::Model* m_GridModel;
 	// Camera
@@ -45,6 +46,7 @@ protected:
 	bool m_ShowGrid;
 	bool m_DebugShowDirectOnly;
 	bool m_TriInterpolation;
+	bool m_DoOcclusion;
 	// Grid params
 	Math::TVector3F m_CellSize;
 	Math::TVector3F m_GirdPosition;
@@ -126,6 +128,9 @@ private:
 						 m_PropagatedShow--;
 					 Logger::Log() << "[SHOW] Propagated Grid : " << m_PropagatedShow << "\n";
 					 break;
+				 case SDLK_F8:
+					 m_DoOcclusion = !m_DoOcclusion;
+					 break;
 			 }
 		}
 	}
@@ -140,6 +145,7 @@ private:
 		m_ShowGrid = true;
 		m_DebugShowDirectOnly = false;
 		m_TriInterpolation = false;
+		m_DoOcclusion = false;
 		m_PropagatedShow = -1;
 		glPointSize(1.0);
 		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
@@ -162,6 +168,7 @@ private:
 		m_BasicShader = ShaderManager.LoadShader("BasicShader.shader");
 		m_LPVLightingShader = ShaderManager.LoadShader("LPVLighting.shader");
 		m_LPVPropagationShader = ShaderManager.LoadShader("LPVPropagation.shader");
+		m_LPVInjectGeomerty = ShaderManager.LoadShader("LPVInjectGeometry.shader");
 		// Copy buffer
 		m_PropagationFBOs = new FBO*[m_NbPropagationStep];
 		m_PropagationFBOs[0] = m_LPVPropagationShader->GetFBO();
@@ -383,7 +390,37 @@ private:
 		glDisable(GL_BLEND);
 
 		// ******* 2nd Step : Geometry injection
-
+		// TODO: COST A LOT !!!!!!!!!
+		if(m_DoOcclusion)
+		{
+		glEnable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+		glBlendFunc(GL_ONE,GL_ONE);
+		m_LPVInjectGeomerty->begin();
+		m_LPVInjectGeomerty->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
+		m_LPVInjectGeomerty->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
+		m_LPVInjectGeomerty->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
+		// ------- From Lights
+		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
+		DrawGrid(512.0,512.0,0.5/512.0);
+		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+		// ------- From Camera
+		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
+		DrawGrid(800.0,600.0);
+		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+		// --------- Restore all states
+		m_LPVInjectGeomerty->end();
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		}
 		// ******* 3th Step : Diffusion
 		for(int i = 0; i < m_NbPropagationStep; i++)
 		{
@@ -394,6 +431,8 @@ private:
 			//m_LPVPropagationShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
 			m_LPVPropagationShader->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
 			m_LPVPropagationShader->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
+			m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+3);
+			m_LPVPropagationShader->setUniform1i("DoOcclusion",m_DoOcclusion);
 			if(i == 0)
 			{
 				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
@@ -428,6 +467,7 @@ private:
 				m_PropagationFBOs[i-1]->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 				m_PropagationFBOs[i-1]->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			}
+			m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 			m_LPVPropagationShader->end();
 		}
 
