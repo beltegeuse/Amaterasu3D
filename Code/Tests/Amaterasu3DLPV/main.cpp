@@ -29,6 +29,7 @@ protected:
 	TShaderPtr m_LPVLightingShader;
 	TShaderPtr m_LPVPropagationShader;
 	TShaderPtr m_LPVInjectGeomerty;
+	TShaderPtr m_LPVBlend;
 	FBO** m_PropagationFBOs;
 	SceneGraph::Model* m_GridModel;
 	SceneGraph::Model* m_SamplePointRSM;
@@ -175,6 +176,8 @@ private:
 		m_LPVLightingShader = ShaderManager.LoadShader("LPVLighting.shader");
 		m_LPVInjectGeomerty = ShaderManager.LoadShader("LPVInjectGeometry.shader");
 		m_LPVPropagationShader = ShaderManager.LoadShader("LPVPropagation.shader");
+		m_LPVBlend = ShaderManager.LoadShader("LPVBlend.shader");
+
 		// Copy buffer
 		m_PropagationFBOs = new FBO*[m_NbPropagationStep];
 		m_PropagationFBOs[0] = m_LPVPropagationShader->GetFBO();
@@ -417,7 +420,6 @@ private:
 		glDisable(GL_BLEND);
 
 		// ******* 2nd Step : Geometry injection
-		// TODO: COST A LOT !!!!!!!!!
 		if(m_DoOcclusion)
 		{
 		glEnable(GL_BLEND);
@@ -498,6 +500,52 @@ private:
 			m_LPVPropagationShader->end();
 		}
 
+		// ******* 3th bis Step : Blend all propagations
+		m_LPVBlend->begin();
+		glEnable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+		glBlendFunc(GL_ONE,GL_ONE);
+		for(int i = 0; i < m_PropagatedShow+1; i++)
+		{
+//			if(i == 0)
+//			{
+//				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
+//				m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+1);
+//				m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+2);
+//			}
+//			else
+//			{
+				m_PropagationFBOs[i]->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
+				m_PropagationFBOs[i]->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+1);
+				m_PropagationFBOs[i]->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+2);
+//			}
+			glBegin(GL_QUADS);
+				glTexCoord2f(0.0, 0.0);
+				glVertex2f(-1.0, -1.0);
+				glTexCoord2f(0.0, 1.0);
+				glVertex2f(-1.0, 1.0);
+				glTexCoord2f(1.0, 1.0);
+				glVertex2f(1.0, 1.0);
+				glTexCoord2f(1.0, 0.0);
+				glVertex2f(1.0, -1.0);
+			glEnd();
+//			if(i == 0)
+//			{
+//				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//				m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+//				m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+//			}
+//			else
+//			{
+				m_PropagationFBOs[i]->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+				m_PropagationFBOs[i]->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+				m_PropagationFBOs[i]->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+//			}
+		}
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		m_LPVBlend->end();
+
 		// ******* 4th Step : Filtrage pass
 		// WARNING : Don't forgot to add uniform
 		m_LPVLightingShader->begin();
@@ -515,6 +563,9 @@ private:
 			m_PropagationFBOs[m_PropagatedShow]->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+3);
 			m_PropagationFBOs[m_PropagatedShow]->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+4);
 		}
+		m_LPVBlend->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+2);
+		m_LPVBlend->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+3);
+		m_LPVBlend->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+4);
 		m_LPVLightingShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
 		m_LPVLightingShader->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
 		m_LPVLightingShader->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
@@ -531,9 +582,9 @@ private:
 			glVertex2f(1.0, -1.0);
 		glEnd();
 		//FIXME: Same pattern ???
-		m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-		m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+3);
-		m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+4);
+		m_LPVBlend->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+		m_LPVBlend->GetFBO()->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+		m_LPVBlend->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_LPVLightingShader->end();
