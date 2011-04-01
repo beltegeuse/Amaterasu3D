@@ -90,10 +90,10 @@ public:
 
 	virtual void OnRender()
 	{
-		m_gbuffer_shader->begin();
+		m_gbuffer_shader->Begin();
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
-		m_gbuffer_shader->end();
+		m_gbuffer_shader->End();
 
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -105,7 +105,7 @@ public:
 		glLoadIdentity();
 
 		// SSAO Compute
-		m_SSAOBuffer->begin();
+		m_SSAOBuffer->Begin();
 		m_gbuffer_shader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_gbuffer_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_NoiseTex->activateMultiTex(CUSTOM_TEXTURE+2);
@@ -122,10 +122,10 @@ public:
 		m_NoiseTex->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 		m_gbuffer_shader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+4);
-		m_SSAOBuffer->end();
+		m_SSAOBuffer->End();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_BlurHShader->begin();
+		m_BlurHShader->Begin();
 		m_SSAOBuffer->GetFBO()->GetTexture("AmbiantOcculsion")->activateMultiTex(CUSTOM_TEXTURE+0);
 		glBegin(GL_QUADS);
 			glVertex2f(-1.0, -1.0);
@@ -134,10 +134,10 @@ public:
 			glVertex2f(1.0, -1.0);
 		glEnd();
 		m_SSAOBuffer->GetFBO()->GetTexture("AmbiantOcculsion")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-		m_BlurHShader->end();
+		m_BlurHShader->End();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_BlurVShader->begin();
+		m_BlurVShader->Begin();
 		m_BlurHShader->GetFBO()->GetTexture("Result")->activateMultiTex(CUSTOM_TEXTURE+0);
 		glBegin(GL_QUADS);
 			glVertex2f(-1.0, -1.0);
@@ -146,7 +146,7 @@ public:
 			glVertex2f(1.0, -1.0);
 		glEnd();
 		m_BlurHShader->GetFBO()->GetTexture("Result")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-		m_BlurVShader->end();
+		m_BlurVShader->End();
 
 		m_BlurVShader->GetFBO()->DrawDebug();
 
