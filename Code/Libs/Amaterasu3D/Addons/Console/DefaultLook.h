@@ -30,7 +30,7 @@
 //==========================================================
 #include <Graphics/Font/GraphicString.h>
 #include <Graphics/SceneGraph/Rectangle2D.h>
-#include <Graphics/GLSLShader.h>
+#include <Graphics/Shaders/Shader.h>
 #include <Addons/Console/Look.h>
 #include <Math/Matrix4.h>
 #include <list>

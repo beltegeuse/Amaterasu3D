@@ -47,7 +47,7 @@ protected:
 	TShaderPtr m_BasicShaderShadow;
 	TShaderPtr m_BasicShader;
 	TShaderPtr m_ShadowShader;
-	TShaderPtr m_GBufferShader;
+//	TShaderPtr m_GBufferShader;
 	Math::CMatrix4 m_matrixPerspective;
 	SpotLight m_Light;
 
@@ -82,7 +82,7 @@ public:
 		m_BasicShaderShadow = CShaderManager::Instance().LoadShader("DebugDrawShadowMapOnly.shader");
 		// m_BasicShader = CShaderManager::Instance().LoadShader("BasicShader.shader");
 		m_ShadowShader = CShaderManager::Instance().LoadShader("ShadowMap.shader");
-		m_GBufferShader = CShaderManager::Instance().LoadShader("GBuffer.shader");
+//		m_GBufferShader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 
 		// Create Light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
@@ -154,9 +154,9 @@ public:
 			// glEnable(GL_CULL_FACE);
 			// glCullFace(GL_BACK);
 			// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			m_ShadowShader->begin();
+			m_ShadowShader->Begin();
 			RootSceneGraph.Draw(); // Draw the scene
-			m_ShadowShader->end();
+			m_ShadowShader->End();
 			// glDisable(GL_CULL_FACE);
 			// * Revert transformations
 			MatrixManager.SetProjectionMatrix(oldProjectionMatrix);
@@ -177,16 +177,16 @@ public:
 			m_ShadowShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
 			glEnable(GL_CULL_FACE);
 			glCullFace(GL_BACK);
-			m_BasicShaderShadow->begin();
-			m_BasicShaderShadow->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
-			m_BasicShaderShadow->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
+			m_BasicShaderShadow->Begin();
+			m_BasicShaderShadow->SetUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
+			m_BasicShaderShadow->SetUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
 			m_BasicShaderShadow->setUniform1i("DebugMode", m_debug);
 			if(!m_cameraView)
 			{
 				m_Camera->GetView();
 			}
 			RootSceneGraph.Draw();
-			m_BasicShaderShadow->end();
+			m_BasicShaderShadow->End();
 			m_ShadowShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 			if(m_cameraView)
 			{

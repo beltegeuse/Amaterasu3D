@@ -35,7 +35,7 @@ ShadersLoader::~ShadersLoader()
 {
 }
 
-void ShadersLoader::LoadMaterials(glShader* shader, TiXmlElement *root)
+void ShadersLoader::LoadMaterials(Shader* shader, TiXmlElement *root)
 {
 	TiXmlElement *rootMaterial = root->FirstChildElement("Materials");
 	if(!rootMaterial)
@@ -74,7 +74,7 @@ void ShadersLoader::LoadMaterials(glShader* shader, TiXmlElement *root)
 	}
 }
 
-void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
+void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 {
 	TiXmlElement *rootFBO = root->FirstChildElement("OutputFrame");
 	if(!rootFBO)
@@ -125,7 +125,7 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 	std::map<std::string, FBOTextureBufferParam> buffers;
 	Logger::Log() << "   * Chargement des differents buffers .... \n";
 	TiXmlElement *frameNode = rootFBO->FirstChildElement("Frame");
-	shader->begin();
+	shader->Begin();
 	while(frameNode)
 	{
 		std::string name;
@@ -165,13 +165,13 @@ void ShadersLoader::LoadShaderFBO(glShader* shader, TiXmlElement *root)
 		buffers[name] = param;
 		frameNode = frameNode->NextSiblingElement("Frame");
 	}
-	shader->end();
+	shader->End();
 	FBODepthBufferParam bufferDepth;
 	FBO* fbo = new FBO(Math::TVector2I(X,Y), buffers, typeDepth, bufferDepth); // FIXME: Inversion des tailles ???
 	shader->SetFBO(fbo);
 }
 
-void ShadersLoader::LoadShaderMatrix(glShader* shader, TiXmlElement *root)
+void ShadersLoader::LoadShaderMatrix(Shader* shader, TiXmlElement *root)
 {
 	TiXmlElement *rootMatrix = root->FirstChildElement("MatrixInput");
 	if(!rootMatrix)
@@ -218,7 +218,7 @@ void ShadersLoader::LoadShaderMatrix(glShader* shader, TiXmlElement *root)
 	}
 }
 
-void ShadersLoader::LoadShaderAttributs(glShader* shader, TiXmlElement *root)
+void ShadersLoader::LoadShaderAttributs(Shader* shader, TiXmlElement *root)
 {
 	TiXmlElement *rootAttributs = root->FirstChildElement("Attributs");
 	if(!rootAttributs)
@@ -275,7 +275,7 @@ void ShadersLoader::LoadShaderAttributs(glShader* shader, TiXmlElement *root)
 	}
 }
 
-void ShadersLoader::LoadShaderTextures(glShader* shader, TiXmlElement *root)
+void ShadersLoader::LoadShaderTextures(Shader* shader, TiXmlElement *root)
 {
 	TiXmlElement *rootTextures = root->FirstChildElement("Textures");
 	if(!rootTextures)
@@ -324,7 +324,7 @@ void ShadersLoader::LoadShaderTextures(glShader* shader, TiXmlElement *root)
 	}
 }
 
-glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
+Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 {
 	TiXmlDocument doc( Filename.c_str() );
 	if(!doc.LoadFile())
@@ -375,7 +375,7 @@ glShader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	vertexShadername = CMediaManager::Instance().FindMedia(vertexShadername).Fullname();
 	fragmentShadername = CMediaManager::Instance().FindMedia(fragmentShadername).Fullname();
 	// Shader creation ....
-	glShader* shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType);
+	Shader* shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType);
 	// Attrib blinding ...
 	LoadShaderAttributs(shader, root);
 	// Textures uniform

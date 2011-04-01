@@ -27,7 +27,7 @@
 #include "Model.h"
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
-#include <Graphics/GLSLShader.h>
+#include <Graphics/Shaders/Shader.h>
 
 namespace SceneGraph
 {

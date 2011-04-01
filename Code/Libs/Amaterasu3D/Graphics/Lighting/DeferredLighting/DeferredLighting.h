@@ -26,7 +26,7 @@
 #define DEFERREDLIGHTING_H_
 
 #include <Graphics/Lighting/LightingPassAbstract.h>
-#include <Graphics/GLSLShader.h>
+#include <Graphics/Shaders/Shader.h>
 #include <Graphics/SceneGraph/Group.h>
 
 class DeferredLighting : public LightingPassAbstract

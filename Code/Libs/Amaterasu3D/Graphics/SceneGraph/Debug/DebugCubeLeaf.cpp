@@ -26,7 +26,6 @@
 #include <iostream>
 #include <GL/gl.h>
 #include <Enum.h>
-#include <Graphics/GLSLShader.h>
 #include <Logger/Logger.h>
 
 GLfloat DebugCubeLeaf::CubeArray[24] = {
@@ -81,6 +80,5 @@ DebugCubeLeaf::~DebugCubeLeaf()
 
 void DebugCubeLeaf::Draw()
 {
-	Logger::Log() << "Draw ... \n";
 	SceneGraph::Model::Draw();
 }

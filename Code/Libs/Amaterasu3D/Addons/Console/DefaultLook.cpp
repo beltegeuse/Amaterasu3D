@@ -130,12 +130,12 @@ void DefaultLook::Draw()
 		m_2DShader = CShaderManager::Instance().LoadShader("2DDraw.shader");
 	}
 
-	m_2DShader->begin();
+	m_2DShader->Begin();
     // Envoi de la matrice de transformation de la console
 	CMatrixManager::Instance().PushMatrix(m_Transfo);
 	m_Rectangle->Draw();
 
-	m_2DShader->end(); ///FIXME: Normally add for texts
+	m_2DShader->End(); ///FIXME: Normally add for texts
 
     if(m_ShowText)
     {

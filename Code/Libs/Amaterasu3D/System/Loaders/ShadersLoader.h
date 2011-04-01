@@ -25,22 +25,22 @@
 #define SHADERLOADER_H_
 
 #include <System/Loaders/Loader.h>
-#include <Graphics/GLSLShader.h>
+#include <Graphics/Shaders/Shader.h>
 #include <Enum.h>
 #include <tinyxml.h>
 
-class ShadersLoader : public ILoader<glShader>
+class ShadersLoader : public ILoader<Shader>
 {
 public:
 	ShadersLoader();
 	virtual ~ShadersLoader();
-	virtual glShader* LoadFromFile(const std::string& Filename);
+	virtual Shader* LoadFromFile(const std::string& Filename);
 private:
-	void LoadShaderAttributs(glShader* shader, TiXmlElement *root);
-	void LoadShaderTextures(glShader* shader, TiXmlElement *root);
-	void LoadShaderMatrix(glShader* shader, TiXmlElement *root);
-	void LoadShaderFBO(glShader* shader, TiXmlElement *root);
-	void LoadMaterials(glShader* shader, TiXmlElement *root);
+	void LoadShaderAttributs(Shader* shader, TiXmlElement *root);
+	void LoadShaderTextures(Shader* shader, TiXmlElement *root);
+	void LoadShaderMatrix(Shader* shader, TiXmlElement *root);
+	void LoadShaderFBO(Shader* shader, TiXmlElement *root);
+	void LoadMaterials(Shader* shader, TiXmlElement *root);
 };
 
 #endif /* SHADERLOADER_H_ */

@@ -16,7 +16,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Math/SphericalCoordinates.cpp
 	
 	Graphics/Lighting/LightingPassAbstract.cpp
-	Graphics/Lighting/DeferredLighting/DeferredLighting.cpp
+	#Graphics/Lighting/DeferredLighting/DeferredLighting.cpp
 	Graphics/Camera/CameraAbstract.cpp
 	Graphics/Camera/CameraFPS.cpp
 	Graphics/SceneGraph/DrawObject.cpp
@@ -28,10 +28,12 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/SceneGraph/Assimp/AssimpNode.cpp
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
+	Graphics/Shaders/Shader.cpp
+	Graphics/Shaders/ShaderUnit.cpp
 	Graphics/MatrixManagement.cpp
 	Graphics/Color.cpp
 	Graphics/FBO.cpp
-	Graphics/GLSLShader.cpp
+	#Graphics/GLSLShader.cpp
 	Graphics/Texture.cpp
 	
 	System/EventListeners.cpp

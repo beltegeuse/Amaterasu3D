@@ -27,7 +27,7 @@
 #include <iostream>
 #include <GL/gl.h>
 #include <Enum.h>
-#include <Graphics/GLSLShader.h>
+#include <Graphics/Shaders/Shader.h>
 #include <Logger/Logger.h>
 
 

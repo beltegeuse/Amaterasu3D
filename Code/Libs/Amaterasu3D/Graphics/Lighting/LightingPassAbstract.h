@@ -26,7 +26,6 @@
 #define LIGHTINGPASSABSTRACT_H_
 
 #include <Graphics/FBO.h>
-#include <Graphics/GLSLShader.h>
 #include <Graphics/Lighting/LightingStructures.h>
 
 #include <vector>

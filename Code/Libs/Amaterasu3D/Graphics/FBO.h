@@ -24,15 +24,15 @@
 
 #ifndef FBO_H_
 #define FBO_H_
-#include <Graphics/GLSLShader.h>
+#include <Graphics/Shaders/Shader.h>
 #include <Graphics/Texture.h>
 #include <Enum.h>
 #include <map>
 #include <string>
 
 // To solve mutual inclusion
-class glShader;
-typedef CSmartPtr<glShader, CResourceCOM> TShaderPtr;
+class Shader;
+typedef CSmartPtr<Shader, CResourceCOM> TShaderPtr;
 
 ///////////////////////////////////////////
 /// Differents type of Buffer

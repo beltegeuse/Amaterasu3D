@@ -258,7 +258,7 @@ void FBO::DrawDebug()
 		int idHeight = nbElementDrew % nbHeight;
 
 		if(it->first == "Depth")
-			m_DepthShader->begin();
+			m_DepthShader->Begin();
 
 		glViewport(idWidth*factorWidth,idHeight*factorHeight, factorWidth,  factorHeight);
 
@@ -276,7 +276,7 @@ void FBO::DrawDebug()
 		glEnd();
 
 		if(it->first == "Depth")
-			m_DepthShader->end();
+			m_DepthShader->End();
 
 		it->second->desactivateTextureMapping();
 		nbElementDrew++;

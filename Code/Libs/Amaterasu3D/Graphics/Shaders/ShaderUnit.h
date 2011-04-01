@@ -32,7 +32,7 @@
 #include <System/Resource.h>
 #include <Enum.h>
 
-class ShaderUnit : public IResource
+class ShaderUnit
 {
 private:
 	// Attributs

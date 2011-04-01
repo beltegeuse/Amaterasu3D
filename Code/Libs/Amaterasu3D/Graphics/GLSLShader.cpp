@@ -20,20 +20,12 @@ Last update: 2006/11/12 (Geometry Shader Support)
 #include <System/ResourceManager.h>
 #include <System/MediaManager.h>
 
-
-SINGLETON_IMPL(CShaderManager)
-
 using namespace std;
 
 bool useGLSL = false;
 bool extensions_init = false;
 bool bGeometryShader = false;
 bool bGPUShader4 = false;
-
-CShaderException::CShaderException(const std::string& message) :
-			CException("[ShaderException] : " + message)
-{
-}
 
 //-----------------------------------------------------------------------------
 /*! \mainpage

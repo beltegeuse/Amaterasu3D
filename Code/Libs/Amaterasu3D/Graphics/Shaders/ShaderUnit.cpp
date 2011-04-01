@@ -57,7 +57,8 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type)
 	// Load the file
 	const std::string source = LoadFile (path) ;
 	const char * bufferPtr = source.c_str();
-	glShaderSource (m_ID, 1, &bufferPtr, NULL) ;
+	GLint lenght = source.size();
+	glShaderSource (m_ID, 1, &bufferPtr, &lenght ) ;
 	// Compile the shader
 	std::cout << "  * Building ...." << std::endl;
 	glCompileShader (m_ID) ;

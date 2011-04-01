@@ -34,7 +34,7 @@
 #include <Utilities/File.h>
 #include <Utilities/StringUtils.h>
 #include <Utilities/SmartPtr.h>
-#include <Graphics/GLSLShader.h>
+#include <Graphics/Shaders/Shader.h>
 #include <Graphics/SceneGraph/Assimp/AssimpNode.h>
 #include <Graphics/Texture.h>
 //#include <Core/Model.h>
@@ -50,7 +50,7 @@
 //==========================================================
 // Liste des médias pris en charge
 //==========================================================
-typedef TYPELIST_3(glShader, SceneGraph::AssimpNode, Texture) MediaList;
+typedef TYPELIST_3(Shader, SceneGraph::AssimpNode, Texture) MediaList;
 
 ////////////////////////////////////////////////////////////
 /// Modèle de gestionnaire de média

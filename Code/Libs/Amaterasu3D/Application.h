@@ -31,7 +31,7 @@
 #include <System/SettingsManager.h>
 #include <Addons/Console/Console.h>
 #include <Graphics/Font/FontManager.h>
-#include <Graphics/GLSLShader.h>
+#include <Graphics/Shaders/Shader.h>
 #include <Graphics/MatrixManagement.h>
 #include <System/EventManager.h>
 
