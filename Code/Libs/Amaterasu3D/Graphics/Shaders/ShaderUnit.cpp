@@ -22,12 +22,19 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+
 #include "ShaderUnit.h"
+
 #include <iostream>
-#include <Debug/Exceptions.h>
 #include <stdlib.h>
 #include <sstream>
 #include <fstream>
+
+#include <Debug/Exceptions.h>
+#include <Logger/Logger.h>
 
 //*********************************************************
 //*********************************************************
@@ -40,27 +47,28 @@
 
 ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type)
 {
-	std::cout << "[INFO] Compile shader file : " << path << std::endl;
+	Logger::Log() << "[INFO] Compile shader file : " << path << "\n";
 	// ID Creation
 	if(type == VERTEX_SHADER)
 	{
-		std::cout << "  * Shader type : VERTEX" << std::endl;
+		Logger::Log() << "  * Shader type : VERTEX \n";
 		m_ID = glCreateShader (GL_VERTEX_SHADER);
 	}
 	else if(type == FRAGMENT_SHADER)
 	{
-		std::cout << "  * Shader type : FRAGMENT" << std::endl;
+		Logger::Log() << "  * Shader type : FRAGMENT \n";
 		m_ID = glCreateShader(GL_FRAGMENT_SHADER);
 	}
 	else
 		throw CException("Unknow shader type ...");
 	// Load the file
+	Logger::Log() << " LOG \n";
 	const std::string source = LoadFile (path) ;
 	const char * bufferPtr = source.c_str();
 	GLint lenght = source.size();
 	glShaderSource (m_ID, 1, &bufferPtr, &lenght ) ;
 	// Compile the shader
-	std::cout << "  * Building ...." << std::endl;
+	Logger::Log() << "  * Building .... \n";
 	glCompileShader (m_ID) ;
 	// Show all the Complilation log
 	ShowCompilerLog(m_ID);
@@ -90,13 +98,13 @@ void ShaderUnit::ShowCompilerLog(unsigned int id)
 		glGetInfoLogARB(id, blen, &slen, compilerLog);
 		if(compilerLog!=0)
 		{
-			std::cout << "[LOG] **** Compiler LOG **** " << std::endl;
-			std::cout << compilerLog;
-			std::cout << "[LOG] **** END **** " << std::endl;
+			Logger::Log() << "[LOG] **** Compiler LOG **** \n";
+			Logger::Log() << compilerLog;
+			Logger::Log() << "[LOG] **** END **** \n";
 		}
 		else
 		{
-			std::cout << "[LOG] Compiler LOG : No log available" << std::endl;
+			Logger::Log() << "[LOG] Compiler LOG : No log available \n";
 		}
 	}
 }
@@ -112,6 +120,7 @@ unsigned int ShaderUnit::GetID()
  */
 const std::string ShaderUnit::LoadFile(const std::string& path)
 {
+	Logger::Log() << "[INFO] LoadFile : " << path << "\n";
 	std::ifstream file(path.c_str(), std::ios::in);
 	// Check if the file is open
 	if(!file) // if not

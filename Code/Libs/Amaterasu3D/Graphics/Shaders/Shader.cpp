@@ -45,20 +45,20 @@ CShaderException::CShaderException(const std::string& message) :
 
 #define CheckLoc(Func) \
 	GLint loc = GetUniformLocation(varname); \
-	if(loc !=1) \
+	if(loc != -1) \
 		Func;
 
 Shader::Shader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader) :
 m_VertexShader(VertexShader),
 m_FragementShader(FragmentShader),
-m_FBO(0)
+m_FBO(0),
+m_IsLink(false)
 {
 	// Program creation
 	m_ProgramID = glCreateProgram () ;
 	std::cout << "[INFO] Shader creation : " << m_ProgramID << std::endl;
 	// attach shaders
-	glAttachShader (m_ProgramID, m_VertexShader->GetID()) ;
-	glAttachShader (m_ProgramID, m_FragementShader->GetID()) ;
+	Link();
 }
 //Destructor
 Shader::~Shader()
@@ -75,13 +75,19 @@ Shader::~Shader()
 
 void Shader::Link()
 {
-	glDetachShader (m_ProgramID, m_VertexShader->GetID()) ;
-	glDetachShader (m_ProgramID, m_FragementShader->GetID()) ;
+	Logger::Log() << "[INFO] Link the shader program ... \n";
+	if(m_IsLink)
+	{
+		Logger::Log() << "[Warning] the shader program is already link ... \n";
+		glDetachShader (m_ProgramID, m_VertexShader->GetID()) ;
+		glDetachShader (m_ProgramID, m_FragementShader->GetID()) ;
+	}
 	glAttachShader (m_ProgramID, m_VertexShader->GetID()) ;
 	glAttachShader (m_ProgramID, m_FragementShader->GetID()) ;
 	// link the program
 	glLinkProgram (m_ProgramID) ;
 	ShowLinkLog(m_ProgramID);
+	m_IsLink = true;
 }
 
 void Shader::Begin()
@@ -104,11 +110,6 @@ void Shader::End()
 GLuint Shader::GetProgramObject()
 {
 	return m_ProgramID;
-}
-
-void Shader::SetUniformMatrix4fv(const GLchar* varname, const Math::CMatrix4& matrix)
-{
-	CheckLoc(glUniformMatrix4fv(loc,1, GL_TRUE, (const float*)matrix))
 }
 
 void Shader::ShowLinkLog(unsigned int id)
@@ -287,6 +288,13 @@ void Shader::SetUniformColor(const GLcharARB* varname, Color& color)
 /*
  * 4x4 Matrix setter
  */
+void Shader::SetUniformMatrix4fv(const GLchar* varname, const Math::CMatrix4& matrix)
+{
+	CheckLoc(glUniformMatrix4fv(loc,1, GL_FALSE, (const float*)matrix))
+//	Logger::Log() << "[DEBUG] " << varname << " : "  << loc << "\n";
+//	Logger::Log() << matrix << "\n";
+}
+
 void Shader::setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix)
 {
 	Assert(matrixModeAvailable(type));

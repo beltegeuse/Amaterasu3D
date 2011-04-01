@@ -65,6 +65,7 @@ private:
 	ShaderUnit * m_FragementShader;
 	GLuint m_ProgramID;
 	FBO * m_FBO;
+	bool m_IsLink;
 	// All binding attributs
 	typedef std::map<ShaderAttributType,std::string> MapAttributs;
 	typedef std::map<int,std::string> MapTexture;

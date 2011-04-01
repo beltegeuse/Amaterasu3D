@@ -110,7 +110,7 @@ void Application::InitializeOpenGL()
 	// **************************************
 	// ********* GLEW initialisation ********
 	// **************************************
-	#ifdef WIN32
+//	#ifdef WIN32
 	GLenum initialisationGLEW = glewInit();
 	// If there is an error
 	if(initialisationGLEW != GLEW_OK)
@@ -119,7 +119,10 @@ void Application::InitializeOpenGL()
 		Logger::Log() << "[Error] Can't initialize GLEW : " << glewGetErrorString(initialisationGLEW) << "\n";
 		throw CException("Can't initialize GLEW.");
 	}
-	#endif
+//	#endif
+	Logger::Log() << "OpenGL Vendor: " << (char*) glGetString(GL_VENDOR) << "\n";
+	Logger::Log() << "OpenGL Renderer: " << (char*) glGetString(GL_RENDERER) << "\n";
+	Logger::Log() << "OpenGL Version: " << (char*) glGetString(GL_VERSION) << "\n\n";
 
 	// *******************************
 	// ******** OpenGL initialisation
