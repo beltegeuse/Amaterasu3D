@@ -11,6 +11,6 @@
 		<Texture type="Custom" name="FluxRSM" id=7 />
 		<Texture type="Custom" name="NoiseBuffer" id=8 />
 	</Textures>
-	<VertexShader filename="RefectiveShadowMapCompositing.vert" />
+	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="RefectiveShadowMapCompositing.frag" />
 </Shader>
