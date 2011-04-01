@@ -22,6 +22,7 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 #include "DeferredLighting.h"
+#include <Graphics/MatrixManagement.h>
 #include <math.h>
 
 DeferredLighting::DeferredLighting(SceneGraph::Group& scene) :
@@ -64,9 +65,9 @@ void DeferredLighting::SpotLightPass()
 		// * Draw the scene
 //		glEnable(GL_CULL_FACE);
 //		glCullFace(GL_BACK);
-		m_simple_shader->begin();
+		m_simple_shader->Begin();
 		m_Scene.Draw(); // Draw the scene
-		m_simple_shader->end();
+		m_simple_shader->End();
 //		glDisable(GL_CULL_FACE);
 		// * Revert transformations
 		CMatrixManager::Instance().SetProjectionMatrix(oldProjectionMatrix);
@@ -76,17 +77,17 @@ void DeferredLighting::SpotLightPass()
 
 //		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Go to spot pass
-		m_spot_light_shader->begin();
+		m_spot_light_shader->Begin();
 		// * Light propreties
 		m_spot_light_shader->setUniform1f("LightRaduis",m_spots_lights[i].LightRaduis);
 		m_spot_light_shader->setUniform1f("LightCutOff", cos(m_spots_lights[i].LightCutOff *(M_PI / 180.0)));
 		m_spot_light_shader->setUniform1f("LightIntensity", m_spots_lights[i].LightIntensity);
-		m_spot_light_shader->setUniform3f("LightPosition", m_spots_lights[i].Position.x, m_spots_lights[i].Position.y, m_spots_lights[i].Position.z);
-		m_spot_light_shader->setUniform3f("LightSpotDirection", m_spots_lights[i].Direction.x, m_spots_lights[i].Direction.y, m_spots_lights[i].Direction.z);
-		m_spot_light_shader->setUniform3f("LightColor", m_spots_lights[i].LightColor.R, m_spots_lights[i].LightColor.G, m_spots_lights[i].LightColor.B);
+		m_spot_light_shader->SetUniformVector("LightPosition", m_spots_lights[i].Position);
+		m_spot_light_shader->SetUniformVector("LightSpotDirection", m_spots_lights[i].Direction);
+		m_spot_light_shader->SetUniformColor("LightColor", m_spots_lights[i].LightColor);
 		// * Shadow Map propreties
-		m_spot_light_shader->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
-		m_spot_light_shader->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
+		m_spot_light_shader->SetUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
+		m_spot_light_shader->SetUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
 		// Draw ...
 		glBegin(GL_QUADS);
 		glTexCoord2f(0.0, 0.0);
@@ -99,7 +100,7 @@ void DeferredLighting::SpotLightPass()
 		glVertex2f(1.0, -1.0);
 		glEnd();
 
-		m_spot_light_shader->end();
+		m_spot_light_shader->End();
 	}
 
 	// Desactive differents buffers
@@ -118,14 +119,14 @@ void DeferredLighting::PointLightPass()
 	m_FBO_graphics->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 	m_FBO_graphics->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+3);
 	// Go light pass
-	m_point_light_shader->begin();
+	m_point_light_shader->Begin();
 	for(int i = 0; i < m_points_lights.size(); i++)
 	{
 		// Setup all light informations
 		m_point_light_shader->setUniform1f("LightRaduis", m_points_lights[i].LightRaduis);
 		m_point_light_shader->setUniform1f("LightIntensity", m_points_lights[i].LightIntensity);
-		m_point_light_shader->setUniform3f("LightColor", m_points_lights[i].LightColor.R, m_points_lights[i].LightColor.G, m_points_lights[i].LightColor.B);
-		m_point_light_shader->setUniform3f("LightPosition", m_points_lights[i].Position.x,m_points_lights[i].Position.y,m_points_lights[i].Position.z);
+		m_point_light_shader->SetUniformColor("LightColor", m_points_lights[i].LightColor);
+		m_point_light_shader->SetUniformVector("LightPosition", m_points_lights[i].Position);
 
 		// Draw ...
 		glBegin(GL_QUADS);
@@ -139,7 +140,7 @@ void DeferredLighting::PointLightPass()
 		glVertex2f(1.0, -1.0);
 		glEnd();
 	}
-	m_point_light_shader->end();
+	m_point_light_shader->End();
 	// Desactive differents buffers
 	m_FBO_graphics->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 	m_FBO_graphics->GetTexture("Specular")->desactivateMultiTex(CUSTOM_TEXTURE+1);
@@ -173,10 +174,10 @@ bool DeferredLighting::isDebugMode() const
 void DeferredLighting::SetDebugMode(bool v)
 {
 	m_debug_mode = v;
-	m_point_light_shader->begin();
+	m_point_light_shader->Begin();
 	m_point_light_shader->setUniform1i("DebugMode",m_debug_mode);
-	m_point_light_shader->end();
-	m_spot_light_shader->begin();
+	m_point_light_shader->End();
+	m_spot_light_shader->Begin();
 	m_spot_light_shader->setUniform1i("DebugMode",m_debug_mode);
-	m_spot_light_shader->end();
+	m_spot_light_shader->End();
 }

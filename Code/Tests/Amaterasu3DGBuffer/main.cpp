@@ -109,10 +109,10 @@ public:
 	{
 		MatrixManager.SetModeMatrix(MATRIX_3D);
 
-		m_gbuffer_shader->begin();
+		m_gbuffer_shader->Begin();
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
-		m_gbuffer_shader->end();
+		m_gbuffer_shader->End();
 
 		if(m_debug)
 			m_gbuffer_shader->GetFBO()->DrawDebug();

@@ -30,6 +30,7 @@
 #include <Logger/Logger.h>
 #include <Debug/Exceptions.h>
 #include <Graphics/MatrixManagement.h>
+#include <Graphics/Shaders/GBufferShader.h>
 #include <System/ResourceManager.h>
 #include <System/MediaManager.h>
 
@@ -279,6 +280,18 @@ void Shader::setUniform1ui(const GLcharARB* varname, GLuint v0)
 	CheckLoc(glUniform1ui(loc, v0))
 }
 
+/*
+ * 2 Dimension Setters
+ */
+
+/*
+ * 3 Dimension Setters
+ */
+void Shader::SetUniformVector(const GLcharARB* varname, const Math::TVector3F& vector)
+{
+	CheckLoc(glUniform3f(loc, vector.x,vector.y,vector.z))
+}
+
 // **** 4 Dimension Settings
 void Shader::SetUniformColor(const GLcharARB* varname, Color& color)
 {
@@ -392,6 +405,11 @@ Shader* CShaderManager::loadfromFile(const char* vertexFile, const char* fragmen
 	{
 		return new Shader(new ShaderUnit(vertexFile, VERTEX_SHADER),
 				          new ShaderUnit(fragmentFile, FRAGMENT_SHADER));
+	}
+	else if(type == GBUFFER_SHADER)
+	{
+		return new GBufferShader(new ShaderUnit(vertexFile, VERTEX_SHADER),
+						  new ShaderUnit(fragmentFile, FRAGMENT_SHADER));
 	}
 	else
 	{

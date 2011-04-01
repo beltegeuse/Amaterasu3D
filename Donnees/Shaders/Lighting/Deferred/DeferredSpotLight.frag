@@ -12,7 +12,7 @@ uniform sampler2D ShadowBuffer;
 
 // light caracteristics
 uniform vec3 LightPosition;
-uniform vec3 LightColor;
+uniform vec4 LightColor;
 uniform vec3 LightSpotDirection;
 uniform float LightRaduis;
 uniform float LightIntensity;
@@ -86,12 +86,12 @@ void main()
 	float NdotL = max(dot(normal, LightDirection), 0.0);
 	if (NdotL > 0.0) {
 		// Add diffuse compoment
-		Color += vec4(LightAtt * (LightColor * NdotL),1.0);
+		Color += vec4(LightAtt * (LightColor.rgb * NdotL),1.0);
 		// Compute reflect vector
 		vec3 R = reflect(-LightDirection, normal);
 		// Add specular compoment
 		float RdotE = max(dot(R, normalize(-position)), 0.0);
-		Color += vec4(LightAtt * LightColor * specularColor.rgb * pow(RdotE, specularColor.a),16.0);
+		Color += vec4(LightAtt * LightColor.rgb * specularColor.rgb * pow(RdotE, specularColor.a),16.0);
 	}
 	
 	// Add diffuse color 

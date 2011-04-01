@@ -89,6 +89,7 @@ public:
 	void setUniform1ui(const GLcharARB* varname, GLuint v0);
 	// **** 2 Dimension Settings
 	// **** 3 Dimension Settings
+	void SetUniformVector(const GLcharARB* varname, const Math::TVector3F& vector);
 	// **** 4 Dimension Settings
 	void SetUniformColor(const GLcharARB* varname, Color& color);
 	// **** 3x3 Matrice Settings
