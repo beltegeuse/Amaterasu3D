@@ -76,10 +76,16 @@ private:
 	MapMatrix m_matrix_bind;
 	MapMaterials m_material_bind;
 public:
-	// Constructor
+	/*
+	 * Constructors & Destructors
+	 */
 	Shader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader);
 	virtual ~Shader();
-	// Public functions
+
+	/*
+	 * Public Methods
+	 */
+	// ***** Common Shader methods
 	void Begin();
 	void End();
 	GLuint GetProgramObject();
