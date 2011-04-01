@@ -21,7 +21,7 @@ FIND_PACKAGE(SDL REQUIRED)
 
 # *** Boost
 set(BOOST_ROOT C:/MinGW)
-set(BOOST_LIBS unit_test_framework filesystem system random)
+set(BOOST_LIBS unit_test_framework filesystem system random regex)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 MESSAGE("Boost libraries link is ${Boost_LIBRARIES}")
 

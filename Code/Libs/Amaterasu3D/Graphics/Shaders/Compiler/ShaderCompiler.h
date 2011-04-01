@@ -27,7 +27,7 @@
 
 // STL Includes
 #include <string>
-#include <vector>
+#include <list>
 
 // Amaterasu3D Includes
 #include <Debug/Exceptions.h>
@@ -49,7 +49,7 @@ private:
 	/*
 	 * Attributes
 	 */
-	std::vector<std::string> m_LinesCode;
+	std::list<std::string> m_LinesCode;
 public:
 	/*
 	 * Constructors and Destructors
@@ -68,7 +68,8 @@ private:
 	/*
 	 * Private methods
 	 */
-
+	void ResolveIncludeRules();
+	const std::string LoadFile(const std::string& path); //XXX Doublon code with ShaderUnits
 };
 
 #endif /* SHADERCOMPILER_H_ */

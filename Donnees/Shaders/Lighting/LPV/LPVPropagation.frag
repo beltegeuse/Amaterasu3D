@@ -25,14 +25,6 @@ out vec4 GridRed;
 out vec4 GridGreen;
 out vec4 GridBlue;
 
-//this is c = vec4(c0,-c1,c1,-c1)
-//with c0 = 1 / ( 2 * sqrt(PI))
-//     c1 = sqrt(3) / ( 2 * sqrt(PI))
-#define SH_c vec4(0.282094792,-0.488602512,0.488602512,0.488602512)
-//#define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,1.02332671)
-#define SH_cosLobe_c vec4(0.25,-0.5,0.5,0.5)
-//#define SH_cosLobe_c vec4(0.4,-0.8,0.8,0.8)
-
 //solid Angles
 // 0.4006696846f / 4Pi;
 //#define directFaceSubtendedSolidAngle 0.03188428
@@ -42,77 +34,7 @@ out vec4 GridBlue;
 #define directFaceSubtendedSolidAngle 0.12753712
 #define sideFaceSubtendedSolidAngle 0.13478556
 
-//Evaluates a SH
-vec4 SH_evaluate(vec3 dir){
-  return SH_c * vec4(1.0, dir.y, dir.z, dir.x);
-}
-
-//SHRotate function from the crytek paper
-vec4 SHRotate(in vec3 dir, in vec2 vZHCoeffs)
-{
-  // compute sine and cosine of thetta angle
-  // beware of singularity when both x and y are 0 (no need to rotate at all)
-  vec2 theta12_cs = normalize(dir.xy);
-
-  // compute sine and cosine of phi angle
-  vec2 phi12_cs;
-  phi12_cs.x = sqrt(1.0 - dir.z * dir.z);
-  phi12_cs.y = dir.z;
-
-  vec4 vResult;
-  // The first band is rotation-independent
-  vResult.x =  vZHCoeffs.x;
-  // rotating the second band of SH
-  vResult.y =  vZHCoeffs.y * phi12_cs.x * theta12_cs.y;
-  vResult.z =  vZHCoeffs.y * phi12_cs.y;
-  vResult.w =  vZHCoeffs.y * phi12_cs.x * theta12_cs.x;
-  return vResult;
-}
-
-#define SH_hemi_c vec4(0.25,-0.5,0.5,0.5)
-//Create hemisperical SH coeffs (function from crytek paper)
-vec4 SHCreateHemi(in vec3 dir)
-{
-  //return SHRotate(dir, vec2(0.25,0.5));
-  return SH_hemi_c * vec4(1.0,dir.y,dir.z,dir.x);
-}
-
-// no normalization
-vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
-	return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,dir.x);
-}
-
-//Create a cone SH with the given angle (function from crytek paper)
-vec4 SHProjectCone(in vec3 dir, float angle)
-{
-  vec2 vZHCoeffs = vec2(0.5 * (1.0 - cos(angle)),           // 1/2 (1 - Cos[\[Alpha]])
-                        0.75 * sin(angle) * sin(angle));   // 3/4 Sin[\[Alpha]]^2
-  return SHRotate(dir, vZHCoeffs);
-}
-
-//Creates a 90 Degree cone in pointing in dir
-vec4 SHCone90(in vec3 dir){
-  return SHRotate(dir, vec2(0.15,0.38));
-}
-
-//Does a abs dot product for double sided occlusion
-float SHDotAbs(vec4 sh1, vec4 sh2){
-   return sh1.x * sh2.x + abs(dot(sh1.yzw,sh2.yzw));
-}
-
-//ivec2 GetLoadPos2DOffset3D(in vec2 coords, in vec3 offset){
-//  vec2 c = floor(coords * LPVSize.xy);
-//  float row = floor(c.y / LPVCellSize.w);
-//  float col = floor(c.x / LPVCellSize.w);
-//  c = clamp(vec2(c.x - col * LPVCellSize.w,c.y - row * LPVCellSize.w) + offset.xy,0.0,LPVCellSize.w-1.0);
-//  col += offset.z;
-//  float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
-//  float newrow = clamp(row+coldiff,0.0,LPVSize.w-1.0);
-//  col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
-//  col = clamp(col,0.0,LPVSize.z-1.0);
-//  vec2 spos = vec2(col * LPVCellSize.w + c.x,newrow * LPVCellSize.w + c.y);//
-//  return ivec2(spos);
-//}
+#include <LPVSH.shadercode>
 
 vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset){
   vec2 c = coords * LPVSize.xy;

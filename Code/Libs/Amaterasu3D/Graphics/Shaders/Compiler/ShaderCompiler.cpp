@@ -26,10 +26,16 @@
 
 // STL Includes
 #include <sstream>
+#include <map>
+#include <fstream>
+
+// Boost Includes
+#include <boost/regex.hpp>
 
 // Amaterasu3D Includes
 #include <Utilities/StringUtils.h>
 #include <Logger/Logger.h>
+#include <System/MediaManager.h>
 
 ////////////////////////////////////////
 /// Exception class For ShaderCompiler
@@ -53,7 +59,9 @@ CShaderCompilerException::CShaderCompilerException(const std::string& message, i
 
 ShaderCompiler::ShaderCompiler(const std::string& code)
 {
-	Split(code, m_LinesCode,"\n");
+	std::vector<std::string> vectorResult;
+	Split(code, vectorResult,"\n");
+	m_LinesCode.insert(m_LinesCode.begin(),vectorResult.begin(),vectorResult.end());
 }
 
 ShaderCompiler::~ShaderCompiler()
@@ -63,12 +71,75 @@ ShaderCompiler::~ShaderCompiler()
 void ShaderCompiler::Compile()
 {
 	Logger::Log() << "[INFO] Compile Current code ... \n";
+	ResolveIncludeRules();
+}
+
+void ShaderCompiler::ResolveIncludeRules()
+{
+	bool find = false;
+	Logger::Log() << "   * ResolveIncludeRules\n";
+	/*
+	 * Search Pass
+	 */
+	//XXX: Add multiple include support
+	boost::regex re("[ ]*#[ ]*include[ ]+[\"<](.*)[\">].*");
+	std::map<std::string,std::list<std::string>::iterator> IncludeV;
+	for(std::list<std::string>::iterator it = m_LinesCode.begin(); it != m_LinesCode.end(); ++it)
+	{
+		boost::cmatch matches;
+		boost::match_results<std::string::const_iterator> what;
+		if(boost::regex_search(it->c_str(),matches,re))
+		{
+			find= true;
+			std::string fileName(matches[1].first, matches[1].second);
+			Logger::Log() << "[Compiler] Found include : " << fileName << "\n";
+			IncludeV[fileName] = it;
+		}
+	}
+	/*
+	 * Modify code pass
+	 */
+	for(std::map<std::string,std::list<std::string>::iterator>::iterator it = IncludeV.begin(); it != IncludeV.end(); ++it)
+	{
+		// Delete the current line
+		std::list<std::string>::iterator pos = m_LinesCode.erase(it->second);
+		// Add text code
+		// * Find file
+		std::string path = CMediaManager::Instance().FindMedia(it->first).Fullname();
+		// * Open file
+		std::string includeCode = LoadFile(path);
+		std::vector<std::string> vectorResult;
+		Split(includeCode, vectorResult,"\n");
+		m_LinesCode.insert(pos,vectorResult.begin(),vectorResult.end());
+	}
+
+	if(find)
+	{
+		Logger::Log() << "Code : \n" << GetCode() << "\n";
+	}
+}
+
+const std::string ShaderCompiler::LoadFile(const std::string& path)
+{
+	std::ifstream file(path.c_str(), std::ios::in);
+	// Check if the file is open
+	if(!file) // if not
+	{
+		throw CLoadingFailed(path, "enable to load the source shader");
+	}
+	std::stringstream buffer;
+	// read all the file
+	buffer << file.rdbuf();
+	//Close the file
+	file.close();
+	// retrun the buffer
+	return buffer.str();
 }
 
 const std::string ShaderCompiler::GetCode() const
 {
 	std::stringstream res;
-	for(std::vector<std::string>::const_iterator it = m_LinesCode.begin(); it != m_LinesCode.end(); ++it)
+	for(std::list<std::string>::const_iterator it = m_LinesCode.begin(); it != m_LinesCode.end(); ++it)
 	{
 		res  << (*it) << "\n";
 	}
