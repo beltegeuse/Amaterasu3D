@@ -357,7 +357,7 @@ private:
 
 		// =========== First STEPS (GBuffer generation)
 		// Fill in the GBuffer
-		m_GBufferShader->begin();
+		m_GBufferShader->Begin();
 		if(m_ShowGrid)
 		{
 //			m_BasicShader->begin();
@@ -366,7 +366,7 @@ private:
 		}
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
-		m_GBufferShader->end();
+		m_GBufferShader->End();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// ========== Second STEPS (RSM generation buffers)
@@ -385,17 +385,17 @@ private:
 		MatrixManager.SetProjectionMatrix(LightProjectionMatrix);
 		MatrixManager.SetViewMatrix(LightViewMatrix);
 		// * Enable Shader
-		m_RSMSpotShader->begin();
+		m_RSMSpotShader->Begin();
 		// *** Send all Uniform values
 		m_RSMSpotShader->setUniform1f("LightRaduis",m_Light.LightRaduis);
 		m_RSMSpotShader->setUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
 		m_RSMSpotShader->setUniform1f("LightIntensity", m_Light.LightIntensity);
-		m_RSMSpotShader->setUniform3f("LightPosition", m_Light.Position.x, m_Light.Position.y, m_Light.Position.z);
-		m_RSMSpotShader->setUniform3f("LightSpotDirection", m_Light.Direction.x, m_Light.Direction.y, m_Light.Direction.z);
-		m_RSMSpotShader->setUniform3f("LightColor", m_Light.LightColor.R, m_Light.LightColor.G, m_Light.LightColor.B);
+		m_RSMSpotShader->SetUniformVector("LightPosition", m_Light.Position);
+		m_RSMSpotShader->SetUniformVector("LightSpotDirection", m_Light.Direction);
+		m_RSMSpotShader->SetUniformColor("LightColor", m_Light.LightColor);
 		// * Draw the scene
 		RootSceneGraph.Draw();
-		m_RSMSpotShader->end();
+		m_RSMSpotShader->End();
 		// * Revert transformations
 		MatrixManager.SetProjectionMatrix(oldProjectionMatrix);
 		MatrixManager.SetViewMatrix(oldViewMatrix);
@@ -405,18 +405,18 @@ private:
 		// ****** 1st Step : VPL Injection
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE,GL_ONE);
-		m_LPVInjectVPL->begin();
+		m_LPVInjectVPL->Begin();
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
-		m_LPVInjectVPL->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-		m_LPVInjectVPL->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
-		m_LPVInjectVPL->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
+		m_LPVInjectVPL->SetUniformVector("LPVPosition", m_GirdPosition);
+		m_LPVInjectVPL->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+		m_LPVInjectVPL->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 		m_SamplePointRSM->Draw();
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-		m_LPVInjectVPL->end();
+		m_LPVInjectVPL->End();
 		glDisable(GL_BLEND);
 
 		// ******* 2nd Step : Geometry injection
@@ -425,10 +425,10 @@ private:
 		glEnable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
 		glBlendFunc(GL_ONE,GL_ONE);
-		m_LPVInjectGeomerty->begin();
-		m_LPVInjectGeomerty->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-		m_LPVInjectGeomerty->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
-		m_LPVInjectGeomerty->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
+		m_LPVInjectGeomerty->Begin();
+		m_LPVInjectGeomerty->SetUniformVector("LPVPosition", m_GirdPosition);
+		m_LPVInjectGeomerty->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+		m_LPVInjectGeomerty->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 		// ------- From Lights
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
@@ -446,7 +446,7 @@ private:
 //		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 //		m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		// --------- Restore all states
-		m_LPVInjectGeomerty->end();
+		m_LPVInjectGeomerty->End();
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
 		}
@@ -456,10 +456,10 @@ private:
 			//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 			//Logger::Log() << "Propagation : " << i << "\n";
 			m_LPVPropagationShader->SetFBO(m_PropagationFBOs[i], false);
-			m_LPVPropagationShader->begin();
+			m_LPVPropagationShader->Begin();
 			//m_LPVPropagationShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-			m_LPVPropagationShader->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
-			m_LPVPropagationShader->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
+			m_LPVPropagationShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+			m_LPVPropagationShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+3);
 			m_LPVPropagationShader->setUniform1i("DoOcclusion",m_DoOcclusion);
 			if(i == 0)
@@ -497,11 +497,11 @@ private:
 				m_PropagationFBOs[i-1]->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			}
 			m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->desactivateMultiTex(CUSTOM_TEXTURE+3);
-			m_LPVPropagationShader->end();
+			m_LPVPropagationShader->End();
 		}
 
 		// ******* 3th bis Step : Blend all propagations
-		m_LPVBlend->begin();
+		m_LPVBlend->Begin();
 		glEnable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
 		glBlendFunc(GL_ONE,GL_ONE);
@@ -544,11 +544,11 @@ private:
 		}
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-		m_LPVBlend->end();
+		m_LPVBlend->End();
 
 		// ******* 4th Step : Filtrage pass
 		// WARNING : Don't forgot to add uniform
-		m_LPVLightingShader->begin();
+		m_LPVLightingShader->Begin();
 		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
 		if(m_PropagatedShow < 0)
@@ -566,9 +566,9 @@ private:
 		m_LPVBlend->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVBlend->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+3);
 		m_LPVBlend->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+4);
-		m_LPVLightingShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-		m_LPVLightingShader->setUniform4f("LPVSize",m_TextureSize.x,m_TextureSize.y,8.0,4.0);
-		m_LPVLightingShader->setUniform4f("LPVCellSize",m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim);
+		m_LPVLightingShader->SetUniformVector("LPVPosition", m_GirdPosition);
+		m_LPVLightingShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+		m_LPVLightingShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 		m_LPVLightingShader->setUniform1i("EnableTrilinearInterpolation",m_TriInterpolation);
 		// Draw ...
 		glBegin(GL_QUADS);
@@ -587,7 +587,7 @@ private:
 		m_LPVBlend->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-		m_LPVLightingShader->end();
+		m_LPVLightingShader->End();
 
 		glClearColor(0.0f,0.0f,0.0f,1.f);
 		// ============= Compute Direct lighting only
@@ -598,19 +598,19 @@ private:
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+3);
 		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4);
-		m_DeferredSpotShader->begin();
+		m_DeferredSpotShader->Begin();
 		// Go to spot pass
 		// * Light propreties
 		m_DeferredSpotShader->setUniform1i("DebugMode", m_Debug);
 		m_DeferredSpotShader->setUniform1f("LightRaduis",m_Light.LightRaduis);
 		m_DeferredSpotShader->setUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
 		m_DeferredSpotShader->setUniform1f("LightIntensity", m_Light.LightIntensity);
-		m_DeferredSpotShader->setUniform3f("LightPosition", m_Light.Position.x, m_Light.Position.y, m_Light.Position.z);
-		m_DeferredSpotShader->setUniform3f("LightSpotDirection", m_Light.Direction.x, m_Light.Direction.y, m_Light.Direction.z);
-		m_DeferredSpotShader->setUniform3f("LightColor", m_Light.LightColor.R, m_Light.LightColor.G, m_Light.LightColor.B);
+		m_DeferredSpotShader->SetUniformVector("LightPosition", m_Light.Position);
+		m_DeferredSpotShader->SetUniformVector("LightSpotDirection", m_Light.Direction);
+		m_DeferredSpotShader->SetUniformColor("LightColor", m_Light.LightColor);
 		// * Shadow Map propreties
-		m_DeferredSpotShader->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
-		m_DeferredSpotShader->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
+		m_DeferredSpotShader->SetUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
+		m_DeferredSpotShader->SetUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
 		// Draw ...
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);
@@ -627,7 +627,7 @@ private:
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+4);
-		m_DeferredSpotShader->end();
+		m_DeferredSpotShader->End();
 
 		if(m_DebugCompositing)
 		{
@@ -641,7 +641,7 @@ private:
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			Logger::Log() << "Draw Injection ... \n";
-			m_LPVShowVPL->begin();
+			m_LPVShowVPL->Begin();
 			m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
 			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 			m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+3);
@@ -649,7 +649,7 @@ private:
 			m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+3);
-			m_LPVShowVPL->end();
+			m_LPVShowVPL->End();
 		}
 
 		/*

@@ -292,10 +292,17 @@ void Shader::SetUniformVector(const GLcharARB* varname, const Math::TVector3F& v
 	CheckLoc(glUniform3f(loc, vector.x,vector.y,vector.z))
 }
 
-// **** 4 Dimension Settings
+/*
+ *  4 Dimension Settings
+ */
 void Shader::SetUniformColor(const GLcharARB* varname, Color& color)
 {
 	CheckLoc(glUniform4f(loc, color.R,color.G,color.B,color.A))
+}
+
+void Shader::SetUniformVector(const GLcharARB* varname, const Math::TVector4F& vector)
+{
+	CheckLoc(glUniform4f(loc, vector.x, vector.y, vector.z, vector.w))
 }
 
 /*

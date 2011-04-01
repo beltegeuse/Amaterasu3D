@@ -91,6 +91,7 @@ public:
 	// **** 3 Dimension Settings
 	void SetUniformVector(const GLcharARB* varname, const Math::TVector3F& vector);
 	// **** 4 Dimension Settings
+	void SetUniformVector(const GLcharARB* varname, const Math::TVector4F& vector);
 	void SetUniformColor(const GLcharARB* varname, Color& color);
 	// **** 3x3 Matrice Settings
 	// **** 4x4 Matrice Settings
