@@ -32,7 +32,7 @@ out vec4 Flux;
 
 // light caracteristics
 uniform vec3 LightPosition;
-uniform vec3 LightColor;
+uniform vec4 LightColor;
 uniform vec3 LightSpotDirection;
 uniform float LightRaduis;
 uniform float LightIntensity;
@@ -89,7 +89,7 @@ void main()
 		float NdotL = max(dot(vec3(Normal), LightDirection), 0.0);
 		if (NdotL > 0.0) {
 			// Add diffuse compoment
-			Flux += vec4(LightAtt * (LightColor),1.0);
+			Flux += vec4(LightAtt * (LightColor.rgb),1.0);
 		}
 		
 		Flux *= diffuseColor;

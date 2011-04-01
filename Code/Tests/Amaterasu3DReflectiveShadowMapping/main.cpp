@@ -11,13 +11,13 @@
 
 #include <Math/Matrix4.h>
 #include <Application.h>
-#include <Graphics/GLSLShader.h>
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Graphics/SceneGraph/Model.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Camera/CameraFPS.h>
 #include <Graphics/Lighting/LightingStructures.h>
 #include <Addons/FPS/FPS.h>
+#include <Graphics/Shaders/Shader.h>
 
 class ApplicationReflective : public Application
 {
@@ -162,27 +162,27 @@ public:
 		CMatrixManager::Instance().SetProjectionMatrix(LightProjectionMatrix);
 		CMatrixManager::Instance().SetViewMatrix(LightViewMatrix);
 		// * Enable Shader
-		m_RSMSpotShader->begin();
+		m_RSMSpotShader->Begin();
 		// *** Send all Uniform values
 		m_RSMSpotShader->setUniform1f("LightRaduis",m_light.LightRaduis);
 		m_RSMSpotShader->setUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
 		m_RSMSpotShader->setUniform1f("LightIntensity", m_light.LightIntensity);
-		m_RSMSpotShader->setUniform3f("LightPosition", m_light.Position.x, m_light.Position.y, m_light.Position.z);
-		m_RSMSpotShader->setUniform3f("LightSpotDirection", m_light.Direction.x, m_light.Direction.y, m_light.Direction.z);
-		m_RSMSpotShader->setUniform3f("LightColor", m_light.LightColor.R, m_light.LightColor.G, m_light.LightColor.B);
+		m_RSMSpotShader->SetUniformVector("LightPosition", m_light.Position);
+		m_RSMSpotShader->SetUniformVector("LightSpotDirection", m_light.Direction);
+		m_RSMSpotShader->SetUniformColor("LightColor", m_light.LightColor);
 		// * Draw the scene
 		RootSceneGraph.Draw();
-		m_RSMSpotShader->end();
+		m_RSMSpotShader->End();
 		// * Revert transformations
 		CMatrixManager::Instance().SetProjectionMatrix(oldProjectionMatrix);
 
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		// =========== First STEPS (GBuffer generation)
 		// Fill in the GBuffer
-		m_GBufferShader->begin();
+		m_GBufferShader->Begin();
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
-		m_GBufferShader->end();
+		m_GBufferShader->End();
 
 		// ========= Third STEPS : Compositing
 		// Bind all texture location
@@ -195,18 +195,18 @@ public:
 		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+6);
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+7);
 		m_textureRand->activateMultiTex(CUSTOM_TEXTURE+8);
-		m_RSMCompositing->begin();
+		m_RSMCompositing->Begin();
 		// *** Send all Uniform values
 		m_RSMCompositing->setUniform1f("LightRaduis",m_light.LightRaduis);
 		m_RSMCompositing->setUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
 		m_RSMCompositing->setUniform1f("LightIntensity", m_light.LightIntensity);
-		m_RSMCompositing->setUniform3f("LightPosition", m_light.Position.x, m_light.Position.y, m_light.Position.z);
-		m_RSMCompositing->setUniform3f("LightSpotDirection", m_light.Direction.x, m_light.Direction.y, m_light.Direction.z);
-		m_RSMCompositing->setUniform3f("LightColor", m_light.LightColor.R, m_light.LightColor.G, m_light.LightColor.B);
+		m_RSMCompositing->SetUniformVector("LightPosition", m_light.Position);
+		m_RSMCompositing->SetUniformVector("LightSpotDirection", m_light.Direction);
+		m_RSMCompositing->SetUniformColor("LightColor", m_light.LightColor);
 		m_RSMCompositing->setUniform1i("DebugMode", m_debugCompositing);
 
-		m_RSMCompositing->setUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
-		m_RSMCompositing->setUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
+		m_RSMCompositing->SetUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
+		m_RSMCompositing->SetUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
 		// Draw Quad
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);
@@ -218,7 +218,7 @@ public:
 			glTexCoord2f(1.0, 0.0);
 			glVertex2f(1.0, -1.0);
 		glEnd();
-		m_RSMCompositing->end();
+		m_RSMCompositing->End();
 		// Desactivate all texture unit
 		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Specular")->desactivateMultiTex(CUSTOM_TEXTURE+1);
