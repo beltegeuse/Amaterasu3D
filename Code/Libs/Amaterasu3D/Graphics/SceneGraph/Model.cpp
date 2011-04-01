@@ -109,14 +109,14 @@ void Model::Draw()
 	// Material activation
 	for(MaterialMap::iterator it = m_material_map.begin(); it != m_material_map.end(); it++)
 	{
-		if(!CShaderManager::Instance().currentShader()->materialAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->IsMaterialAvailable(it->first))
 			continue;
-		CShaderManager::Instance().currentShader()->setMaterialValue(it->first,it->second);
+		CShaderManager::Instance().currentShader()->SetMaterialValue(it->first,it->second);
 	}
 	// Textures activation
 	for(TexturesMap::iterator it = m_textures_map.begin(); it != m_textures_map.end(); it++)
 	{
-		if(!CShaderManager::Instance().currentShader()->textureAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->IsTextureAvailable(it->first))
 			continue;
 		it->second->activateMultiTex(it->first);
 	}
@@ -124,7 +124,7 @@ void Model::Draw()
 	int i = 1;
 	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
-		if(!CShaderManager::Instance().currentShader()->attributAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->IsAttributAvailable(it->first))
 			continue;
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
 		glEnableVertexAttribArray (it->first);
@@ -138,14 +138,14 @@ void Model::Draw()
 	// Buffer desactivation
 	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
-		if(!CShaderManager::Instance().currentShader()->attributAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->IsAttributAvailable(it->first))
 			continue;
 		glDisableVertexAttribArray (it->first);
 	}
 	// Textures desactivations
 	for(TexturesMap::reverse_iterator it = m_textures_map.rbegin(); it != m_textures_map.rend(); it++)
 	{
-		if(!CShaderManager::Instance().currentShader()->textureAvailable(it->first))
+		if(!CShaderManager::Instance().currentShader()->IsTextureAvailable(it->first))
 			continue;
 		it->second->desactivateMultiTex(it->first);
 	}

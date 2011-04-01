@@ -180,7 +180,7 @@ public:
 			m_BasicShaderShadow->Begin();
 			m_BasicShaderShadow->SetUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
 			m_BasicShaderShadow->SetUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
-			m_BasicShaderShadow->setUniform1i("DebugMode", m_debug);
+			m_BasicShaderShadow->SetUniform1i("DebugMode", m_debug);
 			if(!m_cameraView)
 			{
 				m_Camera->GetView();

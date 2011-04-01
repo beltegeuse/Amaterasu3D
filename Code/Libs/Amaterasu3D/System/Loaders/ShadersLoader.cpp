@@ -52,19 +52,19 @@ void ShadersLoader::LoadMaterials(Shader* shader, TiXmlElement *root)
 		TinyXMLGetAttributeValue<std::string>(materialNode,"type",&type);
 		if(type == "Diffuse")
 		{
-			shader->addMaterialBinding(DIFFUSE_MATERIAL, name);
+			shader->AddMaterialBinding(DIFFUSE_MATERIAL, name);
 		}
 		else if(type == "Specular")
 		{
-			shader->addMaterialBinding(SPECULAR_MATERIAL, name);
+			shader->AddMaterialBinding(SPECULAR_MATERIAL, name);
 		}
 		else if(type == "Ambiant")
 		{
-			shader->addMaterialBinding(AMBIANT_MATERIAL, name);
+			shader->AddMaterialBinding(AMBIANT_MATERIAL, name);
 		}
 		else if(type == "Emissive")
 		{
-			shader->addMaterialBinding(EMISSION_MATERIAL, name);
+			shader->AddMaterialBinding(EMISSION_MATERIAL, name);
 		}
 		else
 		{
@@ -213,7 +213,7 @@ void ShadersLoader::LoadShaderMatrix(Shader* shader, TiXmlElement *root)
 		{
 			throw CException("Unknow Matrix : "+typeMatrix);
 		}
-		shader->addMatrixBinding(type, nameMatrix);
+		shader->AddMatrixBinding(type, nameMatrix);
 		matrixNode = matrixNode->NextSiblingElement("Matrix");
 	}
 }
@@ -270,7 +270,7 @@ void ShadersLoader::LoadShaderAttributs(Shader* shader, TiXmlElement *root)
 		{
 			throw CException("Unknow attribut : "+typeAttrib);
 		}
-		shader->addAttributBlinding(type, nameAttrib);
+		shader->AddAttributBinding(type, nameAttrib);
 		attributNode = attributNode->NextSiblingElement("Attribut");
 	}
 }
@@ -319,7 +319,7 @@ void ShadersLoader::LoadShaderTextures(Shader* shader, TiXmlElement *root)
 		{
 			throw CException("Unknow attribut : "+typeAttrib);
 		}
-		shader->addTextureUnit(typeID, nameAttrib);
+		shader->AddTextureUnit(typeID, nameAttrib);
 		textureNode = textureNode->NextSiblingElement("Texture");
 	}
 }

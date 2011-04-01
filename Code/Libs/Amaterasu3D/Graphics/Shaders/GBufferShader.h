@@ -42,8 +42,8 @@ public:
 	virtual ~GBufferShader();
 
 	virtual void OnDraw();
-	virtual bool attributAvailable(ShaderAttributType type);
-	virtual bool textureAvailable(TextureType type);
+	virtual bool IsAttributAvailable(ShaderAttributType type);
+	virtual bool IsTextureAvailable(TextureType type);
 };
 
 #endif /* GBUFFERSHADERS_H_ */

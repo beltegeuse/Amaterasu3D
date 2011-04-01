@@ -387,9 +387,9 @@ private:
 		// * Enable Shader
 		m_RSMSpotShader->Begin();
 		// *** Send all Uniform values
-		m_RSMSpotShader->setUniform1f("LightRaduis",m_Light.LightRaduis);
-		m_RSMSpotShader->setUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
-		m_RSMSpotShader->setUniform1f("LightIntensity", m_Light.LightIntensity);
+		m_RSMSpotShader->SetUniform1f("LightRaduis",m_Light.LightRaduis);
+		m_RSMSpotShader->SetUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
+		m_RSMSpotShader->SetUniform1f("LightIntensity", m_Light.LightIntensity);
 		m_RSMSpotShader->SetUniformVector("LightPosition", m_Light.Position);
 		m_RSMSpotShader->SetUniformVector("LightSpotDirection", m_Light.Direction);
 		m_RSMSpotShader->SetUniformColor("LightColor", m_Light.LightColor);
@@ -461,7 +461,7 @@ private:
 			m_LPVPropagationShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 			m_LPVPropagationShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+3);
-			m_LPVPropagationShader->setUniform1i("DoOcclusion",m_DoOcclusion);
+			m_LPVPropagationShader->SetUniform1i("DoOcclusion",m_DoOcclusion);
 			if(i == 0)
 			{
 				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
@@ -569,7 +569,7 @@ private:
 		m_LPVLightingShader->SetUniformVector("LPVPosition", m_GirdPosition);
 		m_LPVLightingShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 		m_LPVLightingShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
-		m_LPVLightingShader->setUniform1i("EnableTrilinearInterpolation",m_TriInterpolation);
+		m_LPVLightingShader->SetUniform1i("EnableTrilinearInterpolation",m_TriInterpolation);
 		// Draw ...
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);
@@ -601,10 +601,10 @@ private:
 		m_DeferredSpotShader->Begin();
 		// Go to spot pass
 		// * Light propreties
-		m_DeferredSpotShader->setUniform1i("DebugMode", m_Debug);
-		m_DeferredSpotShader->setUniform1f("LightRaduis",m_Light.LightRaduis);
-		m_DeferredSpotShader->setUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
-		m_DeferredSpotShader->setUniform1f("LightIntensity", m_Light.LightIntensity);
+		m_DeferredSpotShader->SetUniform1i("DebugMode", m_Debug);
+		m_DeferredSpotShader->SetUniform1f("LightRaduis",m_Light.LightRaduis);
+		m_DeferredSpotShader->SetUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
+		m_DeferredSpotShader->SetUniform1f("LightIntensity", m_Light.LightIntensity);
 		m_DeferredSpotShader->SetUniformVector("LightPosition", m_Light.Position);
 		m_DeferredSpotShader->SetUniformVector("LightSpotDirection", m_Light.Direction);
 		m_DeferredSpotShader->SetUniformColor("LightColor", m_Light.LightColor);

@@ -79,9 +79,9 @@ void DeferredLighting::SpotLightPass()
 		// Go to spot pass
 		m_spot_light_shader->Begin();
 		// * Light propreties
-		m_spot_light_shader->setUniform1f("LightRaduis",m_spots_lights[i].LightRaduis);
-		m_spot_light_shader->setUniform1f("LightCutOff", cos(m_spots_lights[i].LightCutOff *(M_PI / 180.0)));
-		m_spot_light_shader->setUniform1f("LightIntensity", m_spots_lights[i].LightIntensity);
+		m_spot_light_shader->SetUniform1f("LightRaduis",m_spots_lights[i].LightRaduis);
+		m_spot_light_shader->SetUniform1f("LightCutOff", cos(m_spots_lights[i].LightCutOff *(M_PI / 180.0)));
+		m_spot_light_shader->SetUniform1f("LightIntensity", m_spots_lights[i].LightIntensity);
 		m_spot_light_shader->SetUniformVector("LightPosition", m_spots_lights[i].Position);
 		m_spot_light_shader->SetUniformVector("LightSpotDirection", m_spots_lights[i].Direction);
 		m_spot_light_shader->SetUniformColor("LightColor", m_spots_lights[i].LightColor);
@@ -123,8 +123,8 @@ void DeferredLighting::PointLightPass()
 	for(int i = 0; i < m_points_lights.size(); i++)
 	{
 		// Setup all light informations
-		m_point_light_shader->setUniform1f("LightRaduis", m_points_lights[i].LightRaduis);
-		m_point_light_shader->setUniform1f("LightIntensity", m_points_lights[i].LightIntensity);
+		m_point_light_shader->SetUniform1f("LightRaduis", m_points_lights[i].LightRaduis);
+		m_point_light_shader->SetUniform1f("LightIntensity", m_points_lights[i].LightIntensity);
 		m_point_light_shader->SetUniformColor("LightColor", m_points_lights[i].LightColor);
 		m_point_light_shader->SetUniformVector("LightPosition", m_points_lights[i].Position);
 
@@ -175,9 +175,9 @@ void DeferredLighting::SetDebugMode(bool v)
 {
 	m_debug_mode = v;
 	m_point_light_shader->Begin();
-	m_point_light_shader->setUniform1i("DebugMode",m_debug_mode);
+	m_point_light_shader->SetUniform1i("DebugMode",m_debug_mode);
 	m_point_light_shader->End();
 	m_spot_light_shader->Begin();
-	m_spot_light_shader->setUniform1i("DebugMode",m_debug_mode);
+	m_spot_light_shader->SetUniform1i("DebugMode",m_debug_mode);
 	m_spot_light_shader->End();
 }

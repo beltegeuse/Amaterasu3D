@@ -82,11 +82,12 @@ public:
 	// Public functions
 	void Begin();
 	void End();
+	GLuint GetProgramObject();
 	// Uniforms Setters
 	// **** 1 Dimension Settings
-	void setUniform1f(const GLcharARB* varname, GLfloat v0);
-	void setUniform1i(const GLcharARB* varname, GLint v0);
-	void setUniform1ui(const GLcharARB* varname, GLuint v0);
+	void SetUniform1f(const GLcharARB* varname, GLfloat v0);
+	void SetUniform1i(const GLcharARB* varname, GLint v0);
+	void SetUniform1ui(const GLcharARB* varname, GLuint v0);
 	// **** 2 Dimension Settings
 	// **** 3 Dimension Settings
 	void SetUniformVector(const GLcharARB* varname, const Math::TVector3F& vector);
@@ -103,28 +104,26 @@ public:
 	void SetFBO(FBO* fbo, bool deletePrevious = true);
 	FBO* GetFBO();
 	bool IsFBOAvaliable() const;
-
-	GLuint GetProgramObject();
 	//////////////////////////////
 	// Shader Attributes Bindings
 	//////////////////////////////
 	// * Attributs
-	void addAttributBlinding(ShaderAttributType type, const std::string& name);
-	void updateAttributBlinding();
-	virtual bool attributAvailable(ShaderAttributType type);
+	void AddAttributBinding(ShaderAttributType type, const std::string& name);
+	void UpdateAttributBinding();
+	virtual bool IsAttributAvailable(ShaderAttributType type);
 	// * Textures
-	void addTextureUnit(int typeID, const std::string& name);
-	void updateTextureUnitsBlinding();
-	virtual bool textureAvailable(TextureType type);
+	void AddTextureUnit(int typeID, const std::string& name);
+	void UpdateTextureUnitsBinding();
+	virtual bool IsTextureAvailable(TextureType type);
 	// * matrix
-	void addMatrixBinding(MatrixType type, const std::string& name);
-	virtual bool matrixModeAvailable(MatrixType type);
+	void AddMatrixBinding(MatrixType type, const std::string& name);
+	virtual bool IsMatrixModeAvailable(MatrixType type);
 	void UpdateMatrix(MatrixType mat);
 	void UpdateMatrixAll();
 	// * materials
-	void addMaterialBinding(MaterialType type, const std::string& name);
-	bool materialAvailable(MaterialType type);
-	void setMaterialValue(MaterialType type, Color& color);
+	void AddMaterialBinding(MaterialType type, const std::string& name);
+	bool IsMaterialAvailable(MaterialType type);
+	void SetMaterialValue(MaterialType type, Color& color);
 	// To know before drawing
 	virtual void OnDraw();
 	virtual void UpdateAll();

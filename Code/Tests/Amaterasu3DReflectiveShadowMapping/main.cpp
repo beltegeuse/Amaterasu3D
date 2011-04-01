@@ -164,9 +164,9 @@ public:
 		// * Enable Shader
 		m_RSMSpotShader->Begin();
 		// *** Send all Uniform values
-		m_RSMSpotShader->setUniform1f("LightRaduis",m_light.LightRaduis);
-		m_RSMSpotShader->setUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
-		m_RSMSpotShader->setUniform1f("LightIntensity", m_light.LightIntensity);
+		m_RSMSpotShader->SetUniform1f("LightRaduis",m_light.LightRaduis);
+		m_RSMSpotShader->SetUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
+		m_RSMSpotShader->SetUniform1f("LightIntensity", m_light.LightIntensity);
 		m_RSMSpotShader->SetUniformVector("LightPosition", m_light.Position);
 		m_RSMSpotShader->SetUniformVector("LightSpotDirection", m_light.Direction);
 		m_RSMSpotShader->SetUniformColor("LightColor", m_light.LightColor);
@@ -197,13 +197,13 @@ public:
 		m_textureRand->activateMultiTex(CUSTOM_TEXTURE+8);
 		m_RSMCompositing->Begin();
 		// *** Send all Uniform values
-		m_RSMCompositing->setUniform1f("LightRaduis",m_light.LightRaduis);
-		m_RSMCompositing->setUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
-		m_RSMCompositing->setUniform1f("LightIntensity", m_light.LightIntensity);
+		m_RSMCompositing->SetUniform1f("LightRaduis",m_light.LightRaduis);
+		m_RSMCompositing->SetUniform1f("LightCutOff", cos(m_light.LightCutOff *(M_PI / 180.0)));
+		m_RSMCompositing->SetUniform1f("LightIntensity", m_light.LightIntensity);
 		m_RSMCompositing->SetUniformVector("LightPosition", m_light.Position);
 		m_RSMCompositing->SetUniformVector("LightSpotDirection", m_light.Direction);
 		m_RSMCompositing->SetUniformColor("LightColor", m_light.LightColor);
-		m_RSMCompositing->setUniform1i("DebugMode", m_debugCompositing);
+		m_RSMCompositing->SetUniform1i("DebugMode", m_debugCompositing);
 
 		m_RSMCompositing->SetUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
 		m_RSMCompositing->SetUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);

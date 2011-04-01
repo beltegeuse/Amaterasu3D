@@ -145,12 +145,12 @@ void Shader::ShowLinkLog(unsigned int id)
 	}
 }
 
-void Shader::addAttributBlinding(ShaderAttributType type, const std::string& name)
+void Shader::AddAttributBinding(ShaderAttributType type, const std::string& name)
 {
 	m_attributs_bind[type] = name;
 }
 
-void Shader::updateAttributBlinding()
+void Shader::UpdateAttributBinding()
 {
 	for(MapAttributs::iterator it = m_attributs_bind.begin(); it != m_attributs_bind.end(); it++)
 	{
@@ -158,43 +158,43 @@ void Shader::updateAttributBlinding()
 	}
 }
 
-bool Shader::attributAvailable(ShaderAttributType type)
+bool Shader::IsAttributAvailable(ShaderAttributType type)
 {
 	return m_attributs_bind.find(type) != m_attributs_bind.end();
 }
 
-void Shader::addTextureUnit(int typeID, const std::string& name)
+void Shader::AddTextureUnit(int typeID, const std::string& name)
 {
 	m_textures_bind[typeID] = name;
 }
 
-void Shader::updateTextureUnitsBlinding()
+void Shader::UpdateTextureUnitsBinding()
 {
 	for(MapTexture::iterator it = m_textures_bind.begin(); it != m_textures_bind.end(); it++)
 	{
 		Logger::Log() << "[INFO] Texture : " << it->second << " : " << (GLint)it->first << "\n";
-		setUniform1i(it->second.c_str(), it->first);
+		SetUniform1i(it->second.c_str(), it->first);
 	}
 }
 
-bool Shader::textureAvailable(TextureType type)
+bool Shader::IsTextureAvailable(TextureType type)
 {
 	return m_textures_bind.find(type) != m_textures_bind.end();
 }
 
-void Shader::addMatrixBinding(MatrixType type, const std::string& name)
+void Shader::AddMatrixBinding(MatrixType type, const std::string& name)
 {
 	m_matrix_bind[type] = name;
 }
 
-bool Shader::matrixModeAvailable(MatrixType type)
+bool Shader::IsMatrixModeAvailable(MatrixType type)
 {
 	return m_matrix_bind.find(type) != m_matrix_bind.end();
 }
 
 void Shader::UpdateMatrix(MatrixType type)
 {
-	if(matrixModeAvailable(type))
+	if(IsMatrixModeAvailable(type))
 	{
 		setUniformMatrix4fv(type, CMatrixManager::Instance().GetMatrix(type));
 	}
@@ -208,17 +208,17 @@ void Shader::UpdateMatrixAll()
 	}
 }
 
-void Shader::addMaterialBinding(MaterialType type, const std::string& name)
+void Shader::AddMaterialBinding(MaterialType type, const std::string& name)
 {
 	m_material_bind[type] = name;
 }
 
-bool Shader::materialAvailable(MaterialType type)
+bool Shader::IsMaterialAvailable(MaterialType type)
 {
 	return m_material_bind.find(type) != m_material_bind.end();
 }
 
-void Shader::setMaterialValue(MaterialType type, Color& color)
+void Shader::SetMaterialValue(MaterialType type, Color& color)
 {
 	SetUniformColor(m_material_bind[type].c_str(), color);
 }
@@ -230,11 +230,11 @@ void Shader::OnDraw()
 
 void Shader::UpdateAll()
 {
-	updateAttributBlinding();
+	UpdateAttributBinding();
 	Link();
 	// * Warning : Need to active shader
 	Begin();
-	updateTextureUnitsBlinding();
+	UpdateTextureUnitsBinding();
 	End();
 }
 
@@ -266,16 +266,16 @@ void  Shader::BindAttribLocation(GLint index, const GLchar* name)
 /*
  * 1 Dimension Setters
  */
-void Shader::setUniform1f(const GLcharARB* varname, GLfloat v0)
+void Shader::SetUniform1f(const GLcharARB* varname, GLfloat v0)
 {
 	CheckLoc(glUniform1f(loc, v0))
 }
-void Shader::setUniform1i(const GLcharARB* varname, GLint v0)
+void Shader::SetUniform1i(const GLcharARB* varname, GLint v0)
 {
 	CheckLoc(glUniform1i(loc, v0))
 
 }
-void Shader::setUniform1ui(const GLcharARB* varname, GLuint v0)
+void Shader::SetUniform1ui(const GLcharARB* varname, GLuint v0)
 {
 	CheckLoc(glUniform1ui(loc, v0))
 }
@@ -317,7 +317,7 @@ void Shader::SetUniformMatrix4fv(const GLchar* varname, const Math::CMatrix4& ma
 
 void Shader::setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix)
 {
-	Assert(matrixModeAvailable(type));
+	Assert(IsMatrixModeAvailable(type));
 	SetUniformMatrix4fv(m_matrix_bind[type].c_str(), matrix);
 }
 

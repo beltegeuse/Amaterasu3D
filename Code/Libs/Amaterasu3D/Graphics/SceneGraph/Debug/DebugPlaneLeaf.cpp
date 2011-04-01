@@ -76,8 +76,8 @@ void DebugPlaneLeaf::Draw()
 	//  * Les differents blindings ...
 	GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_planebuffers[0]));
 	// Les disponibilites du shaders
-	bool vertexSupport = CShaderManager::Instance().currentShader()->attributAvailable(VERTEX_ATTRIBUT);
-	bool colorSupport = CShaderManager::Instance().currentShader()->attributAvailable(COLOR_ATTRIBUT);
+	bool vertexSupport = CShaderManager::Instance().currentShader()->IsAttributAvailable(VERTEX_ATTRIBUT);
+	bool colorSupport = CShaderManager::Instance().currentShader()->IsAttributAvailable(COLOR_ATTRIBUT);
 
 	if(!(vertexSupport || colorSupport))
 	{

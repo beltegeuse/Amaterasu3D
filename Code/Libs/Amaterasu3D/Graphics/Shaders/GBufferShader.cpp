@@ -45,29 +45,29 @@ void GBufferShader::OnDraw()
 	// For diffuse textures
 	if(m_use_texDiffuse && m_use_texCoord)
 	{
-		setUniform1i("UseDiffuseTex",1);
+		SetUniform1i("UseDiffuseTex",1);
 	}
 	else
 	{
-		setUniform1i("UseDiffuseTex",0);
+		SetUniform1i("UseDiffuseTex",0);
 	}
 	// For normal texture
 	if(m_use_texNormal && m_use_tangants && m_use_texCoord)
 	{
-		setUniform1i("UseBumpMapping",1);
+		SetUniform1i("UseBumpMapping",1);
 	}
 	else
 	{
-		setUniform1i("UseBumpMapping",0);
+		SetUniform1i("UseBumpMapping",0);
 	}
 	// For specular texture
 	if(m_use_texSpecular && m_use_texCoord)
 	{
-		setUniform1i("UseSpecularTex",1);
+		SetUniform1i("UseSpecularTex",1);
 	}
 	else
 	{
-		setUniform1i("UseSpecularTex",0);
+		SetUniform1i("UseSpecularTex",0);
 	}
 	// After that reinit all attributs for the next drawing
 	m_use_texCoord = false;
@@ -77,10 +77,10 @@ void GBufferShader::OnDraw()
 	m_use_tangants = false;
 }
 
-bool GBufferShader::attributAvailable(ShaderAttributType type)
+bool GBufferShader::IsAttributAvailable(ShaderAttributType type)
 {
 	//TODO: Rewrite this function
-	bool res = Shader::attributAvailable(type);
+	bool res = Shader::IsAttributAvailable(type);
 	if(!res)
 		return res;
 	// Update attributs
@@ -92,10 +92,10 @@ bool GBufferShader::attributAvailable(ShaderAttributType type)
 	return res;
 }
 
-bool GBufferShader::textureAvailable(TextureType type)
+bool GBufferShader::IsTextureAvailable(TextureType type)
 {
 	//TODO: Rewrite this function
-	bool res = Shader::textureAvailable(type);
+	bool res = Shader::IsTextureAvailable(type);
 	if(!res)
 		return res;
 	// Update attributs
