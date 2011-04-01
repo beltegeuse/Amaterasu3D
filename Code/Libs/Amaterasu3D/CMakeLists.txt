@@ -31,6 +31,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Shaders/Shader.cpp
 	Graphics/Shaders/ShaderUnit.cpp
 	Graphics/Shaders/GBufferShader.cpp
+	Graphics/Shaders/Compiler/ShaderCompiler.cpp
 	Graphics/MatrixManagement.cpp
 	Graphics/Color.cpp
 	Graphics/FBO.cpp

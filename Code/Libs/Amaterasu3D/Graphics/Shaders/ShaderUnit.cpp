@@ -35,6 +35,7 @@
 
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
+#include <Graphics/Shaders/Compiler/ShaderCompiler.h>
 
 //*********************************************************
 //*********************************************************
@@ -61,9 +62,11 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type)
 	}
 	else
 		throw CException("Unknow shader type ...");
-	// Load the file
-	Logger::Log() << " LOG \n";
-	const std::string source = LoadFile (path) ;
+	// Use own shader Compiler to add extra stuff to GLSL langage
+	ShaderCompiler compiler(LoadFile (path));
+	compiler.Compile();
+	const std::string source = compiler.GetCode();
+	// Use GLSL To compile the current shader code
 	const char * bufferPtr = source.c_str();
 	GLint lenght = source.size();
 	glShaderSource (m_ID, 1, &bufferPtr, &lenght ) ;
