@@ -8,7 +8,14 @@ uniform sampler2D NormalBuffer;
 uniform sampler2D DepthBuffer;
 uniform sampler2D RandomBuffer;
 uniform sampler2D RendererBuffer;
-uniform sampler2D PositionBuffer;
+
+// To deduce Position
+uniform float FarClipping;
+uniform float NearClipping;
+uniform vec2 UnprojectInfo;
+uniform mat4 InverseViewMatrix;
+
+#include <GetPosition.shadercode>
 
 // Entree
 smooth in vec2 outTexCoord;
@@ -24,7 +31,7 @@ float Intensity = 1.0f;
 
 float calcAO(vec2 uv, vec2 coord, vec3 pos, vec3 norm)
 {
-	vec3 diff = texture2D(PositionBuffer, uv + coord).xyz - pos;
+	vec3 diff = PositionFormDepth(DepthBuffer, uv + coord).xyz - pos;
 	vec3 v = normalize(diff);
 	float d = length(diff) * Scale;
 	return max(0.0, dot(norm, v) - Bias) * (1.0 / (1.0 + d)) * Intensity;
@@ -34,6 +41,10 @@ float calcAO(vec2 uv, vec2 coord, vec3 pos, vec3 norm)
 // And : http://encelo.netsons.org/blog/tag/glsl/
 void main()
 {
+	float Depth = texture(DepthBuffer, outTexCoord).r;
+	if(Depth == 1.0)
+		discard;
+
 	// Samples vectors
 	vec2 vec[4];
 	vec[0] = vec2(1, 0);
@@ -43,8 +54,7 @@ void main()
 
 	vec2 Rand = normalize(texture(RandomBuffer, vec2(600,800) * outTexCoord / 64.0).xy* 2.0 - 1.0);
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz* 2.0 - 1.0);
-	vec3 Position = texture(PositionBuffer, outTexCoord).xyz;
-	float Depth = texture(DepthBuffer, outTexCoord).r;
+	vec3 Position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
 
 	float AOFactor = 0.0;
 	float Raduis = SampleRaduis / (Depth*100.0);

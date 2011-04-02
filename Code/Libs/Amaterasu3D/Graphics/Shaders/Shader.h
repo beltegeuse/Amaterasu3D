@@ -39,6 +39,7 @@
 #include <Enum.h>
 #include <Debug/OpenGLDebug.h>
 #include <Math/Matrix4.h>
+#include <Math/Vector2.h>
 #include <System/Resource.h>
 #include <Logger/Logger.h>
 #include <Graphics/Shaders/ShaderUnit.h>
@@ -98,6 +99,7 @@ public:
 	void SetUniform1i(const GLcharARB* varname, GLint v0);
 	void SetUniform1ui(const GLcharARB* varname, GLuint v0);
 	// **** 2 Dimension Settings
+	void SetUniformVector(const GLcharARB* varname, const Math::TVector2F& vector);
 	// **** 3 Dimension Settings
 	void SetUniformVector(const GLcharARB* varname, const Math::TVector3F& vector);
 	// **** 4 Dimension Settings

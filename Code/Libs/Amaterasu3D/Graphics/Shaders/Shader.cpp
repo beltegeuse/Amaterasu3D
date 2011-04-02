@@ -283,7 +283,10 @@ void Shader::SetUniform1ui(const GLcharARB* varname, GLuint v0)
 /*
  * 2 Dimension Setters
  */
-
+void Shader::SetUniformVector(const GLcharARB* varname, const Math::TVector2F& vector)
+{
+	CheckLoc(glUniform2f(loc, vector.x,vector.y))
+}
 /*
  * 3 Dimension Setters
  */

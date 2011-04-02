@@ -1,0 +1,25 @@
+
+// CAUTION :
+// Need these uniforms
+/*
+uniform float FarClipping;
+uniform float NearClipping;
+uniform vec2 UnprojectInfo;
+uniform mat4 InverseViewMatrix;
+*/
+
+float DepthToZPosition(in float depth) {
+  return NearClipping / (FarClipping - depth * (FarClipping - NearClipping)) * FarClipping;
+}
+
+vec4 PositionFormDepth(in sampler2D depthSampler, in vec2 texcoord)
+{
+    float rawDepth = texture2D(depthSampler,texcoord).r;
+    float depth = DepthToZPosition(rawDepth);
+	vec4 screencoord = vec4(((texcoord.x)-0.5) * 2.0 * UnprojectInfo.x * depth,
+                          ((-texcoord.y)+0.5) * 2.0 * UnprojectInfo.y * depth,
+                          -depth,
+                          1.0);
+    screencoord = InverseViewMatrix * screencoord;
+    return screencoord;
+}
