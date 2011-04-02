@@ -16,7 +16,6 @@ uniform sampler2D TextureDiffuse;
 uniform sampler2D TextureNormal;
 
 // Shader input
-smooth in vec3 outPosition;
 smooth in vec2 outTexCoord;
 smooth in mat3 outtbnMatrix;
 smooth in vec3 outColor;
@@ -42,9 +41,6 @@ uniform float LightCutOff; // cos value
 
 void main()
 {
-	// Position buffer
-	Position = vec4(outPosition,1.0);
-
     // Diffuse buffer
     vec4 diffuseColor = MaterialDiffuseColor;
     if(UseDiffuseTex == 1)
