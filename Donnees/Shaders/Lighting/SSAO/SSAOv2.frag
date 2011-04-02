@@ -1,5 +1,9 @@
 #version 130
 
+/*
+ * Based on http://3d.benjamin-thaut.de/?p=16 Implementation.
+ */
+
 // Precision qualifier
 precision highp float;
 
