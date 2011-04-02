@@ -78,10 +78,9 @@ void main()
 	vec4 shadowCoordinateWdivide = ShadowCoord / ShadowCoord.w ;
 	// Used to lower moiré pattern and self-shadowing
 	shadowCoordinateWdivide.z -= 0.001;
-	
+
 	float ClosedLightDistance = texture(ShadowBuffer, shadowCoordinateWdivide.st).r;
 	float ShadowFactor = ClosedLightDistance < shadowCoordinateWdivide.z ? 0.2 : 1.0 ;
-	
 	
 	// Compute light attenation
     float SpotAtt = pow(SpotDot, 12.0); //TODO: uniform ???
@@ -96,10 +95,10 @@ void main()
 		// Add diffuse compoment
 		Color += vec4(LightAtt * (LightColor.rgb * NdotL),1.0);
 		// Compute reflect vector
-		vec3 R = reflect(-LightDirection, normal);
-		// Add specular compoment
-		float RdotE = max(dot(R, normalize(-position)), 0.0);
-		Color += vec4(LightAtt * LightColor.rgb * specularColor.rgb * pow(RdotE, specularColor.a),16.0);
+//		vec3 R = reflect(-LightDirection, normal);
+//		// Add specular compoment
+//		float RdotE = max(dot(R, normalize(-position)), 0.0);
+//		Color += vec4(LightAtt * LightColor.rgb * specularColor.rgb * pow(RdotE, specularColor.a),16.0);
 	}
 	
 	// Add diffuse color 
