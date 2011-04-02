@@ -49,7 +49,19 @@ void DeferredLighting::SpotLightPass()
 	m_FBO_graphics->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+0);
 	m_FBO_graphics->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+1);
 	m_FBO_graphics->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
-	m_FBO_graphics->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+3);
+	m_FBO_graphics->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+3);
+
+	// Update Info
+	m_spot_light_shader->Begin();
+	m_spot_light_shader->SetUniform1f("FarClipping",4000);
+	m_spot_light_shader->SetUniform1f("NearClipping",1.0);
+	Math::TVector2F UnprojectInfo;
+	Math::CMatrix4 ProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
+	UnprojectInfo.x = 1.0f / ProjectionMatrix.a11;
+	UnprojectInfo.y = -1.0f / ProjectionMatrix.a22;
+	m_spot_light_shader->SetUniformVector("UnprojectInfo", UnprojectInfo);
+	m_spot_light_shader->SetUniformMatrix4fv("InverseViewMatrix", CMatrixManager::Instance().GetMatrix(VIEW_MATRIX).Inverse());
+	m_spot_light_shader->End();
 
 	for(int i = 0; i < m_spots_lights.size(); i++)
 	{
@@ -107,7 +119,7 @@ void DeferredLighting::SpotLightPass()
 	m_FBO_graphics->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 	m_FBO_graphics->GetTexture("Specular")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 	m_FBO_graphics->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-	m_FBO_graphics->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+	m_FBO_graphics->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 	m_simple_shader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 }
 
