@@ -66,6 +66,9 @@ private:
 	GLuint m_ProgramID;
 	FBO * m_FBO;
 	bool m_IsLink;
+	// Cache system
+//	typedef std::map<std::string, GLint> CachedIDMap;
+//	CachedIDMap m_CachedID;
 	// All binding attributs
 	typedef std::map<ShaderAttributType,std::string> MapAttributs;
 	typedef std::map<int,std::string> MapTexture;
@@ -182,6 +185,9 @@ public:
 	Shader* currentShader();
 	bool activedShader();
 private:
+	/*
+	 * Attributes
+	 */
 	std::vector<Shader*>  m_shader_stack;
 	int m_max_stack;
 
@@ -197,20 +203,25 @@ private:
 int Shader::GetAttribLocation(const GLchar* name)
 {
 	//FIXME: Faire du caching pour accelerer les appels
-	unsigned int id = GLCheck(glGetAttribLocation (m_ProgramID,name));
-	//std::cout << "[DEBUG] AttribLocation : " << name << " => " << id << std::endl;
+	GLint id = GLCheck(glGetAttribLocation (m_ProgramID,name));
 	return id;
 }
 
 GLint Shader::GetUniformLocation(const GLchar* name)
 {
+//	CachedIDMap::iterator it = m_CachedID.find(std::string(name));
+//	if(it != m_CachedID.end())
+//		return it->second;
 	//FIXME: Faire du caching pour accelerer les appels
 	GLint loc = glGetUniformLocation(m_ProgramID,name);
 	if(loc == -1)
 	{
 		Logger::Log() << "Error: can't find uniform variable \"" << name << "\"\n";
 	}
-	//std::cout << "[DEBUG] UniformLocation : " << name << " => " << loc << " ( program " << m_ProgramID << " )" <<  std::endl;
+//	else
+//	{
+//		m_CachedID[std::string(name)] = loc;
+//	}
 	return loc;
 }
 
