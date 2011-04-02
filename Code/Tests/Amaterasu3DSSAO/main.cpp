@@ -21,6 +21,7 @@ protected:
 	CameraFPS* m_Camera;
 	TShaderPtr m_gbuffer_shader;
 	TShaderPtr m_SSAOBuffer;
+	TShaderPtr m_SSAOShader2;
 	TShaderPtr m_BlurHShader;
 	TShaderPtr m_BlurVShader;
 	TTexturePtr m_NoiseTex;
@@ -47,6 +48,7 @@ public:
 		// Load shader
 		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_SSAOBuffer = CShaderManager::Instance().LoadShader("SSAO.shader");
+		m_SSAOShader2 = ShaderManager.LoadShader("SSAOv2.shader");
 		m_BlurHShader = CShaderManager::Instance().LoadShader("GaussianBlurH.shader");
 		m_BlurVShader = CShaderManager::Instance().LoadShader("GaussianBlurV.shader");
 		// Load textures
@@ -90,65 +92,83 @@ public:
 
 	virtual void OnRender()
 	{
+		MatrixManager.SetModeMatrix(MATRIX_3D);
+
 		m_gbuffer_shader->Begin();
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
 		m_gbuffer_shader->End();
 
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-
-		// SSAO Compute
-		m_SSAOBuffer->Begin();
-		m_gbuffer_shader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+0);
-		m_gbuffer_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+1);
-		m_NoiseTex->activateMultiTex(CUSTOM_TEXTURE+2);
-		m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+3);
-		m_gbuffer_shader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+4);
+		m_SSAOShader2->Begin();
+		m_gbuffer_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_SSAOShader2->SetUniform1f("NearClipping",0.1);
+		m_SSAOShader2->SetUniform1f("FarClipping",100.0);
+		m_SSAOShader2->SetUniform1f("ScreenWidth",800.0);
+		m_SSAOShader2->SetUniform1f("ScreenHeight",600.0);
 		glBegin(GL_QUADS);
 			glVertex2f(-1.0, -1.0);
 			glVertex2f(-1.0, 1.0);
 			glVertex2f(1.0, 1.0);
 			glVertex2f(1.0, -1.0);
 		glEnd();
-		m_gbuffer_shader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-		m_gbuffer_shader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-		m_NoiseTex->desactivateMultiTex(CUSTOM_TEXTURE+2);
-		m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+3);
-		m_gbuffer_shader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+4);
-		m_SSAOBuffer->End();
+		m_gbuffer_shader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_SSAOShader2->End();
+		m_SSAOShader2->GetFBO()->DrawDebug();
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_BlurHShader->Begin();
-		m_SSAOBuffer->GetFBO()->GetTexture("AmbiantOcculsion")->activateMultiTex(CUSTOM_TEXTURE+0);
-		glBegin(GL_QUADS);
-			glVertex2f(-1.0, -1.0);
-			glVertex2f(-1.0, 1.0);
-			glVertex2f(1.0, 1.0);
-			glVertex2f(1.0, -1.0);
-		glEnd();
-		m_SSAOBuffer->GetFBO()->GetTexture("AmbiantOcculsion")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-		m_BlurHShader->End();
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_BlurVShader->Begin();
-		m_BlurHShader->GetFBO()->GetTexture("Result")->activateMultiTex(CUSTOM_TEXTURE+0);
-		glBegin(GL_QUADS);
-			glVertex2f(-1.0, -1.0);
-			glVertex2f(-1.0, 1.0);
-			glVertex2f(1.0, 1.0);
-			glVertex2f(1.0, -1.0);
-		glEnd();
-		m_BlurHShader->GetFBO()->GetTexture("Result")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-		m_BlurVShader->End();
-
-		m_BlurVShader->GetFBO()->DrawDebug();
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//		glMatrixMode(GL_PROJECTION);
+//		glPushMatrix();
+//		glLoadIdentity();
+//		glMatrixMode(GL_MODELVIEW);
+//		glPushMatrix();
+//		glLoadIdentity();
+//
+//		// SSAO Compute
+//		m_SSAOBuffer->Begin();
+//		m_gbuffer_shader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+0);
+//		m_gbuffer_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+1);
+//		m_NoiseTex->activateMultiTex(CUSTOM_TEXTURE+2);
+//		m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+3);
+//		m_gbuffer_shader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+4);
+//		glBegin(GL_QUADS);
+//			glVertex2f(-1.0, -1.0);
+//			glVertex2f(-1.0, 1.0);
+//			glVertex2f(1.0, 1.0);
+//			glVertex2f(1.0, -1.0);
+//		glEnd();
+//		m_gbuffer_shader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//		m_gbuffer_shader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+//		m_NoiseTex->desactivateMultiTex(CUSTOM_TEXTURE+2);
+//		m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+//		m_gbuffer_shader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+4);
+//		m_SSAOBuffer->End();
+//
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//		m_BlurHShader->Begin();
+//		m_SSAOBuffer->GetFBO()->GetTexture("AmbiantOcculsion")->activateMultiTex(CUSTOM_TEXTURE+0);
+//		glBegin(GL_QUADS);
+//			glVertex2f(-1.0, -1.0);
+//			glVertex2f(-1.0, 1.0);
+//			glVertex2f(1.0, 1.0);
+//			glVertex2f(1.0, -1.0);
+//		glEnd();
+//		m_SSAOBuffer->GetFBO()->GetTexture("AmbiantOcculsion")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//		m_BlurHShader->End();
+//
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//		m_BlurVShader->Begin();
+//		m_BlurHShader->GetFBO()->GetTexture("Result")->activateMultiTex(CUSTOM_TEXTURE+0);
+//		glBegin(GL_QUADS);
+//			glVertex2f(-1.0, -1.0);
+//			glVertex2f(-1.0, 1.0);
+//			glVertex2f(1.0, 1.0);
+//			glVertex2f(1.0, -1.0);
+//		glEnd();
+//		m_BlurHShader->GetFBO()->GetTexture("Result")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//		m_BlurVShader->End();
+//
+//		m_BlurVShader->GetFBO()->DrawDebug();
 
 		if(m_debug)
 		{
@@ -162,7 +182,7 @@ public:
 			glMatrixMode(GL_MODELVIEW);
 		}
 
-
+		MatrixManager.SetModeMatrix(MATRIX_2D);
 
 		// Affichage du message d'aide
 		Console.Draw();
