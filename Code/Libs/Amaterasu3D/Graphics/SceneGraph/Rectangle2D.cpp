@@ -23,7 +23,7 @@
 //==========================================================
 #include "Rectangle2D.h"
 
-Rectangle2D::Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord)
+Rectangle2D::Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord, float offset)
 {
 	// Create Vertex buffer
 	float* vertexBuffer = new float[8];
@@ -45,14 +45,14 @@ Rectangle2D::Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bott
 	if(generateUVCoord)
 	{
 		float* uvBuffer = new float[8];
-		uvBuffer[0] = 0;
-		uvBuffer[1] = 0;
-		uvBuffer[2] = 0;
-		uvBuffer[3] = 1;
-		uvBuffer[4] = 1;
-		uvBuffer[5] = 1;
-		uvBuffer[6] = 1;
-		uvBuffer[7] = 0;
+		uvBuffer[0] = 0+offset;
+		uvBuffer[1] = 0+offset;
+		uvBuffer[2] = 0+offset;
+		uvBuffer[3] = 1-offset;
+		uvBuffer[4] = 1-offset;
+		uvBuffer[5] = 1-offset;
+		uvBuffer[6] = 1-offset;
+		uvBuffer[7] = 0+offset;
 		buffer.buffer = uvBuffer;
 		AddBuffer(buffer,TEXCOORD_ATTRIBUT);
 	}

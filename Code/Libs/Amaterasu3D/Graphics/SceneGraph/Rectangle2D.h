@@ -34,7 +34,7 @@ public:
 	/*
 	 * Constructors & Destructors
 	 */
-	Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord = true);
+	Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord = true, float offset=0);
 	virtual ~Rectangle2D();
 };
 

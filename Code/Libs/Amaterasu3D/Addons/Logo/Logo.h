@@ -2,14 +2,15 @@
 #define LOGO_H_
 
 #include <Graphics/Texture.h>
-
+#include <Graphics/SceneGraph/Rectangle2D.h>
+#include <Graphics/Shaders/Shader.h>
 class Logo {
 private:
 	/*
 	 * Attributes
 	 */
-	TTexturePtr m_Logo; ///< Represent the Amaterasu3d logo
-
+	Rectangle2D* m_Rectangle;
+	TShaderPtr m_2DShader;
 public:
 	/*
 	 * Constructors and destructors

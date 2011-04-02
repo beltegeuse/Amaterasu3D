@@ -38,11 +38,13 @@
 #include <Application.h>
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
+#include <Addons/Logo/Logo.h>
 
 class ApplicationShadow : public Application
 {
 protected:
 	FPS m_FPS;
+	Logo m_Logo;
 	CameraFPS* m_Camera;
 	TShaderPtr m_BasicShaderShadow;
 	TShaderPtr m_BasicShader;
@@ -199,6 +201,7 @@ public:
 
 		// Draw Tow 2D things
 		MatrixManager.SetModeMatrix(MATRIX_2D);
+		m_Logo.Draw();
 		Console.Draw();
 	}
 };
