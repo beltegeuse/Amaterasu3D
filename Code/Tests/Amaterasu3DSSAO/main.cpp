@@ -14,6 +14,7 @@
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
 #include <Graphics/Camera/CameraFPS.h>
+#include <Addons/FPS/FPS.h>
 
 class ApplicationSSAO : public Application
 {
@@ -25,6 +26,7 @@ protected:
 	TShaderPtr m_BlurHShader;
 	TShaderPtr m_BlurVShader;
 	TTexturePtr m_NoiseTex;
+	FPS m_FPS;
 	bool m_debug;
 	bool m_ChooseTechnique;
 public:
