@@ -110,10 +110,10 @@ public:
 		{
 			m_SSAOShader2->Begin();
 			m_gbuffer_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
-			m_SSAOShader2->SetUniform1f("NearClipping",0.1);
-			m_SSAOShader2->SetUniform1f("FarClipping",100.0);
-			m_SSAOShader2->SetUniform1f("ScreenWidth",800.0);
-			m_SSAOShader2->SetUniform1f("ScreenHeight",600.0);
+			m_SSAOShader2->SetUniform1f("NearClipping",SettingsManager.GetFarClipping());
+			m_SSAOShader2->SetUniform1f("FarClipping",SettingsManager.GetNearClipping());
+			m_SSAOShader2->SetUniform1f("ScreenWidth",SettingsManager.GetSizeRenderingWindow().x);
+			m_SSAOShader2->SetUniform1f("ScreenHeight",SettingsManager.GetSizeRenderingWindow().y);
 			glBegin(GL_QUADS);
 				glVertex2f(-1.0, -1.0);
 				glVertex2f(-1.0, 1.0);
@@ -142,14 +142,7 @@ public:
 			m_NoiseTex->activateMultiTex(CUSTOM_TEXTURE+2);
 			m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+3);
 			// *** Send uniform
-			m_SSAOBuffer->SetUniform1f("FarClipping",100);
-			m_SSAOBuffer->SetUniform1f("NearClipping",0.1);
-			Math::TVector2F UnprojectInfo;
-			Math::CMatrix4 ProjectionMatrix = MatrixManager.GetMatrix(PROJECTION_MATRIX);
-			UnprojectInfo.x = 1.0f / ProjectionMatrix.a11;
-			UnprojectInfo.y = -1.0f / ProjectionMatrix.a22;
-			m_SSAOBuffer->SetUniformVector("UnprojectInfo", UnprojectInfo);
-			m_SSAOBuffer->SetUniformMatrix4fv("InverseViewMatrix", MatrixManager.GetMatrix(VIEW_MATRIX).Inverse());
+			ShaderHelperUniformPosition(m_SSAOBuffer);
 			glBegin(GL_QUADS);
 				glVertex2f(-1.0, -1.0);
 				glVertex2f(-1.0, 1.0);

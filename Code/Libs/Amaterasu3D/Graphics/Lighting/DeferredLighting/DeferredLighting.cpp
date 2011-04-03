@@ -23,6 +23,7 @@
 //==========================================================
 #include "DeferredLighting.h"
 #include <Graphics/MatrixManagement.h>
+#include <System/SettingsManager.h>
 #include <math.h>
 
 DeferredLighting::DeferredLighting(SceneGraph::Group& scene) :
@@ -53,14 +54,7 @@ void DeferredLighting::SpotLightPass()
 
 	// Update Info
 	m_spot_light_shader->Begin();
-	m_spot_light_shader->SetUniform1f("FarClipping",4000);
-	m_spot_light_shader->SetUniform1f("NearClipping",1.0);
-	Math::TVector2F UnprojectInfo;
-	Math::CMatrix4 ProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
-	UnprojectInfo.x = 1.0f / ProjectionMatrix.a11;
-	UnprojectInfo.y = -1.0f / ProjectionMatrix.a22;
-	m_spot_light_shader->SetUniformVector("UnprojectInfo", UnprojectInfo);
-	m_spot_light_shader->SetUniformMatrix4fv("InverseViewMatrix", CMatrixManager::Instance().GetMatrix(VIEW_MATRIX).Inverse());
+	ShaderHelperUniformPosition(m_spot_light_shader);
 	m_spot_light_shader->End();
 
 	for(int i = 0; i < m_spots_lights.size(); i++)
