@@ -25,8 +25,8 @@ smooth in vec3 outPosition;
 uniform vec4 MaterialDiffuseColor;
 
 // Shader output
-out vec4 Normal;
 out vec4 Flux;
+out vec4 Normal;
 
 // light caracteristics
 uniform vec3 LightPosition;
