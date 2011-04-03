@@ -16,7 +16,7 @@ uniform sampler2D GridRed;
 uniform sampler2D GridGreen; ///< Reprensent SH Grid
 uniform sampler2D GridBlue;
 
-uniform sampler2D PositionBuffer;
+uniform sampler2D DepthBuffer;
 uniform sampler2D NormalBuffer;
 
 // Parametres
@@ -24,6 +24,14 @@ uniform vec3 LPVPosition; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
 uniform bool EnableTrilinearInterpolation;
+
+// Parameters to compute position form Depth
+uniform float FarClipping;
+uniform float NearClipping;
+uniform vec2 UnprojectInfo;
+uniform mat4 InverseViewMatrix;
+
+#include <GetPosition.shadercode>
 
 // Entree
 smooth in vec2 outTexCoord;
@@ -66,7 +74,7 @@ vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position)
 void main()
 {	
 	// Get data
-	vec3 Position = texture(PositionBuffer, outTexCoord).xyz;
+	vec3 Position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
 
 	vec4 CoeffGridRed;

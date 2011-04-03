@@ -24,6 +24,7 @@ smooth out vec2 outTexCoord;
 smooth out mat3 outtbnMatrix;
 smooth out vec3 outColor;
 smooth out vec3 outNormal;
+smooth out vec3 outPosition;
 
 invariant gl_Position;
 
@@ -56,6 +57,6 @@ void main ()
     {
         outColor = VertexColor;
     }
-
+    outPosition = (ModelMatrix * vec4 (VertexPosition, 1.0)).xyz;
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4 (VertexPosition, 1.0);
 }

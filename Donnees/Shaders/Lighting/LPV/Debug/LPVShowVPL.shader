@@ -8,7 +8,7 @@
     	<Attribut type="Vertex" name="VertexPosition" />
     </Attributs>
 	<Textures>
-		<Texture type="Custom" name="PositionBuffer" id=1 />
+		<Texture type="Custom" name="DepthBuffer" id=1 />
 		<Texture type="Custom" name="NormalBuffer" id=2 />
 		<Texture type="Custom" name="FluxBuffer" id=3 />
 	</Textures>

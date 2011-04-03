@@ -54,7 +54,7 @@ void DeferredLighting::SpotLightPass()
 
 	// Update Info
 	m_spot_light_shader->Begin();
-	ShaderHelperUniformPosition(m_spot_light_shader);
+	ShaderHelperUniformPositionFromView(m_spot_light_shader);
 	m_spot_light_shader->End();
 
 	for(int i = 0; i < m_spots_lights.size(); i++)

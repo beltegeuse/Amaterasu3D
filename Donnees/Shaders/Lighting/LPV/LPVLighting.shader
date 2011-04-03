@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Shader name="2DDraw" type="Basic">
     <Textures>
-		<Texture type="Custom" name="PositionBuffer" id=0 />
+		<Texture type="Custom" name="DepthBuffer" id=0 />
 		<Texture type="Custom" name="NormalBuffer" id=1 />
 		<Texture type="Custom" name="GridRed" id=2 />
 		<Texture type="Custom" name="GridGreen" id=3 />

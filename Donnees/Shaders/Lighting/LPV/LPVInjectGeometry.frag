@@ -3,9 +3,6 @@
 // Precision qualifier
 precision highp float;
 
-// Textures
-uniform sampler2D FluxBuffer;
-
 // Parametres
 float CellSize = 10.0;
 

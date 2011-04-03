@@ -20,7 +20,7 @@ smooth in vec2 outTexCoord;
 smooth in mat3 outtbnMatrix;
 smooth in vec3 outColor;
 smooth in vec3 outNormal;
-
+smooth in vec3 outPosition;
 // Material
 uniform vec4 MaterialDiffuseColor;
 

@@ -142,7 +142,7 @@ public:
 			m_NoiseTex->activateMultiTex(CUSTOM_TEXTURE+2);
 			m_gbuffer_shader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+3);
 			// *** Send uniform
-			ShaderHelperUniformPosition(m_SSAOBuffer);
+			ShaderHelperUniformPositionFromView(m_SSAOBuffer);
 			glBegin(GL_QUADS);
 				glVertex2f(-1.0, -1.0);
 				glVertex2f(-1.0, 1.0);

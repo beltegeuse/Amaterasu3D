@@ -359,9 +359,7 @@ private:
 		m_GBufferShader->Begin();
 		if(m_ShowGrid)
 		{
-//			m_BasicShader->begin();
 			m_GridModel->Draw();
-//			m_BasicShader->end();
 		}
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
@@ -406,14 +404,15 @@ private:
 		glBlendFunc(GL_ONE,GL_ONE);
 		m_LPVInjectVPL->Begin();
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
-		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->SetUniformVector("LPVPosition", m_GirdPosition);
 		m_LPVInjectVPL->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 		m_LPVInjectVPL->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
+		ShaderHelperUniformPosition(m_LPVInjectVPL, LightProjectionMatrix, LightViewMatrix, 1.0, m_Light.LightRaduis);
 		m_SamplePointRSM->Draw();
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->End();
 		glDisable(GL_BLEND);
@@ -429,11 +428,10 @@ private:
 		m_LPVInjectGeomerty->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 		m_LPVInjectGeomerty->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 		// ------- From Lights
-		m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
+		ShaderHelperUniformPosition(m_LPVInjectGeomerty,LightProjectionMatrix, LightViewMatrix, 1.0, m_Light.LightRaduis);
 		m_SamplePointRSM->Draw();
-		m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		// ------- From Camera
@@ -548,7 +546,7 @@ private:
 		// ******* 4th Step : Filtrage pass
 		// WARNING : Don't forgot to add uniform
 		m_LPVLightingShader->Begin();
-		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
 		if(m_PropagatedShow < 0)
 		{
@@ -569,6 +567,7 @@ private:
 		m_LPVLightingShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 		m_LPVLightingShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 		m_LPVLightingShader->SetUniform1i("EnableTrilinearInterpolation",m_TriInterpolation);
+		ShaderHelperUniformPositionFromView(m_LPVLightingShader);
 		// Draw ...
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);
@@ -584,7 +583,7 @@ private:
 		m_LPVBlend->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVBlend->GetFBO()->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 		m_LPVBlend->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+4);
-		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_LPVLightingShader->End();
 
@@ -595,7 +594,7 @@ private:
 		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
-		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+3);
+		m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+3);
 		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4);
 		m_DeferredSpotShader->Begin();
 		// Go to spot pass
@@ -610,6 +609,8 @@ private:
 		// * Shadow Map propreties
 		m_DeferredSpotShader->SetUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
 		m_DeferredSpotShader->SetUniformMatrix4fv("LightProjectionMatrix", LightProjectionMatrix);
+		// * Position propreties
+		ShaderHelperUniformPositionFromView(m_DeferredSpotShader);
 		// Draw ...
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);
@@ -624,7 +625,7 @@ private:
 		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Specular")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+		m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 		m_DeferredSpotShader->End();
 
@@ -641,11 +642,12 @@ private:
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			Logger::Log() << "Draw Injection ... \n";
 			m_LPVShowVPL->Begin();
-			m_RSMSpotShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+1);
+			m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+1);
 			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 			m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+3);
+			ShaderHelperUniformPosition(m_LPVShowVPL, LightProjectionMatrix, LightViewMatrix, 1.0, m_Light.LightRaduis);
 			m_SamplePointRSM->Draw();
-			m_RSMSpotShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+			m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 			m_LPVShowVPL->End();
