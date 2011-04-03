@@ -8,10 +8,9 @@ precision highp int;
 uniform sampler2D DiffuseBuffer;
 uniform sampler2D SpecularBuffer;
 uniform sampler2D NormalBuffer;
-uniform sampler2D PositionBuffer;
+uniform sampler2D DepthBuffer;
 uniform sampler2D DepthRSM;
 uniform sampler2D NormalRSM;
-uniform sampler2D PositionRSM;
 uniform sampler2D FluxRSM;
 uniform sampler2D NoiseBuffer;
 
@@ -29,6 +28,13 @@ uniform mat4 LightProjectionMatrix;
 
 // To enable / disable the debug mode
 uniform bool DebugMode;
+
+// To Compute Position
+uniform float FarClipping;
+uniform float NearClipping;
+uniform vec2 UnprojectInfo;
+uniform mat4 InverseViewMatrix;
+#include <GetPosition.shadercode>
 
 // Entree
 smooth in vec2 outTexCoord;
@@ -50,7 +56,7 @@ void main()
 	vec3 diffuseColor = texture(DiffuseBuffer, outTexCoord).xyz;
 	vec4 specularColor = texture(SpecularBuffer, outTexCoord);
 	vec3 normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
-	vec3 position = texture(PositionBuffer, outTexCoord).xyz;
+	vec3 position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
 	
 	// If the light don't affect this frag => Discard
 	vec3 LightDirection = LightPosition - position; // suppres realLightPosition

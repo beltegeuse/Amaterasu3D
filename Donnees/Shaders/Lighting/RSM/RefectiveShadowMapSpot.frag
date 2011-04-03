@@ -26,7 +26,6 @@ uniform vec4 MaterialDiffuseColor;
 
 // Shader output
 out vec4 Normal;
-out vec4 Position;
 out vec4 Flux;
 
 // light caracteristics
