@@ -26,6 +26,7 @@
 #define FBO_H_
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Texture.h>
+#include <Graphics/Font/GraphicString.h>
 #include <Enum.h>
 #include <map>
 #include <string>
@@ -120,6 +121,8 @@ private:
 	// peut etre en ajoutant une methode CShaderManager ??? LoadFileMultiple ?
 	std::map<std::string, FBOTextureBufferParam> m_BuffersParams;
 	FBODepthBufferParam m_DepthParams;
+
+	CGraphicString m_TextDebug; ///< Text to show the name of the buffer in DrawDebug
 public:
 	/*
 	 * Constructors & Destructors

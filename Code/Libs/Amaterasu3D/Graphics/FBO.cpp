@@ -37,6 +37,10 @@ FBO::FBO(const Math::TVector2I& size,
 		m_BuffersParams(buffers),
 		m_DepthParams(paramDepth)
 {
+	// ============== Initialisation Debug test
+	m_TextDebug.Position = Math::TVector2F(0.0,0.0);
+	m_TextDebug.Size = 30;
+	// ============== Creation FBO
 	Logger::Log() << "[INFO] FBO Creation ... \n";
 	// On verifie que l'on a assez de Color Attachement
 	if(GetMaxColorAttachement() < (int)buffers.size())
@@ -262,6 +266,7 @@ void FBO::DrawDebug()
 
 		glViewport(idWidth*factorWidth,idHeight*factorHeight, factorWidth,  factorHeight);
 
+		// Draw the buffer content
 		it->second->activateTextureMapping();
 		it->second->activateTexture();
 		glBegin(GL_QUADS);
@@ -277,6 +282,11 @@ void FBO::DrawDebug()
 
 		if(it->first == "Depth")
 			m_DepthShader->End();
+
+		// Draw name buffer
+		m_TextDebug.Text = it->first;
+		m_TextDebug.Draw();
+
 
 		it->second->desactivateTextureMapping();
 		nbElementDrew++;
