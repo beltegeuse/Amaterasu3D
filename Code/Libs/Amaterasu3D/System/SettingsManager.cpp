@@ -23,29 +23,35 @@
 //==========================================================
 #include "SettingsManager.h"
 #include <System/MediaManager.h>
+#include <Graphics/MatrixManagement.h>
 #include <tinyxml.h>
 #include <Logger/Logger.h>
 #include <Debug/Exceptions.h>
 #include <Logger/LoggerFile.h>
 #include <Logger/LoggerDebug.h>
+#include <TinyXMLHelper.h>
 
 SINGLETON_IMPL(CSettingsManager)
 
 CSettingsManager::CSettingsManager() :
-	VerticalSync(false)
+	VerticalSync(false),
+	m_NearClipping(1.0),
+	m_FarClipping(1000.0),
+	m_FOV(70)
 {
+	// The default values
+	m_SizeRenderingWindow = Math::TVector2I(800,600);
 }
 
 CSettingsManager::~CSettingsManager()
 {
-	// The default values
-	m_SizeRenderingWindow = Math::TVector2I(800,600);
 }
 
 // Load the config file
 // caution: Need the relative path
 void CSettingsManager::LoadFile(const std::string& path)
 {
+	//XXX: Proteger les appels TinyXML avec le Helper
 	TiXmlDocument doc( path.c_str() );
 	if(!doc.LoadFile())
 	{
@@ -92,7 +98,7 @@ void CSettingsManager::LoadFile(const std::string& path)
 		nodeResolution->Attribute("x",&x);
 		nodeResolution->Attribute("y",&y);
 		Logger::Log() << "[INFO] SettingsManager : Resolution = " << x << "x" << y << "\n";
-		m_SizeRenderingWindow = Math::TVector2I(x,y);
+		SetSizeRenderingWindow(Math::TVector2I(x,y));
 	}
 	// * Data
 	TiXmlElement* nodeData = rootConfig->FirstChildElement("Data");
@@ -101,6 +107,20 @@ void CSettingsManager::LoadFile(const std::string& path)
 		std::string rootDataDir = std::string(nodeData->Attribute("rootDir"));
 		Logger::Log() << "[INFO] SettingsManager : Root data dir : " << rootDataDir << "\n";
 		CMediaManager::Instance().AddSearchPathAndChilds(rootDataDir);
+	}
+	// * Projection
+	TiXmlElement* nodeProjection = rootConfig->FirstChildElement("Projection");
+	if(nodeProjection)
+	{
+		float fov, near, far;
+		TinyXMLGetAttributeValue(nodeProjection, "fov",&fov);
+		TinyXMLGetAttributeValue(nodeProjection, "near", &near);
+		TinyXMLGetAttributeValue(nodeProjection, "far", &far);
+		Logger::Log() << "[INFO] SettingsManager : Projection Settings : \n";
+		Logger::Log() << "     * FOV : " << fov << "\n";
+		Logger::Log() << "     * Near : " << near << "\n";
+		Logger::Log() << "     * Far : " << far << "\n";
+		SetProjection(near, far, fov);
 	}
 }
 
@@ -113,4 +133,39 @@ const Math::TVector2I& CSettingsManager::GetSizeRenderingWindow() const
 void CSettingsManager::SetSizeRenderingWindow(const Math::TVector2I& newSize)
 {
 	m_SizeRenderingWindow = newSize;
+	UpdateProjectionMatrix();
+}
+
+// Projections methods
+void CSettingsManager::SetProjection(float near, float far, float fov)
+{
+	m_NearClipping = near;
+	m_FarClipping = far;
+	m_FOV = fov;
+	UpdateProjectionMatrix();
+}
+
+float CSettingsManager::GetNearClipping() const
+{
+	return m_NearClipping;
+}
+
+float CSettingsManager::GetFarClipping() const
+{
+	return m_FarClipping;
+}
+
+float CSettingsManager::GetFOV() const
+{
+	return m_FOV;
+}
+
+/*
+ * Private methods
+ */
+void CSettingsManager::UpdateProjectionMatrix()
+{
+	CMatrixManager::Instance().SetProjectionMatrix(
+			Math::CMatrix4::CreatePerspectiveFOV(m_FOV, m_SizeRenderingWindow.x/(float)m_SizeRenderingWindow.y,
+				m_NearClipping, m_FarClipping));
 }

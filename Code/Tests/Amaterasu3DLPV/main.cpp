@@ -165,7 +165,6 @@ private:
 		m_Camera->SetSpeed(100.0);
 		// Initialise OpenGL
 		glClearColor(0.0f,0.0f,0.0f,1.f);
-		MatrixManager.SetProjectionMatrix(Math::CMatrix4::CreatePerspectiveFOV(70, (double)800/600, 1.0, 400));
 		// Load shader
 		m_GBufferShader = ShaderManager.LoadShader("GBuffer.shader");
 		m_RSMSpotShader = ShaderManager.LoadShader("RefectiveShadowMapSpot.shader");

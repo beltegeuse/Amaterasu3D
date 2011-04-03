@@ -43,7 +43,7 @@ public:
 		m_Camera->SetSpeed(200.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		CMatrixManager::Instance().SetProjectionMatrix(Math::CMatrix4::CreatePerspectiveFOV(70, (double)800/600, 1.0, 4000));
+		SettingsManager.SetProjection(1.0,4000.0,70.0);
 		// Load shader
 		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		// Load GI

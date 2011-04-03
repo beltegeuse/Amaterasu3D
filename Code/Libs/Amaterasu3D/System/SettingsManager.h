@@ -35,8 +35,13 @@ class CSettingsManager : public CSingleton<CSettingsManager>
 {
 	MAKE_SINGLETON(CSettingsManager)
 private:
-	// Attributs
+	// Attributes
+	//! Size of the rendering window
 	Math::TVector2I m_SizeRenderingWindow;
+	//! Projection attributs
+	float m_NearClipping;
+	float m_FarClipping;
+	float m_FOV;
 public:
 	CSettingsManager();
 	virtual ~CSettingsManager();
@@ -49,10 +54,20 @@ public:
 	const Math::TVector2I& GetSizeRenderingWindow() const;
 	void SetSizeRenderingWindow(const Math::TVector2I& newSize);
 
+	// To manage the projection window
+	void SetProjection(float near, float far, float fov);
+	float GetNearClipping() const;
+	float GetFarClipping() const;
+	float GetFOV() const;
 	/*
 	 * Public attributs
 	 */
 	bool VerticalSync;
+
+private:
+	//! Thois function is call by SetSizeRenderingWindow or SetProjection
+	void UpdateProjectionMatrix();
+
 };
 
 #endif /* SETTINGSMANAGER_H_ */
