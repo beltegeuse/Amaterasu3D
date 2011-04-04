@@ -111,6 +111,7 @@ CFontManager::CFontManager()
 
 CFontManager::~CFontManager()
 {
+	// TODO: Verify no memory leak on texture font
 	UnloadFonts();
 	rat_stop_font_system();
 }
@@ -122,7 +123,10 @@ void CFontManager::LoadFont(const std::string& FontName, const std::string& alia
 	// La police est absente
 	if(it == m_polices.end())
 	{
-		m_polices[alias] = rat_glyph_font_load(FontName.c_str(), 30);
+		PoliceData data;
+		data.Glyph = rat_glyph_font_load(FontName.c_str(), 30);
+		data.Texture = 0;
+		m_polices[alias] = data;
 	}
 }
 
@@ -132,7 +136,7 @@ void CFontManager::UnloadFonts()
 
 	while(it != m_polices.end())
 	{
-		rat_glyph_font_destroy(it->second);
+		rat_glyph_font_destroy(it->second.Glyph);
 		++it;
 	}
 }
@@ -147,7 +151,13 @@ rat_texture_font * CFontManager::GetTexture(const std::string& alias)
 		throw CException("[CFontManager] Get texture ! impossible de trouver l'alias.");
 	}
 
-	return rat_texture_font_from_glyph_font(it->second);
+	// First time load texture
+	if(it->second.Texture == 0)
+	{
+		it->second.Texture = rat_texture_font_from_glyph_font(it->second.Glyph);
+	}
+
+	return it->second.Texture;
 }
 
 void CFontManager::DeleteTexture(rat_texture_font * a)

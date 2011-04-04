@@ -51,6 +51,12 @@ struct rat_glyph_font
 	FT_Face face;
 };
 
+struct PoliceData
+{
+	rat_glyph_font* Glyph;
+	rat_texture_font* Texture;
+};
+
 class GraphicsEngine;
 ////////////////////////////////////////////////////////////
 /// Gestionnaire de fonts / texte
@@ -123,7 +129,7 @@ class GraphicsEngine;
         // === Instance de Freetype
         FT_Library m_freetype_lib;
         // === Pour sauvegarder les polices
-        typedef std::map<std::string, rat_glyph_font *> TPolices;
+        typedef std::map<std::string, PoliceData> TPolices;
         TPolices m_polices;
 
         // Attributs Charly :
