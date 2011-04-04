@@ -30,19 +30,22 @@ vec4 SHRotate(vec3 vcDir, vec2 vZHCoeffs)
 	return vResult;
 }
 
-/*vec4 SHProjectCone(vec3 vcDir)
+vec4 SHProjectCone(vec3 vcDir)
 {
 	vec2 vZHCoeffs = vec2(0.25,0.5);
 	return SHRotate(vcDir, vZHCoeffs);
-}*/
-vec4 SHProjectCone(vec3 vcDir)
+}
+/*vec4 SHProjectCone(vec3 vcDir)
 {
 	return SH_cosLobe_c * vec4(1.0,vcDir.x,vcDir.y,vcDir.z);
-}
+}*/
 
 // no normalization
-vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
+/*vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
 	return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,dir.x);
+}*/
+vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
+	return SHProjectCone(dir);
 }
 
 //Create a cone SH with the given angle (function from crytek paper)
@@ -54,8 +57,11 @@ vec4 SHProjectCone(in vec3 dir, float angle)
 }
 
 //Creates a 90 Degree cone in pointing in dir
-vec4 SHCone90(in vec3 dir){
+/*vec4 SHCone90(in vec3 dir){
   return SHRotate(dir, vec2(0.15,0.38));
+}*/
+vec4 SHCone90(in vec3 dir){
+  return SHProjectCone(dir, radians(-90.0));
 }
 
 //Does a abs dot product for double sided occlusion

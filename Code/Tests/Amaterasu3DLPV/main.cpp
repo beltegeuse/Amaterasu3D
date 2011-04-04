@@ -152,7 +152,7 @@ private:
 		m_ShowGrid = true;
 		m_DebugShowDirectOnly = false;
 		m_TriInterpolation = false;
-		m_DoOcclusion = false;
+		m_DoOcclusion = true;
 		m_PropagatedShow = -1;
 		glPointSize(1.0);
 		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
@@ -420,32 +420,32 @@ private:
 		// ******* 2nd Step : Geometry injection
 		if(m_DoOcclusion)
 		{
-		glEnable(GL_BLEND);
-		glDisable(GL_DEPTH_TEST);
-		glBlendFunc(GL_ONE,GL_ONE);
-		m_LPVInjectGeomerty->Begin();
-		m_LPVInjectGeomerty->SetUniformVector("LPVPosition", m_GirdPosition);
-		m_LPVInjectGeomerty->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
-		m_LPVInjectGeomerty->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
-		// ------- From Lights
-		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
-		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
-		ShaderHelperUniformPosition(m_LPVInjectGeomerty,LightProjectionMatrix, LightViewMatrix, 1.0, m_Light.LightRaduis);
-		m_SamplePointRSM->Draw();
-		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-		// ------- From Camera
-//		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
-//		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
-//		m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
-//		m_SamplePointCamera->Draw();
-//		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-//		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-//		m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-		// --------- Restore all states
-		m_LPVInjectGeomerty->End();
-		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_BLEND);
+			glEnable(GL_BLEND);
+			glDisable(GL_DEPTH_TEST);
+			glBlendFunc(GL_ONE,GL_ONE);
+			m_LPVInjectGeomerty->Begin();
+			m_LPVInjectGeomerty->SetUniformVector("LPVPosition", m_GirdPosition);
+			m_LPVInjectGeomerty->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+			m_LPVInjectGeomerty->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
+			// ------- From Lights
+			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
+			m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
+			ShaderHelperUniformPosition(m_LPVInjectGeomerty,LightProjectionMatrix, LightViewMatrix, 1.0, m_Light.LightRaduis);
+			m_SamplePointRSM->Draw();
+			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+			m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+			// ------- From Camera
+	//		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
+	//		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
+	//		m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
+	//		m_SamplePointCamera->Draw();
+	//		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+	//		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+	//		m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+			// --------- Restore all states
+			m_LPVInjectGeomerty->End();
+			glEnable(GL_DEPTH_TEST);
+			glDisable(GL_BLEND);
 		}
 		// ******* 3th Step : Diffusion
 		for(int i = 0; i < m_NbPropagationStep; i++)

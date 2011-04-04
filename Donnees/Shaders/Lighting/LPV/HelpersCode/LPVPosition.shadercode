@@ -8,3 +8,17 @@ vec2 Convert3Dto2D(in vec3 pos){
 
 	return vec2(col * LPVCellSize.w + pos.x + over.x * LPVSize.x,row * LPVCellSize.w + pos.y + over.y * LPVSize.y) / LPVSize.xy;
 }
+
+vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset){
+  vec2 c = coords * LPVSize.xy;
+  float row = floor(c.y / LPVCellSize.w);
+  float col = floor(c.x / LPVCellSize.w);
+  c = clamp(vec2(c.x - col * LPVCellSize.w,c.y - row * LPVCellSize.w) + offset.xy,0.0,LPVCellSize.w-1.0);
+  col += offset.z;
+  float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
+  float newrow = clamp(row+coldiff,0.0,LPVSize.w-1.0);
+  col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
+  col = clamp(col,0.0,LPVSize.z-1.0);
+  vec2 spos = vec2(col * LPVCellSize.w + c.x,newrow * LPVCellSize.w + c.y) / LPVSize.xy;
+  return spos;
+}

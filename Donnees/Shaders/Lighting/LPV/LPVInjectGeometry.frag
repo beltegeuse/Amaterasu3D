@@ -4,10 +4,9 @@
 precision highp float;
 
 // Parametres
-float CellSize = 10.0;
+uniform vec4 LPVCellSize;
 
 // Entree
-smooth in float SurfelArea;
 smooth in vec3 outNormal;
 
 // Sortie
@@ -19,8 +18,9 @@ void main()
 {	
 
 	// Compute SH
-	vec4 SH = SHProjectCone(normalize(outNormal)); // FIXME
+	vec4 SH = SHProjectCone(normalize(outNormal.xyz)); // FIXME
 
-	Grid = SH; //SurfelArea
-
+//	Grid = SH * (SurfelArea / (LPVCellSize.x*LPVCellSize.y));
+//	Grid = vec4((SurfelArea / (LPVCellSize.x*LPVCellSize.y)));
+	Grid = vec4(outNormal.xyz,1.0);
 }

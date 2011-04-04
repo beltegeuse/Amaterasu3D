@@ -37,7 +37,7 @@ void main()
 	// Get all data
 	vec4 Flux = texture(FluxBuffer, outTexCoord);
 	// Compute SH
-	vec4 SH = SHProjectCone(normalize(outNormal)) / 5.0; // FIXME
+	vec4 SH = SHProjectCone(normalize(outNormal)); // FIXME
 	// Put into buffers
 	//Grid = SH * Luminance(Flux);
 

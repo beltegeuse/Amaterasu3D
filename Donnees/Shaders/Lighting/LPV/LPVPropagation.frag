@@ -30,30 +30,17 @@ out vec4 GridBlue;
 //#define directFaceSubtendedSolidAngle 0.03188428
 // 0.4234413544f / 4Pi;
 //#define sideFaceSubtendedSolidAngle 0.03369559
-
 #define directFaceSubtendedSolidAngle 0.12753712
 #define sideFaceSubtendedSolidAngle 0.13478556
 
+#include <LPVPosition.shadercode>
 #include <LPVSH.shadercode>
-
-vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset){
-  vec2 c = coords * LPVSize.xy;
-  float row = floor(c.y / LPVCellSize.w);
-  float col = floor(c.x / LPVCellSize.w);
-  c = clamp(vec2(c.x - col * LPVCellSize.w,c.y - row * LPVCellSize.w) + offset.xy,0.0,LPVCellSize.w-1.0);
-  col += offset.z;
-  float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
-  float newrow = clamp(row+coldiff,0.0,LPVSize.w-1.0);
-  col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
-  col = clamp(col,0.0,LPVSize.z-1.0);
-  vec2 spos = vec2(col * LPVCellSize.w + c.x,newrow * LPVCellSize.w + c.y) / LPVSize.xy;
-  return spos;
-}
 
 vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
   return texture2D(s,GetSamplePos2DOffset3D(coords,offset));
 }
 
+//TODO: Hard coded 10
 //1 / sqrt(5)
 #define side1 0.447213595
 //2 / sqrt(5)
@@ -75,9 +62,9 @@ void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec
   vec4 occlusionSH;
   if(DoOcclusion)
   {
-  //vec4 occlusionSH = Load2DOffset3D(Occlusion,pos,vec3(0,0,0));
-  occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection * 0.5);
-  //vec4 occlusionSH = Sample2DOffset3D(Occlusion,pos,vec3(0,0,0));
+	  //vec4 occlusionSH = Load2DOffset3D(Occlusion,pos,vec3(0,0,0));
+	  occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection * 0.5);
+	  //vec4 occlusionSH = Sample2DOffset3D(Occlusion,pos,vec3(0,0,0));
   }
 
   float occlusionFactor = 1.0;
@@ -108,9 +95,9 @@ void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec
   fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
   if(DoOcclusion)
   {
-  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
-  occlusionFactor *= occlusionFactor;
-  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
+	  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
+	  occlusionFactor *= occlusionFactor;
+	  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
   }
   resultRed += SideDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
   resultGreen += SideDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
@@ -125,9 +112,9 @@ void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec
   fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
   if(DoOcclusion)
   {
-  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
-  occlusionFactor *= occlusionFactor;
-  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
+	  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
+  	  occlusionFactor *= occlusionFactor;
+  	  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
   }
   resultRed += SideDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
   resultGreen += SideDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
@@ -142,9 +129,9 @@ void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec
   fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
   if(DoOcclusion)
   {
-  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
-  occlusionFactor *= occlusionFactor;
-  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
+	  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
+	  occlusionFactor *= occlusionFactor;
+	  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
   }
   resultRed += SideDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
   resultGreen += SideDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
@@ -159,9 +146,9 @@ void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec
   fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
   if(DoOcclusion)
   {
-  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
-  occlusionFactor *= occlusionFactor;
-  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
+	  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
+	  occlusionFactor *= occlusionFactor;
+	  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
   }
   resultRed += SideDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
   resultGreen += SideDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
@@ -201,9 +188,9 @@ void main(){
                             0.0, 0.0,-1.0,
                             0.0, 1.0, 0.0),resultRed,resultGreen,resultBlue);
   //Data for next propagation step
-  GridRed = resultRed*2;
-  GridGreen = resultGreen*2;
-  GridBlue = resultBlue*2;
+  GridRed = resultRed;
+  GridGreen = resultGreen;
+  GridBlue = resultBlue;
 
 //  vec2 loadPos = GetSamplePos2DOffset3D(outTexCoord,vec3(0.0,0.0,0.0));
 //  GridRed += texture2D(LPVRed, loadPos);
