@@ -188,9 +188,9 @@ void main(){
                             0.0, 0.0,-1.0,
                             0.0, 1.0, 0.0),resultRed,resultGreen,resultBlue);
   //Data for next propagation step
-  GridRed = resultRed;
-  GridGreen = resultGreen;
-  GridBlue = resultBlue;
+  GridRed = resultRed*2.5;
+  GridGreen = resultGreen*2.5;
+  GridBlue = resultBlue*2.5;
 
 //  vec2 loadPos = GetSamplePos2DOffset3D(outTexCoord,vec3(0.0,0.0,0.0));
 //  GridRed += texture2D(LPVRed, loadPos);

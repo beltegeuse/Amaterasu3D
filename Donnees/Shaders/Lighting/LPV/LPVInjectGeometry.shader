@@ -10,6 +10,6 @@
 		<Texture type="Custom" name="NormalBuffer" id=1 />
 		<Texture type="Custom" name="DepthBuffer" id=2 />
 	</Textures>
-	<VertexShader filename="LPVInjectVPL.vert" />
+	<VertexShader filename="LPVInjectGeometry.vert" />
 	<FragmentShader filename="LPVInjectGeometry.frag" />
 </Shader>

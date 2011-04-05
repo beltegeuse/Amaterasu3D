@@ -23,7 +23,7 @@ uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
 
 // Sortie shader
 smooth out vec3 outNormal;
-
+smooth out float SurfelArea;
 invariant gl_Position;
 float perspectiveModifier = 1.0;
 
@@ -40,8 +40,8 @@ void main()
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
 	float Depth = DepthToZPosition(texture(DepthBuffer, outTexCoord).r);
 
-//	SurfelArea = (4.0*Depth*Depth) / (512.0*512.0); // Passer les parameters
-//	outNormal.w = 1.0;
+	SurfelArea = (4.0*Depth*Depth) / (512.0*512.0); // Passer les parameters
+
 	//shift occlusion volume by half cell size
 	Position -= (LPVCellSize.xyz*0.5);
 
