@@ -1,4 +1,6 @@
 
+#define Pi 3.1415926f
+
 //this is c = vec4(c0,-c1,c1,-c1)
 //with c0 = 1 / ( 2 * sqrt(PI))
 //     c1 = sqrt(3) / ( 2 * sqrt(PI))

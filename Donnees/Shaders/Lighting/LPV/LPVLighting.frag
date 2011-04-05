@@ -18,6 +18,7 @@ uniform sampler2D GridBlue;
 
 uniform sampler2D DepthBuffer;
 uniform sampler2D NormalBuffer;
+uniform sampler2D DiffuseBuffer;
 
 // Parametres
 uniform vec3 LPVPosition; // position of the grid
@@ -76,6 +77,7 @@ void main()
 	// Get data
 	vec3 Position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
+	vec4 DiffuseColor = texture(DiffuseBuffer,outTexCoord);
 
 	vec4 CoeffGridRed;
 	vec4 CoeffGridGreen;
@@ -103,7 +105,7 @@ void main()
 	else
 	{
 		vec4 SHEv = SH_evaluate(-Normal);
-		Color = vec4(dot(CoeffGridRed,SHEv),
+		Color = DiffuseColor* vec4(dot(CoeffGridRed,SHEv),
 				     dot(CoeffGridGreen,SHEv),
 				     dot(CoeffGridBlue,SHEv),1.0);
 	}

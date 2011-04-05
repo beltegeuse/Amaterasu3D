@@ -19,10 +19,9 @@ void main()
 {	
 
 	// Compute SH
-	vec4 SH = SHProjectCone(normalize(outNormal.xyz)); // FIXME
+	vec4 SH = SHProjectCone(normalize(outNormal.xyz));
 
-	Grid = SH * SurfelArea;
-//	Grid = vec4((SurfelArea / (LPVCellSize.x*LPVCellSize.y)));
-//	Grid = vec4(outNormal.xyz,1.0);
-//	Grid = vec4(,1.0);
+	//Grid = SH * clamp(SurfelArea / (LPVCellSize.x*LPVCellSize.y),0.0,1.0);
+	//Grid = SH * SurfelArea;
+	Grid = vec4(0.0);
 }

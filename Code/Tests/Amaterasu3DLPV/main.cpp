@@ -185,6 +185,37 @@ private:
 			Logger::Log() << "[INFO] Create Copy Propagation FBO : " << i << "\n";
 			m_PropagationFBOs[i] = m_LPVPropagationShader->GetFBO()->Copy();
 		}
+		// Load Scene
+		LoadTestScene();
+		// Console commands
+		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
+		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
+		Console.RegisterCommand("lightview",Console::Bind(&ApplicationLPV::LightView, *this));
+		// Create Grid
+		CreateGridModel();
+		// Create sample point texture
+		CreateSampleModel(512,512,&m_SamplePointRSM);
+		CreateSampleModel(800,600,&m_SamplePointCamera);
+	}
+
+	void LoadSponzaScene()
+	{
+		// Create light
+		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
+		m_Light.Position = Math::TVector3F(-11,171,22);
+		m_Light.LightRaduis = 500.0;
+		m_Light.LightIntensity = 1.0;
+		m_Light.LightCutOff = 70;
+		m_Light.Direction = Math::TVector3F(0.0,0.0,0.0);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		Math::CMatrix4 transMatrix;
+		transMatrix.SetScaling(0.1,0.1,0.1);
+		node->LoadTransformMatrix(transMatrix);
+		RootSceneGraph.AddChild(node);
+	}
+
+	void LoadTestScene()
+	{
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(80,125,60);
@@ -199,15 +230,6 @@ private:
 		transMatrix.SetScaling(0.1,0.1,0.1);
 		node->LoadTransformMatrix(transMatrix);
 		RootSceneGraph.AddChild(node);
-		// Console commands
-		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
-		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
-		Console.RegisterCommand("lightview",Console::Bind(&ApplicationLPV::LightView, *this));
-		// Create Grid
-		CreateGridModel();
-		// Create sample point texture
-		CreateSampleModel(512,512,&m_SamplePointRSM);
-		CreateSampleModel(800,600,&m_SamplePointCamera);
 	}
 
 	void CreateGridModel()
@@ -217,7 +239,7 @@ private:
 		float * colorBuffer = new float[3*m_NbCellDim*m_NbCellDim*3*2];
 		unsigned int* indiceBuffer = new unsigned int[3*m_NbCellDim*m_NbCellDim*2];
 		int i = 0;
-		Color color(0.0,0.0,1.0);
+		Color color(1.0,1.0,1.0);
 		// Fill in buffers
 		for(int z=0;z<=m_NbCellDim;z++){
 			for(int x=0;x<=m_NbCellDim;x++){
@@ -547,6 +569,7 @@ private:
 		m_LPVLightingShader->Begin();
 		m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->activateMultiTex(CUSTOM_TEXTURE+5);
 		if(m_PropagatedShow < 0)
 		{
 		m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+2);
@@ -584,6 +607,7 @@ private:
 		m_LPVBlend->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+4);
 		m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_GBufferShader->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+5);
 		m_LPVLightingShader->End();
 
 		glClearColor(0.0f,0.0f,0.0f,1.f);

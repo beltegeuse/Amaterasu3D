@@ -35,7 +35,7 @@ float Luminance(vec4 color)
 void main()
 {	
 	// Get all data
-	vec4 Flux = texture(FluxBuffer, outTexCoord) / 10.0;
+	vec4 Flux = texture(FluxBuffer, outTexCoord) / Pi;
 	// Compute SH
 	vec4 SH = SHProjectCone(normalize(outNormal)); // FIXME
 	// Put into buffers

@@ -30,6 +30,7 @@ out vec4 GridBlue;
 //#define directFaceSubtendedSolidAngle 0.03188428
 // 0.4234413544f / 4Pi;
 //#define sideFaceSubtendedSolidAngle 0.03369559
+
 #define directFaceSubtendedSolidAngle 0.12753712
 #define sideFaceSubtendedSolidAngle 0.13478556
 
@@ -188,23 +189,7 @@ void main(){
                             0.0, 0.0,-1.0,
                             0.0, 1.0, 0.0),resultRed,resultGreen,resultBlue);
   //Data for next propagation step
-  GridRed = resultRed*2.5;
-  GridGreen = resultGreen*2.5;
-  GridBlue = resultBlue*2.5;
-
-//  vec2 loadPos = GetSamplePos2DOffset3D(outTexCoord,vec3(0.0,0.0,0.0));
-//  GridRed += texture2D(LPVRed, loadPos);
-//  GridGreen += texture2D(LPVGreen, loadPos);
-//  GridBlue += texture2D(LPVBlue, loadPos);
-//  //Final data
-//  #ifdef FIRST_STEP
-//    //On first step add initial injected data
-//    ivec2 loadPos = GetLoadPos2DOffset3D(TexCoords,vec3(0.0,0.0,0.0));
-//    resultRed += texelFetch2D(LPVRed, loadPos, 0);
-//    resultGreen += texelFetch2D(LPVRed, loadPos, 0);
-//    resultBlue += texelFetch2D(LPVRed, loadPos, 0);
-//  #endif
-//  GridRed[3] = resultRed;
-//  GridRed[4] = resultGreen;
-//  GridRed[5] = resultBlue;
+  GridRed = resultRed;
+  GridGreen = resultGreen;
+  GridBlue = resultBlue;
 }

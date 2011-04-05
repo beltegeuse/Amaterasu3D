@@ -6,6 +6,7 @@
 		<Texture type="Custom" name="GridRed" id=2 />
 		<Texture type="Custom" name="GridGreen" id=3 />
 		<Texture type="Custom" name="GridBlue" id=4 />
+		<Texture type="Custom" name="DiffuseBuffer" id=5 />
 	</Textures>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="LPVLighting.frag" />
