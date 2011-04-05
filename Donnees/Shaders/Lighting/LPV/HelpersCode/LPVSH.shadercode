@@ -37,7 +37,6 @@ vec4 SHRotate(vec3 vcDir, vec2 vZHCoeffs)
 	return vResult;
 }
 
-//Create a cone SH with the given angle (function from crytek paper)
 vec4 SHProjectCone(in vec3 dir, float angle)
 {
   vec2 vZHCoeffs = vec2(0.5 * (1.0 - cos(angle)),           // 1/2 (1 - Cos[\[Alpha]])
@@ -45,37 +44,20 @@ vec4 SHProjectCone(in vec3 dir, float angle)
   return SHRotate(dir, vZHCoeffs);
 }
 
-/*vec4 SHProjectCone(vec3 vcDir)
+vec4 SHProjectCone90(in vec3 dir)
+{
+   return SHRotate(dir, vec2(0.5,0.75));
+}
+
+vec4 SHProjectCone(vec3 vcDir)
 {
 	vec2 vZHCoeffs = vec2(0.25,0.5);
 	return SHRotate(vcDir, vZHCoeffs);
-}*/
-/*
-vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
-	return SHProjectCone(dir);
-}*/
-/*vec4 SHCone90(in vec3 dir){
-  return SHProjectCone(dir, radians(-90.0));
-}*/
+}
 
 //////////////////////////////////////////
 // Own Function
 //////////////////////////////////////////
-
-vec4 SHProjectCone(vec3 vcDir)
-{
-	return SH_cosLobe_c * vec4(1.0,vcDir.x,vcDir.y,vcDir.z);
-}
-
-// no normalization
-vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
-	return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,dir.x);
-}
-
-//Creates a 90 Degree cone in pointing in dir
-vec4 SHCone90(in vec3 dir){
-  return SHRotate(dir, vec2(0.15,0.38));
-}
 
 //Does a abs dot product for double sided occlusion
 float SHDotAbs(vec4 sh1, vec4 sh2){

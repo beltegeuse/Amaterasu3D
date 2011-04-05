@@ -17,11 +17,8 @@ out vec4 Grid;
 
 void main()
 {	
-
 	// Compute SH
 	vec4 SH = SHProjectCone(normalize(outNormal.xyz));
 
-	//Grid = SH * clamp(SurfelArea / (LPVCellSize.x*LPVCellSize.y),0.0,1.0);
-	//Grid = SH * SurfelArea;
-	Grid = vec4(0.0);
+	Grid = SH * SurfelArea;
 }

@@ -479,7 +479,7 @@ private:
 			m_LPVPropagationShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 			m_LPVPropagationShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+3);
-			m_LPVPropagationShader->SetUniform1i("DoOcclusion",m_DoOcclusion);
+			//m_LPVPropagationShader->SetUniform1i("DoOcclusion",m_DoOcclusion);
 			if(i == 0)
 			{
 				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);

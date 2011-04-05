@@ -13,6 +13,7 @@ in vec2 VertexPosition;
 uniform vec3 LPVPosition; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
+#include <LPVPosition.shadercode>
 
 // To compute position
 uniform float FarClipping;
@@ -26,21 +27,33 @@ smooth out vec2 outTexCoord;
 smooth out vec3 outNormal;
 invariant gl_Position;
 
-#include <LPVPosition.shadercode>
-
 void main()
 {	
+	// Add Texcoords
 	outTexCoord.x = VertexPosition.x;
 	outTexCoord.y = VertexPosition.y;
 
-	// Get data
+	// Get data from GBuffers
 	vec3 Position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
+	outNormal = Normal.xyz; ///< Need to compute the SH coeff
+
+	// Prevent self shadowing
 	Position += (Normal*LPVCellSize.xyz*0.5);
 
-	Position = floor((Position-LPVPosition) / LPVCellSize.xyz);
+	// Compute the ID grid
+	ComputeGridCoord(Position);
+//
+//	if(IsInGrid(Position))
+//	{
+		vec2 pos2d = Convert3DTo2DTexcoord(Position);
+		gl_Position = vec4(pos2d*2.0-1.0,0.0,1.0);
+//	}
+//	else /* the point isn't in the grid */
+//	{
+//		// TODO: See if there is discard for vertex ????
+//		gl_Position = vec4(-10.0,-10.0,0.0,1.0); // Put outside clipping plane
+//	}
 
-	outNormal = Normal.xyz;
-	vec2 pos2d = Convert3Dto2D(Position);
-	gl_Position = vec4(pos2d*2.0-1.0,0.0,1.0);
+
 }
