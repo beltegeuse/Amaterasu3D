@@ -73,6 +73,8 @@ Application::~Application()
 	CSettingsManager::Destroy();
 	// * Destroy the Event manager
 	CEventManager::Instance();
+	// * Final step: Delete Logger
+	Logger::Kill();
 }
 
 void Application::CreateSDLWindow()

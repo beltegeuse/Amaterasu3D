@@ -31,6 +31,8 @@
 #include <string>
 #include <System/Resource.h>
 #include <Enum.h>
+#include <Graphics/Shaders/Compiler/ShaderCompiler.h>
+
 
 class ShaderUnit
 {
@@ -43,7 +45,7 @@ private:
 	 * Load Shader File...
 	 */
 	const std::string LoadFile(const std::string& path);
-	void ShowCompilerLog(unsigned int id);
+	void ShowCompilerLog(unsigned int id, ShaderCompiler& compiler);
 public:
 	// Constructeurs
 	ShaderUnit(const std::string& path, const ShaderUnitType& type);

@@ -74,7 +74,7 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type)
 	Logger::Log() << "  * Building .... \n";
 	glCompileShader (m_ID) ;
 	// Show all the Complilation log
-	ShowCompilerLog(m_ID);
+	ShowCompilerLog(m_ID, compiler);
 	// Check if it's compiled
 	GLint compiled = 0;
 	glGetObjectParameterivARB(m_ID, GL_COMPILE_STATUS, &compiled);
@@ -86,7 +86,7 @@ ShaderUnit::~ShaderUnit()
 {
 }
 
-void ShaderUnit::ShowCompilerLog(unsigned int id)
+void ShaderUnit::ShowCompilerLog(unsigned int id, ShaderCompiler& compiler)
 {
 	if(id == 0)
 	{
@@ -102,7 +102,8 @@ void ShaderUnit::ShowCompilerLog(unsigned int id)
 		if(compilerLog!=0)
 		{
 			Logger::Log() << "[LOG] **** Compiler LOG **** \n";
-			Logger::Log() << compilerLog;
+			//Logger::Log() << compilerLog;
+			compiler.AnalyseCompilerLog(std::string(compilerLog));
 			Logger::Log() << "[LOG] **** END **** \n";
 		}
 		else

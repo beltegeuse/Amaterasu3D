@@ -119,6 +119,31 @@ void ShaderCompiler::ResolveIncludeRules()
 	}
 }
 
+void ShaderCompiler::AnalyseCompilerLog(const std::string& log)
+{
+	std::vector<std::string> vectorResult;
+	Split(log, vectorResult,"\n");
+	boost::regex re("(ERROR:)\\s[0-9]:([0-9]*):\\s([\\s\\D\\W\\d]*)");
+	for(std::vector<std::string>::iterator it = vectorResult.begin(); it != vectorResult.end(); ++it)
+	{
+		Logger::Log() << "[LOG] " << (*it) << "\n";
+		boost::cmatch matches;
+		boost::match_results<std::string::iterator> what;
+		if(boost::regex_search(it->c_str(),matches,re))
+		{
+			std::string lineNumberString(matches[2].first, matches[2].second);
+			std::stringstream ss;
+			ss << lineNumberString;
+			int lineNumber;
+			ss >> lineNumber;
+			Logger::Log() << "[Compiler] Error line found : " << lineNumber << "\n";
+			std::list<std::string>::iterator i = m_LinesCode.begin();
+			std::advance(i, lineNumber-1);
+			Logger::Log() << "[Compiler] [Line] " << lineNumber << " : " << *i << "\n";
+		}
+	}
+}
+
 const std::string ShaderCompiler::LoadFile(const std::string& path)
 {
 	std::ifstream file(path.c_str(), std::ios::in);

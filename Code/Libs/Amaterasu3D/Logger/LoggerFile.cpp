@@ -15,6 +15,7 @@ LoggerFile::LoggerFile(const std::string& Filename) :
 LoggerFile::~LoggerFile()
 {
 	_File << "***** EndLog *******\n";
+	_File.close();
 }
 
 void LoggerFile::Write(const std::string& Message)

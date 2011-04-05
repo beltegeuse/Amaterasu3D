@@ -61,6 +61,7 @@ public:
 	 * Public Methods
 	 */
 	void Compile();
+	void AnalyseCompilerLog(const std::string& log);
 
 	const std::string GetCode() const;
 
