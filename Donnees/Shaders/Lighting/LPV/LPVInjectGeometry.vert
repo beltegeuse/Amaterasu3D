@@ -40,7 +40,7 @@ void main()
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
 	float Depth = DepthToZPosition(texture(DepthBuffer, outTexCoord).r);
 
-	SurfelArea = (4.0*Depth*Depth) / (512.0*512.0); // Passer les parameters
+	SurfelArea = (Depth*Depth); // Passer les parameters
 
 	//shift occlusion volume by half cell size
 	Position -= (LPVCellSize.xyz*0.5);

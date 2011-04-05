@@ -435,13 +435,12 @@ private:
 			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 			m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			// ------- From Camera
-	//		m_GBufferShader->GetFBO()->GetTexture("Position")->activateMultiTex(CUSTOM_TEXTURE+0);
-	//		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
-	//		m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
-	//		m_SamplePointCamera->Draw();
-	//		m_GBufferShader->GetFBO()->GetTexture("Position")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-	//		m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-	//		m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+			m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
+			m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
+			ShaderHelperUniformPositionFromView(m_LPVInjectGeomerty);
+			m_SamplePointCamera->Draw();
+			m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+			m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			// --------- Restore all states
 			m_LPVInjectGeomerty->End();
 			glEnable(GL_DEPTH_TEST);
@@ -502,20 +501,20 @@ private:
 		glEnable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
 		glBlendFunc(GL_ONE,GL_ONE);
-		for(int i = 0; i < m_PropagatedShow+1; i++)
+		for(int i = 0; i < m_PropagatedShow+2; i++)
 		{
-//			if(i == 0)
-//			{
-//				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
-//				m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+1);
-//				m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+2);
-//			}
-//			else
-//			{
-				m_PropagationFBOs[i]->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
-				m_PropagationFBOs[i]->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+1);
-				m_PropagationFBOs[i]->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+2);
-//			}
+			if(i == 0)
+			{
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+1);
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+2);
+			}
+			else
+			{
+				m_PropagationFBOs[i-1]->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
+				m_PropagationFBOs[i-1]->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+1);
+				m_PropagationFBOs[i-1]->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+2);
+			}
 			glBegin(GL_QUADS);
 				glTexCoord2f(0.0, 0.0);
 				glVertex2f(-1.0, -1.0);
@@ -526,18 +525,18 @@ private:
 				glTexCoord2f(1.0, 0.0);
 				glVertex2f(1.0, -1.0);
 			glEnd();
-//			if(i == 0)
-//			{
-//				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-//				m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-//				m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-//			}
-//			else
-//			{
-				m_PropagationFBOs[i]->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-				m_PropagationFBOs[i]->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-				m_PropagationFBOs[i]->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-//			}
+			if(i == 0)
+			{
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+				m_LPVInjectVPL->GetFBO()->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+			}
+			else
+			{
+				m_PropagationFBOs[i-1]->GetTexture("GridRed")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+				m_PropagationFBOs[i-1]->GetTexture("GridGreen")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+				m_PropagationFBOs[i-1]->GetTexture("GridBlue")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+			}
 		}
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
@@ -595,7 +594,7 @@ private:
 		m_GBufferShader->GetFBO()->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+3);
-		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4);
+		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+4); // For Shadow Mapping
 		m_DeferredSpotShader->Begin();
 		// Go to spot pass
 		// * Light propreties
