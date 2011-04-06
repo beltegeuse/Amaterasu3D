@@ -45,7 +45,8 @@ void main()
 	outNormal = Normal;
 
 	// Compute Surfel area
-	SurfelArea = Depth*Depth / (512.0*512.0); // TODO: Add uniform size of the buffers
+	//SurfelArea = Depth*Depth / (512.0*512.0); // TODO: Add uniform size of the buffers
+	SurfelArea = Depth*Depth;
 
 	//shift occlusion volume by half cell size
 	//Position -= (LPVCellSize.xyz*0.5);

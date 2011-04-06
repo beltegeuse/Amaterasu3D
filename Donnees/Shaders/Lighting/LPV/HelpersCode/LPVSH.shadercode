@@ -8,7 +8,10 @@
 //#define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,1.02332671)
 //#define SH_cosLobe_c vec4(0.25,-0.5,0.5,0.5)
 //#define SH_cosLobe_c vec4(0.4,-0.8,0.8,0.8)
-#define SH_cosLobe_c vec4(0.25,-0.5,0.5,0.5)
+//#define SH_cosLobe_c vec4(0.25,-0.5,0.5,0.5) ///<Exemple
+#define SH_cosLobe_c0 0.886226925f /* sqrt(pi)/2 */
+#define SH_cosLobe_c1 1.02332671f /* sqrt(pi/3) */
+#define SH_cosLobe_c vec4(SH_cosLobe_c0,-SH_cosLobe_c1,SH_cosLobe_c1,-SH_cosLobe_c1)
 
 /* =======================================
  * Crytek Papers
@@ -44,15 +47,21 @@ vec4 SHProjectCone(in vec3 dir, float angle)
   return SHRotate(dir, vZHCoeffs);
 }
 
-vec4 SHProjectCone90(in vec3 dir)
+/*vec4 SHProjectCone90(in vec3 dir)
 {
    return SHRotate(dir, vec2(0.5,0.75));
-}
+}*/
 
 vec4 SHProjectCone(vec3 vcDir)
 {
 	vec2 vZHCoeffs = vec2(0.25,0.5);
 	return SHRotate(vcDir, vZHCoeffs);
+}
+
+vec4 SHProjectCone90( vec3 direction ) {
+	direction = normalize( direction );
+	
+	return SH_cosLobe_c * vec4(1.0,direction);
 }
 
 //////////////////////////////////////////

@@ -19,9 +19,9 @@ out vec4 GridBlue;
 void main()
 {	
 	// Get all data
-	vec4 Flux = texture(FluxBuffer, outTexCoord)  / Pi; // TODO: Normalisation pb ????
+	vec4 Flux = texture(FluxBuffer, outTexCoord); // TODO: Normalisation pb ????
 	// Compute SH
-	vec4 SH = SHProjectCone(normalize(outNormal));
+	vec4 SH = 1000.0 * SHProjectCone(normalize(outNormal)) / (512.0*512.0);
 
 	// Put into buffers
 	GridRed = SH * Flux.r;

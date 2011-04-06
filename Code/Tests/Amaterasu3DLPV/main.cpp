@@ -202,11 +202,13 @@ private:
 	{
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_Light.Position = Math::TVector3F(-11,171,22);
-		m_Light.LightRaduis = 500.0;
+		//m_Light.Position = Math::TVector3F(-11,171,22);
+		m_Light.Position = Math::TVector3F(-50,20,1.0);
+		m_Light.LightRaduis = 400.0;
 		m_Light.LightIntensity = 1.0;
 		m_Light.LightCutOff = 70;
-		m_Light.Direction = Math::TVector3F(0.0,0.0,0.0);
+		m_Light.Direction = Math::TVector3F(0.1,0.0,0.0);
+		//m_Light.Direction = Math::TVector3F(0.0,0.0,1.0);
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 		Math::CMatrix4 transMatrix;
 		transMatrix.SetScaling(0.1,0.1,0.1);
@@ -218,11 +220,11 @@ private:
 	{
 		// Create light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_Light.Position = Math::TVector3F(80,125,60);
+		m_Light.Position = Math::TVector3F(80,150,0);
 		m_Light.LightRaduis = 300.0;
-		m_Light.LightIntensity = 10.0;
+		m_Light.LightIntensity = 5.0;
 		m_Light.LightCutOff = 70;
-		m_Light.Direction = Math::TVector3F(0.0,0.0,-400);
+		m_Light.Direction = Math::TVector3F(0.0,-200.0,-400);
 //		m_Light.Direction.Normalize();
 		// Load scene
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("TestScene2.obj");
@@ -457,16 +459,22 @@ private:
 			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 			m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			// ------- From Camera
-			m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
-			m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
-			ShaderHelperUniformPositionFromView(m_LPVInjectGeomerty);
-			m_SamplePointCamera->Draw();
-			m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-			m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+//			m_GBufferShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
+//			m_GBufferShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
+//			ShaderHelperUniformPositionFromView(m_LPVInjectGeomerty);
+//			m_SamplePointCamera->Draw();
+//			m_GBufferShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+//			m_GBufferShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 			// --------- Restore all states
 			m_LPVInjectGeomerty->End();
 			glEnable(GL_DEPTH_TEST);
 			glDisable(GL_BLEND);
+		}
+		else
+		{
+			// Just for clear buffers
+			m_LPVInjectGeomerty->Begin();
+			m_LPVInjectGeomerty->End();
 		}
 		// ******* 3th Step : Diffusion
 		for(int i = 0; i < m_NbPropagationStep; i++)

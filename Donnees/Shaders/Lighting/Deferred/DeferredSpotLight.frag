@@ -93,7 +93,7 @@ void main()
 	float NdotL = max(dot(normal, LightDirection), 0.0);
 	if (NdotL > 0.0) {
 		// Add diffuse compoment
-		Color += vec4(LightAtt * (LightColor.rgb * NdotL),1.0);
+		Color += vec4(LightAtt * (LightColor.rgb),1.0); //NdotL
 		// Compute reflect vector
 //		vec3 R = reflect(-LightDirection, normal);
 //		// Add specular compoment
