@@ -90,7 +90,7 @@ void main()
 	}
 
 	vec4 SHEv = SH_evaluate(-Normal);
-	Color = vec4(dot(CoeffGridRed,SHEv),
+	Color = DiffuseColor * vec4(dot(CoeffGridRed,SHEv),
 				 dot(CoeffGridGreen,SHEv),
 				 dot(CoeffGridBlue,SHEv),1.0); //DiffuseColor
 

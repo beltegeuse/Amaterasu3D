@@ -87,6 +87,7 @@ void main()
 			Flux += vec4(LightAtt * (LightColor.rgb),1.0); // NdotL
 		}
 		
+		//Flux = vec4(vec3(1.0),1.0);
 		Flux *= diffuseColor;
 	}
 }

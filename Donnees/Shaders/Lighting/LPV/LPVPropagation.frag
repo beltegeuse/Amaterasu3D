@@ -44,6 +44,8 @@ out vec4 GridBlue;
 #define side1 0.447213595
 //10 / sqrt(125)
 #define side2 0.894427190
+// 1 / sqrt(2)
+//#define 1SubSqrt2 0.707106781
 
 const vec3 SideDirection[4] = vec3[4](vec3(side1,0.0,side2), vec3(-side1,0.0,side2), vec3(0.0,side1,side2), vec3(0.0,-side1,side2));
 const vec3 ReproDirection[4] = vec3[4](vec3(1.0,0.0,0.0), vec3(-1.0,0.0,0.0), vec3(0.0,1.0,0.0), vec3(0.0,-1.0,0.0));
@@ -66,18 +68,31 @@ const mat3 TransformationMatrix[6] = mat3[6](mat3( 1.0, 0.0, 0.0,
 												   0.0, 0.0,-1.0, // -Y
 												   0.0, 1.0, 0.0));
 
-const float Normalisation = 3.9;
+const float Normalisation = 2.0;
+
+vec4 BilinearInterpolation(vec3 position, in mat3 transMat)
+{
+	vec3 yOffset = transMat*vec3(0.0,1.0,0.0);
+	vec3 xOffset = transMat*vec3(1.0,0.0,0.0);
+	vec2 n00 = Convert3DTo2DTexcoord(position);
+	vec2 n10 = Convert3DTo2DTexcoord(position+xOffset);
+	vec2 n11 = Convert3DTo2DTexcoord(position+xOffset+yOffset);
+	vec2 n01 = Convert3DTo2DTexcoord(position+yOffset);
+
+	return (texture(Occlusion,n00) + texture(Occlusion,n10) + texture(Occlusion,n01) + texture(Occlusion,n11)) / 4.0;
+}
 
 void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue, in vec3 girdPos, in mat3 transMat)
 {
 
 	// *** Compute main direction
-	vec3 offset = vec3(0.0,0.0,1.0)*transMat;
+	vec3 offset = transMat*vec3(0.0,0.0,1.0);
 	// *** Get Neighbour caracteristics
 	vec2 NeighbourTexCoord = Convert3DTo2DTexcoord(girdPos+offset); // TODO: Check border !!!!!
 	vec4 NeighbourRed = texture(LPVRed,NeighbourTexCoord);
 	vec4 NeighbourGreen = texture(LPVGreen,NeighbourTexCoord);
 	vec4 NeighbourBlue = texture(LPVBlue,NeighbourTexCoord);
+	//vec4 occlusionSH = BilinearInterpolation(girdPos+offset, transMat);//
 	vec4 occlusionSH = texture(Occlusion,NeighbourTexCoord);
 
 	/*
@@ -107,8 +122,8 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 	for(int i = 0; i < 4; i++)
 	{
 		// *** Compute directions
-		SideDirectionCompute = SideDirection[i]*transMat;
-		ReproDirectionCompute = ReproDirection[i]*transMat;
+		SideDirectionCompute = transMat*SideDirection[i];
+		ReproDirectionCompute = transMat*ReproDirection[i];
 		// *** Compute SH Hemi for the direction
 		SideDirectionHemi = SHProjectCone90(ReproDirectionCompute);
 		SideDirectionSH = SH_evaluate(SideDirectionCompute * Normalisation);

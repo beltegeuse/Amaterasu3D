@@ -31,7 +31,7 @@ protected:
 	TShaderPtr m_LPVInjectGeomerty;
 	TShaderPtr m_LPVBlend;
 	FBO** m_PropagationFBOs;
-	SceneGraph::Model* m_GridModel;
+	SceneGraph::Group* m_GridModel;
 	SceneGraph::Model* m_SamplePointRSM;
 	SceneGraph::Model* m_SamplePointCamera;
 	// Camera
@@ -134,6 +134,15 @@ private:
 				 case SDLK_F8:
 					 m_DoOcclusion = !m_DoOcclusion;
 					 break;
+				 case SDLK_8:
+					 m_GirdPosition.x += 1.0;
+					 break;
+				 case SDLK_2:
+					 m_GirdPosition.x -= 1.0; break;
+				 case SDLK_4:
+					 m_GirdPosition.z += 1.0; break;
+				 case SDLK_6:
+					 m_GirdPosition.z -= 1.0; break;
 			 }
 		}
 	}
@@ -156,7 +165,7 @@ private:
 		m_PropagatedShow = -1;
 		glPointSize(1.0);
 		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
-		m_GirdPosition = Math::TVector3F(-100.0,-100.0,-200.0);
+		m_GirdPosition = Math::TVector3F(-98.0,-98.0,-198.0);
 		m_NbCellDim = 32;
 		m_TextureSize = Math::TVector2I(256,128);
 		m_NbPropagationStep = 16;
@@ -205,7 +214,7 @@ private:
 		//m_Light.Position = Math::TVector3F(-11,171,22);
 		m_Light.Position = Math::TVector3F(-50,20,1.0);
 		m_Light.LightRaduis = 400.0;
-		m_Light.LightIntensity = 1.0;
+		m_Light.LightIntensity = 5.0;
 		m_Light.LightCutOff = 70;
 		m_Light.Direction = Math::TVector3F(0.1,0.0,0.0);
 		//m_Light.Direction = Math::TVector3F(0.0,0.0,1.0);
@@ -246,17 +255,17 @@ private:
 		for(int z=0;z<=m_NbCellDim;z++){
 			for(int x=0;x<=m_NbCellDim;x++){
 //				Logger::Log() << i << '\n';
-				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
-				vertexBuffer[i+1] = 0+m_GirdPosition.y;
-				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
+				vertexBuffer[i] = x*m_CellSize.x;
+				vertexBuffer[i+1] = 0;
+				vertexBuffer[i+2] = z*m_CellSize.z;
 				colorBuffer[i] = color.R;
 				colorBuffer[i+1] = color.G;
 				colorBuffer[i+2] = color.B;
 				i += 3;
 
-				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
-				vertexBuffer[i+1] = m_NbCellDim*m_CellSize.y+m_GirdPosition.y;
-				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
+				vertexBuffer[i] = x*m_CellSize.x;
+				vertexBuffer[i+1] = m_NbCellDim*m_CellSize.y;
+				vertexBuffer[i+2] = z*m_CellSize.z;
 				colorBuffer[i] = color.R;
 				colorBuffer[i+1] = color.G;
 				colorBuffer[i+2] = color.B;
@@ -264,17 +273,17 @@ private:
 			}
 
 			for(int y=0;y<=m_NbCellDim;y++){
-				vertexBuffer[i] = 0+m_GirdPosition.x;
-				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
-				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
+				vertexBuffer[i] = 0;
+				vertexBuffer[i+1] = y*m_CellSize.y;
+				vertexBuffer[i+2] = z*m_CellSize.z;
 				colorBuffer[i] = color.R;
 				colorBuffer[i+1] = color.G;
 				colorBuffer[i+2] = color.B;
 				i += 3;
 
-				vertexBuffer[i] = m_NbCellDim*m_CellSize.x+m_GirdPosition.x;
-				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
-				vertexBuffer[i+2] = z*m_CellSize.z+m_GirdPosition.z;
+				vertexBuffer[i] = m_NbCellDim*m_CellSize.x;
+				vertexBuffer[i+1] = y*m_CellSize.y;
+				vertexBuffer[i+2] = z*m_CellSize.z;
 				colorBuffer[i] = color.R;
 				colorBuffer[i+1] = color.G;
 				colorBuffer[i+2] = color.B;
@@ -284,17 +293,17 @@ private:
 
 		for(int y=0;y<=m_NbCellDim;y++){
 			for(int x=0;x<m_NbCellDim;x++){
-				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
-				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
-				vertexBuffer[i+2] = 0+m_GirdPosition.z;
+				vertexBuffer[i] = x*m_CellSize.x;
+				vertexBuffer[i+1] = y*m_CellSize.y;
+				vertexBuffer[i+2] = 0;
 				colorBuffer[i] = color.R;
 				colorBuffer[i+1] = color.G;
 				colorBuffer[i+2] = color.B;
 				i += 3;
 
-				vertexBuffer[i] = x*m_CellSize.x+m_GirdPosition.x;
-				vertexBuffer[i+1] = y*m_CellSize.y+m_GirdPosition.y;
-				vertexBuffer[i+2] = m_NbCellDim*m_CellSize.z+m_GirdPosition.z;
+				vertexBuffer[i] = x*m_CellSize.x;
+				vertexBuffer[i+1] = y*m_CellSize.y;
+				vertexBuffer[i+2] = m_NbCellDim*m_CellSize.z;
 				colorBuffer[i] = color.R;
 				colorBuffer[i+1] = color.G;
 				colorBuffer[i+2] = color.B;
@@ -307,19 +316,23 @@ private:
 			indiceBuffer[l] = l;
 		}
 
-		m_GridModel = new SceneGraph::Model;
-		m_GridModel->SetDrawMode(GL_LINES);
-		m_GridModel->SetIndiceBuffer(indiceBuffer, 3*m_NbCellDim*m_NbCellDim*2);
+		SceneGraph::Model* model = new SceneGraph::Model;
+		model->SetDrawMode(GL_LINES);
+		model->SetIndiceBuffer(indiceBuffer, 3*m_NbCellDim*m_NbCellDim*2);
 		SceneGraph::ModelBuffer buffer;
 		buffer.buffer = vertexBuffer;
 		buffer.size = 3*m_NbCellDim*m_NbCellDim*3*2;
 		buffer.dimension = 3;
 		buffer.owner = true;
-		m_GridModel->AddBuffer(buffer, VERTEX_ATTRIBUT);
+		model->AddBuffer(buffer, VERTEX_ATTRIBUT);
 		buffer.buffer = colorBuffer;
-		m_GridModel->AddBuffer(buffer, COLOR_ATTRIBUT);
-		m_GridModel->CompileBuffers();
-		m_GridModel->AddMaterial(DIFFUSE_MATERIAL,color);
+		model->AddBuffer(buffer, COLOR_ATTRIBUT);
+		model->CompileBuffers();
+		model->AddMaterial(DIFFUSE_MATERIAL,color);
+
+		m_GridModel = new SceneGraph::Group;
+		m_GridModel->AddChild(model);
+
 	}
 
 	void CreateSampleModel(int resX, int resY, SceneGraph::Model** model)
@@ -383,6 +396,9 @@ private:
 		m_GBufferShader->Begin();
 		if(m_ShowGrid)
 		{
+			Math::CMatrix4 transGrid;
+			transGrid.SetTranslation(m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
+			m_GridModel->LoadTransformMatrix(transGrid);
 			m_GridModel->Draw();
 		}
 		m_Camera->GetView();
@@ -412,7 +428,7 @@ private:
 		m_RSMSpotShader->SetUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
 		m_RSMSpotShader->SetUniform1f("LightIntensity", m_Light.LightIntensity);
 		m_RSMSpotShader->SetUniformVector("LightPosition", m_Light.Position);
-		m_RSMSpotShader->SetUniformVector("LightSpotDirection", m_Light.Direction);
+		m_RSMSpotShader->SetUniformVector("LightSpotDirection", m_Light.Direction - m_Light.Position);
 		m_RSMSpotShader->SetUniformColor("LightColor", m_Light.LightColor);
 		// * Draw the scene
 		RootSceneGraph.Draw();
@@ -635,7 +651,7 @@ private:
 		m_DeferredSpotShader->SetUniform1f("LightCutOff", cos(m_Light.LightCutOff *(M_PI / 180.0)));
 		m_DeferredSpotShader->SetUniform1f("LightIntensity", m_Light.LightIntensity);
 		m_DeferredSpotShader->SetUniformVector("LightPosition", m_Light.Position);
-		m_DeferredSpotShader->SetUniformVector("LightSpotDirection", m_Light.Direction);
+		m_DeferredSpotShader->SetUniformVector("LightSpotDirection", m_Light.Direction- m_Light.Position);
 		m_DeferredSpotShader->SetUniformColor("LightColor", m_Light.LightColor);
 		// * Shadow Map propreties
 		m_DeferredSpotShader->SetUniformMatrix4fv("LightViewMatrix", LightViewMatrix);
