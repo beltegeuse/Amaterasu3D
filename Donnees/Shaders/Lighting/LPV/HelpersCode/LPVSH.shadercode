@@ -52,10 +52,17 @@ vec4 SHProjectCone(in vec3 dir, float angle)
    return SHRotate(dir, vec2(0.5,0.75));
 }*/
 
-vec4 SHProjectCone(vec3 vcDir)
+/*vec4 SHProjectCone(vec3 vcDir)
 {
 	vec2 vZHCoeffs = vec2(0.25,0.5);
 	return SHRotate(vcDir, vZHCoeffs);
+}*/
+
+vec4 SHProjectCone(vec3 vcDir)
+{
+	vcDir = normalize( vcDir );
+	
+	return SH_cosLobe_c * vec4(1.0,vcDir);
 }
 
 vec4 SHProjectCone90( vec3 direction ) {
