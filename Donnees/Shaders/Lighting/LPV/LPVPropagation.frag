@@ -68,9 +68,17 @@ const mat3 TransformationMatrix[6] = mat3[6](mat3( 1.0, 0.0, 0.0,
 												   0.0, 0.0,-1.0, // -Y
 												   0.0, 1.0, 0.0));
 
-const float Normalisation = 2.0;
+const float Normalisation = 1.0;
 
-vec4 BilinearInterpolation(vec3 position, in mat3 transMat)
+struct OcclusionBiValue
+{
+	vec4 v00;
+	vec4 v10;
+	vec4 v11;
+	vec4 v01;
+};
+
+OcclusionBiValue BilinearInterpolation(vec3 position, in mat3 transMat)
 {
 	vec3 yOffset = transMat*vec3(0.0,1.0,0.0);
 	vec3 xOffset = transMat*vec3(1.0,0.0,0.0);
@@ -79,7 +87,13 @@ vec4 BilinearInterpolation(vec3 position, in mat3 transMat)
 	vec2 n11 = Convert3DTo2DTexcoord(position+xOffset+yOffset);
 	vec2 n01 = Convert3DTo2DTexcoord(position+yOffset);
 
-	return (texture(Occlusion,n00) + texture(Occlusion,n10) + texture(Occlusion,n01) + texture(Occlusion,n11)) / 4.0;
+	OcclusionBiValue occFactor;
+	occFactor.v00 = texture(Occlusion,n00);
+	occFactor.v10 = texture(Occlusion,n10);
+	occFactor.v11 = texture(Occlusion,n11);
+	occFactor.v01 = texture(Occlusion,n01);
+
+	return occFactor;
 }
 
 void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue, in vec3 girdPos, in mat3 transMat)
@@ -88,17 +102,19 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 	// *** Compute main direction
 	vec3 offset = transMat*vec3(0.0,0.0,1.0);
 	// *** Get Neighbour caracteristics
-	vec2 NeighbourTexCoord = Convert3DTo2DTexcoord(girdPos+offset); // TODO: Check border !!!!!
+	vec3 NeighbourIndex = girdPos-offset;
+	vec2 NeighbourTexCoord = Convert3DTo2DTexcoord(NeighbourIndex); // TODO: Check border !!!!!
 	vec4 NeighbourRed = texture(LPVRed,NeighbourTexCoord);
 	vec4 NeighbourGreen = texture(LPVGreen,NeighbourTexCoord);
 	vec4 NeighbourBlue = texture(LPVBlue,NeighbourTexCoord);
-	//vec4 occlusionSH = BilinearInterpolation(girdPos+offset, transMat);//
-	vec4 occlusionSH = texture(Occlusion,NeighbourTexCoord);
+	OcclusionBiValue occFactor = BilinearInterpolation(NeighbourIndex, transMat);
+	vec4 occlusionSH = texture(Occlusion,Convert3DTo2DTexcoord(NeighbourIndex + 0.5 * offset));
+	//vec4 occlusionSH = 0.25*(occFactor.v00+occFactor.v10+occFactor.v11+occFactor.v01);
 
 	/*
 	 * Main Direction (to front side)
 	 */
-	vec4 MainDirectionHemi = SHProjectCone90(offset);
+	vec4 MainDirectionHemi = SHProjectCone(offset);
 	vec4 MainDirectionSH = SH_evaluate(offset * Normalisation);
 	// *** Compute all flux
 	float fluxRed = max(0.0,dot(MainDirectionSH,NeighbourRed));
@@ -125,13 +141,14 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 		SideDirectionCompute = transMat*SideDirection[i];
 		ReproDirectionCompute = transMat*ReproDirection[i];
 		// *** Compute SH Hemi for the direction
-		SideDirectionHemi = SHProjectCone90(ReproDirectionCompute);
+		SideDirectionHemi = SHProjectCone(ReproDirectionCompute);
 		SideDirectionSH = SH_evaluate(SideDirectionCompute * Normalisation);
 		// *** Compute Flux
 		fluxRed = max(0.0,dot(SideDirectionSH,NeighbourRed));
 		fluxGreen = max(0.0,dot(SideDirectionSH,NeighbourGreen));
 		fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
 		// *** Compute Fuzzy blocking
+		//occlusionSH = texture(Occlusion,Convert3DTo2DTexcoord(NeighbourIndex + 0.5 * SideDirectionCompute));
 		occlusionFactor =  1.0 - min( SHDotAbs(SH_evaluate(-SideDirectionCompute),occlusionSH),1.0);
 		// *** Add the contribution
 		outputRed += SideDirectionHemi*fluxRed*sideFaceSubtendedSolidAngle*occlusionFactor;

@@ -45,8 +45,8 @@ void main()
 	outNormal = Normal;
 
 	// Compute Surfel area
-	//SurfelArea = Depth*Depth / (512.0*512.0); // TODO: Add uniform size of the buffers
-	SurfelArea = 1.0;
+	//SurfelArea = 12000.0 * Depth*Depth / (512.0*512.0); // TODO: Add uniform size of the buffers
+	SurfelArea = 0.2;
 
 	// Prevent self shadowing
 	Position -= (Normal*LPVCellSize.xyz*0.5);

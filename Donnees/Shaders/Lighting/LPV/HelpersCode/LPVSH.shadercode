@@ -8,7 +8,7 @@
 //#define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,1.02332671)
 //#define SH_cosLobe_c vec4(0.25,-0.5,0.5,0.5)
 //#define SH_cosLobe_c vec4(0.4,-0.8,0.8,0.8)
-//#define SH_cosLobe_c vec4(0.25,-0.5,0.5,0.5) ///<Exemple
+//#define SH_cosLobe_c vec4(0.25,-0.5,0.5,-0.5) ///<Exemple
 #define SH_cosLobe_c0 0.886226925f /* sqrt(pi)/2 */
 #define SH_cosLobe_c1 1.02332671f /* sqrt(pi/3) */
 #define SH_cosLobe_c vec4(SH_cosLobe_c0,-SH_cosLobe_c1,SH_cosLobe_c1,-SH_cosLobe_c1)
@@ -19,7 +19,7 @@
  */
 
 // Pick from Paper : Light Propagation Volumes in CryEngine3
-vec4 SHRotate(vec3 vcDir, vec2 vZHCoeffs)
+/*vec4 SHRotate(vec3 vcDir, vec2 vZHCoeffs)
 {
 	// Compute sine and cosine of theta angle
 	// beware of singularity when both x and y are 0 (no rotation)
@@ -38,14 +38,14 @@ vec4 SHRotate(vec3 vcDir, vec2 vZHCoeffs)
 	vResult.z = -vZHCoeffs.y * phi12_cs.y;
 	vResult.w = vZHCoeffs.y * phi12_cs.x * theta12_cs.x;
 	return vResult;
-}
+}*/
 
-vec4 SHProjectCone(in vec3 dir, float angle)
+/*vec4 SHProjectCone(in vec3 dir, float angle)
 {
   vec2 vZHCoeffs = vec2(0.5 * (1.0 - cos(angle)),           // 1/2 (1 - Cos[\[Alpha]])
                         0.75 * sin(angle) * sin(angle));   // 3/4 Sin[\[Alpha]]^2
   return SHRotate(dir, vZHCoeffs);
-}
+}*/
 
 /*vec4 SHProjectCone90(in vec3 dir)
 {
@@ -62,13 +62,7 @@ vec4 SHProjectCone(vec3 vcDir)
 {
 	vcDir = normalize( vcDir );
 	
-	return SH_cosLobe_c * vec4(1.0,vcDir);
-}
-
-vec4 SHProjectCone90( vec3 direction ) {
-	direction = normalize( direction );
-	
-	return SH_cosLobe_c * vec4(1.0,direction);
+	return SH_cosLobe_c * vec4(1.0,vcDir.yzx);
 }
 
 //////////////////////////////////////////
@@ -82,5 +76,5 @@ float SHDotAbs(vec4 sh1, vec4 sh2){
 
 //Evaluates a SH
 vec4 SH_evaluate(vec3 dir){
-  return SH_c * vec4(1.0, dir.y, dir.z, dir.x);
+  return SH_c * vec4(1.0,dir.yzx);
 }

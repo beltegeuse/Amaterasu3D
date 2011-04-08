@@ -20,5 +20,5 @@ void main()
 	// Compute SH
 	vec4 SH = SHProjectCone(normalize(outNormal.xyz));
 
-	Grid = SH * SurfelArea;
+	Grid = SH * clamp(SurfelArea,0.0,1.0);
 }

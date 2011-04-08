@@ -16,12 +16,14 @@ out vec4 GridBlue;
 
 #include <LPVSH.shadercode>
 
+#define Pi 3.1415926f
+
 void main()
 {	
 	// Get all data
-	vec4 Flux = texture(FluxBuffer, outTexCoord); // TODO: Normalisation pb ????
+	vec4 Flux = 0.01 * texture(FluxBuffer, outTexCoord); // TODO: Normalisation pb ????
 	// Compute SH
-	vec4 SH = 1000.0 * SHProjectCone(normalize(outNormal)) / (512.0*512.0);
+	vec4 SH = SHProjectCone(normalize(outNormal)) / Pi;
 
 	// Put into buffers
 	GridRed = SH * Flux.r;

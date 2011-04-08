@@ -195,7 +195,7 @@ private:
 			m_PropagationFBOs[i] = m_LPVPropagationShader->GetFBO()->Copy();
 		}
 		// Load Scene
-		LoadSponzaScene();
+		LoadTestScene();
 		// Console commands
 		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
@@ -214,7 +214,7 @@ private:
 		//m_Light.Position = Math::TVector3F(-11,171,22);
 		m_Light.Position = Math::TVector3F(-50,20,1.0);
 		m_Light.LightRaduis = 400.0;
-		m_Light.LightIntensity = 5.0;
+		m_Light.LightIntensity = 2.0;
 		m_Light.LightCutOff = 70;
 		m_Light.Direction = Math::TVector3F(0.1,0.0,0.0);
 		//m_Light.Direction = Math::TVector3F(0.0,0.0,1.0);
