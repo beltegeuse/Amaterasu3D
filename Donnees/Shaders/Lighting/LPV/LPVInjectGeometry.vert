@@ -46,8 +46,9 @@ void main()
 
 	// Compute Surfel area
 	//SurfelArea = 12000.0 * Depth*Depth / (512.0*512.0); // TODO: Add uniform size of the buffers
-	SurfelArea = 0.2;
-
+	//float depthFactor = (Depth - NearClipping) / (FarClipping - NearClipping);
+	//SurfelArea = 0.206 * (depthFactor * depthFactor);
+	SurfelArea = 0.206;
 	// Prevent self shadowing
 	Position -= (Normal*LPVCellSize.xyz*0.5);
 	//shift occlusion volume by half cell size

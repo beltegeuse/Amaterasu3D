@@ -80,8 +80,8 @@ struct OcclusionBiValue
 
 OcclusionBiValue BilinearInterpolation(vec3 position, in mat3 transMat)
 {
-	vec3 yOffset = transMat*vec3(0.0,1.0,0.0);
-	vec3 xOffset = transMat*vec3(1.0,0.0,0.0);
+	vec3 yOffset = transMat*vec3(0.0,1.0,1.0);
+	vec3 xOffset = transMat*vec3(1.0,0.0,1.0);
 	vec2 n00 = Convert3DTo2DTexcoord(position);
 	vec2 n10 = Convert3DTo2DTexcoord(position+xOffset);
 	vec2 n11 = Convert3DTo2DTexcoord(position+xOffset+yOffset);
@@ -107,8 +107,8 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 	vec4 NeighbourRed = texture(LPVRed,NeighbourTexCoord);
 	vec4 NeighbourGreen = texture(LPVGreen,NeighbourTexCoord);
 	vec4 NeighbourBlue = texture(LPVBlue,NeighbourTexCoord);
-	OcclusionBiValue occFactor = BilinearInterpolation(NeighbourIndex, transMat);
-	vec4 occlusionSH = texture(Occlusion,Convert3DTo2DTexcoord(NeighbourIndex + 0.5 * offset));
+	//OcclusionBiValue occFactor = BilinearInterpolation(girdPos, transMat);
+	vec4 occlusionSH = texture(Occlusion,Convert3DTo2DTexcoord(girdPos - 0.5 * offset));
 	//vec4 occlusionSH = 0.25*(occFactor.v00+occFactor.v10+occFactor.v11+occFactor.v01);
 
 	/*
@@ -121,8 +121,8 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 	float fluxGreen = max(0.0,dot(MainDirectionSH,NeighbourGreen));
 	float fluxBlue = max(0.0,dot(MainDirectionSH,NeighbourBlue));
 	// *** Compute Fuzzy blocking
-	float occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-offset),occlusionSH),1.0);
-    //occlusionFactor *= occlusionFactor;
+	float occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(offset),occlusionSH),1.0);
+    occlusionFactor *= occlusionFactor;
 	// *** Add the contribution
 	outputRed += MainDirectionHemi*fluxRed*directFaceSubtendedSolidAngle*occlusionFactor;
 	outputGreen += MainDirectionHemi*fluxGreen*directFaceSubtendedSolidAngle*occlusionFactor;
@@ -148,8 +148,9 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 		fluxGreen = max(0.0,dot(SideDirectionSH,NeighbourGreen));
 		fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
 		// *** Compute Fuzzy blocking
-		//occlusionSH = texture(Occlusion,Convert3DTo2DTexcoord(NeighbourIndex + 0.5 * SideDirectionCompute));
-		occlusionFactor =  1.0 - min( SHDotAbs(SH_evaluate(-SideDirectionCompute),occlusionSH),1.0);
+		//occlusionSH = texture(Occlusion,Convert3DTo2DTexcoord(NeighbourIndex - 0.5 * SideDirectionCompute));
+		occlusionFactor =  1.0 - min( SHDotAbs(SH_evaluate(SideDirectionCompute),occlusionSH),1.0);
+		occlusionFactor *= occlusionFactor;
 		// *** Add the contribution
 		outputRed += SideDirectionHemi*fluxRed*sideFaceSubtendedSolidAngle*occlusionFactor;
 		outputGreen += SideDirectionHemi*fluxGreen*sideFaceSubtendedSolidAngle*occlusionFactor;

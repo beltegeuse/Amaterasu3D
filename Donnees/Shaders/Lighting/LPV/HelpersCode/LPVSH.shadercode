@@ -4,11 +4,11 @@
 //this is c = vec4(c0,-c1,c1,-c1)
 //with c0 = 1 / ( 2 * sqrt(PI))
 //     c1 = sqrt(3) / ( 2 * sqrt(PI))
-#define SH_c vec4(0.282094792,-0.488602512,0.488602512,0.488602512)
-//#define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,1.02332671)
-//#define SH_cosLobe_c vec4(0.25,-0.5,0.5,0.5)
-//#define SH_cosLobe_c vec4(0.4,-0.8,0.8,0.8)
-//#define SH_cosLobe_c vec4(0.25,-0.5,0.5,-0.5) ///<Exemple
+#define SH_c vec4(0.282094792,-0.488602512,0.488602512,-0.488602512)
+//#define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,-1.02332671)
+//#define SH_cosLobe_c vec4(0.25,-0.5,0.5,-0.5)
+//#define SH_cosLobe_c vec4(0.4,-0.8,0.8,-0.8)
+##define SH_cosLobe_c vec4(0.25,-0.5,0.5,-0.5) ///<Exemple
 #define SH_cosLobe_c0 0.886226925f /* sqrt(pi)/2 */
 #define SH_cosLobe_c1 1.02332671f /* sqrt(pi/3) */
 #define SH_cosLobe_c vec4(SH_cosLobe_c0,-SH_cosLobe_c1,SH_cosLobe_c1,-SH_cosLobe_c1)
@@ -58,11 +58,15 @@
 	return SHRotate(vcDir, vZHCoeffs);
 }*/
 
+
+////////////////////////////////////
+/// good Functions
+///////////////////////////////////
+
 vec4 SHProjectCone(vec3 vcDir)
 {
 	vcDir = normalize( vcDir );
-	
-	return SH_cosLobe_c * vec4(1.0,vcDir.yzx);
+	return SH_cosLobe_c * vec4(1.0,vcDir.y,vcDir.z,vcDir.x);
 }
 
 //////////////////////////////////////////
@@ -76,5 +80,5 @@ float SHDotAbs(vec4 sh1, vec4 sh2){
 
 //Evaluates a SH
 vec4 SH_evaluate(vec3 dir){
-  return SH_c * vec4(1.0,dir.yzx);
+  return SH_c * vec4(1.0, dir.y, dir.z, dir.x);
 }

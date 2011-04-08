@@ -195,7 +195,7 @@ private:
 			m_PropagationFBOs[i] = m_LPVPropagationShader->GetFBO()->Copy();
 		}
 		// Load Scene
-		LoadTestScene();
+		LoadSponzaScene();
 		// Console commands
 		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
