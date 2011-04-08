@@ -80,7 +80,7 @@ void main()
 	else
 	{
 		// Get Grid Coordinates
-		Position = floor((Position-LPVPosition) / LPVCellSize.xyz);
+		ComputeGridCoord(Position);
 
 		// Get texture coordinates
 		vec2 TexCoordGrid = Convert3DTo2DTexcoord(Position);

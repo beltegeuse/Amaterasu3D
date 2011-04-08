@@ -68,7 +68,7 @@ const mat3 TransformationMatrix[6] = mat3[6](mat3( 1.0, 0.0, 0.0,
 												   0.0, 0.0,-1.0, // -Y
 												   0.0, 1.0, 0.0));
 
-const float Normalisation = 1.0;
+const float Normalisation = 3.9;
 
 struct OcclusionBiValue
 {
@@ -100,7 +100,7 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 {
 
 	// *** Compute main direction
-	vec3 offset = transMat*vec3(0.0,0.0,1.0);
+	vec3 offset = vec3(0.0,0.0,1.0)*transMat;
 	// *** Get Neighbour caracteristics
 	vec3 NeighbourIndex = girdPos-offset;
 	vec2 NeighbourTexCoord = Convert3DTo2DTexcoord(NeighbourIndex); // TODO: Check border !!!!!
@@ -121,7 +121,7 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 	float fluxGreen = max(0.0,dot(MainDirectionSH,NeighbourGreen));
 	float fluxBlue = max(0.0,dot(MainDirectionSH,NeighbourBlue));
 	// *** Compute Fuzzy blocking
-	float occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(offset),occlusionSH),1.0);
+	float occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-offset),occlusionSH),1.0);
     occlusionFactor *= occlusionFactor;
 	// *** Add the contribution
 	outputRed += MainDirectionHemi*fluxRed*directFaceSubtendedSolidAngle*occlusionFactor;
@@ -138,8 +138,8 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 	for(int i = 0; i < 4; i++)
 	{
 		// *** Compute directions
-		SideDirectionCompute = transMat*SideDirection[i];
-		ReproDirectionCompute = transMat*ReproDirection[i];
+		SideDirectionCompute = SideDirection[i] * transMat;
+		ReproDirectionCompute = ReproDirection[i] * transMat;
 		// *** Compute SH Hemi for the direction
 		SideDirectionHemi = SHProjectCone(ReproDirectionCompute);
 		SideDirectionSH = SH_evaluate(SideDirectionCompute * Normalisation);
@@ -149,7 +149,7 @@ void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 out
 		fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
 		// *** Compute Fuzzy blocking
 		//occlusionSH = texture(Occlusion,Convert3DTo2DTexcoord(NeighbourIndex - 0.5 * SideDirectionCompute));
-		occlusionFactor =  1.0 - min( SHDotAbs(SH_evaluate(SideDirectionCompute),occlusionSH),1.0);
+		occlusionFactor =  1.0 - min( SHDotAbs(SH_evaluate(-SideDirectionCompute),occlusionSH),1.0);
 		occlusionFactor *= occlusionFactor;
 		// *** Add the contribution
 		outputRed += SideDirectionHemi*fluxRed*sideFaceSubtendedSolidAngle*occlusionFactor;

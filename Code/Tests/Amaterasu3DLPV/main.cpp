@@ -74,6 +74,11 @@ public:
 		//m_Light.Direction.Normalize();
 	}
 
+	void SetLightValue(float v)
+	{
+		m_Light.LightIntensity = v;
+	}
+
 	void LightView()
 	{
 		m_Camera->SetPosition(m_Light.Position);
@@ -200,6 +205,7 @@ private:
 		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
 		Console.RegisterCommand("lightview",Console::Bind(&ApplicationLPV::LightView, *this));
+		Console.RegisterCommand("lightvalue",Console::Bind(&ApplicationLPV::SetLightValue, *this));
 		// Create Grid
 		CreateGridModel();
 		// Create sample point texture
