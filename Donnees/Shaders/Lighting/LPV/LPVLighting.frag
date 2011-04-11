@@ -38,15 +38,26 @@ out vec4 Color;
 // Trilinear interpolation
 // \position : It's grid position
 //TODO: Add border support
-vec4 TrilinearInterpolation(sampler2D s, vec3 Position)
+vec4 TrilinearInterpolation(sampler2D s, vec3 Position, vec3 Normal)
 {
-	vec3 IndiceCase = floor(Position);
-	vec3 Offset = Position - IndiceCase;
+	vec3 IndexedPosition = floor(Position);
+	vec3 Offset = Position - IndexedPosition;
 
-	vec4 i1 = texture(s, Convert3DTo2DTexcoord(IndiceCase))*(1-Offset.z)+texture(s, Convert3DTo2DTexcoord(IndiceCase+vec3(0,0,1)))*Offset.z;
-	vec4 i2 = texture(s, Convert3DTo2DTexcoord(IndiceCase+vec3(0,1,0)))*(1-Offset.z)+texture(s, Convert3DTo2DTexcoord(IndiceCase+vec3(0,1,1)))*Offset.z;
-	vec4 j1 = texture(s, Convert3DTo2DTexcoord(IndiceCase+vec3(1,0,0)))*(1-Offset.z)+texture(s, Convert3DTo2DTexcoord(IndiceCase+vec3(1,0,1)))*Offset.z;
-	vec4 j2 = texture(s, Convert3DTo2DTexcoord(IndiceCase+vec3(1,1,0)))*(1-Offset.z)+texture(s, Convert3DTo2DTexcoord(IndiceCase+vec3(1,1,1)))*Offset.z;
+	vec4 v1i1 = texture(s, Convert3DTo2DTexcoord(IndexedPosition));
+	vec4 v2i1 = texture(s, Convert3DTo2DTexcoord(IndexedPosition + vec3(0,0,1)));
+	vec4 i1 = v1i1*(1-Offset.z)+v2i1*Offset.z;
+
+	vec4 v1i2 = texture(s, Convert3DTo2DTexcoord(IndexedPosition + vec3(0,1,0)));
+	vec4 v2i2 = texture(s, Convert3DTo2DTexcoord(IndexedPosition + vec3(0,1,1)));
+	vec4 i2 = v1i2*(1-Offset.z)+v2i2*Offset.z;
+
+	vec4 v1j1 = texture(s, Convert3DTo2DTexcoord(IndexedPosition + vec3(1,0,0)));
+	vec4 v2j1 = texture(s, Convert3DTo2DTexcoord(IndexedPosition + vec3(1,0,1)));
+	vec4 j1 = v1j1*(1-Offset.z)+v2j1*Offset.z;
+
+	vec4 v1j2 = texture(s, Convert3DTo2DTexcoord(IndexedPosition + vec3(1,1,0)));
+	vec4 v2j2 = texture(s, Convert3DTo2DTexcoord(IndexedPosition + vec3(1,1,1)));
+	vec4 j2 = v1j2*(1-Offset.z)+v2j2*Offset.z;
 
 	vec4 w1 = i1*(1 - Offset.y) + i2 * Offset.y;
 	vec4 w2 = j1*(1 - Offset.y) + j2 * Offset.y;
@@ -54,10 +65,10 @@ vec4 TrilinearInterpolation(sampler2D s, vec3 Position)
 	return w1*(1 - Offset.x) + w2 * Offset.x;
 }
 
-vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position)
+vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position, vec3 Normal)
 {
-	vec3 PositionGrid = ((Position-LPVPosition) / LPVCellSize.xyz)-0.5;
-	return TrilinearInterpolation(s,PositionGrid);
+	vec3 PositionGrid = ((Position-LPVPosition) / LPVCellSize.xyz) - 0.5;
+	return TrilinearInterpolation(s,PositionGrid, Normal);
 }
 
 vec4 sample3D(in sampler2D s, in vec3 coords){
@@ -95,9 +106,9 @@ void main()
 	if(EnableTrilinearInterpolation)
 	{
 		//Position = (Position - LPVPosition) / (LPVCellSize.xyz*(LPVCellSize.w-1.0));
-		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position);
-		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position);
-		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position);
+		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position, Normal);
+		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position,Normal);
+		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, Normal);
 	}
 	else
 	{
