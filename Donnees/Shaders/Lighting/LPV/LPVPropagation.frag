@@ -1,5 +1,5 @@
 #version 130
-
+#extension GL_EXT_gpu_shader4 : enable
 #define DO_OCCLUSION
 // Precision qualifier
 precision highp float;
@@ -21,9 +21,9 @@ uniform bool DoOcclusion;
 smooth in vec2 outTexCoord;
 
 // Sortie
-out vec4 GridRed;
-out vec4 GridGreen;
 out vec4 GridBlue;
+out vec4 GridGreen;
+out vec4 GridRed;
 
 //solid Angles
 // 0.4006696846f / 4Pi;
@@ -38,139 +38,185 @@ out vec4 GridBlue;
 #define directFaceSubtendedSolidAngle 0.12753712
 #define sideFaceSubtendedSolidAngle 0.13478556
 
-// TODO: Hard coded : CAUSTION
-// To know direction vectors
-//5 / sqrt(125)
-#define side1 0.447213595
-//10 / sqrt(125)
-#define side2 0.894427190
-// 1 / sqrt(2)
-//#define 1SubSqrt2 0.707106781
-
-const vec3 SideDirection[4] = vec3[4](vec3(side1,0.0,side2), vec3(-side1,0.0,side2), vec3(0.0,side1,side2), vec3(0.0,-side1,side2));
-const vec3 ReproDirection[4] = vec3[4](vec3(1.0,0.0,0.0), vec3(-1.0,0.0,0.0), vec3(0.0,1.0,0.0), vec3(0.0,-1.0,0.0));
-const mat3 TransformationMatrix[6] = mat3[6](mat3( 1.0, 0.0, 0.0,
-        									       0.0, 1.0, 0.0, // +Z
-                                                   0.0, 0.0, 1.0),
-                                             mat3(-1.0, 0.0, 0.0,
-												   0.0, 1.0, 0.0, // -Z
-												   0.0, 0.0,-1.0),
-										     mat3( 0.0, 0.0, 1.0,
-												   0.0, 1.0, 0.0, // +X
-												   -1.0, 0.0, 0.0),
-											 mat3( 0.0, 0.0,-1.0,
-												   0.0, 1.0, 0.0, // -X
-												   1.0, 0.0, 0.0),
-										     mat3( 1.0, 0.0, 0.0,
-												   0.0, 0.0, 1.0, // +Y
-												   0.0,-1.0, 0.0),
-										     mat3( 1.0, 0.0, 0.0,
-												   0.0, 0.0,-1.0, // -Y
-												   0.0, 1.0, 0.0));
-
-const float Normalisation = 3.9;
-
-struct OcclusionBiValue
-{
-	vec4 v00;
-	vec4 v10;
-	vec4 v11;
-	vec4 v01;
-};
-
-OcclusionBiValue BilinearInterpolation(vec3 position, in mat3 transMat)
-{
-	vec3 yOffset = transMat*vec3(0.0,1.0,1.0);
-	vec3 xOffset = transMat*vec3(1.0,0.0,1.0);
-	vec2 n00 = Convert3DTo2DTexcoord(position);
-	vec2 n10 = Convert3DTo2DTexcoord(position+xOffset);
-	vec2 n11 = Convert3DTo2DTexcoord(position+xOffset+yOffset);
-	vec2 n01 = Convert3DTo2DTexcoord(position+yOffset);
-
-	OcclusionBiValue occFactor;
-	occFactor.v00 = texture(Occlusion,n00);
-	occFactor.v10 = texture(Occlusion,n10);
-	occFactor.v11 = texture(Occlusion,n11);
-	occFactor.v01 = texture(Occlusion,n01);
-
-	return occFactor;
+ivec2 GetLoadPos2DOffset3D(in vec2 coords, in vec3 offset){
+  vec2 c = floor(coords * LPVSize.xy);
+  float row = floor(c.y / LPVCellSize.w);
+  float col = floor(c.x / LPVCellSize.w);
+  c = clamp(vec2(c.x - col * LPVCellSize.w,c.y - row * LPVCellSize.w) + offset.xy,0.0,LPVCellSize.w-1.0);
+  col += offset.z;
+  float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
+  float newrow = clamp(row+coldiff,0.0,LPVSize.w-1.0);
+  col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
+  col = clamp(col,0.0,LPVSize.z-1.0);
+  vec2 spos = vec2(col * LPVCellSize.w + c.x,newrow * LPVCellSize.w + c.y);// / LPVSize.xy;
+  return ivec2(spos);
 }
 
-void IVPropagateDir(inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue, in vec3 girdPos, in mat3 transMat)
-{
+vec4 Load2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
+  return texelFetch2D(s,GetLoadPos2DOffset3D(coords,offset),0);
+}
 
-	// *** Compute main direction
-	vec3 offset = vec3(0.0,0.0,1.0)*transMat;
-	// *** Get Neighbour caracteristics
-	vec3 NeighbourIndex = girdPos-offset;
-	vec2 NeighbourTexCoord = Convert3DTo2DTexcoord(NeighbourIndex); // TODO: Check border !!!!!
-	vec4 NeighbourRed = texture(LPVRed,NeighbourTexCoord);
-	vec4 NeighbourGreen = texture(LPVGreen,NeighbourTexCoord);
-	vec4 NeighbourBlue = texture(LPVBlue,NeighbourTexCoord);
-	//OcclusionBiValue occFactor = BilinearInterpolation(girdPos, transMat);
-	vec4 occlusionSH = texture(Occlusion,Convert3DTo2DTexcoord(girdPos - 0.5 * offset));
-	//vec4 occlusionSH = 0.25*(occFactor.v00+occFactor.v10+occFactor.v11+occFactor.v01);
+vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset){
+  vec2 c = coords * LPVSize.xy;
+  float row = floor(c.y / LPVCellSize.w);
+  float col = floor(c.x / LPVCellSize.w);
+  c = clamp(vec2(c.x - col * LPVCellSize.w,c.y - row * LPVCellSize.w) + offset.xy,0.0,LPVCellSize.w-1.0);
+  col += offset.z;
+  float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
+  float newrow = clamp(row+coldiff,0.0,LPVSize.w-1.0);
+  col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
+  col = clamp(col,0.0,LPVSize.z-1.0);
+  vec2 spos = vec2(col * LPVCellSize.w + c.x,newrow * LPVCellSize.w + c.y) / LPVSize.xy;
+  return spos;
+}
 
-	/*
-	 * Main Direction (to front side)
-	 */
-	vec4 MainDirectionHemi = SHProjectCone(offset);
-	vec4 MainDirectionSH = SH_evaluate(offset * Normalisation);
-	// *** Compute all flux
-	float fluxRed = max(0.0,dot(MainDirectionSH,NeighbourRed));
-	float fluxGreen = max(0.0,dot(MainDirectionSH,NeighbourGreen));
-	float fluxBlue = max(0.0,dot(MainDirectionSH,NeighbourBlue));
-	// *** Compute Fuzzy blocking
-	float occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-offset),occlusionSH),1.0);
-    occlusionFactor *= occlusionFactor;
-	// *** Add the contribution
-	outputRed += MainDirectionHemi*fluxRed*directFaceSubtendedSolidAngle*occlusionFactor;
-	outputGreen += MainDirectionHemi*fluxGreen*directFaceSubtendedSolidAngle*occlusionFactor;
-	outputBlue += MainDirectionHemi*fluxBlue*directFaceSubtendedSolidAngle*occlusionFactor;
+vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
+  return texture2D(s,GetSamplePos2DOffset3D(coords,offset));
+}
 
-	/*
-	 * Side Direction
-	 */
-	vec3 SideDirectionCompute;
-	vec3 ReproDirectionCompute;
-	vec4 SideDirectionHemi;
-	vec4 SideDirectionSH;
-	for(int i = 0; i < 4; i++)
-	{
-		// *** Compute directions
-		SideDirectionCompute = SideDirection[i] * transMat;
-		ReproDirectionCompute = ReproDirection[i] * transMat;
-		// *** Compute SH Hemi for the direction
-		SideDirectionHemi = SHProjectCone(ReproDirectionCompute);
-		SideDirectionSH = SH_evaluate(SideDirectionCompute * Normalisation);
-		// *** Compute Flux
-		fluxRed = max(0.0,dot(SideDirectionSH,NeighbourRed));
-		fluxGreen = max(0.0,dot(SideDirectionSH,NeighbourGreen));
-		fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
-		// *** Compute Fuzzy blocking
-		//occlusionSH = texture(Occlusion,Convert3DTo2DTexcoord(NeighbourIndex - 0.5 * SideDirectionCompute));
-		occlusionFactor =  1.0 - min( SHDotAbs(SH_evaluate(-SideDirectionCompute),occlusionSH),1.0);
-		occlusionFactor *= occlusionFactor;
-		// *** Add the contribution
-		outputRed += SideDirectionHemi*fluxRed*sideFaceSubtendedSolidAngle*occlusionFactor;
-		outputGreen += SideDirectionHemi*fluxGreen*sideFaceSubtendedSolidAngle*occlusionFactor;
-		outputBlue += SideDirectionHemi*fluxBlue*sideFaceSubtendedSolidAngle*occlusionFactor;
-	}
+//1 / sqrt(5)
+#define side1 0.447213595
+//2 / sqrt(5)
+#define side2 0.894427190
+
+#define DO_OCCLUSION
+
+const float RangeModifier = 8.0;
+
+void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue){
+  //evaluate main direction
+  vec3 MainDirection = orientation * vec3(0.0,0.0,1.0);
+  vec4 MainDirectionSH = SH_evaluate(MainDirection * RangeModifier);
+  vec4 MainDirectionHemi = SH_evaluateCosineLobe_direct(MainDirection);
+
+  //Get neighbour SHs
+  ivec2 loadPos = GetLoadPos2DOffset3D(pos,-MainDirection);
+  vec4 NeighbourRed = texelFetch2D(LPVRed,loadPos, 0);
+  vec4 NeighbourGreen = texelFetch2D(LPVGreen,loadPos, 0);
+  vec4 NeighbourBlue = texelFetch2D(LPVBlue,loadPos, 0);
+
+  //Get Occlusion SH
+  #ifdef DO_OCCLUSION
+  //vec4 occlusionSH = Load2DOffset3D(Occlusion,pos,vec3(0,0,0));
+  vec4 occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection * 0.5);
+  //vec4 occlusionSH = Sample2DOffset3D(Occlusion,pos,vec3(0,0,0));
+  #endif
+
+  float occlusionFactor = 1.0;
+
+  //Evaluate main face
+  float fluxRed = max(0.0,dot(MainDirectionSH,NeighbourRed));
+  float fluxGreen = max(0.0,dot(MainDirectionSH,NeighbourGreen));
+  float fluxBlue = max(0.0,dot(MainDirectionSH,NeighbourBlue));
+  #ifdef DO_OCCLUSION
+  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-MainDirection),occlusionSH),1.0);
+  occlusionFactor *= occlusionFactor;
+  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-MainDirection),occlusionSH),0.0,1.0);
+  #endif
+  vec4 resultRed = MainDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
+  vec4 resultGreen = MainDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
+  vec4 resultBlue = MainDirectionHemi * fluxBlue * directFaceSubtendedSolidAngle * occlusionFactor;
+
+
+  //evaluate side faces
+
+  vec3 SideDirection = vec3(side1,0.0,side2) * orientation;
+  vec3 ReproDirection = vec3(1.0,0.0,0.0) * orientation;
+  vec4 SideDirectionSH = SH_evaluate(SideDirection * RangeModifier);
+  vec4 SideDirectionHemi = SH_evaluateCosineLobe_direct(ReproDirection);
+  fluxRed = max(0.0,dot(SideDirectionSH,NeighbourRed));
+  fluxGreen = max(0.0,dot(SideDirectionSH,NeighbourGreen));
+  fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
+  #ifdef DO_OCCLUSION
+  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
+  occlusionFactor *= occlusionFactor;
+  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
+  #endif
+  resultRed += SideDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
+  resultGreen += SideDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
+  resultBlue += SideDirectionHemi * fluxBlue * directFaceSubtendedSolidAngle * occlusionFactor;
+
+  SideDirection = vec3(-side1,0.0,side2) * orientation;
+  ReproDirection = vec3(-1.0,0.0,0.0) * orientation;
+  SideDirectionSH = SH_evaluate(SideDirection * RangeModifier);
+  SideDirectionHemi = SH_evaluateCosineLobe_direct(ReproDirection);
+  fluxRed = max(0.0,dot(SideDirectionSH,NeighbourRed));
+  fluxGreen = max(0.0,dot(SideDirectionSH,NeighbourGreen));
+  fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
+  #ifdef DO_OCCLUSION
+  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
+  occlusionFactor *= occlusionFactor;
+  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
+  #endif
+  resultRed += SideDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
+  resultGreen += SideDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
+  resultBlue += SideDirectionHemi * fluxBlue * directFaceSubtendedSolidAngle * occlusionFactor;
+
+  SideDirection = vec3(0.0,side1,side2) * orientation;
+  ReproDirection = vec3(0.0,1.0,0.0) * orientation;
+  SideDirectionSH = SH_evaluate(SideDirection * RangeModifier);
+  SideDirectionHemi = SH_evaluateCosineLobe_direct(ReproDirection);
+  fluxRed = max(0.0,dot(SideDirectionSH,NeighbourRed));
+  fluxGreen = max(0.0,dot(SideDirectionSH,NeighbourGreen));
+  fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
+  #ifdef DO_OCCLUSION
+  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
+  occlusionFactor *= occlusionFactor;
+  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
+  #endif
+  resultRed += SideDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
+  resultGreen += SideDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
+  resultBlue += SideDirectionHemi * fluxBlue * directFaceSubtendedSolidAngle * occlusionFactor;
+
+  SideDirection = vec3(0.0,-side1,side2) * orientation;
+  ReproDirection = vec3(0.0,-1.0,0.0) * orientation;
+  SideDirectionSH = SH_evaluate(SideDirection * RangeModifier);
+  SideDirectionHemi = SH_evaluateCosineLobe_direct(ReproDirection);
+  fluxRed = max(0.0,dot(SideDirectionSH,NeighbourRed));
+  fluxGreen = max(0.0,dot(SideDirectionSH,NeighbourGreen));
+  fluxBlue = max(0.0,dot(SideDirectionSH,NeighbourBlue));
+  #ifdef DO_OCCLUSION
+  occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-SideDirection),occlusionSH),1.0);
+  occlusionFactor *= occlusionFactor;
+  //occlusionFactor = 1.0 - clamp( dot(SH_evaluate(-SideDirection),occlusionSH),0.0,1.0);
+  #endif
+  resultRed += SideDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
+  resultGreen += SideDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
+  resultBlue += SideDirectionHemi * fluxBlue * directFaceSubtendedSolidAngle * occlusionFactor;
+
+  outputRed += resultRed;// * RangeModifier;
+  outputGreen += resultGreen;// * RangeModifier;
+  outputBlue += resultBlue;// * RangeModifier;
 }
 
 void main(){
   vec4 resultRed = vec4(0.0,0.0,0.0,0.0);
   vec4 resultGreen = vec4(0.0,0.0,0.0,0.0);
   vec4 resultBlue = vec4(0.0,0.0,0.0,0.0);
-
-  vec3 RealGridPosition = Convert2DTexcoordTo3D(outTexCoord);
-
-  // Compute propagate Dir for all 6 neighbours
-  for(int i = 0; i < 6; i++)
-  {
-	  IVPropagateDir(resultRed, resultGreen, resultBlue, RealGridPosition, TransformationMatrix[i]);
-  }
-
+  //Z+
+  propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
+                            0.0, 1.0, 0.0,
+                            0.0, 0.0, 1.0),resultRed,resultGreen,resultBlue);
+  //Z-
+  propagate(outTexCoord,mat3(-1.0, 0.0, 0.0,
+                            0.0, 1.0, 0.0,
+                            0.0, 0.0,-1.0),resultRed,resultGreen,resultBlue);
+  //X+
+  propagate(outTexCoord,mat3( 0.0, 0.0, 1.0,
+                            0.0, 1.0, 0.0,
+                           -1.0, 0.0, 0.0),resultRed,resultGreen,resultBlue);
+  //X-
+  propagate(outTexCoord,mat3( 0.0, 0.0,-1.0,
+                            0.0, 1.0, 0.0,
+                            1.0, 0.0, 0.0),resultRed,resultGreen,resultBlue);
+  //Y+
+  propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
+                            0.0, 0.0, 1.0,
+                            0.0,-1.0, 0.0),resultRed,resultGreen,resultBlue);
+  //Y-
+  propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
+                            0.0, 0.0,-1.0,
+                            0.0, 1.0, 0.0),resultRed,resultGreen,resultBlue);
 
   //Data for next propagation step
   GridRed = resultRed;

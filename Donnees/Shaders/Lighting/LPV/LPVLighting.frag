@@ -60,6 +60,27 @@ vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position)
 	return TrilinearInterpolation(s,PositionGrid);
 }
 
+vec4 sample3D(in sampler2D s, in vec3 coords){
+  float CellCount = (LPVCellSize.w-1.0);
+  vec3 c = clamp(coords,0.0,1.0) * CellCount;
+
+  vec3 c1 = vec3(c.x,c.y,floor(c.z));
+  vec3 c2 = clamp(c1+vec3(0.0,0.0,1.0),0.0,CellCount);
+
+	float row = floor(c1.z / LPVSize.z);
+	float col = c1.z - (row*LPVSize.z);
+	vec2 spos1 = vec2(col * LPVCellSize.w + c1.x,row * LPVCellSize.w + c1.y) / LPVSize.xy;
+
+	row = floor(c2.z / LPVSize.z);
+	col = c2.z - (row*LPVSize.z);
+	vec2 spos2 = vec2(col * LPVCellSize.w + c2.x,row * LPVCellSize.w + c2.y) / LPVSize.xy;
+
+	vec4 s1 = texture2D(s,spos1);
+	vec4 s2 = texture2D(s,spos2);
+
+	return mix(s1,s2,c.z-c1.z);
+}
+
 void main()
 {	
 	// Get data from buffers
@@ -73,6 +94,7 @@ void main()
 
 	if(EnableTrilinearInterpolation)
 	{
+		//Position = (Position - LPVPosition) / (LPVCellSize.xyz*(LPVCellSize.w-1.0));
 		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position);
 		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position);
 		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position);
@@ -80,7 +102,7 @@ void main()
 	else
 	{
 		// Get Grid Coordinates
-		ComputeGridCoord(Position);
+		Position = floor((Position.xyz - LPVPosition) / LPVCellSize.xyz);
 
 		// Get texture coordinates
 		vec2 TexCoordGrid = Convert3DTo2DTexcoord(Position);
@@ -90,9 +112,9 @@ void main()
 	}
 
 	vec4 SHEv = SH_evaluate(-Normal);
-	Color = vec4(dot(CoeffGridRed,SHEv),
-				 dot(CoeffGridGreen,SHEv),
-				 dot(CoeffGridBlue,SHEv),1.0); //DiffuseColor
+	Color = 4.0 * vec4(clamp(dot(CoeffGridRed,SHEv),0,1),
+				clamp(dot(CoeffGridGreen,SHEv),0,1),
+				clamp(dot(CoeffGridBlue,SHEv),0,1),1.0); //DiffuseColor
 
 	//Color = CoeffGrid;
 }

@@ -9,6 +9,16 @@ uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
  */
  
+ /*void ComputeGridCoord(inout vec3 position)
+{
+	position = floor((position-LPVPosition) / LPVCellSize.xyz);
+}
+
+bool IsInGrid(in vec3 p)
+{
+    return all(greaterThanEqual(p, vec3(0.0))) && all(lessThan(p, LPVCellSize.xyz));
+}*/
+ 
 /* All methods :
  * ===== Methods to check and compute grid 3D coords
  * ComputeGridCoord
@@ -17,22 +27,16 @@ uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
  * Convert2DTexcoordTo3D
  */
 
-void ComputeGridCoord(inout vec3 position)
-{
-	position = floor((position-LPVPosition) / LPVCellSize.xyz);
+vec2 Convert3Dto2D(in vec3 pos){
+   	float row = floor(pos.z / LPVSize.z);
+	float col = pos.z - (row*LPVSize.z);
+	vec2 over = (pos.xy - clamp(pos.xy,vec2(0,0),vec2(LPVCellSize.w-1.0,LPVCellSize.w-1.0))) * 100.0;
+	return vec2(col * LPVCellSize.w + pos.x + over.x * LPVSize.x,row * LPVCellSize.w + pos.y + over.y * LPVSize.y);
 }
 
-bool IsInGrid(in vec3 p)
-{
-    return all(greaterThanEqual(p, vec3(0.0))) && all(lessThan(p, LPVCellSize.xyz));
-}
 
 vec2 Convert3DTo2DTexcoord(in vec3 pos){
-    // Compute sub coordinates
-	float row = floor(pos.z / LPVSize.z);
-	float col = pos.z - (row*LPVSize.z);
-
-	return vec2(col * LPVCellSize.w + pos.x,row * LPVCellSize.w + pos.y) / LPVSize.xy;
+	return Convert3Dto2D(pos) / LPVSize.xy;
 }
 
 vec3 Convert2DTexcoordTo3D(in vec2 TexCoords){

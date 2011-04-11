@@ -41,19 +41,10 @@ void main()
 	// Prevent self shadowing
 	Position += (Normal*LPVCellSize.xyz*0.5);
 
-	// Compute the ID grid
-	ComputeGridCoord(Position);
-//
-//	if(IsInGrid(Position))
-//	{
-		vec2 pos2d = Convert3DTo2DTexcoord(Position);
-		gl_Position = vec4(pos2d*2.0-1.0,0.0,1.0);
-//	}
-//	else /* the point isn't in the grid */
-//	{
-//		// TODO: See if there is discard for vertex ????
-//		gl_Position = vec4(-10.0,-10.0,0.0,1.0); // Put outside clipping plane
-//	}
+	vec3 cell = floor((Position.xyz - LPVPosition) / LPVCellSize.xyz);
+    vec2 pos2d = Convert3Dto2D(cell);
+    pos2d /= LPVSize.xy;
+    gl_Position = vec4(pos2d * 2.0 - 1.0,0.0,1.0);
 
 
 }
