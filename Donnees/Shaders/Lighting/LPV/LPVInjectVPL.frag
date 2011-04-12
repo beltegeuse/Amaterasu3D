@@ -21,7 +21,7 @@ out vec4 GridBlue;
 void main()
 {	
 	// Get all data
-	vec4 Flux = 0.01 * texture(FluxBuffer, outTexCoord); // TODO: Normalisation pb ????
+	vec4 Flux = 0.1 * texture(FluxBuffer, outTexCoord); // TODO: Normalisation pb ????
 	// Compute SH
 	vec4 SH = SHCreateHemi(outNormal) / Pi;// ;
 	//vec4 Flux = texture(FluxBuffer, outTexCoord); // * 1.0 / (512.0*512.0);

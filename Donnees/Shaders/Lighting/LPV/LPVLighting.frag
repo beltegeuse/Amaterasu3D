@@ -123,9 +123,9 @@ void main()
 	}
 
 	vec4 SHEv = SH_evaluate(-Normal);
-	Color = 4.0 * vec4(clamp(dot(CoeffGridRed,SHEv),0,1),
-				clamp(dot(CoeffGridGreen,SHEv),0,1),
-				clamp(dot(CoeffGridBlue,SHEv),0,1),1.0); //DiffuseColor
+	Color =  vec4(clamp(4.0*dot(CoeffGridRed,SHEv),0,1),
+				clamp(4.0*dot(CoeffGridGreen,SHEv),0,1),
+				clamp(4.0*dot(CoeffGridBlue,SHEv),0,1),1.0); //
 
 	//Color = CoeffGrid;
 }

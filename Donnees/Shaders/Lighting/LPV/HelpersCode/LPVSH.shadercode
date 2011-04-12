@@ -17,7 +17,7 @@
 
 //Evaluates a SH
 vec4 SH_evaluate(vec3 dir){
-  return SH_c * vec4(1.0, dir.y, dir.z, dir.x);
+  return SH_c * vec4(1.0, dir.x, dir.y, dir.z);
 }
 
 //SHRotate function from the crytek paper
@@ -47,12 +47,14 @@ vec4 SHRotate(in vec3 dir, in vec2 vZHCoeffs)
 //Create hemisperical SH coeffs (function from crytek paper)
 vec4 SHCreateHemi(in vec3 dir)
 {
+  //return SHRotate(dir, vec2(0.25,0.5));
   return SHRotate(dir, vec2(1.0,0.0));
   //return SH_hemi_c * vec4(1.0,dir.y,dir.z,dir.x);
 }
 
 // no normalization
 vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
+	//return SHRotate(dir, vec2(0.25,0.5));
 	return SHRotate(dir, vec2(0.5,0.75));
 	//return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,dir.x);
 }

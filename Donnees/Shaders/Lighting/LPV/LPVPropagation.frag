@@ -81,7 +81,7 @@ vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
 
 #define DO_OCCLUSION
 
-const float RangeModifier = 6.0;
+const float RangeModifier = 8.0;
 
 void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue){
   //evaluate main direction
