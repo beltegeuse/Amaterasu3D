@@ -21,6 +21,6 @@ vec4 PositionFormDepth(in sampler2D depthSampler, in vec2 texcoord)
                           -depth,
                           1.0);
     screencoord = InverseViewMatrix * screencoord;
-    screencoord = screencoord / screencoord.w;
+    //screencoord = screencoord / screencoord.w;
     return screencoord;
 }

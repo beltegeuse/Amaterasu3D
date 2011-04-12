@@ -9,11 +9,11 @@ uniform sampler2D GridRed;
 uniform sampler2D GridGreen; ///< Reprensent SH Grid
 uniform sampler2D GridBlue;
 
-uniform sampler2D DepthBuffer;
 uniform sampler2D NormalBuffer;
 uniform sampler2D DiffuseBuffer;
 uniform sampler2D SpecularBuffer;
 uniform sampler2D ShadowBuffer;
+uniform sampler2D DepthBuffer;
 
 // Parametres
 uniform vec3 LPVPosition; // position of the grid
@@ -140,7 +140,7 @@ float ComputeShadow(in vec3 position)
     float shadow = dot(step(shadowCoordinateWdivide.z - 0.0001,samples1),vec4(0.125,0.125,0.125,0.125))
 			   + dot(step(shadowCoordinateWdivide.z - 0.0001,samples2),vec4(0.125,0.125,0.125,0.125));
     shadow = mix(1.0,shadow,inside);
-    shadow = shadow * 0.9 + 0.1;
+    shadow = shadow;
 
     return shadow;
 }
@@ -195,7 +195,7 @@ void main()
 		vec3 R = reflect(-LightDirection, normal);
 		// Add specular compoment
 		float RdotE = max(dot(R, normalize(-position)), 0.0);
-		Color += vec4(LightAtt * LightColor.rgb * specularColor.rgb * pow(RdotE, specularColor.a),16.0);
+		Color += clamp(vec4(LightAtt * LightColor.rgb * specularColor.rgb * pow(RdotE, specularColor.a),16.0),0.0,1.0);
 	}
 
 	// Add diffuse color

@@ -80,7 +80,7 @@ float ComputeShadow(in vec3 position)
     float shadow = dot(step(shadowCoordinateWdivide.z - 0.0001,samples1),vec4(0.125,0.125,0.125,0.125))
 			   + dot(step(shadowCoordinateWdivide.z - 0.0001,samples2),vec4(0.125,0.125,0.125,0.125));
     shadow = mix(1.0,shadow,inside);
-    shadow = shadow * 0.9 + 0.1;
+    shadow = shadow;
 
     return shadow;
 }
