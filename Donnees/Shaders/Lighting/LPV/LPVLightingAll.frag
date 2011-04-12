@@ -203,4 +203,5 @@ void main()
 	Color *= ShadowFactor;
 
 	Color += vec4(diffuseColor,1.0)*ComputeIndirectLighting(position, normal);
+	//Color.a = 1.0;
 }

@@ -12,6 +12,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <Graphics/SceneGraph/Other/Skydome.h>
 
 #include <Application.h>
 #include <Graphics/Lighting/LightingStructures.h>
@@ -33,6 +34,7 @@ protected:
 	TShaderPtr m_LPVInjectGeomerty;
 	TShaderPtr m_LPVBlend;
 	FBO** m_PropagationFBOs;
+	Skydome* m_Sky;
 	SceneGraph::Group* m_GridModel;
 	SceneGraph::Model* m_SamplePointRSM;
 	SceneGraph::Model* m_SamplePointCamera;
@@ -163,6 +165,7 @@ private:
 	//! Make all initializations
 	virtual void OnInitialize()
 	{
+		m_Sky = new Skydome;
 		m_GridModel = 0;
 		m_SamplePointRSM = 0;
 		m_SamplePointCamera = 0;
@@ -619,6 +622,9 @@ private:
 		// WARNING : Don't forgot to add uniform
 		if(m_ShowAll)
 		{
+//			glEnable(GL_BLEND);
+//			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//			m_Sky->Draw();
 			m_LPVLightingAllShader->Begin();
 			// Pass LPV Grid
 			m_LPVBlend->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+0);
@@ -669,6 +675,8 @@ private:
 			m_RSMSpotShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+7); // For Shadow Mapping
 
 			m_LPVLightingAllShader->End();
+
+//			glDisable(GL_BLEND);
 		}
 		else
 		{

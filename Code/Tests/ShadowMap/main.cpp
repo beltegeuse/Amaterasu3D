@@ -39,6 +39,7 @@
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
 #include <Addons/Logo/Logo.h>
+#include <Graphics/SceneGraph/Other/Skydome.h>
 
 class ApplicationShadow : public Application
 {
@@ -46,6 +47,7 @@ protected:
 	FPS m_FPS;
 	Logo m_Logo;
 	CameraFPS* m_Camera;
+	Skydome* m_Sky;
 	TShaderPtr m_BasicShaderShadow;
 	TShaderPtr m_BasicShader;
 	TShaderPtr m_ShadowShader;
@@ -73,6 +75,7 @@ public:
 	virtual void OnInitialize()
 	{
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		m_Sky = new Skydome;
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(20.0);
@@ -176,6 +179,8 @@ public:
 			}
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			m_Sky->Draw();
+
 			m_ShadowShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
 			glEnable(GL_CULL_FACE);
 			glCullFace(GL_BACK);

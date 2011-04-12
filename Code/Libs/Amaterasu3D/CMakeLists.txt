@@ -26,6 +26,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/SceneGraph/Debug/DebugPlaneLeaf.cpp
 	Graphics/SceneGraph/Model.cpp
 	Graphics/SceneGraph/Rectangle2D.cpp
+	Graphics/SceneGraph/Other/Skydome.cpp
 	Graphics/SceneGraph/Assimp/AssimpNode.cpp
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
