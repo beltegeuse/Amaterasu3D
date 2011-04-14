@@ -24,7 +24,7 @@ smooth in vec2 outTexCoord;
 out vec4 AmbiantOcculsion;
 
 // SSAO config
-float SampleRaduis = 1.0;
+float SampleRaduis = 0.006f;
 float Scale = 1.0f;
 float Bias = 0.0f;
 float Intensity = 1.0f;
@@ -46,32 +46,23 @@ void main()
 		discard;
 
 	// Samples vectors
-	vec2 vec[4];
-	vec[0] = vec2(1, 0);
-	vec[1] = vec2(-1, 0);
-	vec[2] = vec2(0, 1);
-	vec[3] = vec2(0, -1);
-
-	vec2 Rand = normalize(texture(RandomBuffer, vec2(600,800) * outTexCoord / 64.0).xy* 2.0 - 1.0);
+	vec2 vectors[10] = vec2[](vec2(-0.010735935, 0.01647018),vec2(-0.06533369, 0.3647007),vec2(-0.6539235, -0.016726388),vec2(0.40958285, 0.0052428036),vec2(-0.1465366, 0.09899267),vec2(-0.44122112, -0.5458797),vec2(0.03755566, -0.10961345),vec2(0.019100213, 0.29652783),vec2(0.8765323, 0.011236004),vec2(0.29264435, -0.40794238));
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz* 2.0 - 1.0);
 	vec3 Position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
 
-	float AOFactor = 0.0;
-	float Raduis = SampleRaduis / (Depth*100.0);
+	float jitterAngle= texture2D(RandomBuffer, outTexCoord.st * 10.0).x*2.0*3.14;
+	mat2 jitterMatrix= mat2(cos(jitterAngle), sin(jitterAngle), -sin(jitterAngle), cos(jitterAngle));
 
-	int NbIteration = int(mix(4.0, 1.0, Depth));
+	float AOFactor = 0.0;
+	float Raduis = SampleRaduis / Depth;
+
+	int NbIteration = 10;
 	for(int i = 0; i < NbIteration; i++)
 	{
-		vec2 coord1 = reflect(vec[i], Rand) * Raduis;
-		vec2 coord2 = vec2(coord1.x * 0.707 - coord1.y * 0.707, coord1.x * 0.707 + coord1.y * 0.707);
-
-		AOFactor += calcAO(outTexCoord, coord1 * 0.25, Position, Normal);
-		AOFactor += calcAO(outTexCoord, coord2 * 0.5, Position, Normal);
-		AOFactor += calcAO(outTexCoord, coord1 * 0.75, Position, Normal);
-		AOFactor += calcAO(outTexCoord, coord2, Position, Normal);
+		vec2 offset = vectors[i]*jitterMatrix* Raduis;
+		AOFactor += calcAO(outTexCoord, offset, Position, Normal);
 	}
 
-	AOFactor /= float(NbIteration) * 4.0;
-	AOFactor = 1.0 - clamp(AOFactor,0.0,1.0);
+	AOFactor = 1.0 - clamp(AOFactor*0.1,0.0,1.0);
 	AmbiantOcculsion = vec4(AOFactor,AOFactor,AOFactor,1.0);
 }
