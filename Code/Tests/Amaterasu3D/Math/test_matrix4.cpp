@@ -32,6 +32,17 @@ BOOST_AUTO_TEST_CASE(mat4_inv2)
 	BOOST_CHECK_EQUAL(matrixIdent,matrix*matrix.Inverse());
 }
 
+BOOST_AUTO_TEST_CASE(mat4_inv3)
+{
+	Math::CMatrix4 matrixIdent;
+	matrixIdent.Identity();
+
+	Math::CMatrix4 matrix;
+	matrix.SetTranslation(10,20,3.14);
+
+	BOOST_CHECK_EQUAL(Math::TVector3F(-10,-20,-3.14),matrix.Inverse().GetTranslation());
+}
+
 BOOST_AUTO_TEST_CASE(mat4_lookat)
 {
 	Math::CMatrix4 matrix;
