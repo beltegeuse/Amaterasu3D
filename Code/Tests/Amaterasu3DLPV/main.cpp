@@ -14,6 +14,7 @@
 #include <iostream>
 #include <Graphics/SceneGraph/Other/Skydome.h>
 #include <Math/SphericalCoordinates.h>
+#include <Addons/PerformancePanel/PerformancePanel.h>
 
 #include <Application.h>
 #include <Graphics/Lighting/LightingStructures.h>
@@ -42,6 +43,7 @@ protected:
 	// Camera
 	CameraFPS* m_Camera;
 	Texture* m_GridTexture;
+	PerformancePanel m_Performances;
 	// FPS Counter
 	FPS m_FPS;
 	// Light
@@ -437,9 +439,11 @@ private:
 		 * 3D Drawing
 		 */
 		MatrixManager.SetModeMatrix(MATRIX_3D);
+		m_Performances.BeginPerformanceCounter();
 
 		// =========== First STEPS (GBuffer generation)
 		// Fill in the GBuffer
+		m_Performances.BeginStep("G-Buffer");
 		m_GBufferShader->Begin();
 		if(m_ShowGrid)
 		{
@@ -450,9 +454,11 @@ private:
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
 		m_GBufferShader->End();
+		m_Performances.EndStep();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// ========== Second STEPS (RSM generation buffers)
+		m_Performances.BeginStep("RSM");
 		// Fill in RSM spot buffers
 		// * Matrix Setup
 		Math::CMatrix4 LightViewMatrix;
@@ -482,10 +488,12 @@ private:
 		// * Revert transformations
 		MatrixManager.SetProjectionMatrix(oldProjectionMatrix);
 		MatrixManager.SetViewMatrix(oldViewMatrix);
+		m_Performances.EndStep();
 
 		// ============= Compute Indirect lighting only
 		glClearColor(0.0f,0.0f,0.0f,0.f);
 		// ****** 1st Step : VPL Injection
+		m_Performances.BeginStep("  === Injection VPL");
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE,GL_ONE);
 		m_LPVInjectVPL->Begin();
@@ -502,8 +510,9 @@ private:
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->End();
 		glDisable(GL_BLEND);
-
+		m_Performances.EndStep();
 		// ******* 2nd Step : Geometry injection
+		m_Performances.BeginStep("  === Injection Geometry");
 		if(m_DoOcclusion)
 		{
 			glEnable(GL_BLEND);
@@ -538,7 +547,9 @@ private:
 			m_LPVInjectGeomerty->Begin();
 			m_LPVInjectGeomerty->End();
 		}
+		m_Performances.EndStep();
 		// ******* 3th Step : Diffusion
+		m_Performances.BeginStep("  === Propagation");
 		for(int i = 0; i < m_NbPropagationStep; i++)
 		{
 			//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -587,7 +598,6 @@ private:
 			m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 			m_LPVPropagationShader->End();
 		}
-
 		// ******* 3th bis Step : Blend all propagations
 		m_LPVBlend->Begin();
 		glEnable(GL_BLEND);
@@ -633,9 +643,10 @@ private:
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
 		m_LPVBlend->End();
-
+		m_Performances.EndStep();
 		// ******* 4th Step : Filtrage pass
 		// WARNING : Don't forgot to add uniform
+		m_Performances.BeginStep("Lighting");
 		if(m_ShowAll)
 		{
 //			glEnable(GL_BLEND);
@@ -809,12 +820,14 @@ private:
 			m_RSMSpotShader->GetFBO()->GetTexture("Flux")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 			m_LPVShowVPL->End();
 		}
-
+		m_Performances.EndStep();
+		m_Performances.EndPerformanceCounter();
 		/*
 		 * 2D Drawing
 		 */
 		MatrixManager.SetModeMatrix(MATRIX_2D);
 		Console.Draw();
+		m_Performances.Draw();
 
 	}
 };
