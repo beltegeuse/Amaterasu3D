@@ -16,7 +16,7 @@ uniform sampler2D ShadowBuffer;
 uniform sampler2D DepthBuffer;
 
 // Parametres
-uniform vec3 LPVPosition; // position of the grid
+uniform mat4 LPVMatrix; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
 uniform bool EnableTrilinearInterpolation;
@@ -82,7 +82,7 @@ vec4 TrilinearInterpolation(sampler2D s, vec3 Position, vec3 Normal)
 
 vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position, vec3 Normal)
 {
-	vec3 PositionGrid = ((Position-LPVPosition) / LPVCellSize.xyz) - 0.5;
+	vec3 PositionGrid = (LPVMatrix*vec4(Position- 0.5*LPVCellSize.xyz,1.0)).xyz / LPVCellSize.xyz;
 	return TrilinearInterpolation(s,PositionGrid, Normal);
 }
 

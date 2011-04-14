@@ -196,7 +196,7 @@ void Shader::UpdateMatrix(MatrixType type)
 {
 	if(IsMatrixModeAvailable(type))
 	{
-		setUniformMatrix4fv(type, CMatrixManager::Instance().GetMatrix(type));
+		SetUniformMatrix4fv(type, CMatrixManager::Instance().GetMatrix(type));
 	}
 }
 
@@ -318,7 +318,7 @@ void Shader::SetUniformMatrix4fv(const GLchar* varname, const Math::CMatrix4& ma
 //	Logger::Log() << matrix << "\n";
 }
 
-void Shader::setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix)
+void Shader::SetUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix)
 {
 	Assert(IsMatrixModeAvailable(type));
 	SetUniformMatrix4fv(m_matrix_bind[type].c_str(), matrix);

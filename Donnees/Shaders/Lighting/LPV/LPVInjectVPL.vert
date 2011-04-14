@@ -10,7 +10,7 @@ uniform sampler2D NormalBuffer;
 in vec2 VertexPosition;
 
 // Parametres
-uniform vec3 LPVPosition; // position of the grid
+uniform mat4 LPVMatrix; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
 #include <LPVPosition.shadercode>
@@ -41,7 +41,7 @@ void main()
 	// Prevent self shadowing
 	Position += (Normal*LPVCellSize.xyz*0.5);
 
-	vec3 cell = floor((Position.xyz - LPVPosition) / LPVCellSize.xyz);
+	vec3 cell = floor((LPVMatrix*vec4(Position.xyz,1.0)).xyz / LPVCellSize.xyz);
     vec2 pos2d = Convert3Dto2D(cell);
     pos2d /= LPVSize.xy;
     gl_Position = vec4(pos2d * 2.0 - 1.0,0.0,1.0);

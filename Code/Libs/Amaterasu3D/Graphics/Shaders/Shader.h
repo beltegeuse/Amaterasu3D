@@ -108,7 +108,7 @@ public:
 	// **** 3x3 Matrice Settings
 	// **** 4x4 Matrice Settings
 	void SetUniformMatrix4fv(const GLchar* name, const Math::CMatrix4& matrix);
-	void setUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix);
+	void SetUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix);
 	// **** Attributes locations
 	void BindAttribLocation(GLint index, const GLchar* name);
 	// FBO Management

@@ -11,7 +11,7 @@ uniform sampler2D LPVBlue;
 uniform sampler2D Occlusion;
 
 // Parametre Grid
-uniform vec3 LPVPosition; // position of the grid
+uniform mat4 LPVMatrice; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
 

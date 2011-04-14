@@ -13,6 +13,7 @@
 #include <sstream>
 #include <iostream>
 #include <Graphics/SceneGraph/Other/Skydome.h>
+#include <Math/SphericalCoordinates.h>
 
 #include <Application.h>
 #include <Graphics/Lighting/LightingStructures.h>
@@ -416,6 +417,17 @@ private:
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
+		// Compute Transform grid matrix
+		Math::CMatrix4 rotationGird;
+		Math::SphericalCoordinates gridSphericalCoords(m_Camera->GetTarget() - m_Camera->GetPosition());
+		rotationGird.SetRotationY(gridSphericalCoords.GetTheta());
+		//Math::CMatrix4 transGrid = MatrixManager.GetMatrix(VIEW_MATRIX);
+		Math::TVector3F cameraPos = m_Camera->GetPosition();
+		Math::CMatrix4 transGrid;
+		transGrid.SetTranslation(cameraPos.x,cameraPos.y,cameraPos.z);
+		Math::CMatrix4 offsetGrid;
+		//offsetGrid.SetTranslation(m_.x,cameraPos.y,cameraPos.z);
+		transGrid = transGrid*rotationGird;
 		/*
 		 * 3D Drawing
 		 */
@@ -426,10 +438,9 @@ private:
 		m_GBufferShader->Begin();
 		if(m_ShowGrid)
 		{
-			Math::CMatrix4 transGrid;
-			transGrid.SetTranslation(m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
 			m_GridModel->LoadTransformMatrix(transGrid);
 			m_GridModel->Draw();
+			transGrid = transGrid.Inverse();
 		}
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
@@ -476,7 +487,7 @@ private:
 		m_RSMSpotShader->GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
 		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
-		m_LPVInjectVPL->SetUniformVector("LPVPosition", m_GirdPosition);
+		m_LPVInjectVPL->SetUniformMatrix4fv("LPVMatrix", transGrid);
 		m_LPVInjectVPL->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 		m_LPVInjectVPL->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 		ShaderHelperUniformPosition(m_LPVInjectVPL, LightProjectionMatrix, LightViewMatrix, 1.0, m_Light.LightRaduis);
@@ -494,7 +505,7 @@ private:
 			glDisable(GL_DEPTH_TEST);
 			glBlendFunc(GL_ONE,GL_ONE);
 			m_LPVInjectGeomerty->Begin();
-			m_LPVInjectGeomerty->SetUniformVector("LPVPosition", m_GirdPosition);
+			m_LPVInjectGeomerty->SetUniformMatrix4fv("LPVMatrix", transGrid);
 			m_LPVInjectGeomerty->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 			m_LPVInjectGeomerty->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			// ------- From Lights
@@ -637,7 +648,7 @@ private:
 			m_GBufferShader->GetFBO()->GetTexture("Specular")->activateMultiTex(CUSTOM_TEXTURE+6);
 			m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+7); // For Shadow Mapping
 			// Pass Uniform LPV
-			m_LPVLightingAllShader->SetUniformVector("LPVPosition", m_GirdPosition);
+			m_LPVLightingAllShader->SetUniformMatrix4fv("LPVMatrix", transGrid);
 			m_LPVLightingAllShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 			m_LPVLightingAllShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			// Pass Uniform Deferred
@@ -701,7 +712,7 @@ private:
 			m_LPVBlend->GetFBO()->GetTexture("GridRed")->activateMultiTex(CUSTOM_TEXTURE+2);
 			m_LPVBlend->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+3);
 			m_LPVBlend->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+4);
-			m_LPVLightingShader->SetUniformVector("LPVPosition", m_GirdPosition);
+			m_LPVLightingShader->SetUniformMatrix4fv("LPVMatrix", transGrid);
 			m_LPVLightingShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
 			m_LPVLightingShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			m_LPVLightingShader->SetUniform1i("EnableTrilinearInterpolation",m_TriInterpolation);
