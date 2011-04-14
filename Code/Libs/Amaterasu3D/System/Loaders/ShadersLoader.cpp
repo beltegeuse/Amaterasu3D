@@ -112,6 +112,12 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 		X = sizeScreen.x;
 		Y = sizeScreen.y;
 	}
+	else if(typeSize == "HalfScreen")
+	{
+		Math::TVector2I sizeScreen = CSettingsManager::Instance().GetSizeRenderingWindow();
+		X = sizeScreen.x / 2;
+		Y = sizeScreen.y / 2;
+	}
 	else if(typeSize == "Custom")
 	{
 		TinyXMLGetAttributeValue<int>(rootFBO,"width",&X);

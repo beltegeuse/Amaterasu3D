@@ -22,17 +22,14 @@ protected:
 	CameraFPS* m_Camera;
 	TShaderPtr m_gbuffer_shader;
 	TShaderPtr m_SSAOBuffer;
-	TShaderPtr m_SSAOShader2;
 	TShaderPtr m_BlurHShader;
 	TShaderPtr m_BlurVShader;
 	TTexturePtr m_NoiseTex;
 	FPS m_FPS;
 	bool m_debug;
-	bool m_ChooseTechnique;
 public:
 	ApplicationSSAO() :
-		m_debug(false),
-		m_ChooseTechnique(false)
+		m_debug(false)
 	{
 
 	}
@@ -52,9 +49,8 @@ public:
 		// Load shader
 		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		m_SSAOBuffer = CShaderManager::Instance().LoadShader("SSAO.shader");
-		m_SSAOShader2 = ShaderManager.LoadShader("SSAOv2.shader");
-		m_BlurHShader = CShaderManager::Instance().LoadShader("GaussianBlurH.shader");
-		m_BlurVShader = CShaderManager::Instance().LoadShader("GaussianBlurV.shader");
+		m_BlurHShader = CShaderManager::Instance().LoadShader("SSAOBlurH.shader");
+		m_BlurVShader = CShaderManager::Instance().LoadShader("SSAOBlurV.shader");
 		// Load textures
 		m_NoiseTex = Texture::LoadFromFile("random_normals.png");
 		// Load scene
@@ -89,9 +85,6 @@ public:
 				 case SDLK_F1:
 					 m_debug = !m_debug;
 					 break;
-				 case SDLK_F2:
-					 m_ChooseTechnique = !m_ChooseTechnique;
-					 break;
 			 }
 		}
 
@@ -106,25 +99,6 @@ public:
 		RootSceneGraph.Draw();
 		m_gbuffer_shader->End();
 
-		if(m_ChooseTechnique)
-		{
-			m_SSAOShader2->Begin();
-			m_gbuffer_shader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
-			m_SSAOShader2->SetUniform1f("NearClipping",SettingsManager.GetFarClipping());
-			m_SSAOShader2->SetUniform1f("FarClipping",SettingsManager.GetNearClipping());
-			m_SSAOShader2->SetUniform1f("ScreenWidth",SettingsManager.GetSizeRenderingWindow().x);
-			m_SSAOShader2->SetUniform1f("ScreenHeight",SettingsManager.GetSizeRenderingWindow().y);
-			glBegin(GL_QUADS);
-				glVertex2f(-1.0, -1.0);
-				glVertex2f(-1.0, 1.0);
-				glVertex2f(1.0, 1.0);
-				glVertex2f(1.0, -1.0);
-			glEnd();
-			m_gbuffer_shader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-			m_SSAOShader2->End();
-			m_SSAOShader2->GetFBO()->DrawDebug();
-		}
-		else
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glMatrixMode(GL_PROJECTION);
