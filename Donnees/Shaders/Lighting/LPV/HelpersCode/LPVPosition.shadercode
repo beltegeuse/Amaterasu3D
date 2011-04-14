@@ -26,6 +26,17 @@ bool IsInGrid(in vec3 p)
  * Convert3Dto2DTexcoord
  * Convert2DTexcoordTo3D
  */
+ 
+ 
+bool IsNotInGrid(in vec3 p)
+{
+    return any(lessThan(p, vec3(0.0))) || any(greaterThanEqual(p, vec3(LPVCellSize.w)));
+}
+
+bool IsInGrid(in vec3 p)
+{
+    return all(greaterThanEqual(p, vec3(0.0))) && all(lessThan(p, vec3(LPVCellSize.w)));
+}
 
 vec2 Convert3Dto2D(in vec3 pos){
    	float row = floor(pos.z / LPVSize.z);

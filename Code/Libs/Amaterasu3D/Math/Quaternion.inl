@@ -23,6 +23,10 @@
 //==========================================================
 
 
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 /////////////////////////////////////////////////////////////
 /// Constructeur par défaut
 ///
@@ -145,7 +149,7 @@ inline void CQuaternion::FromMatrix(const CMatrix4& Matrix)
 
     if (Trace > 0)
     {
-        float s = 0.5f / std::sqrtf(Trace);
+        float s = 0.5f / std::sqrt(Trace);
         x = (Matrix(2, 1) - Matrix(1, 2)) * s;
         y = (Matrix(0, 2) - Matrix(2, 0)) * s;
         z = (Matrix(1, 0) - Matrix(0, 1)) * s;
@@ -153,7 +157,7 @@ inline void CQuaternion::FromMatrix(const CMatrix4& Matrix)
     }
     else
     {
-        if ((Matrix(0, 0) > Matrix(1, 1) && (Matrix(0, 0) > Matrix(2, 2)))
+        if ((Matrix(0, 0) > Matrix(1, 1) && (Matrix(0, 0) > Matrix(2, 2))))
         {
             float s = std::sqrt(1 + Matrix(0, 0) - Matrix(1, 1) - Matrix(2, 2)) * 2;
             x = 0.5f / s;
@@ -212,10 +216,10 @@ inline void CQuaternion::FromAxisAngle(const TVector3F& Axis, float Angle)
 inline void CQuaternion::ToAxisAngle(TVector3F& Axis, float& Angle) const
 {
     // Calcul de l'angle
-    Angle = std::acosf(w) * 2;
+    Angle = std::acos(w) * 2;
 
     // Calcul de l'axe
-    float Norm = std::sqrtf(x * x + y * y + z * z);
+    float Norm = std::sqrt(x * x + y * y + z * z);
     if (std::fabs(Norm) > std::numeric_limits<float>::epsilon())
     {
         Axis.x = x / Norm;

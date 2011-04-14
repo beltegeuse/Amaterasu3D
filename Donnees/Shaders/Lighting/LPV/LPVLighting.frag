@@ -96,6 +96,12 @@ void main()
 {	
 	// Get data from buffers
 	vec3 Position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
+	vec3 GridPosition = floor((LPVMatrix*vec4(Position.xyz,1.0)).xyz / LPVCellSize.xyz); // Early discard
+	if(IsNotInGrid(GridPosition))
+	{
+		discard;
+	}
+
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
 	vec4 DiffuseColor = texture(DiffuseBuffer,outTexCoord);
 
@@ -105,18 +111,15 @@ void main()
 
 	if(EnableTrilinearInterpolation)
 	{
-		//Position = (Position - LPVPosition) / (LPVCellSize.xyz*(LPVCellSize.w-1.0));
 		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position, Normal);
 		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position,Normal);
 		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, Normal);
 	}
 	else
 	{
-		// Get Grid Coordinates
-		Position = floor((LPVMatrix*vec4(Position.xyz,1.0)).xyz / LPVCellSize.xyz);
 
 		// Get texture coordinates
-		vec2 TexCoordGrid = Convert3DTo2DTexcoord(Position);
+		vec2 TexCoordGrid = Convert3DTo2DTexcoord(GridPosition);
 		CoeffGridRed = texture2D(GridRed, TexCoordGrid); ///< And get coeff value
 		CoeffGridGreen = texture2D(GridGreen, TexCoordGrid);
 		CoeffGridBlue = texture2D(GridBlue, TexCoordGrid);
@@ -126,6 +129,5 @@ void main()
 	Color =  vec4(clamp(4.0*dot(CoeffGridRed,SHEv),0,1),
 				clamp(4.0*dot(CoeffGridGreen,SHEv),0,1),
 				clamp(4.0*dot(CoeffGridBlue,SHEv),0,1),1.0); //
-
 	//Color = CoeffGrid;
 }

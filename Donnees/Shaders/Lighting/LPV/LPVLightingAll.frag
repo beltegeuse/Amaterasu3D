@@ -148,7 +148,8 @@ float ComputeShadow(in vec3 position)
 vec4 ComputeIndirectLighting(in vec3 Position, in vec3 Normal)
 {
 	// Get Grid Coordinates
-	//Position = floor((Position.xyz - LPVPosition) / LPVCellSize.xyz);
+	if(IsNotInGrid(floor((LPVMatrix*vec4(Position- 0.5*LPVCellSize.xyz,1.0)).xyz / LPVCellSize.xyz)))
+		return vec4(0.0,0.0,0.0,0.0);
 
 	// Get texture coordinates
 	//vec2 TexCoordGrid = Convert3DTo2DTexcoord(Position);
