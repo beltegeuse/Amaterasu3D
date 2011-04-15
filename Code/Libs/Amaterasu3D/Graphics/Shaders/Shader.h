@@ -142,11 +142,10 @@ public:
 	// To know before drawing
 	virtual void OnDraw();
 	virtual void UpdateAll();
-
-
-private:
 	// To Link the Program
 	void Link();
+
+private:
 	void ShowLinkLog(unsigned int id);
 	// Common shader methods
 	inline int GetAttribLocation(const GLchar* name);

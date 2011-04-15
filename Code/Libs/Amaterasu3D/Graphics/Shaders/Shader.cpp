@@ -59,8 +59,6 @@ m_IsLink(false)
 	// Program creation
 	m_ProgramID = glCreateProgram () ;
 	std::cout << "[INFO] Shader creation : " << m_ProgramID << std::endl;
-	// attach shaders
-	Link();
 }
 //Destructor
 Shader::~Shader()
@@ -121,19 +119,19 @@ GLuint Shader::GetProgramObject()
 void Shader::SetGeometryShaderParameters(GLenum inputMode, GLenum outputMode, int output)
 {
 	Assert(m_GeometryShader != 0);
-	glProgramParameteri(m_ProgramID,GL_GEOMETRY_INPUT_TYPE,inputMode);
-	glProgramParameteri(m_ProgramID,GL_GEOMETRY_OUTPUT_TYPE,outputMode);
+	glProgramParameteriEXT(m_ProgramID,GL_GEOMETRY_INPUT_TYPE_EXT,inputMode);
+	glProgramParameteriEXT(m_ProgramID,GL_GEOMETRY_OUTPUT_TYPE_EXT,outputMode);
 
 	int MaxVertices = MaxOutputVertices();
 	if(output < 0)
 	{
-		glProgramParameteri(m_ProgramID,GL_GEOMETRY_VERTICES_OUT,MaxVertices);
+		glProgramParameteriEXT(m_ProgramID,GL_GEOMETRY_VERTICES_OUT_EXT,MaxVertices);
 	}
 	else
 	{
 		if(output > MaxVertices)
 			throw CException("Reach max output vertices");
-		glProgramParameteri(m_ProgramID,GL_GEOMETRY_VERTICES_OUT,output);
+		glProgramParameteriEXT(m_ProgramID,GL_GEOMETRY_VERTICES_OUT_EXT,output);
 	}
 }
 

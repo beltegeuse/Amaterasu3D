@@ -1,4 +1,5 @@
 #version 130 
+#extension GL_EXT_geometry_shader4 : enable
 
 void main(void)
 {
@@ -22,14 +23,14 @@ void main(void)
 		gl_Position = gl_PositionIn[i];
 		EmitVertex();
 	}
-	EndPrimitive();																						
+	EndPrimitive();
 	//New piece of geometry!  We just swizzle the x and y terms
 	for(i=0; i< gl_VerticesIn; i++){
 		gl_Position = gl_PositionIn[i];
 		gl_Position.xy = gl_Position.yx;
 		EmitVertex();
 	}
-	EndPrimitive();	
+	EndPrimitive();
     /////////////////////////////////////////////////////////////
 
 }

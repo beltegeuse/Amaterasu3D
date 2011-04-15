@@ -404,6 +404,7 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 		// Shader creation ....
 		shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType);
 	}
+	shader->Link();
 
 	// Attrib blinding ...
 	LoadShaderAttributs(shader, root);
