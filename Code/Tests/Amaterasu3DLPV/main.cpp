@@ -15,6 +15,7 @@
 #include <Graphics/SceneGraph/Other/Skydome.h>
 #include <Math/SphericalCoordinates.h>
 #include <Addons/PerformancePanel/PerformancePanel.h>
+#include <Utilities/Util.h>
 
 #include <Application.h>
 #include <Graphics/Lighting/LightingStructures.h>
@@ -62,6 +63,7 @@ protected:
 	Math::TVector3F m_CellSize;
 	Math::TVector3F m_GirdPosition;
 	Math::TVector2I m_TextureSize;
+	Math::TVector2I m_TextureRepeat;
 	int m_NbCellDim;
 	int m_NbPropagationStep;
 	int m_PropagatedShow;
@@ -165,6 +167,15 @@ private:
 			 }
 		}
 	}
+
+	Math::TVector2I ComputeRepeatTexture(unsigned int nbElements)
+	{
+		Math::TVector2I dim;
+		dim.x = NearestPowerOfTwo(sqrt(nbElements));
+		dim.y = nbElements/dim.x;
+		return nbElements;
+	}
+
 	//! Make all initializations
 	virtual void OnInitialize()
 	{
@@ -185,11 +196,12 @@ private:
 		m_ShowAll = true;
 		m_PropagatedShow = -1;
 		glPointSize(1.0);
-		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
+		m_CellSize = Math::TVector3F(5.0,5.0,5.0);
 		m_GirdPosition = Math::TVector3F(-98.0,-98.0,-198.0);
 		m_NbCellDim = 32;
-		m_TextureSize = Math::TVector2I(256,128);
-		m_NbPropagationStep = 16;
+		m_TextureRepeat = ComputeRepeatTexture(m_NbCellDim);
+		m_TextureSize = m_TextureRepeat*m_NbCellDim;
+		m_NbPropagationStep = m_NbCellDim / 2;
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
@@ -501,7 +513,7 @@ private:
 		m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+1);
 		m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_LPVInjectVPL->SetUniformMatrix4fv("LPVMatrix", transGrid);
-		m_LPVInjectVPL->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+		m_LPVInjectVPL->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
 		m_LPVInjectVPL->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 		ShaderHelperUniformPosition(m_LPVInjectVPL, LightProjectionMatrix, LightViewMatrix, 1.0, m_Light.LightRaduis);
 		m_SamplePointRSM->Draw();
@@ -520,7 +532,7 @@ private:
 			glBlendFunc(GL_ONE,GL_ONE);
 			m_LPVInjectGeomerty->Begin();
 			m_LPVInjectGeomerty->SetUniformMatrix4fv("LPVMatrix", transGrid);
-			m_LPVInjectGeomerty->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+			m_LPVInjectGeomerty->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
 			m_LPVInjectGeomerty->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			// ------- From Lights
 			m_RSMSpotShader->GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
@@ -557,7 +569,7 @@ private:
 			m_LPVPropagationShader->SetFBO(m_PropagationFBOs[i], false);
 			m_LPVPropagationShader->Begin();
 			//m_LPVPropagationShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-			m_LPVPropagationShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+			m_LPVPropagationShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
 			m_LPVPropagationShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+3);
 			//m_LPVPropagationShader->SetUniform1i("DoOcclusion",m_DoOcclusion);
@@ -665,7 +677,7 @@ private:
 			m_RSMSpotShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+7); // For Shadow Mapping
 			// Pass Uniform LPV
 			m_LPVLightingAllShader->SetUniformMatrix4fv("LPVMatrix", transGrid);
-			m_LPVLightingAllShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+			m_LPVLightingAllShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
 			m_LPVLightingAllShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			// Pass Uniform Deferred
 			m_LPVLightingAllShader->SetUniform1f("LightRaduis",m_Light.LightRaduis);
@@ -729,7 +741,7 @@ private:
 			m_LPVBlend->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+3);
 			m_LPVBlend->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+4);
 			m_LPVLightingShader->SetUniformMatrix4fv("LPVMatrix", transGrid);
-			m_LPVLightingShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,8.0,4.0));
+			m_LPVLightingShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
 			m_LPVLightingShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
 			m_LPVLightingShader->SetUniform1i("EnableTrilinearInterpolation",m_TriInterpolation);
 			ShaderHelperUniformPositionFromView(m_LPVLightingShader);

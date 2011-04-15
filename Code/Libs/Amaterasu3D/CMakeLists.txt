@@ -1,4 +1,8 @@
-SET(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG -g -ansi -Wall -Wextra -Wfatal-errors -pedantic -Wmain -Wswitch-default -Wunreachable-code -Winit-self -Wshadow -Wwrite-strings -Wuninitialized") #Pour afficher les warning lors de la compilation
+
+IF(CMAKE_BUILD_TYPE MATCHES debug)
+	ADD_DEFINITIONS("-Wall -W") #Pour afficher les warning lors de la compilation
+    #SET(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} " -D_DEBUG -ansi -Wall -Wextra -Wfatal-errors -pedantic -Wmain -Wswitch-default -Wunreachable-code -Winit-self -Wshadow -Wwrite-strings -Wuninitialized") #Pour afficher les warning lors de la compilation
+ENDIF(CMAKE_BUILD_TYPE MATCHES debug)
 
 SET(LIB_AMATERASU3D_SRCS
 	Addons/Console/Console.cpp
