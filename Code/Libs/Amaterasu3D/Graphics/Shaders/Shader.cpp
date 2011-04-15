@@ -458,12 +458,12 @@ Shader* CShaderManager::CreateShader(ShaderUnit * VertexShader, ShaderUnit * Fra
 
 Shader* CShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type)
 {
-	CreateShader(new ShaderUnit(vertexFile, VERTEX_SHADER),new ShaderUnit(fragmentFile, FRAGMENT_SHADER), 0, type);
+	return CreateShader(new ShaderUnit(vertexFile, VERTEX_SHADER),new ShaderUnit(fragmentFile, FRAGMENT_SHADER), 0, type);
 }
 
 Shader* CShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile, const char* geometryFile, ShaderType type)
 {
-	CreateShader(new ShaderUnit(vertexFile, VERTEX_SHADER),new ShaderUnit(fragmentFile, FRAGMENT_SHADER), new ShaderUnit(geometryFile, GEOMETRY_SHADER), type);
+	return CreateShader(new ShaderUnit(vertexFile, VERTEX_SHADER),new ShaderUnit(fragmentFile, FRAGMENT_SHADER), new ShaderUnit(geometryFile, GEOMETRY_SHADER), type);
 }
 
 Shader* CShaderManager::currentShader()

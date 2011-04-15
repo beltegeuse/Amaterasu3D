@@ -384,9 +384,9 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	vertexShadername = CMediaManager::Instance().FindMedia(vertexShadername).Fullname();
 	fragmentShadername = CMediaManager::Instance().FindMedia(fragmentShadername).Fullname();
 
-	Shader* shader;
+	Shader* shader = 0;
 	shadername = root->FirstChildElement("GeometryShader");
-	if(shadername)
+	if(shadername != 0)
 	{
 		std::string geometryShadername = std::string(shadername->Attribute("filename"));
 		Logger::Log() << "   * Geometry shader : " << geometryShadername << "\n";
