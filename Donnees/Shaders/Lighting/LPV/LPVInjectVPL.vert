@@ -42,9 +42,14 @@ void main()
 	Position += (Normal*LPVCellSize.xyz*0.5);
 
 	vec3 cell = floor((LPVMatrix*vec4(Position.xyz,1.0)).xyz / LPVCellSize.xyz);
-    vec2 pos2d = Convert3Dto2D(cell);
-    pos2d /= LPVSize.xy;
-    gl_Position = vec4(pos2d * 2.0 - 1.0,0.0,1.0);
+    if(IsInGrid(cell))
+    {
+    	vec2 pos2d = Convert3Dto2D(cell);
+    	pos2d /= LPVSize.xy;
+    	gl_Position = vec4(pos2d * 2.0 - 1.0,0.0,1.0);
+    }
+    else
+    	gl_Position = vec4(vec3(-3),1.0); // Hors pour clipping
 
 
 }

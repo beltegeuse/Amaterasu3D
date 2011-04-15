@@ -88,18 +88,29 @@ void PerformancePanel::Draw()
 	m_Text->Position = Math::TVector2F(0,0);
 	m_Text->Draw();
 
+	float cumulatedTime = 0.0;
 	for(unsigned int i = 0; i < m_Steps.size(); i++)
 	{
 		std::stringstream ss;
+		cumulatedTime += m_Steps[i].Time;
 		ss << " * " << m_Steps[i].Name << " : " << m_Steps[i].Time << " ms";
 		m_Text->Text = ss.str();
 		m_Text->Position = Math::TVector2F(10,18*(i+1));
 		m_Text->Draw();
 	}
 
-	std::stringstream ss2;
-	ss2 << "Total time : " << m_Totaltime << " ms";
-	m_Text->Text = ss2.str();
-	m_Text->Position = Math::TVector2F(0,18*(m_Steps.size()+1));
-	m_Text->Draw();
+	{
+		std::stringstream ss;
+		ss << "Other : " << m_Totaltime-cumulatedTime << " ms";
+		m_Text->Text = ss.str();
+		m_Text->Position = Math::TVector2F(0,18*(m_Steps.size()+1));
+		m_Text->Draw();
+	}
+	{
+		std::stringstream ss;
+		ss << "Total time : " << m_Totaltime << " ms";
+		m_Text->Text = ss.str();
+		m_Text->Position = Math::TVector2F(0,18*(m_Steps.size()+2));
+		m_Text->Draw();
+	}
 }
