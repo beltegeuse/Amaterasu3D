@@ -25,10 +25,13 @@ void main(void)
 	}
 	EndPrimitive();
 	//New piece of geometry!  We just swizzle the x and y terms
-	for(i=0; i< gl_VerticesIn; i++){
-		gl_Position = gl_PositionIn[i];
-		gl_Position.xy = gl_Position.yx;
-		EmitVertex();
+	for(int j = 0; j < 10; j++)
+	{
+		for(i=0; i< gl_VerticesIn; i++){
+			gl_Position = gl_PositionIn[i];
+			gl_Position.x = gl_Position.x+j*0.1;
+			EmitVertex();
+		}
 	}
 	EndPrimitive();
     /////////////////////////////////////////////////////////////
