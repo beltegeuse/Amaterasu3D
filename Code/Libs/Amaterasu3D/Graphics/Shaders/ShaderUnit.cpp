@@ -53,17 +53,17 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type)
 	if(type == VERTEX_SHADER)
 	{
 		Logger::Log() << "  * Shader type : VERTEX \n";
-		m_ID = glCreateShader (GL_VERTEX_SHADER);
+		m_ID = glCreateShaderObjectARB (GL_VERTEX_SHADER_ARB);
 	}
 	else if(type == FRAGMENT_SHADER)
 	{
 		Logger::Log() << "  * Shader type : FRAGMENT \n";
-		m_ID = glCreateShader(GL_FRAGMENT_SHADER);
+		m_ID = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
 	}
 	else if(type == GEOMETRY_SHADER)
 	{
 		Logger::Log() << "  * Shader type : GEOMETRY \n";
-		m_ID = glCreateShader(GL_GEOMETRY_SHADER);
+		m_ID = glCreateShaderObjectARB(GL_GEOMETRY_SHADER_ARB);
 	}
 	else
 		throw CException("Unknow shader type ...");

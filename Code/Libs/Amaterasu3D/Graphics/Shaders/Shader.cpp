@@ -123,6 +123,7 @@ void Shader::SetGeometryShaderParameters(GLenum inputMode, GLenum outputMode, in
 	glProgramParameteriEXT(m_ProgramID,GL_GEOMETRY_OUTPUT_TYPE_EXT,outputMode);
 
 	int MaxVertices = MaxOutputVertices();
+	Logger::Log() << "[INFO] Setup MaxVertices : " << MaxVertices << "\n";
 	if(output < 0)
 	{
 		glProgramParameteriEXT(m_ProgramID,GL_GEOMETRY_VERTICES_OUT_EXT,MaxVertices);
@@ -138,7 +139,7 @@ void Shader::SetGeometryShaderParameters(GLenum inputMode, GLenum outputMode, in
 int Shader::MaxOutputVertices()
 {
 	int temp;
-	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES,&temp);
+	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT,&temp);
 	return temp;
 }
 

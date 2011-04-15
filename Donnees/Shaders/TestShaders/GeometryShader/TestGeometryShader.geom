@@ -1,4 +1,4 @@
-#version 130 
+#version 130
 #extension GL_EXT_geometry_shader4 : enable
 
 void main(void)

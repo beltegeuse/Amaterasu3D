@@ -1,6 +1,6 @@
 #version 130
 
-invariant gl_Position;
+//invariant gl_Position;
 
 void main()
 {
