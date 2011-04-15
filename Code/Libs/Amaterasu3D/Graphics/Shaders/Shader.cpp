@@ -49,9 +49,10 @@ CShaderException::CShaderException(const std::string& message) :
 	if(loc != -1) \
 		Func;
 
-Shader::Shader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader) :
+Shader::Shader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader) :
 m_VertexShader(VertexShader),
 m_FragementShader(FragmentShader),
+m_GeometryShader(GeometryShader),
 m_FBO(0),
 m_IsLink(false)
 {
@@ -82,9 +83,13 @@ void Shader::Link()
 		Logger::Log() << "[Warning] the shader program is already link ... \n";
 		glDetachShader (m_ProgramID, m_VertexShader->GetID()) ;
 		glDetachShader (m_ProgramID, m_FragementShader->GetID()) ;
+		if(m_GeometryShader)
+			glDetachShader (m_ProgramID, m_GeometryShader->GetID()) ;
 	}
 	glAttachShader (m_ProgramID, m_VertexShader->GetID()) ;
 	glAttachShader (m_ProgramID, m_FragementShader->GetID()) ;
+	if(m_GeometryShader)
+		glAttachShader (m_ProgramID, m_GeometryShader->GetID()) ;
 	// link the program
 	glLinkProgram (m_ProgramID) ;
 	ShowLinkLog(m_ProgramID);
@@ -111,6 +116,32 @@ void Shader::End()
 GLuint Shader::GetProgramObject()
 {
 	return m_ProgramID;
+}
+
+void Shader::SetGeometryShaderParameters(GLenum inputMode, GLenum outputMode, int output)
+{
+	Assert(m_GeometryShader != 0);
+	glProgramParameteri(m_ProgramID,GL_GEOMETRY_INPUT_TYPE,inputMode);
+	glProgramParameteri(m_ProgramID,GL_GEOMETRY_OUTPUT_TYPE,outputMode);
+
+	int MaxVertices = MaxOutputVertices();
+	if(output < 0)
+	{
+		glProgramParameteri(m_ProgramID,GL_GEOMETRY_VERTICES_OUT,MaxVertices);
+	}
+	else
+	{
+		if(output > MaxVertices)
+			throw CException("Reach max output vertices");
+		glProgramParameteri(m_ProgramID,GL_GEOMETRY_VERTICES_OUT,output);
+	}
+}
+
+int Shader::MaxOutputVertices()
+{
+	int temp;
+	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES,&temp);
+	return temp;
 }
 
 void Shader::ShowLinkLog(unsigned int id)
@@ -409,22 +440,30 @@ TShaderPtr CShaderManager::LoadShader(const std::string& filename)
 	return Resource;
 }
 
-Shader* CShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type)
+Shader* CShaderManager::CreateShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader, ShaderType type)
 {
 	if(type == BASIC_SHADER)
 	{
-		return new Shader(new ShaderUnit(vertexFile, VERTEX_SHADER),
-				          new ShaderUnit(fragmentFile, FRAGMENT_SHADER));
+		return new Shader(VertexShader,FragmentShader,GeometryShader);
 	}
 	else if(type == GBUFFER_SHADER)
 	{
-		return new GBufferShader(new ShaderUnit(vertexFile, VERTEX_SHADER),
-						  new ShaderUnit(fragmentFile, FRAGMENT_SHADER));
+		return new GBufferShader(VertexShader,FragmentShader,GeometryShader);
 	}
 	else
 	{
 		throw CException("Unknown shader type");
 	}
+}
+
+Shader* CShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type)
+{
+	CreateShader(new ShaderUnit(vertexFile, VERTEX_SHADER),new ShaderUnit(fragmentFile, FRAGMENT_SHADER), 0, type);
+}
+
+Shader* CShaderManager::loadfromFile(const char* vertexFile, const char* fragmentFile, const char* geometryFile, ShaderType type)
+{
+	CreateShader(new ShaderUnit(vertexFile, VERTEX_SHADER),new ShaderUnit(fragmentFile, FRAGMENT_SHADER), new ShaderUnit(geometryFile, GEOMETRY_SHADER), type);
 }
 
 Shader* CShaderManager::currentShader()

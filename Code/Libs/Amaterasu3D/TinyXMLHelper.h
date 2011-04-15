@@ -1,5 +1,8 @@
 #pragma once
 
+// OpenGL includes
+#include <GL/glew.h>
+
 #include <string>
 #include <tinyxml.h>
 #include <Debug/Exceptions.h>
@@ -32,4 +35,14 @@ template< typename T> inline void TinyXMLGetAttributeValue(TiXmlElement* element
 	int error = element->QueryValueAttribute<T>(nameAttribute, value);
 	if(error != TIXML_SUCCESS)
 		throw CTinyXMLAttributException(nameAttribute,error);
+}
+
+inline GLenum OpenGLEnumFromString(const std::string& name)
+{
+	if(name == "Line")
+		return GL_LINES;
+	else if(name == "LineStrip")
+		return GL_LINE_STRIP;
+	else
+		throw CException("Unknow conversion in GLenum : "+name);
 }

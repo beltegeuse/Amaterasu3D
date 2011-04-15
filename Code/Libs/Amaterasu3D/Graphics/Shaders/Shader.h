@@ -64,6 +64,7 @@ private:
 	// Attributes
 	ShaderUnit * m_VertexShader;
 	ShaderUnit * m_FragementShader;
+	ShaderUnit * m_GeometryShader;
 	GLuint m_ProgramID;
 	FBO * m_FBO;
 	bool m_IsLink;
@@ -83,7 +84,7 @@ public:
 	/*
 	 * Constructors & Destructors
 	 */
-	Shader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader);
+	Shader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader = 0);
 	virtual ~Shader();
 
 	/*
@@ -93,6 +94,9 @@ public:
 	void Begin();
 	void End();
 	GLuint GetProgramObject();
+	// To setup the geometry shader
+	void SetGeometryShaderParameters(GLenum inputMode, GLenum outputMode, int output = -1); ///< -1 mean max
+	int MaxOutputVertices();
 	// Uniforms Setters
 	// **** 1 Dimension Settings
 	void SetUniform1f(const GLcharARB* varname, GLfloat v0);
@@ -166,7 +170,8 @@ class CShaderManager : public CSingleton<CShaderManager>
 	// Only the MediaManager can call this methods
 	// Regular GLSL (Vertex+Fragment Shader)
 	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type);    //!< load vertex/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param fragmentFile Fragment Shader File.
-
+	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile, const char* geometryFile, ShaderType type);
+	Shader* CreateShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader = 0, ShaderType type = BASIC_SHADER);
 public:
 
 	// Only this methods for load shader

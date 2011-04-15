@@ -24,8 +24,8 @@
 
 #include "GBufferShader.h"
 
-GBufferShader::GBufferShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader) :
-		Shader(VertexShader,FragmentShader),
+GBufferShader::GBufferShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader) :
+		Shader(VertexShader,FragmentShader, GeometryShader),
 		m_use_texCoord(false),
 		m_use_texNormal(false),
 		m_use_texDiffuse(false),

@@ -38,7 +38,7 @@ private:
 	bool m_use_texSpecular;
 	bool m_use_tangants;
 public:
-	GBufferShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader);
+	GBufferShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader = 0);
 	virtual ~GBufferShader();
 
 	virtual void OnDraw();

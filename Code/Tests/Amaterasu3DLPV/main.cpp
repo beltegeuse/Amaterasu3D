@@ -449,8 +449,8 @@ private:
 		{
 			m_GridModel->LoadTransformMatrix(transGrid);
 			m_GridModel->Draw();
-			transGrid = transGrid.Inverse();
 		}
+		transGrid = transGrid.Inverse();
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
 		m_GBufferShader->End();

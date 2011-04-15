@@ -378,10 +378,33 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	std::string fragmentShadername = std::string(shadername->Attribute("filename"));
 	Logger::Log() << "   * Fragment shader : " << fragmentShadername << "\n";
 
+	/*
+	 * Find full path
+	 */
 	vertexShadername = CMediaManager::Instance().FindMedia(vertexShadername).Fullname();
 	fragmentShadername = CMediaManager::Instance().FindMedia(fragmentShadername).Fullname();
-	// Shader creation ....
-	Shader* shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType);
+
+	Shader* shader;
+	shadername = root->FirstChildElement("GeometryShader");
+	if(shadername)
+	{
+		std::string geometryShadername = std::string(shadername->Attribute("filename"));
+		Logger::Log() << "   * Geometry shader : " << geometryShadername << "\n";
+		geometryShadername = CMediaManager::Instance().FindMedia(geometryShadername).Fullname();
+
+		std::string in, out;
+		TinyXMLGetAttributeValue(shadername, "in", &in);
+		TinyXMLGetAttributeValue(shadername, "out", &out);
+		shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), geometryShadername.c_str(), shaderType);
+		shader->SetGeometryShaderParameters(OpenGLEnumFromString(in), OpenGLEnumFromString(out));
+	}
+	else
+	{
+		Logger::Log() << "   * No Geometry shader\n";
+		// Shader creation ....
+		shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType);
+	}
+
 	// Attrib blinding ...
 	LoadShaderAttributs(shader, root);
 	// Textures uniform

@@ -60,6 +60,11 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type)
 		Logger::Log() << "  * Shader type : FRAGMENT \n";
 		m_ID = glCreateShader(GL_FRAGMENT_SHADER);
 	}
+	else if(type == GEOMETRY_SHADER)
+	{
+		Logger::Log() << "  * Shader type : GEOMETRY \n";
+		m_ID = glCreateShader(GL_GEOMETRY_SHADER);
+	}
 	else
 		throw CException("Unknow shader type ...");
 	// Use own shader Compiler to add extra stuff to GLSL langage
