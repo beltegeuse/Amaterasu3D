@@ -109,23 +109,6 @@ void Application::CreateSDLWindow()
 
 void Application::InitializeOpenGL()
 {
-	// **************************************
-	// ********* GLEW initialisation ********
-	// **************************************
-//	#ifdef WIN32
-	GLenum initialisationGLEW = glewInit();
-	// If there is an error
-	if(initialisationGLEW != GLEW_OK)
-	{
-		// Print the error
-		Logger::Log() << "[Error] Can't initialize GLEW : " << glewGetErrorString(initialisationGLEW) << "\n";
-		throw CException("Can't initialize GLEW.");
-	}
-//	#endif
-	Logger::Log() << "OpenGL Vendor: " << (char*) glGetString(GL_VENDOR) << "\n";
-	Logger::Log() << "OpenGL Renderer: " << (char*) glGetString(GL_RENDERER) << "\n";
-	Logger::Log() << "OpenGL Version: " << (char*) glGetString(GL_VERSION) << "\n\n";
-
 	// *******************************
 	// ******** OpenGL initialisation
 	// *******************************
@@ -193,6 +176,9 @@ void Application::Run()
 {
 	// Create the Window
 	CreateSDLWindow();
+
+	// Check if the system have all requirement
+	m_GraphicsDevice.CheckSystem();
 
 	// Initialise the renderer
 	InitializeOpenGL();

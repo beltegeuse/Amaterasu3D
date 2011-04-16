@@ -34,6 +34,7 @@
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/MatrixManagement.h>
 #include <System/EventManager.h>
+#include <System/GraphicsDevice.h>
 
 /////////////////////////////////
 /// Derivate this class to create an application
@@ -98,6 +99,8 @@ private:
 	/// SDL Attributes
 	SDL_WindowID m_SDLFenetre;
 	SDL_GLContext m_SDLOpenGLContext;
+	// Graphic Device
+	GraphicsDevice m_GraphicsDevice;
 	/// To know how much time between to pass
 	double m_TimeElapse;
 	bool m_IsRunning; ///< If the application is on
