@@ -171,9 +171,10 @@ private:
 	Math::TVector2I ComputeRepeatTexture(unsigned int nbElements)
 	{
 		Math::TVector2I dim;
-		dim.x = NearestPowerOfTwo(sqrt(nbElements));
+		int Taille = sqrt(nbElements);
+		dim.x = NearestPowerOfTwo(Taille);
 		dim.y = nbElements/dim.x;
-		return nbElements;
+		return dim;
 	}
 
 	//! Make all initializations
