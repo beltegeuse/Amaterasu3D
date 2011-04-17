@@ -205,31 +205,31 @@ void WindowImplWin32::DestroyOpenGLWindow()
 	{
 		if (!wglMakeCurrent(NULL,NULL))					// Are We Able To Release The DC And RC Contexts?
 		{
-			MessageBox(NULL,"Release Of DC And RC Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+			throw CException("Release Of DC And RC Failed.");
 		}
 
 		if (!wglDeleteContext(m_OpenGLContext))						// Are We Able To Delete The RC?
 		{
-			MessageBox(NULL,"Release Rendering Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+			throw CException("Release Rendering Context Failed.");
 		}
 		m_OpenGLContext=NULL;										// Set RC To NULL
 	}
 
 	if (m_OpenGLContext && !ReleaseDC(m_Handle,m_DeviceContext))					// Are We Able To Release The DC
 	{
-		MessageBox(NULL,"Release Device Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		throw CException("Release Device Context Failed.");
 		m_Handle=NULL;										// Set DC To NULL
 	}
 
 	if (m_Handle && !DestroyWindow(m_Handle))					// Are We Able To Destroy The Window?
 	{
-		MessageBox(NULL,"Could Not Release hWnd.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		throw CException("Could Not Release hWnd.");
 		m_Handle=NULL;										// Set hWnd To NULL
 	}
 
 	if (!UnregisterClass("OpenGL",m_hInstance))			// Are We Able To Unregister Class
 	{
-		MessageBox(NULL,"Could Not Unregister Class.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		throw CException("Could Not Unregister Class.");
 		m_hInstance=NULL;									// Set hInstance To NULL
 	}
 }
