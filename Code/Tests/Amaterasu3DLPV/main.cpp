@@ -197,7 +197,7 @@ private:
 		m_ShowAll = true;
 		m_PropagatedShow = -1;
 		glPointSize(1.0);
-		m_CellSize = Math::TVector3F(5.0,5.0,5.0);
+		m_CellSize = Math::TVector3F(10.0,10.0,10.0);
 		m_GirdPosition = Math::TVector3F(-98.0,-98.0,-198.0);
 		m_NbCellDim = 32;
 		m_TextureRepeat = ComputeRepeatTexture(m_NbCellDim);
@@ -220,6 +220,11 @@ private:
 		m_LPVPropagationShader = ShaderManager.LoadShader("LPVPropagation.shader");
 		m_LPVBlend = ShaderManager.LoadShader("LPVBlend.shader");
 		m_LPVLightingAllShader = ShaderManager.LoadShader("LPVLightingAll.shader");
+		// Update size FBO
+		m_LPVInjectVPL->GetFBO()->SetSize(m_TextureSize);
+		m_LPVInjectGeomerty->GetFBO()->SetSize(m_TextureSize);
+		m_LPVPropagationShader->GetFBO()->SetSize(m_TextureSize);
+		m_LPVBlend->GetFBO()->SetSize(m_TextureSize);
 		// Copy buffer
 		m_PropagationFBOs = new FBO*[m_NbPropagationStep];
 		m_PropagationFBOs[0] = m_LPVPropagationShader->GetFBO();

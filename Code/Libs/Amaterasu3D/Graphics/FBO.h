@@ -148,11 +148,14 @@ public:
 	GLuint GetDepthID();
 	//! Return an copy of this FBO
 	FBO* Copy();
+	//! Specify new size of FBO
+	void SetSize(const Math::TVector2I& size);
 private:
 	/*
 	 * Private methods
 	 */
 	int GetMaxColorAttachement();
+	void CheckFBOStatus();
 };
 
 #endif /* FBO_H_ */

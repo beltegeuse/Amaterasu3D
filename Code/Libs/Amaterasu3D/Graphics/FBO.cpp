@@ -121,6 +121,18 @@ FBO::FBO(const Math::TVector2I& size,
 		glReadBuffer(GL_NONE);
 	}
 
+	CheckFBOStatus();
+
+//	if(sizeBufferDraw == 0)
+//	{
+//		//FIXME: Only for double buffer (GL_FRONT otherwise)
+//		glDrawBuffer(GL_BACK);
+//		glReadBuffer(GL_BACK);
+//	}
+}
+
+void FBO::CheckFBOStatus()
+{
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO_ID);
 	GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if(error != GL_FRAMEBUFFER_COMPLETE)
@@ -156,13 +168,42 @@ FBO::FBO(const Math::TVector2I& size,
 		throw CException("error on FBO creation...");
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
-//	if(sizeBufferDraw == 0)
-//	{
-//		//FIXME: Only for double buffer (GL_FRONT otherwise)
-//		glDrawBuffer(GL_BACK);
-//		glReadBuffer(GL_BACK);
-//	}
+void FBO::SetSize(const Math::TVector2I& size)
+{
+	// Update size
+	m_SizeBuffers = size;
+
+	// Update Colored buffers
+	for(std::map<std::string, Texture*>::iterator it = m_ColoredBuffers.begin(); it != m_ColoredBuffers.end(); ++it)
+	{
+		it->second->activateTexture();
+		FBOTextureBufferParam params = m_BuffersParams[it->first];
+		glTexImage2D(GL_TEXTURE_2D, 0, params.InternalFormat, size.x, size.y, 0, params.ExternalFormat, params.Precision, 0);
+		it->second->desactivateTextureMapping();
+	}
+
+	// Update depth buffer
+	if(m_DepthType != FBODEPTH_NONE)
+	{
+		if(m_DepthType == FBODEPTH_TEXTURE)
+		{
+			m_ColoredBuffers["Depth"]->activateTexture();
+			glTexImage2D( GL_TEXTURE_2D, 0, m_DepthParams.InternalFormat, size.x, size.y, 0, m_DepthParams.ExternalFormat, m_DepthParams.Precision, 0);
+			m_ColoredBuffers["Depth"]->desactivateTextureMapping();
+		}
+		else if(m_DepthType == FBODEPTH_RENDERTARGET)
+		{
+			glBindRenderbuffer(GL_RENDERBUFFER, m_DepthID);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, size.x, size.y);
+			glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		}
+		else
+			throw CException("Impossible de trouver le type de Depth type.");
+	}
+
+	CheckFBOStatus();
 }
 
 FBO::~FBO()
