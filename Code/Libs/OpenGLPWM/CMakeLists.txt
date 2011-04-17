@@ -21,6 +21,7 @@ ADD_LIBRARY(OpenGLPWM SHARED ${LIB_OPENGLPWM_SRCS})
 target_link_libraries(
   OpenGLPWM
   ${OPENGL_LIBRARY}
+  ${GLEW_LIBRARY}
 )
 
 install(TARGETS OpenGLPWM 

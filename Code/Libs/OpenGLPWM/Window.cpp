@@ -14,9 +14,9 @@ Window::Window() :
 Window::~Window()
 {}
 
-void Window::Create(const WindowMode& mode, const std::string& name)
+void Window::Create(const WindowMode& mode, const std::string& name, const OpenGLContextSettings& settings)
 {
-	m_Window = WindowImpl::Create(mode,name);
+	m_Window = WindowImpl::Create(mode,name,settings);
 }
 
 void Window::Display()

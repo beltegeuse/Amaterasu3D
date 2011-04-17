@@ -10,12 +10,13 @@
 
 #include <string>
 #include <WindowMode.h>
+#include <OpenGLContextSettings.h>
 
 class WindowImpl {
 public:
 	virtual ~WindowImpl() {}
 
-	static WindowImpl* Create(const WindowMode& mode, const std::string& name);
+	static WindowImpl* Create(const WindowMode& mode, const std::string& name, const OpenGLContextSettings& settings);
 
 	virtual void Display() = 0;
 	int GetWidth() { return m_Width; }

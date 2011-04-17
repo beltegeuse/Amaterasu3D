@@ -5,6 +5,7 @@
 #include <string>
 
 #include <WindowMode.h>
+#include <OpenGLContextSettings.h>
 #include <WindowImpl.h>
 
 class Window {
@@ -25,7 +26,7 @@ public:
 	 * Public methods
 	 */
 	// Create OpenGL window
-	void Create(const WindowMode& mode, const std::string& name);
+	void Create(const WindowMode& mode, const std::string& name, const OpenGLContextSettings& settings = OpenGLContextSettings());
 	// To know if the window is close
 	bool IsOpened() const
 	{ return m_Window != NULL; }
