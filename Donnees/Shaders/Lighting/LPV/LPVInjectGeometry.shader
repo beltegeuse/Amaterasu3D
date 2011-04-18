@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Shader name="2DDraw" type="Basic">
     <OutputFrame depthType="None" size="Custom" width=256 height=128>
-    	<Frame name="Grid" type="RGBA32" />
+    	<Frame name="Grid" type="RGBA16" />
     </OutputFrame>
     <Attributs>
     	<Attribut type="Vertex" name="VertexPosition" />

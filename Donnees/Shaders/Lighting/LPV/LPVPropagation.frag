@@ -83,7 +83,7 @@ const float RangeModifier = 8.0;
 
 void propagateLight(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
 {
-	vec3 MainDirection = orientation * vec3(0.0,0.0,1.0);
+	vec3 MainDirection = vec3(0.0,0.0,1.0)*orientation;
 	vec4 MainDirectionSH = SH_evaluate(MainDirection);
 	vec4 MainDirectionHemi = SH_evaluateCosineLobe_direct(MainDirection);
 
@@ -114,7 +114,7 @@ const vec2 coeffs[4] = vec2[](vec2(1.0,0.0),vec2(-1.0,0.0),vec2(0.0,1.0),vec2(0.
 void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
 {
 	//evaluate main direction
-	vec3 MainDirection = orientation * vec3(0.0,0.0,1.0);
+	vec3 MainDirection =  vec3(0.0,0.0,1.0) * orientation;
 	vec4 MainDirectionSH = SH_evaluate(MainDirection * RangeModifier);
 	vec4 MainDirectionHemi = SH_evaluateCosineLobe_direct(MainDirection);
 
@@ -154,8 +154,8 @@ void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec
 	for(i = 0; i < 4; i++)
 	{
 
-		SideDirection = orientation * vec3(coeffs[i]*side1,side2);
-		ReproDirection = orientation * vec3(coeffs[i],0.0);
+		SideDirection = vec3(coeffs[i]*side1,side2) * orientation;
+		ReproDirection = vec3(coeffs[i],0.0) * orientation;
 		SideDirectionSH = SH_evaluate(SideDirection * RangeModifier);
 		SideDirectionHemi = SH_evaluateCosineLobe_direct(ReproDirection);
 		fluxRed = max(0.0,dot(SideDirectionSH,NeighbourRed));

@@ -202,7 +202,7 @@ private:
 		m_NbCellDim = 32;
 		m_TextureRepeat = ComputeRepeatTexture(m_NbCellDim);
 		m_TextureSize = m_TextureRepeat*m_NbCellDim;
-		m_NbPropagationStep = 16;
+		m_NbPropagationStep = 8;
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
@@ -438,21 +438,24 @@ private:
 		glLoadIdentity();
 
 		// Compute Transform grid matrix
-		Math::CMatrix4 rotationGird;
-		Math::CMatrix4 rotationGird2;
-		Math::TVector3F directionView = m_Camera->GetTarget() - m_Camera->GetPosition();
-		directionView.Normalize();
-		Math::SphericalCoordinates gridSphericalCoords(Math::TVector3F(directionView.x, directionView.z, directionView.y));
-		rotationGird.SetRotationY(gridSphericalCoords.GetTheta());
-		rotationGird2.SetRotationZ(gridSphericalCoords.GetPhy()-(M_PI/2.0));
-		//Logger::Log() << "Dir : " << m_Camera->GetTarget() - m_Camera->GetPosition() << " Theta : " << gridSphericalCoords.GetTheta() << " Phy : " << gridSphericalCoords.GetPhy() << "\n";
-		//Math::CMatrix4 transGrid = MatrixManager.GetMatrix(VIEW_MATRIX);
-		Math::TVector3F cameraPos = m_Camera->GetPosition();
 		Math::CMatrix4 transGrid;
-		transGrid.SetTranslation(cameraPos.x,cameraPos.y,cameraPos.z);
-		Math::CMatrix4 offsetGrid;
-		offsetGrid.SetTranslation(-8*m_CellSize.x,-(m_NbCellDim/2)*m_CellSize.y,-(m_NbCellDim/2)*m_CellSize.z);
-		transGrid = offsetGrid*rotationGird2*rotationGird*transGrid;
+		{
+			Math::CMatrix4 rotationGird;
+			Math::CMatrix4 rotationGird2;
+			Math::TVector3F directionView = m_Camera->GetTarget() - m_Camera->GetPosition();
+			directionView.Normalize();
+			Math::SphericalCoordinates gridSphericalCoords(Math::TVector3F(directionView.x, directionView.z, directionView.y));
+			rotationGird.SetRotationY(gridSphericalCoords.GetTheta());
+			rotationGird2.SetRotationZ(gridSphericalCoords.GetPhy()-(M_PI/2.0));
+			//Logger::Log() << "Dir : " << m_Camera->GetTarget() - m_Camera->GetPosition() << " Theta : " << gridSphericalCoords.GetTheta() << " Phy : " << gridSphericalCoords.GetPhy() << "\n";
+			//Math::CMatrix4 transGrid = MatrixManager.GetMatrix(VIEW_MATRIX);
+			Math::TVector3F cameraPos = m_Camera->GetPosition();
+			transGrid.SetTranslation(cameraPos.x,cameraPos.y,cameraPos.z);
+			Math::CMatrix4 offsetGrid;
+			offsetGrid.SetTranslation(-8*m_CellSize.x,-(m_NbCellDim/2)*m_CellSize.y,-(m_NbCellDim/2)*m_CellSize.z);
+			transGrid = offsetGrid*rotationGird2*rotationGird*transGrid;
+		}
+//		transGrid.SetTranslation(m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
 		/*
 		 * 3D Drawing
 		 */

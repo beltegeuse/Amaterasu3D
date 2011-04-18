@@ -158,9 +158,9 @@ vec4 ComputeIndirectLighting(in vec3 Position, in vec3 Normal)
 	vec4 CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, Normal);;
 
 	vec4 SHEv = SH_evaluate(-Normal);
-	return  vec4(clamp(4.0*dot(CoeffGridRed,SHEv),0,1),
-					clamp(4.0*dot(CoeffGridGreen,SHEv),0,1),
-					clamp(4.0*dot(CoeffGridBlue,SHEv),0,1),1.0);
+	return  vec4(max(dot(CoeffGridRed,SHEv) / 3.14,0.0) * 0.6,
+				 max(dot(CoeffGridGreen,SHEv) / 3.14,0.0) * 0.6,
+				 max(dot(CoeffGridBlue,SHEv) / 3.14,0.0) * 0.6,1.0);
 }
 
 void main()
@@ -199,10 +199,11 @@ void main()
 		Color += clamp(vec4(LightAtt * LightColor.rgb * specularColor.rgb * pow(RdotE, specularColor.a),16.0),0.0,1.0);
 	}
 
+
 	// Add diffuse color
 	Color *= vec4(diffuseColor,1.0);
 	Color *= ShadowFactor;
 
 	Color += vec4(diffuseColor,1.0)*ComputeIndirectLighting(position, normal);
-	//Color.a = 1.0;
+	Color += vec4(diffuseColor,1.0)*vec4(vec3(0.05),1.0);
 }

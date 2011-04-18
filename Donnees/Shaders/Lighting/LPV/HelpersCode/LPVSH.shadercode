@@ -5,7 +5,7 @@
 }*/
 
 //SHRotate function from the crytek paper
-/*vec4 SHRotate(in vec3 dir, in vec2 vZHCoeffs)
+vec4 SHRotate(in vec3 dir, in vec2 vZHCoeffs)
 {
   // compute sine and cosine of thetta angle
   // beware of singularity when both x and y are 0 (no need to rotate at all)
@@ -24,7 +24,7 @@
   vResult.z =  vZHCoeffs.y * phi12_cs.y;
   vResult.w =  vZHCoeffs.y * phi12_cs.x * theta12_cs.x;
   return vResult;
-}*/
+}
 
 //Create a cone SH with the given angle (function from crytek paper)
 /*vec4 SHProjectCone(in vec3 dir, float angle)
@@ -46,8 +46,9 @@
 //#define SH_hemi_c vec4(0.25,-0.5,0.5,-0.5)
 //#define SH_hemi_c vec4(0.886226925,-1.02332671,1.02332671,-1.02332671)
 #define SH_cosLobe_c vec4(0.25,-0.5,0.5,0.5)
-#define SH_c vec4(0.282094792,-0.488602512,0.488602512,0.488602512)
-#define SH_hemi_c vec4(0.25,-0.5,0.5,0.5)
+//#define SH_hemi_c vec4(0.25,-0.5,0.5,0.5)
+#define SH_c vec4(0.282094792,-0.488602512,0.488602512,-0.488602512)
+//#define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,-1.02332671)
 
 //solid Angles
 // 0.4006696846f / 4Pi;
@@ -66,16 +67,16 @@ vec4 SH_evaluate(vec3 dir){
 //Create hemisperical SH coeffs (function from crytek paper)
 vec4 SHCreateHemi(in vec3 dir)
 {
-  //return SHRotate(dir, vec2(0.25,0.5));
+  return SHRotate(dir, vec2(0.25,0.5));
   //return SHRotate(dir, vec2(1.0,0.0));
-  return SH_hemi_c * vec4(1.0,dir.y,dir.z,dir.x);
+  //return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,dir.x);
 }
 
 // no normalization
 vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
 	//return SHRotate(dir, vec2(0.25,0.5));
 	//return SHRotate(dir, vec2(0.5,0.75));
-	return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,dir.x);
+	return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,-dir.x);
 }
 
 //Does a abs dot product for double sided occlusion
