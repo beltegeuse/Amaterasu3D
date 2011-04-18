@@ -79,7 +79,7 @@ vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
 //2 / sqrt(5)
 #define side2 0.894427190
 
-const float RangeModifier = 1.0;
+const float RangeModifier = 8.0;
 
 void propagateLight(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
 {
@@ -154,8 +154,8 @@ void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec
 	for(i = 0; i < 4; i++)
 	{
 
-		SideDirection = vec3(coeffs[i]*side1,side2) * orientation;
-		ReproDirection = vec3(coeffs[i],0.0) * orientation;
+		SideDirection = orientation * vec3(coeffs[i]*side1,side2);
+		ReproDirection = orientation * vec3(coeffs[i],0.0);
 		SideDirectionSH = SH_evaluate(SideDirection * RangeModifier);
 		SideDirectionHemi = SH_evaluateCosineLobe_direct(ReproDirection);
 		fluxRed = max(0.0,dot(SideDirectionSH,NeighbourRed));
@@ -182,28 +182,28 @@ void main(){
 	vec4 resultBlue = vec4(0.0,0.0,0.0,0.0);
 	//Z+
 	propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
-			0.0, 1.0, 0.0,
-			0.0, 0.0, 1.0),resultRed,resultGreen,resultBlue);
+								0.0, 1.0, 0.0,
+								0.0, 0.0, 1.0),resultRed,resultGreen,resultBlue);
 	//Z-
 	propagate(outTexCoord,mat3(-1.0, 0.0, 0.0,
-			0.0, 1.0, 0.0,
-			0.0, 0.0,-1.0),resultRed,resultGreen,resultBlue);
+								0.0, 1.0, 0.0,
+								0.0, 0.0,-1.0),resultRed,resultGreen,resultBlue);
 	//X+
 	propagate(outTexCoord,mat3( 0.0, 0.0, 1.0,
-			0.0, 1.0, 0.0,
-			-1.0, 0.0, 0.0),resultRed,resultGreen,resultBlue);
+								0.0, 1.0, 0.0,
+								-1.0, 0.0, 0.0),resultRed,resultGreen,resultBlue);
 	//X-
 	propagate(outTexCoord,mat3( 0.0, 0.0,-1.0,
-			0.0, 1.0, 0.0,
-			1.0, 0.0, 0.0),resultRed,resultGreen,resultBlue);
+								0.0, 1.0, 0.0,
+								1.0, 0.0, 0.0),resultRed,resultGreen,resultBlue);
 	//Y+
 	propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
-			0.0, 0.0, 1.0,
-			0.0,-1.0, 0.0),resultRed,resultGreen,resultBlue);
+								0.0, 0.0, 1.0,
+								0.0,-1.0, 0.0),resultRed,resultGreen,resultBlue);
 	//Y-
 	propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
-			0.0, 0.0,-1.0,
-			0.0, 1.0, 0.0),resultRed,resultGreen,resultBlue);
+								0.0, 0.0,-1.0,
+								0.0, 1.0, 0.0),resultRed,resultGreen,resultBlue);
 
 	//Data for next propagation step
 	GridRed = resultRed;
