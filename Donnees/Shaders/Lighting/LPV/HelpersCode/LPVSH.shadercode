@@ -2,8 +2,8 @@
 //with c0 = 1 / ( 2 * sqrt(PI))
 //     c1 = sqrt(3) / ( 2 * sqrt(PI))
 #define SH_c vec4(0.282094792,-0.488602512,0.488602512,-0.488602512)
-//#define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,-1.02332671)
-#define SH_cosLobe_c vec4(0.25,-0.5,0.5,-0.5)
+#define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,-1.02332671)
+//#define SH_cosLobe_c vec4(0.25,-0.5,0.5,-0.5)
 //#define SH_cosLobe_c vec4(0.4,-0.8,0.8,0.8)
 
 //solid Angles
@@ -48,15 +48,15 @@ vec4 SHRotate(in vec3 dir, in vec2 vZHCoeffs)
 vec4 SHCreateHemi(in vec3 dir)
 {
   //return SHRotate(dir, vec2(0.25,0.5));
-  return SHRotate(dir, vec2(1.0,0.0));
-  //return SH_hemi_c * vec4(1.0,dir.y,dir.z,dir.x);
+  //return SHRotate(dir, vec2(1.0,0.0));
+  return SH_hemi_c * vec4(1.0,dir.y,dir.z,dir.x);
 }
 
 // no normalization
 vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
 	//return SHRotate(dir, vec2(0.25,0.5));
-	return SHRotate(dir, vec2(0.5,0.75));
-	//return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,dir.x);
+	//return SHRotate(dir, vec2(0.5,0.75));
+	return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,dir.x);
 }
 
 //Create a cone SH with the given angle (function from crytek paper)

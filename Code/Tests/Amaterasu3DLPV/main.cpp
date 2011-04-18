@@ -202,7 +202,7 @@ private:
 		m_NbCellDim = 32;
 		m_TextureRepeat = ComputeRepeatTexture(m_NbCellDim);
 		m_TextureSize = m_TextureRepeat*m_NbCellDim;
-		m_NbPropagationStep = m_NbCellDim / 2;
+		m_NbPropagationStep = 16;
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(6,102,72), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
@@ -577,6 +577,7 @@ private:
 			//m_LPVPropagationShader->setUniform3f("LPVPosition", m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
 			m_LPVPropagationShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
 			m_LPVPropagationShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize.x,m_CellSize.y,m_CellSize.z,m_NbCellDim));
+			m_LPVPropagationShader->SetUniform1i("DoOcclusion", m_DoOcclusion);
 			m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+3);
 			//m_LPVPropagationShader->SetUniform1i("DoOcclusion",m_DoOcclusion);
 			if(i == 0)
