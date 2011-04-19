@@ -12,7 +12,9 @@ Window::Window() :
 {}
 
 Window::~Window()
-{}
+{
+	Close();
+}
 
 void Window::Create(const WindowMode& mode, const std::string& name, const OpenGLContextSettings& settings)
 {
@@ -22,4 +24,11 @@ void Window::Create(const WindowMode& mode, const std::string& name, const OpenG
 void Window::Display()
 {
 	m_Window->Display();
+}
+
+bool Window::PoolEvent(Event& event)
+{
+	if(!m_Window)
+		return false;
+	return m_Window->GetEvent(event);
 }

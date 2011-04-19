@@ -4,6 +4,7 @@
 // STL include
 #include <string>
 
+#include <Exceptions.h>
 #include <WindowMode.h>
 #include <OpenGLContextSettings.h>
 #include <WindowImpl.h>
@@ -30,6 +31,13 @@ public:
 	// To know if the window is close
 	bool IsOpened() const
 	{ return m_Window != NULL; }
+	void Close()
+	{
+		if(m_Window)
+			delete m_Window;
+	}
+	// Events
+	bool PoolEvent(Event& event);
 
 	/*
 	 * pure virtual public methods
