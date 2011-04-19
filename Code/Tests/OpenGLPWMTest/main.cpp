@@ -13,6 +13,27 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	std::cout << "Affichage ..." << std::endl;
 	while(win.IsOpened())
 	{
+		Event event;
+		while(win.PoolEvent(event))
+		{
+			std::cout << "Event !" << std::endl;
+			if(event.Type == Event::Closed)
+			{
+				std::cout << "Close ... " << std::endl;
+				win.Close();
+			}
+			else if(event.Type == Event::KeyPressed)
+			{
+				if(event.Key.Code == Key::Escape)
+				{
+					std::cout << "Close ... " << std::endl;
+					win.Close();
+				}
+			}
+		}
+
+		//std::cout << "Display !" << std::endl;
+
 		win.Display();
 	}
 
