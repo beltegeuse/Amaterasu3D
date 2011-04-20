@@ -30,6 +30,14 @@
 // Amaterasu includes
 #include <Utilities/Util.h>
 #include <Debug/Exceptions.h>
+#include <Math/SphericalCoordinates.h>
+
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+///////////// LPV Class
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 
 LPV::LPV(int nbCells, int sizeCells, int propagationSteps) :
 m_NbCellDim(nbCells), m_CellSize(sizeCells),m_NbPropagationStep(propagationSteps)
@@ -289,3 +297,65 @@ void LPV::ShowDebugPropagation(TShaderPtr GBuffer, int PropagatedShow)
 	GBuffer->GetFBO()->GetTexture("Diffuse")->desactivateMultiTex(CUSTOM_TEXTURE+5);
 	m_LPVLightingShader->End();
 }
+
+
+void LPV::ComputeGridPosition(CameraAbstract* Camera)
+{
+	//TODO: Manage cascaded version
+	const float borderFactor = (m_NbCellDim/4)*m_CellSize;
+
+	//////////////////////////////////
+	// Compute Coordinates with position
+	//////////////////////////////////
+	// Place on the center of the LPV
+	m_GirdPosition = Camera->GetPosition() - (2*borderFactor)*Math::TVector3F(1.0,1.0,1.0);
+
+	//////////////////////////////////
+	// Compute Coordinates with orientation
+	//////////////////////////////////
+	Math::TVector3F cameraDirection = Camera->GetTarget() - Camera->GetPosition();
+	cameraDirection.Normalize(); // To be sure ...
+	// Inverse the direction to project on the Cube
+	cameraDirection = -cameraDirection;
+
+	const float cubeBorder = 1.0 / sqrt(2);
+
+	// \forgot Inverse vector coordinates to fit OpenGL representation
+	Math::TVector3F cubeCoordinates = Math::TVector3F(
+			std::max(std::min(cubeBorder, cameraDirection.x),-cubeBorder),
+			std::max(std::min(cubeBorder, cameraDirection.y),-cubeBorder),
+			std::max(std::min(cubeBorder, cameraDirection.z),-cubeBorder)) / cubeBorder;
+
+	m_GirdPosition -= cubeCoordinates*borderFactor;
+
+	///////////////////////////////////////////
+	// Snapping
+	///////////////////////////////////////////
+	m_GirdPosition = Math::TVector3F(
+			floor(m_GirdPosition.x / m_CellSize)*m_CellSize,
+			floor(m_GirdPosition.y / m_CellSize)*m_CellSize,
+			floor(m_GirdPosition.z / m_CellSize)*m_CellSize);
+}
+
+/////////////////////////////
+/// Old code
+/////////////////////////////
+// Compute Transform grid matrix
+//Math::CMatrix4 transGrid;
+//{
+//	Math::CMatrix4 rotationGird;
+//	Math::CMatrix4 rotationGird2;
+//	Math::TVector3F directionView = m_Camera->GetTarget() - m_Camera->GetPosition();
+//	directionView.Normalize();
+//	Math::SphericalCoordinates gridSphericalCoords(Math::TVector3F(directionView.x, directionView.z, directionView.y));
+//	rotationGird.SetRotationY(gridSphericalCoords.GetTheta());
+//	rotationGird2.SetRotationZ(gridSphericalCoords.GetPhy()-(M_PI/2.0));
+//	//Logger::Log() << "Dir : " << m_Camera->GetTarget() - m_Camera->GetPosition() << " Theta : " << gridSphericalCoords.GetTheta() << " Phy : " << gridSphericalCoords.GetPhy() << "\n";
+//	//Math::CMatrix4 transGrid = MatrixManager.GetMatrix(VIEW_MATRIX);
+//	Math::TVector3F cameraPos = m_Camera->GetPosition();
+//	transGrid.SetTranslation(cameraPos.x,cameraPos.y,cameraPos.z);
+//	Math::CMatrix4 offsetGrid;
+//	offsetGrid.SetTranslation(-8*m_CellSize.x,-(m_NbCellDim/2)*m_CellSize.y,-(m_NbCellDim/2)*m_CellSize.z);
+//	transGrid = offsetGrid*rotationGird2*rotationGird*transGrid;
+//}
+

@@ -56,10 +56,23 @@ class Volume:
             self.position = (self.position[0]-sift*2, self.position[1] + sift*(sin(self.camera.angle))*angleNormalisation)
         else:
             self.position = (self.position[0] + (self.nbCell/4)*self.cellsize*((cos(self.camera.angle)*angleNormalisation) - 1), self.position[1]-(self.nbCell/4)*self.cellsize)
+    
+    def offsetAngle2(self):
+        #invert vector
+        x = -cos(self.camera.angle)
+        y = -sin(self.camera.angle)
+        
+        a = 1.0 / sqrt(2)
+        
+        x = max(min(a,x),-a) / a
+        y = max(min(a,y),-a) / a
+        factor = (self.nbCell/4)*self.cellsize
+        self.position = (self.position[0] - (x+1)*factor, self.position[1] - y*factor)
+    
     def updatePosition(self):
         # Border offset
         self.position = (self.camera.position[0] - (self.nbCell/4)*self.cellsize, self.camera.position[1] - (self.nbCell/2)*self.cellsize)
-        self.offsetAngle()
+        self.offsetAngle2()
         # Snapping
         self.position = (floor(self.position[0] / self.cellsize) *self.cellsize , floor(self.position[1] / self.cellsize) *self.cellsize)
     

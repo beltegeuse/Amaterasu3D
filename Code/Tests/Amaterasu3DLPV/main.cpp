@@ -393,7 +393,7 @@ private:
 	virtual void OnRender()
 	{
 		UpdateLightWorldPos();
-
+		m_LPV.ComputeGridPosition(m_Camera);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glMatrixMode(GL_PROJECTION);
@@ -422,6 +422,7 @@ private:
 		m_Performances.EndStep();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		// ========== Second STEPS (RSM generation buffers)
 		m_Performances.BeginStep("RSM");
 		m_Light.Compute(&RootSceneGraph);
@@ -429,6 +430,7 @@ private:
 
 		// ============= Compute Indirect lighting only
 		glClearColor(0.0f,0.0f,0.0f,0.f);
+
 		// ****** 1st Step : VPL Injection
 		m_Performances.BeginStep("  === Injection VPL");
 		m_LPV.BeginInjectionVPLPass();

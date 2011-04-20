@@ -29,6 +29,7 @@
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Lighting/LightShaders.h>
 #include <Graphics/SceneGraph/DrawObject.h>
+#include <Graphics/Camera/CameraAbstract.h>
 #include <Math/Vector2.h>
 #include <Math/Vector3.h>
 #include <Math/Matrix4.h>
@@ -76,7 +77,7 @@ public:
 	 * Public methods
 	 */
 	void Initialize();
-	void Compute();
+	void ComputeGridPosition(CameraAbstract* Camera);
 
 	FBO* GetFBO()
 	{
@@ -128,27 +129,5 @@ private:
 
 
 };
-
-/////////////////////////////
-/// Old code
-/////////////////////////////
-// Compute Transform grid matrix
-//Math::CMatrix4 transGrid;
-//{
-//	Math::CMatrix4 rotationGird;
-//	Math::CMatrix4 rotationGird2;
-//	Math::TVector3F directionView = m_Camera->GetTarget() - m_Camera->GetPosition();
-//	directionView.Normalize();
-//	Math::SphericalCoordinates gridSphericalCoords(Math::TVector3F(directionView.x, directionView.z, directionView.y));
-//	rotationGird.SetRotationY(gridSphericalCoords.GetTheta());
-//	rotationGird2.SetRotationZ(gridSphericalCoords.GetPhy()-(M_PI/2.0));
-//	//Logger::Log() << "Dir : " << m_Camera->GetTarget() - m_Camera->GetPosition() << " Theta : " << gridSphericalCoords.GetTheta() << " Phy : " << gridSphericalCoords.GetPhy() << "\n";
-//	//Math::CMatrix4 transGrid = MatrixManager.GetMatrix(VIEW_MATRIX);
-//	Math::TVector3F cameraPos = m_Camera->GetPosition();
-//	transGrid.SetTranslation(cameraPos.x,cameraPos.y,cameraPos.z);
-//	Math::CMatrix4 offsetGrid;
-//	offsetGrid.SetTranslation(-8*m_CellSize.x,-(m_NbCellDim/2)*m_CellSize.y,-(m_NbCellDim/2)*m_CellSize.z);
-//	transGrid = offsetGrid*rotationGird2*rotationGird*transGrid;
-//}
 
 #endif /* LPV_H_ */
