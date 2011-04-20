@@ -45,7 +45,16 @@ struct SpotLight
 	float LightIntensity;
 	float LightRaduis;
 	float LightCutOff;
+};
 
+// FIXME: Raduis ?????
+struct SunLight
+{
+	Math::TVector3F Position;
+	Math::TVector3F Direction;
+	Color LightColor;
+	float LightIntensity;
+	float LightRaduis;
 };
 
 #endif /* LIGHTINGSTRUCTURES_H_ */
