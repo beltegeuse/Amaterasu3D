@@ -46,6 +46,7 @@ protected:
 	int m_NbCellDim;
 	int m_CellSize;
 	int m_NbPropagationStep;
+	int m_NbCascadedLevels;
 	Math::TVector2I m_TextureSize;
 	Math::TVector2I m_TextureRepeat;
 	Math::TVector3F m_GirdPosition;
@@ -70,7 +71,7 @@ public:
 	/*
 	 * Constructors and Destructors
 	 */
-	LPV(int nbCells = 32, int sizeCells = 10, int propagationSteps = 8);
+	LPV(int nbCells = 32, int sizeCells = 16, int propagationSteps = 8, int nbLevels = 3);
 	virtual ~LPV();
 
 	/*

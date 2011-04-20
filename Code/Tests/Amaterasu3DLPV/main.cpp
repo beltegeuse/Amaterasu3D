@@ -207,7 +207,7 @@ private:
 		Console.RegisterCommand("lightview",Console::Bind(&ApplicationLPV::LightView, *this));
 		Console.RegisterCommand("lightvalue",Console::Bind(&ApplicationLPV::SetLightValue, *this));
 		// Create Grid
-		CreateGridModel(32,10);
+		CreateGridModel(32,16);
 		// Create sample point texture
 		CreateSampleModel(512,512,&m_SamplePointRSM);
 		CreateSampleModel(800,600,&m_SamplePointCamera);

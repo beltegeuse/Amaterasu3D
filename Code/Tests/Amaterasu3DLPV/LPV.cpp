@@ -39,8 +39,8 @@
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 
-LPV::LPV(int nbCells, int sizeCells, int propagationSteps) :
-m_NbCellDim(nbCells), m_CellSize(sizeCells),m_NbPropagationStep(propagationSteps)
+LPV::LPV(int nbCells, int sizeCells, int propagationSteps, int nbLevels) :
+m_NbCellDim(nbCells), m_CellSize(sizeCells),m_NbPropagationStep(propagationSteps), m_NbCascadedLevels(nbLevels)
 {
 	// Compute the texture size required
 	// * Repeat (map 3d texture into 2d)
@@ -49,6 +49,9 @@ m_NbCellDim(nbCells), m_CellSize(sizeCells),m_NbPropagationStep(propagationSteps
 	m_TextureRepeat.y = m_NbCellDim/m_TextureRepeat.x;
 	// * Final size of the texture
 	m_TextureSize = m_TextureRepeat*m_NbCellDim;
+	//FIXME: Enable for propagations ... etc
+	// * Fit the texture for cascaded version
+	//m_TextureSize.y = m_TextureSize.y*m_NbCascadedLevels;
 	// * Grid position
 	//FIXME: Delete theses crazy values
 	m_GirdPosition = Math::TVector3F(-98.0,-98.0,-198.0);
