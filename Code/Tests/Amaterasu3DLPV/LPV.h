@@ -111,14 +111,14 @@ public:
 	/// Lighting pass
 	///////////////////////////////////
 	void ShowDebugPropagation(TShaderPtr GBuffer, int PropagatedShow);
-private:
-	//TODO: Change that ....
 	Math::CMatrix4 GetGridMatrix()
 	{
 		Math::CMatrix4 mat;
 		mat.SetTranslation(m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
 		return mat;
 	}
+private:
+	//TODO: Change that ....
 	Math::CMatrix4 GetInvGridMatrix()
 	{
 		Math::CMatrix4 mat;

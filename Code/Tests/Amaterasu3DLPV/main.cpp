@@ -410,11 +410,11 @@ private:
 		m_Performances.BeginStep("G-Buffer");
 		m_GBufferShader->Begin();
 		//TODO: Re-enable the gird
-//		if(m_ShowGrid)
-//		{
-//			m_GridModel->LoadTransformMatrix(transGrid);
-//			m_GridModel->Draw();
-//		}
+		if(m_ShowGrid)
+		{
+			m_GridModel->LoadTransformMatrix(m_LPV.GetGridMatrix());
+			m_GridModel->Draw();
+		}
 //		transGrid = transGrid.Inverse();
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
