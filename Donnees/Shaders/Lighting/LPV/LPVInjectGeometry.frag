@@ -3,9 +3,6 @@
 // Precision qualifier
 precision highp float;
 
-// Parametres
-uniform vec4 LPVCellSize;
-
 // Entree
 smooth in vec3 outNormal;
 smooth in float SurfelArea;

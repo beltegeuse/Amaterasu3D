@@ -5,6 +5,9 @@
     	<Frame name="GridGreen" type="RGBA16" />
     	<Frame name="GridBlue" type="RGBA16" />
     </OutputFrame>
+    <Defines>
+		<Define name="NB_CASCADE" defaultValue="3" />
+	</Defines>
     <Attributs>
     	<Attribut type="Vertex" name="VertexPosition" />
     </Attributs>

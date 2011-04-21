@@ -3,6 +3,9 @@
     <OutputFrame depthType="None" size="Custom" width=256 height=128>
     	<Frame name="Grid" type="RGBA16" />
     </OutputFrame>
+    <Defines>
+		<Define name="NB_CASCADE" defaultValue="3" />
+	</Defines>
     <Attributs>
     	<Attribut type="Vertex" name="VertexPosition" />
     </Attributs>

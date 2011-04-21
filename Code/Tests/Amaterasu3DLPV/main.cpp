@@ -412,7 +412,10 @@ private:
 		//TODO: Re-enable the gird
 		if(m_ShowGrid)
 		{
-			m_GridModel->LoadTransformMatrix(m_LPV.GetGridMatrix());
+			Math::CMatrix4 matGrid;
+			Math::TVector3F gridPos = m_LPV.GetGridPosition(0);
+			matGrid.SetTranslation(gridPos.x,gridPos.y,gridPos.z);
+			m_GridModel->LoadTransformMatrix(matGrid);
 			m_GridModel->Draw();
 		}
 //		transGrid = transGrid.Inverse();

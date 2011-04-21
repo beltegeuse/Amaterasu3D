@@ -98,15 +98,21 @@ public:
 	// To setup the geometry shader
 	void SetGeometryShaderParameters(GLenum inputMode, GLenum outputMode, int output = -1); ///< -1 mean max
 	int MaxOutputVertices();
+	///////////////////////
 	// Uniforms Setters
+	///////////////////////
 	// **** 1 Dimension Settings
 	void SetUniform1f(const GLcharARB* varname, GLfloat v0);
+	void SetUniform1fv(const GLcharARB* varname, int nbValues, GLfloat *tab);
 	void SetUniform1i(const GLcharARB* varname, GLint v0);
+	void SetUniform1iv(const GLcharARB* varname, int nbValues, GLint *tab);
 	void SetUniform1ui(const GLcharARB* varname, GLuint v0);
+	void SetUniform1uiv(const GLcharARB* varname, int nbValues, GLuint *tab);
 	// **** 2 Dimension Settings
 	void SetUniformVector(const GLcharARB* varname, const Math::TVector2F& vector);
 	// **** 3 Dimension Settings
 	void SetUniformVector(const GLcharARB* varname, const Math::TVector3F& vector);
+	void SetUniformVectorArray(const GLcharARB* varname, int nbValues, Math::TVector3F *tab);
 	// **** 4 Dimension Settings
 	void SetUniformVector(const GLcharARB* varname, const Math::TVector4F& vector);
 	void SetUniformColor(const GLcharARB* varname, Color& color);
@@ -114,6 +120,7 @@ public:
 	// **** 4x4 Matrice Settings
 	void SetUniformMatrix4fv(const GLchar* name, const Math::CMatrix4& matrix);
 	void SetUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix);
+
 	// **** Attributes locations
 	void BindAttribLocation(GLint index, const GLchar* name);
 	// FBO Management

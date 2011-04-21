@@ -44,12 +44,12 @@ protected:
 	// Grid attributes
 	/////////////
 	int m_NbCellDim;
-	int m_CellSize;
+	int* m_CellSize; ///< Array for each cascade
 	int m_NbPropagationStep;
 	int m_NbCascadedLevels;
 	Math::TVector2I m_TextureSize;
 	Math::TVector2I m_TextureRepeat;
-	Math::TVector3F m_GirdPosition;
+	Math::TVector3F* m_GirdPosition; ///< Array for each cascade
 	/////////////
 	// Shaders
 	/////////////
@@ -86,9 +86,12 @@ public:
 	}
 	void SetGridInformations(TShaderPtr shader)
 	{
-		shader->SetUniformMatrix4fv("LPVMatrix", GetInvGridMatrix());
+		// WARNING : Don't forgot to update the uniform update on Lighting pass
+		//FIXME: MODIFY METHODS !!!
+		shader->SetUniformVectorArray("LPVPosition", m_NbCascadedLevels, m_GirdPosition);
 		shader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
-		shader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize,m_CellSize,m_CellSize,m_NbCellDim));
+		shader->SetUniform1iv("LPVCellSize",m_NbCascadedLevels, m_CellSize);
+		shader->SetUniform1i("LPVNbCell", m_NbCellDim);
 	}
 
 	//TODO: Can fusion Inject methods
@@ -113,19 +116,10 @@ public:
 	/// Lighting pass
 	///////////////////////////////////
 	void ShowDebugPropagation(TShaderPtr GBuffer, int PropagatedShow);
-	Math::CMatrix4 GetGridMatrix()
+	Math::TVector3F GetGridPosition(int cascadeLevel)
 	{
-		Math::CMatrix4 mat;
-		mat.SetTranslation(m_GirdPosition.x,m_GirdPosition.y,m_GirdPosition.z);
-		return mat;
-	}
-private:
-	//TODO: Change that ....
-	Math::CMatrix4 GetInvGridMatrix()
-	{
-		Math::CMatrix4 mat;
-		mat.SetTranslation(-m_GirdPosition.x,-m_GirdPosition.y,-m_GirdPosition.z);
-		return mat;
+		Assert(cascadeLevel >= 0 && cascadeLevel < m_NbCascadedLevels);
+		return m_GirdPosition[cascadeLevel];
 	}
 
 

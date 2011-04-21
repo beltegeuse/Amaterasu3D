@@ -300,15 +300,32 @@ void Shader::SetUniform1f(const GLcharARB* varname, GLfloat v0)
 {
 	CheckLoc(glUniform1f(loc, v0))
 }
+
+void Shader::SetUniform1fv(const GLcharARB* varname, int nbValues, GLfloat *tab)
+{
+	CheckLoc(glUniform1fv(loc, nbValues, tab))
+}
+
 void Shader::SetUniform1i(const GLcharARB* varname, GLint v0)
 {
 	CheckLoc(glUniform1i(loc, v0))
-
 }
+
+void Shader::SetUniform1iv(const GLcharARB* varname, int nbValues, GLint *tab)
+{
+	CheckLoc(glUniform1iv(loc, nbValues, tab))
+}
+
 void Shader::SetUniform1ui(const GLcharARB* varname, GLuint v0)
 {
 	CheckLoc(glUniform1ui(loc, v0))
 }
+
+void Shader::SetUniform1uiv(const GLcharARB* varname, int nbValues, GLuint *tab)
+{
+	CheckLoc(glUniform1uiv(loc, nbValues, tab))
+}
+
 
 /*
  * 2 Dimension Setters
@@ -323,6 +340,20 @@ void Shader::SetUniformVector(const GLcharARB* varname, const Math::TVector2F& v
 void Shader::SetUniformVector(const GLcharARB* varname, const Math::TVector3F& vector)
 {
 	CheckLoc(glUniform3f(loc, vector.x,vector.y,vector.z))
+}
+
+void Shader::SetUniformVectorArray(const GLcharARB* varname, int nbValues, Math::TVector3F *tab)
+{
+	//FIXME: Not good representation ...
+	GLfloat* values = new GLfloat[nbValues*3];
+	for(int i = 0 ; i < nbValues; i++)
+	{
+		values[3*i] = tab[i].x;
+		values[3*i+1] = tab[i].y;
+		values[3*i+2] = tab[i].z;
+	}
+	CheckLoc(glUniform3fv(loc, nbValues, values))
+	delete[] values;
 }
 
 /*

@@ -8,6 +8,9 @@
 		<Texture type="Custom" name="GridBlue" id=4 />
 		<Texture type="Custom" name="DiffuseBuffer" id=5 />
 	</Textures>
+	<Defines>
+		<Define name="NB_CASCADE" defaultValue="3" />
+	</Defines>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="LPVLighting.frag" />
 </Shader>

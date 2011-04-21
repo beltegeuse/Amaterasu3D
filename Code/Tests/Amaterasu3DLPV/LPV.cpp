@@ -40,7 +40,7 @@
 /////////////////////////////////////////////////////
 
 LPV::LPV(int nbCells, int sizeCells, int propagationSteps, int nbLevels) :
-m_NbCellDim(nbCells), m_CellSize(sizeCells),m_NbPropagationStep(propagationSteps), m_NbCascadedLevels(nbLevels)
+m_NbCellDim(nbCells), m_CellSize(NULL),m_NbPropagationStep(propagationSteps), m_NbCascadedLevels(nbLevels)
 {
 	// Compute the texture size required
 	// * Repeat (map 3d texture into 2d)
@@ -49,18 +49,25 @@ m_NbCellDim(nbCells), m_CellSize(sizeCells),m_NbPropagationStep(propagationSteps
 	m_TextureRepeat.y = m_NbCellDim/m_TextureRepeat.x;
 	// * Final size of the texture
 	m_TextureSize = m_TextureRepeat*m_NbCellDim;
-	//FIXME: Enable for propagations ... etc
 	// * Fit the texture for cascaded version
-	//m_TextureSize.y = m_TextureSize.y*m_NbCascadedLevels;
-	// * Grid position
-	//FIXME: Delete theses crazy values
-	m_GirdPosition = Math::TVector3F(-98.0,-98.0,-198.0);
+	m_TextureSize.y = m_TextureSize.y*m_NbCascadedLevels;
+	// * Grid position and cell size
+	m_CellSize = new int[m_NbCascadedLevels];
+	m_GirdPosition = new Math::TVector3F[m_NbCascadedLevels];
+	for(int i = 0; i < m_NbCascadedLevels; i++)
+	{
+		m_CellSize[i] = sizeCells / (std::pow(2,i)); // Compute automatically the size of each cascade
+		m_GirdPosition[i] = Math::TVector3F(-98.0,-98.0,-198.0);
+	}
+
 }
 
 LPV::~LPV()
 {
 	// Nothings to do (thanks to smart pointers)
 	//FIXME: Delete intermediary buffers (be careful with 0 id buffer)
+	delete[] m_GirdPosition;
+	delete[] m_CellSize;
 }
 
 void LPV::Initialize()
@@ -165,7 +172,8 @@ void LPV::ComputePropagation(int nbSteps)
 		m_LPVPropagationShader->Begin();
 
 		m_LPVPropagationShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
-		m_LPVPropagationShader->SetUniformVector("LPVCellSize",Math::TVector4F(m_CellSize,m_CellSize,m_CellSize,m_NbCellDim));
+		m_LPVPropagationShader->SetUniform1iv("LPVCellSize",m_NbCascadedLevels, m_CellSize);
+		m_LPVPropagationShader->SetUniform1i("LPVNbCell", m_NbCellDim);
 		m_LPVPropagationShader->SetUniform1i("DoOcclusion", true);
 		m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+3);
 
@@ -304,15 +312,6 @@ void LPV::ShowDebugPropagation(TShaderPtr GBuffer, int PropagatedShow)
 
 void LPV::ComputeGridPosition(CameraAbstract* Camera)
 {
-	//TODO: Manage cascaded version
-	const float borderFactor = (m_NbCellDim/4)*m_CellSize;
-
-	//////////////////////////////////
-	// Compute Coordinates with position
-	//////////////////////////////////
-	// Place on the center of the LPV
-	m_GirdPosition = Camera->GetPosition() - (2*borderFactor)*Math::TVector3F(1.0,1.0,1.0);
-
 	//////////////////////////////////
 	// Compute Coordinates with orientation
 	//////////////////////////////////
@@ -321,23 +320,34 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 	// Inverse the direction to project on the Cube
 	cameraDirection = -cameraDirection;
 
-	const float cubeBorder = 1.0 / sqrt(2);
+	for(int i = 0; i < m_NbCascadedLevels; i++)
+	{
+		const float borderFactor = (m_NbCellDim/4)*m_CellSize[i];
 
-	// \forgot Inverse vector coordinates to fit OpenGL representation
-	Math::TVector3F cubeCoordinates = Math::TVector3F(
-			std::max(std::min(cubeBorder, cameraDirection.x),-cubeBorder),
-			std::max(std::min(cubeBorder, cameraDirection.y),-cubeBorder),
-			std::max(std::min(cubeBorder, cameraDirection.z),-cubeBorder)) / cubeBorder;
+		//////////////////////////////////
+		// Compute Coordinates with position
+		//////////////////////////////////
+		// Place on the center of the LPV
+		m_GirdPosition[i] = Camera->GetPosition() - (2*borderFactor)*Math::TVector3F(1.0,1.0,1.0);
 
-	m_GirdPosition -= cubeCoordinates*borderFactor;
+		const float cubeBorder = 1.0 / sqrt(2);
 
-	///////////////////////////////////////////
-	// Snapping
-	///////////////////////////////////////////
-	m_GirdPosition = Math::TVector3F(
-			floor(m_GirdPosition.x / m_CellSize)*m_CellSize,
-			floor(m_GirdPosition.y / m_CellSize)*m_CellSize,
-			floor(m_GirdPosition.z / m_CellSize)*m_CellSize);
+		// \forgot Inverse vector coordinates to fit OpenGL representation
+		Math::TVector3F cubeCoordinates = Math::TVector3F(
+				std::max(std::min(cubeBorder, cameraDirection.x),-cubeBorder),
+				std::max(std::min(cubeBorder, cameraDirection.y),-cubeBorder),
+				std::max(std::min(cubeBorder, cameraDirection.z),-cubeBorder)) / cubeBorder;
+
+		m_GirdPosition[i] -= cubeCoordinates*borderFactor;
+
+		///////////////////////////////////////////
+		// Snapping
+		///////////////////////////////////////////
+		m_GirdPosition[i] = Math::TVector3F(
+				floor(m_GirdPosition[i].x / m_CellSize[i])*m_CellSize[i],
+				floor(m_GirdPosition[i].y / m_CellSize[i])*m_CellSize[i],
+				floor(m_GirdPosition[i].z / m_CellSize[i])*m_CellSize[i]);
+	}
 }
 
 /////////////////////////////

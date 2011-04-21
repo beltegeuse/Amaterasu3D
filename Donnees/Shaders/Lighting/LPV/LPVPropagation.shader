@@ -11,6 +11,9 @@
 		<Texture type="Custom" name="LPVBlue" id=2 />
 		<Texture type="Custom" name="Occlusion" id=3 />
 	</Textures>
+	<Defines>
+		<Define name="NB_CASCADE" defaultValue="3" />
+	</Defines>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="LPVPropagation.frag" />
 </Shader>

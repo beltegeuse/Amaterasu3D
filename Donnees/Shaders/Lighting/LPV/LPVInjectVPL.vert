@@ -10,9 +10,11 @@ uniform sampler2D NormalBuffer;
 in vec2 VertexPosition;
 
 // Parametres
-uniform mat4 LPVMatrix; // position of the grid
+// NB_CASCADE is an define...
+uniform vec3 LPVPosition[NB_CASCADE]; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
-uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
+uniform float LPVCellSize[NB_CASCADE]; // dim &
+uniform int LPVNbCell;// number cell in one dim
 #include <LPVPosition.shadercode>
 
 // To compute position

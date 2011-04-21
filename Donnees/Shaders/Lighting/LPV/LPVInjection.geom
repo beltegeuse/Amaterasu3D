@@ -1,7 +1,8 @@
 #version 130
 #extension GL_EXT_geometry_shader4 : enable
 
-uniform float LPVNbLevels;
+// Use macro
+//uniform float LPVNbLevels;
 
 void main(void)
 {

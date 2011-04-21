@@ -11,6 +11,9 @@
 		<Texture type="Custom" name="SpecularBuffer" id=6 />
 		<Texture type="Custom" name="ShadowBuffer" id=7 />
 	</Textures>
+	<Defines>
+		<Define name="NB_CASCADE" defaultValue="3" />
+	</Defines>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="LPVLightingAll.frag" />
 </Shader>
