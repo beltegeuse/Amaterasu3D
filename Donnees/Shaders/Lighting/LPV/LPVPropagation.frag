@@ -79,7 +79,7 @@ vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
 //2 / sqrt(5)
 #define side2 0.894427190
 
-const float RangeModifier = 8.0;
+const float RangeModifier = 1.0;
 
 void propagateLight(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
 {
