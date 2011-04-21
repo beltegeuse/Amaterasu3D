@@ -28,6 +28,7 @@
 // STL Includes
 #include <string>
 #include <list>
+#include <map>
 
 // Amaterasu3D Includes
 #include <Debug/Exceptions.h>
@@ -40,6 +41,31 @@ struct CShaderCompilerException : public CException
 	CShaderCompilerException(const std::string& message, int line = -1);
 };
 
+//////////////////////////////////////////
+/// Structure to configure the compiler
+//////////////////////////////////////////
+////////////// Main Config structure
+class ShaderCompiler;
+class ShaderCompilerConfig
+{
+private:
+	/*
+	 * Attributes
+	 */
+	typedef std::map<std::string, std::string> DefineMap;
+	DefineMap m_Defines;
+public:
+	ShaderCompilerConfig() {}
+	virtual ~ShaderCompilerConfig() {}
+
+	void AddDefine(const std::string& name, const std::string& value)
+	{ m_Defines[name] = value; }
+
+private:
+	friend class ShaderCompiler;
+	DefineMap GetDefines() { return m_Defines; }
+};
+
 ////////////////////////////////////////
 /// Shader Compiler class
 ////////////////////////////////////////
@@ -50,11 +76,12 @@ private:
 	 * Attributes
 	 */
 	std::list<std::string> m_LinesCode;
+	ShaderCompilerConfig m_Config;
 public:
 	/*
 	 * Constructors and Destructors
 	 */
-	ShaderCompiler(const std::string& code);
+	ShaderCompiler(const std::string& code, const ShaderCompilerConfig& config = ShaderCompilerConfig());
 	virtual ~ShaderCompiler();
 
 	/*
@@ -70,6 +97,7 @@ private:
 	 * Private methods
 	 */
 	void ResolveIncludeRules();
+	void ResolveDefinesRules();
 	const std::string LoadFile(const std::string& path); //XXX Doublon code with ShaderUnits
 };
 

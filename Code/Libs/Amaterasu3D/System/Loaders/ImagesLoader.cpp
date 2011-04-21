@@ -63,7 +63,7 @@ Texture* ImagesLoader::LoadImageFromFile(const std::string& Filename)
 
 	int w = FreeImage_GetWidth(imagen);
 	int h = FreeImage_GetHeight(imagen);
-	Logger::Log() <<"The size of the image is: "<<Filename<<" es "<<w<<"*"<<h<<"\n"; //Some debugging code
+	//Logger::Log() <<"The size of the image is: "<<Filename<<" es "<<w<<"*"<<h<<"\n"; //Some debugging code
 
 	GLubyte* textura = new GLubyte[4*w*h];
 	char* pixeles = (char*)FreeImage_GetBits(imagen);

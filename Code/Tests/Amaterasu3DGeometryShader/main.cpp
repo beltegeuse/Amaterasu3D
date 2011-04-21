@@ -44,7 +44,7 @@ public:
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		SettingsManager.SetProjection(1.0,4000.0,70.0);
 		// Load shader
-		m_GeomShader = ShaderManager.LoadShader("TestGeometryShader.shader");
+		m_GeomShader = ShaderManager.LoadShader("TestDefineFunction.shader");
 		// Load scene
 //		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 //		RootSceneGraph.AddChild(node1);

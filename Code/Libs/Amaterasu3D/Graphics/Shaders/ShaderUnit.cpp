@@ -46,7 +46,7 @@
 //*********************************************************
 
 
-ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type)
+ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type, const ShaderCompilerConfig& config)
 {
 	Logger::Log() << "[INFO] Compile shader file : " << path << "\n";
 	// ID Creation
@@ -68,7 +68,7 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type)
 	else
 		throw CException("Unknow shader type ...");
 	// Use own shader Compiler to add extra stuff to GLSL langage
-	ShaderCompiler compiler(LoadFile (path));
+	ShaderCompiler compiler(LoadFile (path),config);
 	compiler.Compile();
 	const std::string source = compiler.GetCode();
 	// Use GLSL To compile the current shader code

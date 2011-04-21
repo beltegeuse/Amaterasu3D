@@ -330,6 +330,31 @@ void ShadersLoader::LoadShaderTextures(Shader* shader, TiXmlElement *root)
 	}
 }
 
+ShaderCompilerConfig ShadersLoader::LoadShaderCompilerConfig(TiXmlElement* root)
+{
+	ShaderCompilerConfig config;
+
+	// Define extraction
+	TiXmlElement *definesNode = root->FirstChildElement("Defines");
+	if(definesNode)
+	{
+		TiXmlElement *defineNode = definesNode->FirstChildElement("Define");
+		while(defineNode)
+		{
+			std::string nameAttrib;
+			std::string defaultValueAttrib;
+			TinyXMLGetAttributeValue<std::string>(defineNode,"name",&nameAttrib);
+			TinyXMLGetAttributeValue<std::string>(defineNode,"defaultValue",&defaultValueAttrib);
+
+			config.AddDefine(nameAttrib, defaultValueAttrib);
+
+			defineNode = defineNode->NextSiblingElement();
+		}
+	}
+
+	return config;
+}
+
 Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 {
 	TiXmlDocument doc( Filename.c_str() );
@@ -359,6 +384,9 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 		shaderType = GBUFFER_SHADER;
 	else
 		throw CException("unknow shader type");
+
+	// Load the shader compiler config
+	ShaderCompilerConfig config = LoadShaderCompilerConfig(root);
 
 	// Get the 2 files name
 	// * Vertex shader
@@ -395,14 +423,14 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 		std::string in, out;
 		TinyXMLGetAttributeValue(shadername, "in", &in);
 		TinyXMLGetAttributeValue(shadername, "out", &out);
-		shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), geometryShadername.c_str(), shaderType);
+		shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), geometryShadername.c_str(), shaderType, config);
 		shader->SetGeometryShaderParameters(OpenGLEnumFromString(in), OpenGLEnumFromString(out));
 	}
 	else
 	{
 		Logger::Log() << "   * No Geometry shader\n";
 		// Shader creation ....
-		shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType);
+		shader = CShaderManager::Instance().loadfromFile(vertexShadername.c_str(),fragmentShadername.c_str(), shaderType, config);
 	}
 	shader->Link();
 

@@ -26,6 +26,7 @@
 
 #include <System/Loaders/Loader.h>
 #include <Graphics/Shaders/Shader.h>
+#include <Graphics/Shaders/Compiler/ShaderCompiler.h>
 #include <Enum.h>
 #include <tinyxml.h>
 
@@ -36,6 +37,7 @@ public:
 	virtual ~ShadersLoader();
 	virtual Shader* LoadFromFile(const std::string& Filename);
 private:
+	ShaderCompilerConfig LoadShaderCompilerConfig(TiXmlElement* root);
 	void LoadShaderAttributs(Shader* shader, TiXmlElement *root);
 	void LoadShaderTextures(Shader* shader, TiXmlElement *root);
 	void LoadShaderMatrix(Shader* shader, TiXmlElement *root);

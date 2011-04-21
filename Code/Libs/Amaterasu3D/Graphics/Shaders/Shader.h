@@ -43,6 +43,7 @@
 #include <System/Resource.h>
 #include <Logger/Logger.h>
 #include <Graphics/Shaders/ShaderUnit.h>
+#include <Graphics/Shaders/Compiler/ShaderCompiler.h>
 #include <Graphics/FBO.h>
 #include <Graphics/Color.h>
 #include <Utilities/SmartPtr.h>
@@ -168,8 +169,8 @@ class CShaderManager : public CSingleton<CShaderManager>
 	friend class ShadersLoader;
 	// Only the MediaManager can call this methods
 	// Regular GLSL (Vertex+Fragment Shader)
-	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type);    //!< load vertex/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param fragmentFile Fragment Shader File.
-	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile, const char* geometryFile, ShaderType type);
+	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type, const ShaderCompilerConfig& config);    //!< load vertex/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param fragmentFile Fragment Shader File.
+	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile, const char* geometryFile, ShaderType type, const ShaderCompilerConfig& config);
 	Shader* CreateShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader = 0, ShaderType type = BASIC_SHADER);
 public:
 

@@ -48,7 +48,7 @@ private:
 	void ShowCompilerLog(unsigned int id, ShaderCompiler& compiler);
 public:
 	// Constructeurs
-	ShaderUnit(const std::string& path, const ShaderUnitType& type);
+	ShaderUnit(const std::string& path, const ShaderUnitType& type, const ShaderCompilerConfig& config);
 	//Destructor
 	~ShaderUnit();
 

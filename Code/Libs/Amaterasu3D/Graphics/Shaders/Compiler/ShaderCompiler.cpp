@@ -57,7 +57,8 @@ CShaderCompilerException::CShaderCompilerException(const std::string& message, i
 /// Shader Compiler class
 ////////////////////////////////////////
 
-ShaderCompiler::ShaderCompiler(const std::string& code)
+ShaderCompiler::ShaderCompiler(const std::string& code, const ShaderCompilerConfig& config) :
+		m_Config(config)
 {
 	std::vector<std::string> vectorResult;
 	Split(code, vectorResult,"\n");
@@ -71,7 +72,43 @@ ShaderCompiler::~ShaderCompiler()
 void ShaderCompiler::Compile()
 {
 	Logger::Log() << "[INFO] Compile Current code ... \n";
+	ResolveDefinesRules();
 	ResolveIncludeRules();
+}
+
+void ShaderCompiler::ResolveDefinesRules()
+{
+	Logger::Log() << "   * ResolveDefinesRules\n";
+	/////////////////////////////////////
+	// Find good position to add defines.
+	// After #version and #extension
+	/////////////////////////////////////
+	boost::regex re("[ ]*#[ ]*(version|extension)");
+	std::list<std::string>::iterator it;
+	for(it = m_LinesCode.begin(); it != m_LinesCode.end(); ++it)
+	{
+		boost::cmatch matches;
+		boost::match_results<std::string::const_iterator> what;
+		if(!boost::regex_search(it->c_str(),matches,re))
+		{
+			break;
+		}
+	}
+
+	if(it == m_LinesCode.end())
+		throw CShaderCompilerException("Empty source file ???");
+
+	////////////////////////////
+	// Add all defines
+	////////////////////////////
+	ShaderCompilerConfig::DefineMap defs = m_Config.GetDefines();
+	for(ShaderCompilerConfig::DefineMap::iterator it2 = defs.begin(); it2 != defs.end(); it2++)
+	{
+		Logger::Log() << "   *   |- " << it2->first << " : " << it2->second << "\n";
+		std::stringstream ss;
+		ss << "#define " << it2->first << " " << it2->second;
+		m_LinesCode.insert(it, ss.str());
+	}
 }
 
 void ShaderCompiler::ResolveIncludeRules()
