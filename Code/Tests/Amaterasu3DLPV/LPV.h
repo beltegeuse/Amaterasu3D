@@ -129,7 +129,7 @@ public:
 
 private:
 	void GenerateGridModels();
-	void CreateGridModel(SceneGraph::Group* model, int nbCellDim, int CellSize );
+	void CreateGridModel(SceneGraph::Group** model, int nbCellDim, int CellSize );
 
 
 };

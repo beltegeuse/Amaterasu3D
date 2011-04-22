@@ -362,22 +362,23 @@ void LPV::GenerateGridModels()
 	m_GridModels = new SceneGraph::Group*[m_NbCascadedLevels];
 	for(int i = 0; i < m_NbCascadedLevels; i++)
 	{
-		CreateGridModel(m_GridModels[i], m_NbCellDim, m_CellSize[i]);
+		Logger::Log() << "   * Generate Level : " <<  i << "\n";
+		CreateGridModel(&m_GridModels[i], m_NbCellDim, m_CellSize[i]);
 	}
 	Logger::Log() << "[INFO] Generate Grid models (END) \n";
 }
 
-void LPV::CreateGridModel(SceneGraph::Group* GirdModel, int nbCellDim, int CellSize )
+void LPV::CreateGridModel(SceneGraph::Group** GirdModel, int nbCellDim, int CellSize )
 {
 	// Allocation des buffers
 	float * vertexBuffer = new float[3*nbCellDim*nbCellDim*3*2];
 	float * colorBuffer = new float[3*nbCellDim*nbCellDim*3*2];
 	unsigned int* indiceBuffer = new unsigned int[3*nbCellDim*nbCellDim*2];
-	int i = 0;
+	unsigned int i = 0;
 	Color color(1.0,1.0,1.0);
 	// Fill in buffers
-	for(int z=0;z<=nbCellDim;z++){
-		for(int x=0;x<=nbCellDim;x++){
+	for(int z=0;z<nbCellDim;z++){
+		for(int x=0;x<nbCellDim;x++){
 			vertexBuffer[i] = x*CellSize;
 			vertexBuffer[i+1] = 0;
 			vertexBuffer[i+2] = z*CellSize;
@@ -395,7 +396,7 @@ void LPV::CreateGridModel(SceneGraph::Group* GirdModel, int nbCellDim, int CellS
 			i += 3;
 		}
 
-		for(int y=0;y<=nbCellDim;y++){
+		for(int y=0;y<nbCellDim;y++){
 			vertexBuffer[i] = 0;
 			vertexBuffer[i+1] = y*CellSize;
 			vertexBuffer[i+2] = z*CellSize;
@@ -414,7 +415,7 @@ void LPV::CreateGridModel(SceneGraph::Group* GirdModel, int nbCellDim, int CellS
 		}
 	}
 
-	for(int y=0;y<=nbCellDim;y++){
+	for(int y=0;y<nbCellDim;y++){
 		for(int x=0;x<nbCellDim;x++){
 			vertexBuffer[i] = x*CellSize;
 			vertexBuffer[i+1] = y*CellSize;
@@ -453,8 +454,8 @@ void LPV::CreateGridModel(SceneGraph::Group* GirdModel, int nbCellDim, int CellS
 	model->CompileBuffers();
 	model->AddMaterial(DIFFUSE_MATERIAL,color);
 
-	GirdModel = new SceneGraph::Group;
-	GirdModel->AddChild(model);
+	(*GirdModel) = new SceneGraph::Group;
+	(*GirdModel)->AddChild(model);
 
 }
 
@@ -470,7 +471,7 @@ void LPV::DrawGrid(int level)
 {
 	Assert(level >= 0 && level < m_NbCascadedLevels);
 	Math::CMatrix4 matGrid;
-	Math::TVector3F gridPos = GetGridPosition(0);
+	Math::TVector3F gridPos = GetGridPosition(level);
 	matGrid.SetTranslation(gridPos.x,gridPos.y,gridPos.z);
 	m_GridModels[level]->LoadTransformMatrix(matGrid);
 	m_GridModels[level]->Draw();
