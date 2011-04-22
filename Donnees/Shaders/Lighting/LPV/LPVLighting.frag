@@ -26,17 +26,19 @@ uniform float NearClipping;
 uniform vec2 UnprojectInfo;
 uniform mat4 InverseViewMatrix;
 
-#include <GetPosition.shadercode>
-#include <LPVTrilinear.shadercode>
-
 // Entree
 smooth in vec2 outTexCoord;
 
 // Sortie
 out vec4 Color;
 
+// Include compute position from the depth
+#include <GetPosition.shadercode>
+// Include for SH coefficents
 #include <LPVSH.shadercode>
+// Include to compute the position
 #include <LPVPosition.shadercode>
+// Include for the trilinear filtering
 #include <LPVTrilinear.shadercode>
 
 void main()
@@ -66,7 +68,7 @@ void main()
 	{
 
 		// Get texture coordinates
-		vec2 TexCoordGrid = Convert3DTo2DTexcoord(GridPosition);
+		vec2 TexCoordGrid = Convert3DTo2DTexcoord(GridPosition,0);
 		CoeffGridRed = texture2D(GridRed, TexCoordGrid); ///< And get coeff value
 		CoeffGridGreen = texture2D(GridGreen, TexCoordGrid);
 		CoeffGridBlue = texture2D(GridBlue, TexCoordGrid);

@@ -29,6 +29,7 @@
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Lighting/LightShaders.h>
 #include <Graphics/SceneGraph/DrawObject.h>
+#include <Graphics/SceneGraph/Group.h>
 #include <Graphics/Camera/CameraAbstract.h>
 #include <Math/Vector2.h>
 #include <Math/Vector3.h>
@@ -66,6 +67,7 @@ protected:
 	/////////////////
 	// TODO: Do the same as CryTek (Double buffering technique)
 	FBO** m_PropagationFBOs; ///< To store all intermediary computation
+	SceneGraph::Group** m_GridModels; ///< To draw all grid
 
 public:
 	/*
@@ -94,6 +96,9 @@ public:
 		shader->SetUniform1i("LPVNbCell", m_NbCellDim);
 	}
 
+	void DrawGrids();
+	void DrawGrid(int level);
+
 	//TODO: Can fusion Inject methods
 	///////////////////////////////////
 	/// Injection VPL Pass
@@ -121,6 +126,10 @@ public:
 		Assert(cascadeLevel >= 0 && cascadeLevel < m_NbCascadedLevels);
 		return m_GirdPosition[cascadeLevel];
 	}
+
+private:
+	void GenerateGridModels();
+	void CreateGridModel(SceneGraph::Group* model, int nbCellDim, int CellSize );
 
 
 };

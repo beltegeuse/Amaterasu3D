@@ -31,6 +31,7 @@
 #include <Utilities/Util.h>
 #include <Debug/Exceptions.h>
 #include <Math/SphericalCoordinates.h>
+#include <Graphics/SceneGraph/Model.h>
 
 
 /////////////////////////////////////////////////////
@@ -68,6 +69,7 @@ LPV::~LPV()
 	//FIXME: Delete intermediary buffers (be careful with 0 id buffer)
 	delete[] m_GirdPosition;
 	delete[] m_CellSize;
+	delete[] m_GridModels; // TODO: Check Sceengraph destruction
 }
 
 void LPV::Initialize()
@@ -100,6 +102,10 @@ void LPV::Initialize()
 		Logger::Log() << "[INFO] Create Copy Propagation FBO : " << i << "\n";
 		m_PropagationFBOs[i] = m_LPVPropagationShader->GetFBO()->Copy();
 	}
+	/////////////////////////////
+	// Create model
+	/////////////////////////////
+	GenerateGridModels();
 }
 
 void LPV::BeginInjectionVPLPass()
@@ -348,6 +354,126 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 				floor(m_GirdPosition[i].y / m_CellSize[i])*m_CellSize[i],
 				floor(m_GirdPosition[i].z / m_CellSize[i])*m_CellSize[i]);
 	}
+}
+
+void LPV::GenerateGridModels()
+{
+	Logger::Log() << "[INFO] Generate Grid models \n";
+	m_GridModels = new SceneGraph::Group*[m_NbCascadedLevels];
+	for(int i = 0; i < m_NbCascadedLevels; i++)
+	{
+		CreateGridModel(m_GridModels[i], m_NbCellDim, m_CellSize[i]);
+	}
+	Logger::Log() << "[INFO] Generate Grid models (END) \n";
+}
+
+void LPV::CreateGridModel(SceneGraph::Group* GirdModel, int nbCellDim, int CellSize )
+{
+	// Allocation des buffers
+	float * vertexBuffer = new float[3*nbCellDim*nbCellDim*3*2];
+	float * colorBuffer = new float[3*nbCellDim*nbCellDim*3*2];
+	unsigned int* indiceBuffer = new unsigned int[3*nbCellDim*nbCellDim*2];
+	int i = 0;
+	Color color(1.0,1.0,1.0);
+	// Fill in buffers
+	for(int z=0;z<=nbCellDim;z++){
+		for(int x=0;x<=nbCellDim;x++){
+			vertexBuffer[i] = x*CellSize;
+			vertexBuffer[i+1] = 0;
+			vertexBuffer[i+2] = z*CellSize;
+			colorBuffer[i] = color.R;
+			colorBuffer[i+1] = color.G;
+			colorBuffer[i+2] = color.B;
+			i += 3;
+
+			vertexBuffer[i] = x*CellSize;
+			vertexBuffer[i+1] = nbCellDim*CellSize;
+			vertexBuffer[i+2] = z*CellSize;
+			colorBuffer[i] = color.R;
+			colorBuffer[i+1] = color.G;
+			colorBuffer[i+2] = color.B;
+			i += 3;
+		}
+
+		for(int y=0;y<=nbCellDim;y++){
+			vertexBuffer[i] = 0;
+			vertexBuffer[i+1] = y*CellSize;
+			vertexBuffer[i+2] = z*CellSize;
+			colorBuffer[i] = color.R;
+			colorBuffer[i+1] = color.G;
+			colorBuffer[i+2] = color.B;
+			i += 3;
+
+			vertexBuffer[i] = nbCellDim*CellSize;
+			vertexBuffer[i+1] = y*CellSize;
+			vertexBuffer[i+2] = z*CellSize;
+			colorBuffer[i] = color.R;
+			colorBuffer[i+1] = color.G;
+			colorBuffer[i+2] = color.B;
+			i += 3;
+		}
+	}
+
+	for(int y=0;y<=nbCellDim;y++){
+		for(int x=0;x<nbCellDim;x++){
+			vertexBuffer[i] = x*CellSize;
+			vertexBuffer[i+1] = y*CellSize;
+			vertexBuffer[i+2] = 0;
+			colorBuffer[i] = color.R;
+			colorBuffer[i+1] = color.G;
+			colorBuffer[i+2] = color.B;
+			i += 3;
+
+			vertexBuffer[i] = x*CellSize;
+			vertexBuffer[i+1] = y*CellSize;
+			vertexBuffer[i+2] = nbCellDim*CellSize;
+			colorBuffer[i] = color.R;
+			colorBuffer[i+1] = color.G;
+			colorBuffer[i+2] = color.B;
+			i += 3;
+		}
+	}
+
+	for(int l=0; l < 3*nbCellDim*nbCellDim*2; l++)
+	{
+		indiceBuffer[l] = l;
+	}
+
+	SceneGraph::Model* model = new SceneGraph::Model;
+	model->SetDrawMode(GL_LINES);
+	model->SetIndiceBuffer(indiceBuffer, 3*nbCellDim*nbCellDim*2);
+	SceneGraph::ModelBuffer buffer;
+	buffer.buffer = vertexBuffer;
+	buffer.size = 3*nbCellDim*nbCellDim*3*2;
+	buffer.dimension = 3;
+	buffer.owner = true;
+	model->AddBuffer(buffer, VERTEX_ATTRIBUT);
+	buffer.buffer = colorBuffer;
+	model->AddBuffer(buffer, COLOR_ATTRIBUT);
+	model->CompileBuffers();
+	model->AddMaterial(DIFFUSE_MATERIAL,color);
+
+	GirdModel = new SceneGraph::Group;
+	GirdModel->AddChild(model);
+
+}
+
+void LPV::DrawGrids()
+{
+	for(int i = 0; i < m_NbCascadedLevels; i++)
+	{
+		DrawGrid(i);
+	}
+}
+
+void LPV::DrawGrid(int level)
+{
+	Assert(level >= 0 && level < m_NbCascadedLevels);
+	Math::CMatrix4 matGrid;
+	Math::TVector3F gridPos = GetGridPosition(0);
+	matGrid.SetTranslation(gridPos.x,gridPos.y,gridPos.z);
+	m_GridModels[level]->LoadTransformMatrix(matGrid);
+	m_GridModels[level]->Draw();
 }
 
 /////////////////////////////

@@ -34,7 +34,6 @@ protected:
 	// LPV object
 	LPV m_LPV;
 
-	SceneGraph::Group* m_GridModel;
 	SceneGraph::Model* m_SamplePointRSM;
 	SceneGraph::Model* m_SamplePointCamera;
 	// Camera
@@ -68,7 +67,6 @@ public:
 		/////////////////
 		// Models
 		/////////////////
-		m_GridModel = 0;
 		m_SamplePointRSM = 0;
 		m_SamplePointCamera = 0;
 		/////////////////
@@ -114,11 +112,6 @@ public:
 	{
 		m_Camera->SetPosition(m_Light.Position);
 		m_Camera->SetTarget(m_Light.Direction);
-	}
-
-	virtual ~ApplicationLPV()
-	{
-		delete m_GridModel;
 	}
 
 private:
@@ -206,8 +199,6 @@ private:
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
 		Console.RegisterCommand("lightview",Console::Bind(&ApplicationLPV::LightView, *this));
 		Console.RegisterCommand("lightvalue",Console::Bind(&ApplicationLPV::SetLightValue, *this));
-		// Create Grid
-		CreateGridModel(32,16);
 		// Create sample point texture
 		CreateSampleModel(512,512,&m_SamplePointRSM);
 		CreateSampleModel(800,600,&m_SamplePointCamera);
@@ -244,97 +235,6 @@ private:
 		transMatrix.SetScaling(0.1,0.1,0.1);
 		node->LoadTransformMatrix(transMatrix);
 		RootSceneGraph.AddChild(node);
-	}
-
-	void CreateGridModel(int nbCellDim, int CellSize )
-	{
-		// Allocation des buffers
-		float * vertexBuffer = new float[3*nbCellDim*nbCellDim*3*2];
-		float * colorBuffer = new float[3*nbCellDim*nbCellDim*3*2];
-		unsigned int* indiceBuffer = new unsigned int[3*nbCellDim*nbCellDim*2];
-		int i = 0;
-		Color color(1.0,1.0,1.0);
-		// Fill in buffers
-		for(int z=0;z<=nbCellDim;z++){
-			for(int x=0;x<=nbCellDim;x++){
-				vertexBuffer[i] = x*CellSize;
-				vertexBuffer[i+1] = 0;
-				vertexBuffer[i+2] = z*CellSize;
-				colorBuffer[i] = color.R;
-				colorBuffer[i+1] = color.G;
-				colorBuffer[i+2] = color.B;
-				i += 3;
-
-				vertexBuffer[i] = x*CellSize;
-				vertexBuffer[i+1] = nbCellDim*CellSize;
-				vertexBuffer[i+2] = z*CellSize;
-				colorBuffer[i] = color.R;
-				colorBuffer[i+1] = color.G;
-				colorBuffer[i+2] = color.B;
-				i += 3;
-			}
-
-			for(int y=0;y<=nbCellDim;y++){
-				vertexBuffer[i] = 0;
-				vertexBuffer[i+1] = y*CellSize;
-				vertexBuffer[i+2] = z*CellSize;
-				colorBuffer[i] = color.R;
-				colorBuffer[i+1] = color.G;
-				colorBuffer[i+2] = color.B;
-				i += 3;
-
-				vertexBuffer[i] = nbCellDim*CellSize;
-				vertexBuffer[i+1] = y*CellSize;
-				vertexBuffer[i+2] = z*CellSize;
-				colorBuffer[i] = color.R;
-				colorBuffer[i+1] = color.G;
-				colorBuffer[i+2] = color.B;
-				i += 3;
-			}
-		}
-
-		for(int y=0;y<=nbCellDim;y++){
-			for(int x=0;x<nbCellDim;x++){
-				vertexBuffer[i] = x*CellSize;
-				vertexBuffer[i+1] = y*CellSize;
-				vertexBuffer[i+2] = 0;
-				colorBuffer[i] = color.R;
-				colorBuffer[i+1] = color.G;
-				colorBuffer[i+2] = color.B;
-				i += 3;
-
-				vertexBuffer[i] = x*CellSize;
-				vertexBuffer[i+1] = y*CellSize;
-				vertexBuffer[i+2] = nbCellDim*CellSize;
-				colorBuffer[i] = color.R;
-				colorBuffer[i+1] = color.G;
-				colorBuffer[i+2] = color.B;
-				i += 3;
-			}
-		}
-
-		for(int l=0; l < 3*nbCellDim*nbCellDim*2; l++)
-		{
-			indiceBuffer[l] = l;
-		}
-
-		SceneGraph::Model* model = new SceneGraph::Model;
-		model->SetDrawMode(GL_LINES);
-		model->SetIndiceBuffer(indiceBuffer, 3*nbCellDim*nbCellDim*2);
-		SceneGraph::ModelBuffer buffer;
-		buffer.buffer = vertexBuffer;
-		buffer.size = 3*nbCellDim*nbCellDim*3*2;
-		buffer.dimension = 3;
-		buffer.owner = true;
-		model->AddBuffer(buffer, VERTEX_ATTRIBUT);
-		buffer.buffer = colorBuffer;
-		model->AddBuffer(buffer, COLOR_ATTRIBUT);
-		model->CompileBuffers();
-		model->AddMaterial(DIFFUSE_MATERIAL,color);
-
-		m_GridModel = new SceneGraph::Group;
-		m_GridModel->AddChild(model);
-
 	}
 
 	void CreateSampleModel(int resX, int resY, SceneGraph::Model** model)
@@ -412,11 +312,7 @@ private:
 		//TODO: Re-enable the gird
 		if(m_ShowGrid)
 		{
-			Math::CMatrix4 matGrid;
-			Math::TVector3F gridPos = m_LPV.GetGridPosition(0);
-			matGrid.SetTranslation(gridPos.x,gridPos.y,gridPos.z);
-			m_GridModel->LoadTransformMatrix(matGrid);
-			m_GridModel->Draw();
+			m_LPV.DrawGrids();
 		}
 //		transGrid = transGrid.Inverse();
 		m_Camera->GetView();

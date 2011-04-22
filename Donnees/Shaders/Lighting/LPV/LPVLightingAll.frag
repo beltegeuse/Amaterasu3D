@@ -41,16 +41,19 @@ uniform float LightCutOff; // cos value
 uniform mat4 LightViewMatrix;
 uniform mat4 LightProjectionMatrix;
 
-#include <GetPosition.shadercode>
-
 // Entree
 smooth in vec2 outTexCoord;
 
 // Sortie
 out vec4 Color;
 
+// Include compute position from the depth
+#include <GetPosition.shadercode>
+// Include for SH coefficents
 #include <LPVSH.shadercode>
+// Include to compute the position
 #include <LPVPosition.shadercode>
+// Include for the trilinear filtering
 #include <LPVTrilinear.shadercode>
 
 float ComputeShadow(in vec3 position)
