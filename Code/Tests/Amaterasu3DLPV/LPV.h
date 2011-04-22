@@ -44,7 +44,7 @@ protected:
 	// Grid attributes
 	/////////////
 	int m_NbCellDim;
-	int* m_CellSize; ///< Array for each cascade
+	float* m_CellSize; ///< Array for each cascade
 	int m_NbPropagationStep;
 	int m_NbCascadedLevels;
 	Math::TVector2I m_TextureSize;
@@ -88,9 +88,9 @@ public:
 	{
 		// WARNING : Don't forgot to update the uniform update on Lighting pass
 		//FIXME: MODIFY METHODS !!!
-		shader->SetUniformVectorArray("LPVPosition", m_NbCascadedLevels, m_GirdPosition);
+		shader->SetUniformVectorArray("LPVPosition[0]", m_NbCascadedLevels, m_GirdPosition);
 		shader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
-		shader->SetUniform1iv("LPVCellSize",m_NbCascadedLevels, m_CellSize);
+		shader->SetUniform1fv("LPVCellSize[0]",m_NbCascadedLevels, m_CellSize);
 		shader->SetUniform1i("LPVNbCell", m_NbCellDim);
 	}
 

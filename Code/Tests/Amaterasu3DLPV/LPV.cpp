@@ -52,7 +52,7 @@ m_NbCellDim(nbCells), m_CellSize(NULL),m_NbPropagationStep(propagationSteps), m_
 	// * Fit the texture for cascaded version
 	m_TextureSize.y = m_TextureSize.y*m_NbCascadedLevels;
 	// * Grid position and cell size
-	m_CellSize = new int[m_NbCascadedLevels];
+	m_CellSize = new float[m_NbCascadedLevels];
 	m_GirdPosition = new Math::TVector3F[m_NbCascadedLevels];
 	for(int i = 0; i < m_NbCascadedLevels; i++)
 	{
@@ -172,7 +172,7 @@ void LPV::ComputePropagation(int nbSteps)
 		m_LPVPropagationShader->Begin();
 
 		m_LPVPropagationShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
-		m_LPVPropagationShader->SetUniform1iv("LPVCellSize",m_NbCascadedLevels, m_CellSize);
+		//m_LPVPropagationShader->SetUniform1fv("LPVCellSize[0]",m_NbCascadedLevels, m_CellSize);
 		m_LPVPropagationShader->SetUniform1i("LPVNbCell", m_NbCellDim);
 		m_LPVPropagationShader->SetUniform1i("DoOcclusion", true);
 		m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+3);

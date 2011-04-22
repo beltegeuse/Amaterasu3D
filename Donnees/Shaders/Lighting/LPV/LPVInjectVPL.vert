@@ -41,12 +41,12 @@ void main()
 	outNormal = Normal.xyz; ///< Need to compute the SH coeff
 
 	// Prevent self shadowing
-	Position += (Normal*LPVCellSize.xyz*0.5);
+	Position += (Normal*LPVCellSize[0]*0.5);
 
-	vec3 cell = floor((LPVMatrix*vec4(Position.xyz,1.0)).xyz / LPVCellSize.xyz);
+	vec3 cell = floor((Position.xyz - LPVPosition[0].xyz) / vec3(LPVCellSize[0]));
     if(IsInGrid(cell))
     {
-    	vec2 pos2d = Convert3Dto2D(cell);
+    	vec2 pos2d = Convert3Dto2D(cell,0);
     	pos2d /= LPVSize.xy;
     	gl_Position = vec4(pos2d * 2.0 - 1.0,0.0,1.0);
     }

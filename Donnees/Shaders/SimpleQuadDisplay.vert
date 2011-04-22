@@ -1,4 +1,3 @@
-// VERTEX SHADER
 #version 130
 
 // Sortie shader

@@ -30,32 +30,33 @@ bool IsInGrid(in vec3 p)
  
 bool IsNotInGrid(in vec3 p)
 {
-    return any(lessThan(p, vec3(0.0))) || any(greaterThanEqual(p, vec3(LPVCellSize.w)));
+    return any(lessThan(p, vec3(0.0))) || any(greaterThanEqual(p, vec3(LPVNbCell)));
 }
 
 bool IsInGrid(in vec3 p)
 {
-    return all(greaterThanEqual(p, vec3(0.0))) && all(lessThan(p, vec3(LPVCellSize.w)));
+    return all(greaterThanEqual(p, vec3(0.0))) && all(lessThan(p, vec3(LPVNbCell)));
 }
 
-vec2 Convert3Dto2D(in vec3 pos){
+vec2 Convert3Dto2D(in vec3 pos, in int level){
    	float row = floor(pos.z / LPVSize.z);
 	float col = pos.z - (row*LPVSize.z);
-	vec2 over = (pos.xy - clamp(pos.xy,vec2(0,0),vec2(LPVCellSize.w-1.0,LPVCellSize.w-1.0))) * 100.0;
-	return vec2(col * LPVCellSize.w + pos.x + over.x * LPVSize.x,row * LPVCellSize.w + pos.y + over.y * LPVSize.y);
+	vec2 over = (pos.xy - clamp(pos.xy,vec2(0,0),vec2(LPVNbCell-1.0,LPVNbCell-1.0))) * 100.0;
+	return vec2(col * LPVNbCell + pos.x + over.x * LPVSize.x,row * LPVNbCell + pos.y + over.y * LPVSize.y);
 }
 
 
-vec2 Convert3DTo2DTexcoord(in vec3 pos){
-	return Convert3Dto2D(pos) / LPVSize.xy;
+vec2 Convert3DTo2DTexcoord(in vec3 pos, in int level)
+{
+	return Convert3Dto2D(pos,level) / LPVSize.xy;
 }
 
 vec3 Convert2DTexcoordTo3D(in vec2 TexCoords){
   vec2 ImageCoord = TexCoords * LPVSize.xy;
-  float row = floor(ImageCoord.y / LPVCellSize.w);
-  float col = floor(ImageCoord.x / LPVCellSize.w);
+  float row = floor(ImageCoord.y / LPVNbCell);
+  float col = floor(ImageCoord.x / LPVNbCell);
   vec3 GridPosition;
   GridPosition.z = col + (row*LPVSize.z);
-  GridPosition.xy = ImageCoord - vec2(col*LPVCellSize.w,row*LPVCellSize.w);
+  GridPosition.xy = ImageCoord - vec2(col*LPVNbCell,row*LPVNbCell);
   return GridPosition;
 }

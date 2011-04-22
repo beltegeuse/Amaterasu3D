@@ -11,9 +11,7 @@ uniform sampler2D LPVBlue;
 uniform sampler2D Occlusion;
 
 // Parametre Grid
-uniform vec3 LPVPosition[NB_CASCADE]; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
-uniform float LPVCellSize[NB_CASCADE]; // dim &
 uniform int LPVNbCell;// number cell in one dim
 
 uniform bool DoOcclusion;
@@ -40,16 +38,16 @@ out vec4 GridRed;
 #define sideFaceSubtendedSolidAngle 0.13478556
 
 ivec2 GetLoadPos2DOffset3D(in vec2 coords, in vec3 offset){
-	vec2 c = floor(coords * LPVSize.xy);
-	float row = floor(c.y / LPVCellSize.w);
-	float col = floor(c.x / LPVCellSize.w);
-	c = clamp(vec2(c.x - col * LPVCellSize.w,c.y - row * LPVCellSize.w) + offset.xy,0.0,LPVCellSize.w-1.0);
+	vec2 c = floor(coords * LPVSize.xy); //FIXME: Attention ici il faudra prendre en compte la cascade
+	float row = floor(c.y / LPVNbCell);
+	float col = floor(c.x / LPVNbCell);
+	c = clamp(vec2(c.x - col * LPVNbCell,c.y - row * LPVNbCell) + offset.xy,0.0,LPVNbCell-1.0);
 	col += offset.z;
 	float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
-	float newrow = clamp(row+coldiff,0.0,LPVSize.w-1.0);
+	float newrow = clamp(row+coldiff,0.0,LPVNbCell-1.0);
 	col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
 	col = clamp(col,0.0,LPVSize.z-1.0);
-	vec2 spos = vec2(col * LPVCellSize.w + c.x,newrow * LPVCellSize.w + c.y);// / LPVSize.xy;
+	vec2 spos = vec2(col * LPVNbCell + c.x,newrow * LPVNbCell + c.y);// / LPVSize.xy;
 	return ivec2(spos);
 }
 
@@ -57,18 +55,9 @@ vec4 Load2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
 	return texelFetch2D(s,GetLoadPos2DOffset3D(coords,offset),0);
 }
 
-vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset){
-	vec2 c = coords * LPVSize.xy;
-	float row = floor(c.y / LPVCellSize.w);
-	float col = floor(c.x / LPVCellSize.w);
-	c = clamp(vec2(c.x - col * LPVCellSize.w,c.y - row * LPVCellSize.w) + offset.xy,0.0,LPVCellSize.w-1.0);
-	col += offset.z;
-	float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
-	float newrow = clamp(row+coldiff,0.0,LPVSize.w-1.0);
-	col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
-	col = clamp(col,0.0,LPVSize.z-1.0);
-	vec2 spos = vec2(col * LPVCellSize.w + c.x,newrow * LPVCellSize.w + c.y) / LPVSize.xy;
-	return spos;
+vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset)
+{
+	return GetLoadPos2DOffset3D(coords, offset) / LPVSize.xy;
 }
 
 vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
@@ -82,33 +71,33 @@ vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
 
 const float RangeModifier = 1.0;
 
-void propagateLight(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
-{
-	vec3 MainDirection = vec3(0.0,0.0,1.0)*orientation;
-	vec4 MainDirectionSH = SH_evaluate(MainDirection);
-	vec4 MainDirectionHemi = SH_evaluateCosineLobe_direct(MainDirection);
-
-	ivec2 loadPos = GetLoadPos2DOffset3D(pos,-MainDirection);
-	vec4 NeighbourRed = texelFetch2D(LPVRed,loadPos, 0);
-	vec4 NeighbourGreen = texelFetch2D(LPVGreen,loadPos, 0);
-	vec4 NeighbourBlue = texelFetch2D(LPVBlue,loadPos, 0);
-
-	float occlusionFactor = 1.0;
-	if(DoOcclusion)
-	{
-		vec4 occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection);
-		occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-MainDirection),occlusionSH),1.0);
-		occlusionFactor *= occlusionFactor;
-	}
-
-	float fluxRed = max(0.0,dot(MainDirectionSH,NeighbourRed));
-	float fluxGreen = max(0.0,dot(MainDirectionSH,NeighbourGreen));
-	float fluxBlue = max(0.0,dot(MainDirectionSH,NeighbourBlue));
-
-	outputRed += MainDirectionHemi * fluxRed * occlusionFactor * 0.66667936;
-	outputGreen += MainDirectionHemi * fluxGreen * occlusionFactor * 0.66667936;
-	outputBlue += MainDirectionHemi * fluxBlue * occlusionFactor * 0.66667936;
-}
+//void propagateLight(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
+//{
+//	vec3 MainDirection = vec3(0.0,0.0,1.0)*orientation;
+//	vec4 MainDirectionSH = SH_evaluate(MainDirection);
+//	vec4 MainDirectionHemi = SH_evaluateCosineLobe_direct(MainDirection);
+//
+//	ivec2 loadPos = GetLoadPos2DOffset3D(pos,-MainDirection);
+//	vec4 NeighbourRed = texelFetch2D(LPVRed,loadPos, 0);
+//	vec4 NeighbourGreen = texelFetch2D(LPVGreen,loadPos, 0);
+//	vec4 NeighbourBlue = texelFetch2D(LPVBlue,loadPos, 0);
+//
+//	float occlusionFactor = 1.0;
+//	if(DoOcclusion)
+//	{
+//		vec4 occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection);
+//		occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-MainDirection),occlusionSH),1.0);
+//		occlusionFactor *= occlusionFactor;
+//	}
+//
+//	float fluxRed = max(0.0,dot(MainDirectionSH,NeighbourRed));
+//	float fluxGreen = max(0.0,dot(MainDirectionSH,NeighbourGreen));
+//	float fluxBlue = max(0.0,dot(MainDirectionSH,NeighbourBlue));
+//
+//	outputRed += MainDirectionHemi * fluxRed * occlusionFactor * 0.66667936;
+//	outputGreen += MainDirectionHemi * fluxGreen * occlusionFactor * 0.66667936;
+//	outputBlue += MainDirectionHemi * fluxBlue * occlusionFactor * 0.66667936;
+//}
 
 const vec2 coeffs[4] = vec2[](vec2(1.0,0.0),vec2(-1.0,0.0),vec2(0.0,1.0),vec2(0.0,-1.0));
 
@@ -181,6 +170,7 @@ void main(){
 	vec4 resultRed = vec4(0.0,0.0,0.0,0.0);
 	vec4 resultGreen = vec4(0.0,0.0,0.0,0.0);
 	vec4 resultBlue = vec4(0.0,0.0,0.0,0.0);
+	//TODO: Deduire le niveau avec les coordonnes de textures
 	//Z+
 	propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
 								0.0, 1.0, 0.0,
