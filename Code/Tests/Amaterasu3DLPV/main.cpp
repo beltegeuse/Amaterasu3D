@@ -5,7 +5,6 @@
 #include <Graphics/SceneGraph/Model.h>
 #include <Graphics/Camera/CameraFPS.h>
 #include <Logger/LoggerFile.h>
-#include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -590,7 +589,12 @@ private:
 	}
 };
 
+#ifdef WIN32
+#include <windows.h>
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+#else
+int main()
+#endif
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	// FIXME: Add auto

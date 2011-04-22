@@ -68,6 +68,10 @@ SET(LIB_AMATERASU3D_HEADERS
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${FREETYPE_INCLUDE_DIRS}
+        /usr/local/include/sigc++-2.0
+	/usr/local/lib/sigc++-2.0/include
+	/usr/local/include/assimp
 	../TinyXML
 )
 

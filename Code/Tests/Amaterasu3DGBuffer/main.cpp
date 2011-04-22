@@ -1,5 +1,4 @@
 #include <iostream>
-#include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -128,7 +127,12 @@ public:
 	}
 };
 
+#ifdef WIN32
+#include <windows.h>
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+#else
+int main()
+#endif
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	CFontManager::Instance().LoadFont("../Donnees/Fonts/eve.ttf", "arial");

@@ -24,15 +24,16 @@
 
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <Utilities/File.h>
 #include <algorithm>
 #include <fstream>
 
+#include <Logger/Logger.h>
 
 /////////////////////////////////////////////////////////////
-/// Constructeur à partir d'un std::string
+/// Constructeur ï¿½ partir d'un std::string
 ///
 /// \param Name : Chemin complet du fichier
 ///
@@ -40,12 +41,16 @@
 CFile::CFile(const std::string& Name) :
 m_Name(Name)
 {
+#ifdef WIN32
     std::replace(m_Name.begin(), m_Name.end(), '/', '\\');
+#else
+    std::replace(m_Name.begin(), m_Name.end(), '\\', '/');
+#endif
 }
 
 
 /////////////////////////////////////////////////////////////
-/// Constructeur à partir d'un const char*
+/// Constructeur ï¿½ partir d'un const char*
 ///
 /// \param Name : Chemin complet du fichier
 ///
@@ -66,7 +71,6 @@ m_Name(Name)
 bool CFile::Exists() const
 {
 	std::ifstream File(m_Name.c_str());
-
     return File.is_open();
 }
 
