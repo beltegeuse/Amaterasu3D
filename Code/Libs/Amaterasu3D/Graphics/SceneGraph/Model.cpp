@@ -21,8 +21,8 @@
 //
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
-#include <gl/glew.h>
-#include <gl/gl.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
 
 #include "Model.h"
 #include <Debug/Exceptions.h>

@@ -27,6 +27,7 @@ void GraphicsDevice::CheckSystem()
 	Logger::Log() << "    - OpenGL Renderer: " << (char*) glGetString(GL_RENDERER) << "\n";
 	Logger::Log() << "    - OpenGL Version: " << (char*) glGetString(GL_VERSION) << "\n\n";
 
+	#ifdef WIN32
 	if (glewIsSupported("GL_VERSION_3_1"))
 	{
 		Logger::Log() << "[INFO] : Ready for OpenGL 3.1\n";
@@ -35,6 +36,7 @@ void GraphicsDevice::CheckSystem()
 	{
 		throw GraphicsDeviceException("OpenGL 3.1 is not supported.");
 	}
+	#endif
 
 	if (GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader && GL_EXT_geometry_shader4)
 		Logger::Log() << "[INFO] Ready for GLSL - vertex, fragment, and geometry units\n";

@@ -24,20 +24,20 @@
 
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <System/MediaManager.h>
 #include <boost/filesystem.hpp>
 #include <System/Loaders/Loaders.h>
 
 //////////////////////////////////////////////////////////////
-//// Implémentation des méthodes du singleton
+//// Implï¿½mentation des mï¿½thodes du singleton
 //////////////////////////////////////////////////////////////
 SINGLETON_IMPL(CMediaManager)
 
 
 /////////////////////////////////////////////////////////////
-/// Constructeur par défaut
+/// Constructeur par dï¿½faut
 ///
 ////////////////////////////////////////////////////////////
 CMediaManager::CMediaManager()
@@ -58,9 +58,9 @@ CMediaManager::~CMediaManager()
 
 
 /////////////////////////////////////////////////////////////
-/// Ajoute un répertoire de recherche pour les médias
+/// Ajoute un rï¿½pertoire de recherche pour les mï¿½dias
 ///
-/// \param Path : Chemin à ajouter
+/// \param Path : Chemin ï¿½ ajouter
 ///
 ////////////////////////////////////////////////////////////
 void CMediaManager::AddSearchPath(const std::string& Path)
@@ -68,12 +68,17 @@ void CMediaManager::AddSearchPath(const std::string& Path)
     if (Path.empty() || (*Path.rbegin() == '\\') || (*Path.rbegin() == '/'))
         m_Paths.insert(Path);
     else
-        m_Paths.insert(Path + "\\");
+#ifdef WIN32
+    m_Paths.insert(Path + "\\");
+#else
+    m_Paths.insert(Path + "/");
+#endif
 }
 
 void CMediaManager::AddSearchPathAndChilds(const std::string& Path)
 {
 	// Add the root directory
+//	Logger::Log() << Path << "\n";
 	AddSearchPath(Path);
 
 	// find childs directories to add...
@@ -88,11 +93,11 @@ void CMediaManager::AddSearchPathAndChilds(const std::string& Path)
 }
 
 /////////////////////////////////////////////////////////////
-/// Cherche un fichier dans les répertoires de recherche
+/// Cherche un fichier dans les rï¿½pertoires de recherche
 ///
 /// \param Filename : Chemin du media
 ///
-/// \return Chemin complet du media, exception si non trouvé
+/// \return Chemin complet du media, exception si non trouvï¿½
 ///
 ////////////////////////////////////////////////////////////
 CFile CMediaManager::FindMedia(const CFile& Filename) const
@@ -105,6 +110,13 @@ CFile CMediaManager::FindMedia(const CFile& Filename) const
             return RetFile;
     }
 
+    //// DEBUG
+    Logger::Log() << "===== PATH : \n";
+    for (std::set<std::string>::const_iterator i = m_Paths.begin(); i != m_Paths.end(); ++i)
+    {
+    	Logger::Log() << "  * " << *i + Filename.Fullname() << "\n";
+    }
+
     // Si le fichier est introuvable, on lance une exception
-    throw CLoadingFailed(Filename.Fullname(), "Fichier introuvable dans les répertoires de recherche");
+    throw CLoadingFailed(Filename.Fullname(), "Fichier introuvable dans les repertoires de recherche");
 }
