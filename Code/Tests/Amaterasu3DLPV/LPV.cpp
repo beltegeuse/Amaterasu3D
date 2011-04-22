@@ -108,14 +108,16 @@ void LPV::Initialize()
 	GenerateGridModels();
 }
 
-void LPV::BeginInjectionVPLPass()
+void LPV::BeginInjectionVPLPass(int level)
 {
+	Assert(level >= 0 && level < m_NbCascadedLevels);
 	// Change OpenGL states
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE,GL_ONE);
 	glDisable(GL_DEPTH_TEST);
 	// Enable shader and send uniform values
 	m_LPVInjectVPL->Begin();
+	m_LPVInjectVPL->SetUniform1i("CurrentLevel", level);
 	SetGridInformations(m_LPVInjectVPL);
 }
 void LPV::EndInjectionVPLPass()
@@ -149,14 +151,16 @@ void LPV::InjectGeometryFromLight(LightShaders& shader, SceneGraph::DrawObject& 
 	shader.GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 }
 
-void LPV::BeginInjectionGeometryPass()
+void LPV::BeginInjectionGeometryPass(int level)
 {
+	Assert(level >= 0 && level < m_NbCascadedLevels);
 	// Set OpenGL States
 	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_ONE,GL_ONE);
 	// Enable shader and send uniform values
 	m_LPVInjectGeomerty->Begin();
+	m_LPVInjectGeomerty->SetUniform1i("CurrentLevel", level);
 	SetGridInformations(m_LPVInjectGeomerty);
 }
 

@@ -15,6 +15,7 @@ uniform vec3 LPVPosition[NB_CASCADE]; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform float LPVCellSize[NB_CASCADE]; // dim &
 uniform int LPVNbCell;// number cell in one dim
+uniform int CurrentLevel;
 #include <LPVPosition.shadercode>
 
 // To compute position
@@ -41,13 +42,12 @@ void main()
 	outNormal = Normal.xyz; ///< Need to compute the SH coeff
 
 	// Prevent self shadowing
-	Position += (Normal*LPVCellSize[0]*0.5);
+	Position += (Normal*LPVCellSize[CurrentLevel]*0.5);
 
-	vec3 cell = floor((Position.xyz - LPVPosition[0].xyz) / vec3(LPVCellSize[0]));
+	vec3 cell = floor((Position.xyz - LPVPosition[CurrentLevel].xyz) / vec3(LPVCellSize[CurrentLevel]));
     if(IsInGrid(cell))
     {
-    	vec2 pos2d = Convert3Dto2D(cell,0);
-    	pos2d /= LPVSize.xy;
+    	vec2 pos2d = Convert3DTo2DTexcoord(cell,CurrentLevel);
     	gl_Position = vec4(pos2d * 2.0 - 1.0,0.0,1.0);
     }
     else

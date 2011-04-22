@@ -38,7 +38,7 @@ bool IsInGrid(in vec3 p)
     return all(greaterThanEqual(p, vec3(0.0))) && all(lessThan(p, vec3(LPVNbCell)));
 }
 
-vec2 Convert3Dto2D(in vec3 pos, in int level){
+vec2 Convert3Dto2DRaw(in vec3 pos){
    	float row = floor(pos.z / LPVSize.z);
 	float col = pos.z - (row*LPVSize.z);
 	vec2 over = (pos.xy - clamp(pos.xy,vec2(0,0),vec2(LPVNbCell-1.0,LPVNbCell-1.0))) * 100.0;
@@ -48,7 +48,7 @@ vec2 Convert3Dto2D(in vec3 pos, in int level){
 
 vec2 Convert3DTo2DTexcoord(in vec3 pos, in int level)
 {
-	return Convert3Dto2D(pos,level) / LPVSize.xy;
+	return (Convert3Dto2DRaw(pos) / LPVSize.xy)+vec2(0,level*(1.0/NB_CASCADE));
 }
 
 vec3 Convert2DTexcoordTo3D(in vec2 TexCoords){

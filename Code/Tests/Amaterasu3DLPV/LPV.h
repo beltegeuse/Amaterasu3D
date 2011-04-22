@@ -98,6 +98,8 @@ public:
 
 	void DrawGrids();
 	void DrawGrid(int level);
+	int GetNumberCascade() const
+	{ return m_NbCascadedLevels; }
 
 	//TODO: Can fusion Inject methods
 	///////////////////////////////////
@@ -105,13 +107,13 @@ public:
 	///////////////////////////////////
 	// TODO: Add the injection scheme
 	void InjectVPLFromLight(LightShaders& shader, SceneGraph::DrawObject& samples);
-	void BeginInjectionVPLPass();
+	void BeginInjectionVPLPass(int level);
 	void EndInjectionVPLPass();
 	///////////////////////////////////
 	/// Injection Geometry Pass
 	///////////////////////////////////
 	void InjectGeometryFromLight(LightShaders& shader, SceneGraph::DrawObject& samples);
-	void BeginInjectionGeometryPass();
+	void BeginInjectionGeometryPass(int level);
 	void EndInjectionGeometryPass();
 	///////////////////////////////////
 	/// Propagation Pass

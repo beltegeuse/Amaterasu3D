@@ -51,16 +51,12 @@ ivec2 GetLoadPos2DOffset3D(in vec2 coords, in vec3 offset){
 	return ivec2(spos);
 }
 
-vec4 Load2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
-	return texelFetch2D(s,GetLoadPos2DOffset3D(coords,offset),0);
-}
-
-vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset)
+vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset, in int cascadeID)
 {
 	return GetLoadPos2DOffset3D(coords, offset) / LPVSize.xy;
 }
 
-vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
+vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset, in int cascadeID){
 	return texture2D(s,GetSamplePos2DOffset3D(coords,offset));
 }
 
@@ -71,37 +67,9 @@ vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
 
 const float RangeModifier = 1.0;
 
-//void propagateLight(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
-//{
-//	vec3 MainDirection = vec3(0.0,0.0,1.0)*orientation;
-//	vec4 MainDirectionSH = SH_evaluate(MainDirection);
-//	vec4 MainDirectionHemi = SH_evaluateCosineLobe_direct(MainDirection);
-//
-//	ivec2 loadPos = GetLoadPos2DOffset3D(pos,-MainDirection);
-//	vec4 NeighbourRed = texelFetch2D(LPVRed,loadPos, 0);
-//	vec4 NeighbourGreen = texelFetch2D(LPVGreen,loadPos, 0);
-//	vec4 NeighbourBlue = texelFetch2D(LPVBlue,loadPos, 0);
-//
-//	float occlusionFactor = 1.0;
-//	if(DoOcclusion)
-//	{
-//		vec4 occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection);
-//		occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-MainDirection),occlusionSH),1.0);
-//		occlusionFactor *= occlusionFactor;
-//	}
-//
-//	float fluxRed = max(0.0,dot(MainDirectionSH,NeighbourRed));
-//	float fluxGreen = max(0.0,dot(MainDirectionSH,NeighbourGreen));
-//	float fluxBlue = max(0.0,dot(MainDirectionSH,NeighbourBlue));
-//
-//	outputRed += MainDirectionHemi * fluxRed * occlusionFactor * 0.66667936;
-//	outputGreen += MainDirectionHemi * fluxGreen * occlusionFactor * 0.66667936;
-//	outputBlue += MainDirectionHemi * fluxBlue * occlusionFactor * 0.66667936;
-//}
-
 const vec2 coeffs[4] = vec2[](vec2(1.0,0.0),vec2(-1.0,0.0),vec2(0.0,1.0),vec2(0.0,-1.0));
 
-void propagate(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
+void propagate(in vec2 pos, in int cascadeID,in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
 {
 	//evaluate main direction
 	vec3 MainDirection =  vec3(0.0,0.0,1.0) * orientation;
@@ -170,29 +138,35 @@ void main(){
 	vec4 resultRed = vec4(0.0,0.0,0.0,0.0);
 	vec4 resultGreen = vec4(0.0,0.0,0.0,0.0);
 	vec4 resultBlue = vec4(0.0,0.0,0.0,0.0);
+	
+	////////////////
+	// Compute the cascade
+	///////////////
+	int cascadeID = floor(outTexCoord.y * NB_CASCADE);
+	
 	//TODO: Deduire le niveau avec les coordonnes de textures
 	//Z+
-	propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
+	propagate(outTexCoord,cascadeID,mat3( 1.0, 0.0, 0.0,
 								0.0, 1.0, 0.0,
 								0.0, 0.0, 1.0),resultRed,resultGreen,resultBlue);
 	//Z-
-	propagate(outTexCoord,mat3(-1.0, 0.0, 0.0,
+	propagate(outTexCoord,cascadeID,mat3(-1.0, 0.0, 0.0,
 								0.0, 1.0, 0.0,
 								0.0, 0.0,-1.0),resultRed,resultGreen,resultBlue);
 	//X+
-	propagate(outTexCoord,mat3( 0.0, 0.0, 1.0,
+	propagate(outTexCoord,cascadeID,mat3( 0.0, 0.0, 1.0,
 								0.0, 1.0, 0.0,
 								-1.0, 0.0, 0.0),resultRed,resultGreen,resultBlue);
 	//X-
-	propagate(outTexCoord,mat3( 0.0, 0.0,-1.0,
+	propagate(outTexCoord,cascadeID,mat3( 0.0, 0.0,-1.0,
 								0.0, 1.0, 0.0,
 								1.0, 0.0, 0.0),resultRed,resultGreen,resultBlue);
 	//Y+
-	propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
+	propagate(outTexCoord,cascadeID,mat3( 1.0, 0.0, 0.0,
 								0.0, 0.0, 1.0,
 								0.0,-1.0, 0.0),resultRed,resultGreen,resultBlue);
 	//Y-
-	propagate(outTexCoord,mat3( 1.0, 0.0, 0.0,
+	propagate(outTexCoord,cascadeID,mat3( 1.0, 0.0, 0.0,
 								0.0, 0.0,-1.0,
 								0.0, 1.0, 0.0),resultRed,resultGreen,resultBlue);
 
@@ -201,3 +175,43 @@ void main(){
 	GridGreen = resultGreen;
 	GridBlue = resultBlue;
 }
+
+
+
+////////////////////////////////////
+/// OLD CODE
+
+//void propagateLight(in vec2 pos, in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
+//{
+//	vec3 MainDirection = vec3(0.0,0.0,1.0)*orientation;
+//	vec4 MainDirectionSH = SH_evaluate(MainDirection);
+//	vec4 MainDirectionHemi = SH_evaluateCosineLobe_direct(MainDirection);
+//
+//	ivec2 loadPos = GetLoadPos2DOffset3D(pos,-MainDirection);
+//	vec4 NeighbourRed = texelFetch2D(LPVRed,loadPos, 0);
+//	vec4 NeighbourGreen = texelFetch2D(LPVGreen,loadPos, 0);
+//	vec4 NeighbourBlue = texelFetch2D(LPVBlue,loadPos, 0);
+//
+//	float occlusionFactor = 1.0;
+//	if(DoOcclusion)
+//	{
+//		vec4 occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection);
+//		occlusionFactor = 1.0 - min( SHDotAbs(SH_evaluate(-MainDirection),occlusionSH),1.0);
+//		occlusionFactor *= occlusionFactor;
+//	}
+//
+//	float fluxRed = max(0.0,dot(MainDirectionSH,NeighbourRed));
+//	float fluxGreen = max(0.0,dot(MainDirectionSH,NeighbourGreen));
+//	float fluxBlue = max(0.0,dot(MainDirectionSH,NeighbourBlue));
+//
+//	outputRed += MainDirectionHemi * fluxRed * occlusionFactor * 0.66667936;
+//	outputGreen += MainDirectionHemi * fluxGreen * occlusionFactor * 0.66667936;
+//	outputBlue += MainDirectionHemi * fluxBlue * occlusionFactor * 0.66667936;
+//}
+
+//vec4 Load2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset){
+//	return texelFetch2D(s,GetLoadPos2DOffset3D(coords,offset),0);
+//}
+
+
+
