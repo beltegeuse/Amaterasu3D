@@ -67,7 +67,7 @@ Shader::~Shader()
 	// Free OpenGL
 	glDetachShader(m_ProgramID, m_VertexShader->GetID());
 	glDetachShader(m_ProgramID, m_FragementShader->GetID());
-	glDeleteShader(m_ProgramID);
+	glDeleteProgram(m_ProgramID);
 	// Delete shaders
 	delete m_VertexShader;
 	delete m_FragementShader;

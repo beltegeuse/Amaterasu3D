@@ -56,6 +56,7 @@ protected:
 	// Grid params
 	int m_PropagatedShow;
 	int m_GridShow;
+	int m_Level;
 public:
 
 	ApplicationLPV()
@@ -87,6 +88,7 @@ public:
 		m_ShowAll = true;
 		m_PropagatedShow = -1;
 		m_GridShow = 0;
+		m_Level = 0;
 	}
 
 	std::string ShowInfoCamera()
@@ -160,7 +162,9 @@ private:
 				 case SDLK_e:
 					 m_AngleLight = std::min(180.0, m_AngleLight + 0.1); break;
 				 case SDLK_g:
-					 m_GridShow = (m_GridShow + 1) % m_LPV.GetNumberCascade();
+					 m_GridShow = (m_GridShow + 1) % m_LPV.GetNumberCascade(); break;
+				 case SDLK_l:
+					 m_Level = (m_Level + 1) %  m_LPV.GetNumberCascade(); break;
 			 }
 		}
 	}
@@ -325,24 +329,24 @@ private:
 
 		// ****** 1st Step : VPL Injection
 		m_Performances.BeginStep("  === Injection VPL");
-		for(int i = 0; i < m_LPV.GetNumberCascade(); i++)
-		{
-			m_LPV.BeginInjectionVPLPass(i);
+//		for(int i = 0; i < m_LPV.GetNumberCascade(); i++)
+//		{
+			m_LPV.BeginInjectionVPLPass(m_Level);
 			m_LPV.InjectVPLFromLight(m_Light, *m_SamplePointRSM);
 			m_LPV.EndInjectionVPLPass();
-		}
+		//}
 		m_Performances.EndStep();
 		// ******* 2nd Step : Geometry injection
 		m_Performances.BeginStep("  === Injection Geometry");
-		for(int i = 0; i < m_LPV.GetNumberCascade(); i++)
-		{
-			m_LPV.BeginInjectionGeometryPass(i);
+//		for(int i = 0; i < m_LPV.GetNumberCascade(); i++)
+//		{
+			m_LPV.BeginInjectionGeometryPass(m_Level);
 			if(m_DoOcclusion)
 			{
 				m_LPV.InjectGeometryFromLight(m_Light, *m_SamplePointRSM);
 			}
 			m_LPV.EndInjectionGeometryPass();
-		}
+//		}
 		m_Performances.EndStep();
 		// ******* 3th Step : Diffusion
 		m_Performances.BeginStep("  === Propagation");

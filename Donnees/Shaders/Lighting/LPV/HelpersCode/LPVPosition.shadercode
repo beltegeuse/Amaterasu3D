@@ -18,6 +18,20 @@ bool IsInGrid(in vec3 p)
 {
     return all(greaterThanEqual(p, vec3(0.0))) && all(lessThan(p, LPVCellSize.xyz));
 }*/
+
+/*ivec2 GetLoadPos2DOffset3D(in vec2 coords, in vec3 offset){
+	vec2 c = floor(coords * LPVSize.xy); //FIXME: Attention ici il faudra prendre en compte la cascade
+	float row = floor(c.y / LPVNbCell);
+	float col = floor(c.x / LPVNbCell);
+	c = clamp(vec2(c.x - col * LPVNbCell,c.y - row * LPVNbCell) + offset.xy,0.0,LPVNbCell-1.0);
+	col += offset.z;
+	float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
+	float newrow = clamp(row+coldiff,0.0,LPVNbCell-1.0);
+	col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
+	col = clamp(col,0.0,LPVSize.z-1.0);
+	vec2 spos = vec2(col * LPVNbCell + c.x,newrow * LPVNbCell + c.y);// / LPVSize.xy;
+	return ivec2(spos);
+}*/
  
 /* All methods :
  * ===== Methods to check and compute grid 3D coords
@@ -41,8 +55,7 @@ bool IsInGrid(in vec3 p)
 vec2 Convert3Dto2DRaw(in vec3 pos){
    	float row = floor(pos.z / LPVSize.z);
 	float col = pos.z - (row*LPVSize.z);
-	vec2 over = (pos.xy - clamp(pos.xy,vec2(0,0),vec2(LPVNbCell-1.0,LPVNbCell-1.0))) * 100.0;
-	return vec2(col * LPVNbCell + pos.x + over.x * LPVSize.x,row * LPVNbCell + pos.y + over.y * LPVSize.y);
+	return vec2(col * LPVNbCell + pos.x, row * LPVNbCell + pos.y);
 }
 
 
@@ -51,8 +64,8 @@ vec2 Convert3DTo2DTexcoord(in vec3 pos, in int level)
 	return (Convert3Dto2DRaw(pos) / LPVSize.xy)+vec2(0,level*(1.0/NB_CASCADE));
 }
 
-vec3 Convert2DTexcoordTo3D(in vec2 TexCoords){
-  vec2 ImageCoord = TexCoords * LPVSize.xy;
+vec3 Convert2DTexcoordTo3D(in vec2 TexCoords, in int level){
+  vec2 ImageCoord = (TexCoords-vec2(0,level*(1.0/NB_CASCADE)))*LPVSize.xy;
   float row = floor(ImageCoord.y / LPVNbCell);
   float col = floor(ImageCoord.x / LPVNbCell);
   vec3 GridPosition;

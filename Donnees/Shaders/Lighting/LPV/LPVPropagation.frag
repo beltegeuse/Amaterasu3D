@@ -37,27 +37,13 @@ out vec4 GridRed;
 #define directFaceSubtendedSolidAngle 0.12753712
 #define sideFaceSubtendedSolidAngle 0.13478556
 
-ivec2 GetLoadPos2DOffset3D(in vec2 coords, in vec3 offset){
-	vec2 c = floor(coords * LPVSize.xy); //FIXME: Attention ici il faudra prendre en compte la cascade
-	float row = floor(c.y / LPVNbCell);
-	float col = floor(c.x / LPVNbCell);
-	c = clamp(vec2(c.x - col * LPVNbCell,c.y - row * LPVNbCell) + offset.xy,0.0,LPVNbCell-1.0);
-	col += offset.z;
-	float coldiff = min(col,0.0) + max(0.0,col-LPVSize.z+1.0);
-	float newrow = clamp(row+coldiff,0.0,LPVNbCell-1.0);
-	col += (min(coldiff,0.0) * (-LPVSize.z) + max(coldiff,0.0) * (-LPVSize.z)) * abs(newrow - row);
-	col = clamp(col,0.0,LPVSize.z-1.0);
-	vec2 spos = vec2(col * LPVNbCell + c.x,newrow * LPVNbCell + c.y);// / LPVSize.xy;
-	return ivec2(spos);
-}
-
 vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset, in int cascadeID)
 {
-	return GetLoadPos2DOffset3D(coords, offset) / LPVSize.xy;
+	return Convert3DTo2DTexcoord(Convert2DTexcoordTo3D(coords, cascadeID)+offset, cascadeID);
 }
 
 vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset, in int cascadeID){
-	return texture2D(s,GetSamplePos2DOffset3D(coords,offset));
+	return texture2D(s,GetSamplePos2DOffset3D(coords,offset, cascadeID));
 }
 
 //1 / sqrt(5)
@@ -73,20 +59,26 @@ void propagate(in vec2 pos, in int cascadeID,in mat3 orientation, inout vec4 out
 {
 	//evaluate main direction
 	vec3 MainDirection =  vec3(0.0,0.0,1.0) * orientation;
+
+	// If on border => Discard this gathering
+	if(IsNotInGrid(Convert2DTexcoordTo3D(pos, cascadeID)-MainDirection))
+		return;
+
+	// Compute all coeffs
 	vec4 MainDirectionSH = SH_evaluate(MainDirection * RangeModifier);
 	vec4 MainDirectionHemi = SH_evaluateCosineLobe_direct(MainDirection);
 
 	//Get neighbour SHs
-	ivec2 loadPos = GetLoadPos2DOffset3D(pos,-MainDirection);
-	vec4 NeighbourRed = texelFetch2D(LPVRed,loadPos, 0);
-	vec4 NeighbourGreen = texelFetch2D(LPVGreen,loadPos, 0);
-	vec4 NeighbourBlue = texelFetch2D(LPVBlue,loadPos, 0);
+	vec2 loadPos = GetSamplePos2DOffset3D(pos,-MainDirection, cascadeID);
+	vec4 NeighbourRed = texture(LPVRed,loadPos);
+	vec4 NeighbourGreen = texture(LPVGreen,loadPos);
+	vec4 NeighbourBlue = texture(LPVBlue,loadPos);
 
 	//Get Occlusion SH
-	vec4 occlusionSH;
+	vec4 occlusionSH = vec4(0.0);
 	if(DoOcclusion)
 	{
-		occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection * 0.5);
+		occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection * 0.5,cascadeID);
 	}
 
 	float occlusionFactor = 1.0;
@@ -142,7 +134,7 @@ void main(){
 	////////////////
 	// Compute the cascade
 	///////////////
-	int cascadeID = floor(outTexCoord.y * NB_CASCADE);
+	int cascadeID = int(floor(outTexCoord.y * NB_CASCADE));
 	
 	//TODO: Deduire le niveau avec les coordonnes de textures
 	//Z+

@@ -25,13 +25,13 @@ uniform float LPVCellSize[NB_CASCADE]; // dim &
 uniform int LPVNbCell;// number cell in one dim
 uniform int CurrentLevel;
 
+#include <LPVPosition.shadercode>
+
 // Output shader
 smooth out vec3 outNormal;
 smooth out float SurfelArea;
 
 invariant gl_Position;
-
-#include <LPVPosition.shadercode>
 
 void main()
 {	
@@ -51,7 +51,7 @@ void main()
 	//SurfelArea = 12000.0 * Depth*Depth / (512.0*512.0); // TODO: Add uniform size of the buffers
 	//float depthFactor = (Depth - NearClipping) / (FarClipping - NearClipping);
 	//SurfelArea = 0.206 * (depthFactor * depthFactor);
-	SurfelArea = 0.06;
+	SurfelArea = 1.0;
 	// Prevent self shadowing
 	Position -= (Normal*LPVCellSize[CurrentLevel]*0.5);
 	//shift occlusion volume by half cell size

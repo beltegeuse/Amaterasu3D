@@ -50,26 +50,37 @@ vec4 TrilinearInterpolation(sampler2D s, vec3 Position, vec3 Normal, in int leve
 	return w1*(1 - Offset.x) + w2 * Offset.x;
 }
 
-vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position, vec3 Normal)
+vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position, vec3 Normal, in int cascadeID)
 {
-	vec3 PositionGrid = ((Position- 0.5*vec3(LPVCellSize[0])) - LPVPosition[0]) / vec3(LPVCellSize[0]);
-	return TrilinearInterpolation(s,PositionGrid, Normal,0);
+	vec3 PositionGrid = ((Position- 0.5*vec3(LPVCellSize[cascadeID])) - LPVPosition[cascadeID]) / vec3(LPVCellSize[cascadeID]);
+	return TrilinearInterpolation(s,PositionGrid, Normal,cascadeID);
 }
 
 vec4 ComputeIndirectLighting(in vec3 Position, in vec3 Normal)
 {
-	// Get Grid Coordinates
-	if(IsNotInGrid(floor((Position - 0.5*vec3(LPVCellSize[0])) - LPVPosition[0]) / vec3(LPVCellSize[0])))
-		return vec4(0.0,0.0,0.0,0.0);
-
-	// Get texture coordinates
-	//vec2 TexCoordGrid = Convert3DTo2DTexcoord(Position);
-	vec4 CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position, Normal); ///< And get coeff value
-	vec4 CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position, Normal);
-	vec4 CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, Normal);
-
+	vec4 ReturnValue = vec4(0.0,0.0,0.0,1.0);
+	int i;
+	vec4 CoeffGridRed;
+	vec4 CoeffGridGreen;
+	vec4 CoeffGridBlue;
 	vec4 SHEv = SH_evaluate(-Normal);
-	return  vec4(max(dot(CoeffGridRed,SHEv) / 3.14,0.0) * 0.6,
+	for( i = 0; i < NB_CASCADE; i++)
+	{
+		// Get Grid Coordinates
+		if(IsNotInGrid(floor((Position - 0.5*vec3(LPVCellSize[i]) - LPVPosition[i]) / vec3(LPVCellSize[i]))))
+			return ReturnValue;
+
+		// Get texture coordinates
+		//vec2 TexCoordGrid = Convert3DTo2DTexcoord(Position);
+		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position, Normal, i); ///< And get coeff value
+		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position, Normal, i);
+		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, Normal, i);
+
+	
+		ReturnValue +=  vec4(max(dot(CoeffGridRed,SHEv) / 3.14,0.0) * 0.6,
 				 max(dot(CoeffGridGreen,SHEv) / 3.14,0.0) * 0.6,
-				 max(dot(CoeffGridBlue,SHEv) / 3.14,0.0) * 0.6,1.0);
+				 max(dot(CoeffGridBlue,SHEv) / 3.14,0.0) * 0.6,0.0);
+	}
+	
+	return ReturnValue;
 }

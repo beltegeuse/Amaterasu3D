@@ -45,38 +45,39 @@ void main()
 {	
 	// Get data from buffers
 	vec3 Position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
-	vec3 GridPosition = floor((Position.xyz - LPVPosition[0])/ vec3(LPVCellSize[0])); // Early discard
-	if(IsNotInGrid(GridPosition))
-	{
-		discard;
-	}
+//	vec3 GridPosition = floor((Position.xyz - LPVPosition[0])/ vec3(LPVCellSize[0])); // Early discard
+//	if(IsNotInGrid(GridPosition))
+//	{
+//		discard;
+//	}
 
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
-	vec4 DiffuseColor = texture(DiffuseBuffer,outTexCoord);
-
-	vec4 CoeffGridRed;
-	vec4 CoeffGridGreen;
-	vec4 CoeffGridBlue;
-
-	if(EnableTrilinearInterpolation)
-	{
-		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position, Normal);
-		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position,Normal);
-		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, Normal);
-	}
-	else
-	{
-
-		// Get texture coordinates
-		vec2 TexCoordGrid = Convert3DTo2DTexcoord(GridPosition,0);
-		CoeffGridRed = texture2D(GridRed, TexCoordGrid); ///< And get coeff value
-		CoeffGridGreen = texture2D(GridGreen, TexCoordGrid);
-		CoeffGridBlue = texture2D(GridBlue, TexCoordGrid);
-	}
-
-	vec4 SHEv = SH_evaluate(-Normal);
-	Color =  vec4(max(dot(CoeffGridRed,SHEv) / 3.145,0.0),
-				max(dot(CoeffGridGreen,SHEv) / 3.145,0.0),
-				max(dot(CoeffGridBlue,SHEv) / 3.145 ,0.0),1.0); //
+	Color = ComputeIndirectLighting(Position, Normal);
+	//	vec4 DiffuseColor = texture(DiffuseBuffer,outTexCoord);
+//
+//	vec4 CoeffGridRed;
+//	vec4 CoeffGridGreen;
+//	vec4 CoeffGridBlue;
+//
+//	if(EnableTrilinearInterpolation)
+//	{
+//		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position, Normal);
+//		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position,Normal);
+//		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, Normal);
+//	}
+//	else
+//	{
+//
+//		// Get texture coordinates
+//		vec2 TexCoordGrid = Convert3DTo2DTexcoord(GridPosition,0);
+//		CoeffGridRed = texture2D(GridRed, TexCoordGrid); ///< And get coeff value
+//		CoeffGridGreen = texture2D(GridGreen, TexCoordGrid);
+//		CoeffGridBlue = texture2D(GridBlue, TexCoordGrid);
+//	}
+//
+//	vec4 SHEv = SH_evaluate(-Normal);
+//	Color =  vec4(max(dot(CoeffGridRed,SHEv) / 3.145,0.0),
+//				max(dot(CoeffGridGreen,SHEv) / 3.145,0.0),
+//				max(dot(CoeffGridBlue,SHEv) / 3.145 ,0.0),1.0); //
 	//Color = CoeffGrid;
 }

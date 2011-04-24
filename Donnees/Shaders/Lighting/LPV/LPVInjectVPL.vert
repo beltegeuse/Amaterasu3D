@@ -4,26 +4,28 @@
 precision highp float;
 
 // Textures
-uniform sampler2D DepthBuffer;
 uniform sampler2D NormalBuffer;
+uniform sampler2D DepthBuffer;
 
 in vec2 VertexPosition;
 
-// Parametres
+// Parameters to compute position from depth
+uniform float FarClipping;
+uniform float NearClipping;
+uniform vec2 UnprojectInfo;
+uniform mat4 InverseViewMatrix;
+
+#include <GetPosition.shadercode>
+
+// grids Parametres
 // NB_CASCADE is an define...
 uniform vec3 LPVPosition[NB_CASCADE]; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform float LPVCellSize[NB_CASCADE]; // dim &
 uniform int LPVNbCell;// number cell in one dim
 uniform int CurrentLevel;
-#include <LPVPosition.shadercode>
 
-// To compute position
-uniform float FarClipping;
-uniform float NearClipping;
-uniform vec2 UnprojectInfo;
-uniform mat4 InverseViewMatrix;
-#include <GetPosition.shadercode>
+#include <LPVPosition.shadercode>
 
 // Sortie shader
 smooth out vec2 outTexCoord;

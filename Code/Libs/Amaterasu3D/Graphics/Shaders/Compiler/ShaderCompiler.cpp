@@ -160,15 +160,28 @@ void ShaderCompiler::AnalyseCompilerLog(const std::string& log)
 {
 	std::vector<std::string> vectorResult;
 	Split(log, vectorResult,"\n");
-	boost::regex re("(ERROR:)\\s[0-9]:([0-9]*):\\s([\\s\\D\\W\\d]*)");
+	boost::regex reATI("(ERROR:)\\s[0-9]:([0-9]*):\\s([\\s\\D\\W\\d]*)");
+	boost::regex reNvidia("0\\(([0-9]*)\\)\\s");
 	for(std::vector<std::string>::iterator it = vectorResult.begin(); it != vectorResult.end(); ++it)
 	{
 		Logger::Log() << "[LOG] " << (*it) << "\n";
 		boost::cmatch matches;
 		boost::match_results<std::string::iterator> what;
-		if(boost::regex_search(it->c_str(),matches,re))
+		std::string lineNumberString;
+		bool match = false;
+		if(boost::regex_search(it->c_str(),matches,reATI))
 		{
-			std::string lineNumberString(matches[2].first, matches[2].second);
+			lineNumberString = std::string(matches[2].first, matches[2].second);
+			match = true;
+		}
+		else if(boost::regex_search(it->c_str(),matches,reNvidia))
+		{
+			lineNumberString = std::string(matches[1].first, matches[1].second);
+			match = true;
+		}
+
+		if(match)
+		{
 			std::stringstream ss;
 			ss << lineNumberString;
 			int lineNumber;
