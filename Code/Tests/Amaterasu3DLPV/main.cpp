@@ -30,6 +30,7 @@ protected:
 	TShaderPtr m_DeferredSpotShader;
 	TShaderPtr m_LPVShowVPL;
 	TShaderPtr m_LPVLightingAllShader;
+	TShaderPtr m_ToneOperator;
 	// LPV object
 	LPV m_LPV;
 
@@ -188,7 +189,7 @@ private:
 		m_GBufferShader = ShaderManager.LoadShader("GBuffer.shader");
 		m_DeferredSpotShader = ShaderManager.LoadShader("DeferredSunLight.shader");
 		m_LPVShowVPL = ShaderManager.LoadShader("LPVShowVPL.shader");
-
+		m_ToneOperator = ShaderManager.LoadShader("FilmicToneOperator.shader");
 		// Load Scene
 		LoadSponzaScene();
 		// Console commands
@@ -207,7 +208,7 @@ private:
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(-50,20,1.0);
 		m_Light.LightRaduis = 500.0;
-		m_Light.LightIntensity = 2.0;
+		m_Light.LightIntensity = 1.0;
 		//m_Light.LightCutOff = 70;
 		m_Light.Direction = Math::TVector3F(0.1,0.0,0.0);
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
@@ -407,6 +408,21 @@ private:
 			m_Light.GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+7); // For Shadow Mapping
 
 			m_LPVLightingAllShader->End();
+
+			m_ToneOperator->Begin();
+			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
+			glBegin(GL_QUADS);
+				glTexCoord2f(0.0, 0.0);
+				glVertex2f(-1.0, -1.0);
+				glTexCoord2f(0.0, 1.0);
+				glVertex2f(-1.0, 1.0);
+				glTexCoord2f(1.0, 1.0);
+				glVertex2f(1.0, 1.0);
+				glTexCoord2f(1.0, 0.0);
+				glVertex2f(1.0, -1.0);
+			glEnd();
+			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+			m_ToneOperator->End();
 		}
 		else
 		{

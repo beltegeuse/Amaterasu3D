@@ -14,6 +14,9 @@
 	<Defines>
 		<Define name="NB_CASCADE" defaultValue="2" />
 	</Defines>
+	<OutputFrame depthType="None" size="Screen">
+    	<Frame name="Color" type="RGBA32" />
+    </OutputFrame>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="LPVLightingAll.frag" />
 </Shader>
