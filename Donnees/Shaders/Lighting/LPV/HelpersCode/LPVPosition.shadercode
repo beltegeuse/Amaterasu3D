@@ -61,11 +61,11 @@ vec2 Convert3Dto2DRaw(in vec3 pos){
 
 vec2 Convert3DTo2DTexcoord(in vec3 pos, in int level)
 {
-	return (Convert3Dto2DRaw(pos) / LPVSize.xy)+vec2(0,level*(1.0/NB_CASCADE));
+	return (Convert3Dto2DRaw(pos)+vec2(0,level*(LPVSize.y/NB_CASCADE))) / LPVSize.xy;
 }
 
 vec3 Convert2DTexcoordTo3D(in vec2 TexCoords, in int level){
-  vec2 ImageCoord = (TexCoords-vec2(0,level*(1.0/NB_CASCADE)))*LPVSize.xy;
+  vec2 ImageCoord = TexCoords*LPVSize.xy-vec2(0,level*(LPVSize.y/NB_CASCADE));
   float row = floor(ImageCoord.y / LPVNbCell);
   float col = floor(ImageCoord.x / LPVNbCell);
   vec3 GridPosition;

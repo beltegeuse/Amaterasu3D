@@ -18,7 +18,7 @@ uniform vec3 LPVPosition[NB_CASCADE]; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform float LPVCellSize[NB_CASCADE]; // dim &
 uniform int LPVNbCell;// number cell in one dim
-uniform bool EnableTrilinearInterpolation;
+//uniform bool EnableTrilinearInterpolation;
 
 // Parameters to compute position form Depth
 uniform float FarClipping;

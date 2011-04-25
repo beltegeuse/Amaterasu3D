@@ -43,6 +43,16 @@ inline GLenum OpenGLEnumFromString(const std::string& name)
 		return GL_LINES;
 	else if(name == "LineStrip")
 		return GL_LINE_STRIP;
+	else if(name == "Point")
+		return GL_POINTS;
+	else if(name == "Triangle")
+		return GL_TRIANGLES;
+	else if(name == "TriangleStrip")
+		return GL_TRIANGLE_STRIP;
+	else if(name == "LineAdjacency")
+		return GL_LINES_ADJACENCY_EXT;
+	else if(name == "TriangleAdjacency")
+		return GL_TRIANGLES_ADJACENCY_EXT;
 	else
 		throw CException("Unknow conversion in GLenum : "+name);
 }

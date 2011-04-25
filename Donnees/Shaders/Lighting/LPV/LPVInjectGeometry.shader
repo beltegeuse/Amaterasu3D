@@ -4,7 +4,7 @@
     	<Frame name="Grid" type="RGBA16" />
     </OutputFrame>
     <Defines>
-		<Define name="NB_CASCADE" defaultValue="3" />
+		<Define name="NB_CASCADE" defaultValue="2" />
 	</Defines>
     <Attributs>
     	<Attribut type="Vertex" name="VertexPosition" />
@@ -15,4 +15,5 @@
 	</Textures>
 	<VertexShader filename="LPVInjectGeometry.vert" />
 	<FragmentShader filename="LPVInjectGeometry.frag" />
+	<GeometryShader filename="LPVInjectGeometry.geom" in="Point" out="Point" />
 </Shader>

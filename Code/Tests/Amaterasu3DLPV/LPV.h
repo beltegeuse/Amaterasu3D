@@ -73,7 +73,7 @@ public:
 	/*
 	 * Constructors and Destructors
 	 */
-	LPV(int nbCells = 32, int sizeCells = 16, int propagationSteps = 8, int nbLevels = 3);
+	LPV(int nbCells = 32, int sizeCells = 16, int propagationSteps = 8, int nbLevels = 2);
 	virtual ~LPV();
 
 	/*

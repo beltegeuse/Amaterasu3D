@@ -6,7 +6,7 @@
     	<Frame name="GridBlue" type="RGBA16" />
     </OutputFrame>
     <Defines>
-		<Define name="NB_CASCADE" defaultValue="3" />
+		<Define name="NB_CASCADE" defaultValue="2" />
 	</Defines>
     <Attributs>
     	<Attribut type="Vertex" name="VertexPosition" />
@@ -18,4 +18,5 @@
 	</Textures>
 	<VertexShader filename="LPVInjectVPL.vert" />
 	<FragmentShader filename="LPVInjectVPL.frag" />
+	<GeometryShader filename="LPVInjectVPL.geom" in="Point" out="Point" />
 </Shader>

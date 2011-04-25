@@ -9,7 +9,7 @@
 		<Texture type="Custom" name="DiffuseBuffer" id=5 />
 	</Textures>
 	<Defines>
-		<Define name="NB_CASCADE" defaultValue="3" />
+		<Define name="NB_CASCADE" defaultValue="2" />
 	</Defines>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="LPVLighting.frag" />

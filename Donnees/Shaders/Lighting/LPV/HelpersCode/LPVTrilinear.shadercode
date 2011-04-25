@@ -56,6 +56,8 @@ vec4 TrilinearInterpolationWorld(sampler2D s, vec3 Position, vec3 Normal, in int
 	return TrilinearInterpolation(s,PositionGrid, Normal,cascadeID);
 }
 
+
+const float factorNorm = 0.6;
 vec4 ComputeIndirectLighting(in vec3 Position, in vec3 Normal)
 {
 	vec4 ReturnValue = vec4(0.0,0.0,0.0,1.0);
@@ -67,7 +69,7 @@ vec4 ComputeIndirectLighting(in vec3 Position, in vec3 Normal)
 	for( i = 0; i < NB_CASCADE; i++)
 	{
 		// Get Grid Coordinates
-		if(IsNotInGrid(floor((Position - 0.5*vec3(LPVCellSize[i]) - LPVPosition[i]) / vec3(LPVCellSize[i]))))
+		if(IsNotInGrid(floor((Position.xyz - LPVPosition[i].xyz) / vec3(LPVCellSize[i]))))
 			return ReturnValue;
 
 		// Get texture coordinates
@@ -77,9 +79,9 @@ vec4 ComputeIndirectLighting(in vec3 Position, in vec3 Normal)
 		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, Normal, i);
 
 	
-		ReturnValue +=  vec4(max(dot(CoeffGridRed,SHEv) / 3.14,0.0) * 0.6,
-				 max(dot(CoeffGridGreen,SHEv) / 3.14,0.0) * 0.6,
-				 max(dot(CoeffGridBlue,SHEv) / 3.14,0.0) * 0.6,0.0);
+		ReturnValue +=  vec4(max(dot(CoeffGridRed,SHEv) / 3.14,0.0) *factorNorm,
+				 max(dot(CoeffGridGreen,SHEv) / 3.14,0.0) * factorNorm,
+				 max(dot(CoeffGridBlue,SHEv) / 3.14,0.0) * factorNorm,0.0);
 	}
 	
 	return ReturnValue;

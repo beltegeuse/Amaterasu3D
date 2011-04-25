@@ -23,6 +23,7 @@ protected:
 	TShaderPtr m_GeomShader;
 	FPS m_FPS;
 	bool m_debug;
+	float m_values[10];
 public:
 	ApplicationGeom() :
 		m_debug(false)
@@ -43,9 +44,11 @@ public:
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		SettingsManager.SetProjection(1.0,4000.0,70.0);
 		// Load shader
-		m_GeomShader = ShaderManager.LoadShader("TestDefineFunction.shader");
+		m_GeomShader = ShaderManager.LoadShader("TestUniformArrayShader.shader");
+		for(int i = 0; i < 10; i++)
+			m_values[i] = i*i / (100.0);
 		// Load scene
-//		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		//		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 //		RootSceneGraph.AddChild(node1);
 	}
 
@@ -91,6 +94,7 @@ public:
 		//We will use a geometry shader to draw the same line, but with the x and y values swapped!
 		// i.e. we will get a cross on the screen
 		m_GeomShader->Begin();
+		m_GeomShader->SetUniform1fv("values[0]", 10, m_values);
 		glBegin(GL_LINES);
 			glVertex2i(800/2, 0);
 			glVertex2i(800/2, 600);

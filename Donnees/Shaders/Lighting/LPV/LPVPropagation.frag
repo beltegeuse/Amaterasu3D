@@ -13,7 +13,6 @@ uniform sampler2D Occlusion;
 // Parametre Grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform int LPVNbCell;// number cell in one dim
-
 uniform bool DoOcclusion;
 
 // Entree
@@ -43,9 +42,10 @@ vec2 GetSamplePos2DOffset3D(in vec2 coords, in vec3 offset, in int cascadeID)
 }
 
 vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset, in int cascadeID){
-	return texture2D(s,GetSamplePos2DOffset3D(coords,offset, cascadeID));
+	return texture(s,GetSamplePos2DOffset3D(coords,offset, cascadeID));
 }
 
+/// Normalized vector
 //1 / sqrt(5)
 #define side1 0.447213595
 //2 / sqrt(5)

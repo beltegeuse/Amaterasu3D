@@ -25,35 +25,22 @@ uniform float LPVCellSize[NB_CASCADE]; // dim &
 uniform int LPVNbCell;// number cell in one dim
 uniform int CurrentLevel;
 
-#include <LPVPosition.shadercode>
-
 // Sortie shader
-smooth out vec2 outTexCoord;
-smooth out vec3 outNormal;
-invariant gl_Position;
+smooth out vec2 inTexCoord;
+smooth out vec3 inNormal;
+
+//invariant gl_Position;
 
 void main()
 {	
 	// Add Texcoords
-	outTexCoord.x = VertexPosition.x;
-	outTexCoord.y = VertexPosition.y;
+	inTexCoord.x = VertexPosition.x;
+	inTexCoord.y = VertexPosition.y;
 
 	// Get data from GBuffers
-	vec3 Position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
-	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
-	outNormal = Normal.xyz; ///< Need to compute the SH coeff
+	vec3 Position = PositionFormDepth(DepthBuffer, inTexCoord).xyz;
+	vec3 Normal = normalize(texture(NormalBuffer, inTexCoord).xyz * 2.0 - 1.0);
+	inNormal = Normal.xyz; ///< Need to compute the SH coeff
 
-	// Prevent self shadowing
-	Position += (Normal*LPVCellSize[CurrentLevel]*0.5);
-
-	vec3 cell = floor((Position.xyz - LPVPosition[CurrentLevel].xyz) / vec3(LPVCellSize[CurrentLevel]));
-    if(IsInGrid(cell))
-    {
-    	vec2 pos2d = Convert3DTo2DTexcoord(cell,CurrentLevel);
-    	gl_Position = vec4(pos2d * 2.0 - 1.0,0.0,1.0);
-    }
-    else
-    	gl_Position = vec4(vec3(-3),1.0); // Hors pour clipping
-
-
+	gl_Position = vec4(Position, 1.0);
 }

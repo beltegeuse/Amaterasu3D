@@ -117,7 +117,7 @@ void LPV::BeginInjectionVPLPass(int level)
 	glDisable(GL_DEPTH_TEST);
 	// Enable shader and send uniform values
 	m_LPVInjectVPL->Begin();
-	m_LPVInjectVPL->SetUniform1i("CurrentLevel", level);
+//	m_LPVInjectVPL->SetUniform1i("CurrentLevel", level);
 	SetGridInformations(m_LPVInjectVPL);
 }
 void LPV::EndInjectionVPLPass()
@@ -160,7 +160,7 @@ void LPV::BeginInjectionGeometryPass(int level)
 	glBlendFunc(GL_ONE,GL_ONE);
 	// Enable shader and send uniform values
 	m_LPVInjectGeomerty->Begin();
-	m_LPVInjectGeomerty->SetUniform1i("CurrentLevel", level);
+//	m_LPVInjectGeomerty->SetUniform1i("CurrentLevel", level);
 	SetGridInformations(m_LPVInjectGeomerty);
 }
 
@@ -182,7 +182,6 @@ void LPV::ComputePropagation(int nbSteps)
 		m_LPVPropagationShader->Begin();
 
 		m_LPVPropagationShader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
-		//m_LPVPropagationShader->SetUniform1fv("LPVCellSize[0]",m_NbCascadedLevels, m_CellSize);
 		m_LPVPropagationShader->SetUniform1i("LPVNbCell", m_NbCellDim);
 		m_LPVPropagationShader->SetUniform1i("DoOcclusion", true);
 		m_LPVInjectGeomerty->GetFBO()->GetTexture("Grid")->activateMultiTex(CUSTOM_TEXTURE+3);
@@ -296,7 +295,7 @@ void LPV::ShowDebugPropagation(TShaderPtr GBuffer, int PropagatedShow)
 	m_LPVBlend->GetFBO()->GetTexture("GridGreen")->activateMultiTex(CUSTOM_TEXTURE+3);
 	m_LPVBlend->GetFBO()->GetTexture("GridBlue")->activateMultiTex(CUSTOM_TEXTURE+4);
 	SetGridInformations(m_LPVLightingShader);
-	m_LPVLightingShader->SetUniform1i("EnableTrilinearInterpolation",true);
+	//m_LPVLightingShader->SetUniform1i("EnableTrilinearInterpolation",true);
 	ShaderHelperUniformPositionFromView(m_LPVLightingShader);
 	// Draw ...
 	glBegin(GL_QUADS);

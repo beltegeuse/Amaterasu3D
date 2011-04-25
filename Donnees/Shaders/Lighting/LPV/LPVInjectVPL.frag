@@ -9,6 +9,7 @@ uniform sampler2D FluxBuffer;
 // Entree
 smooth in vec2 outTexCoord;
 smooth in vec3 outNormal;
+
 // Sortie
 out vec4 GridRed;
 out vec4 GridGreen;
