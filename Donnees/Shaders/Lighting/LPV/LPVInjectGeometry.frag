@@ -18,4 +18,5 @@ void main()
 	vec4 SH = SHCreateHemi(normalize(-outNormal.xyz));
 
 	Grid = SH * SurfelArea;
+	//Grid = vec4(0.0);
 }

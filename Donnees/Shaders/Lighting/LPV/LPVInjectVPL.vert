@@ -17,17 +17,9 @@ uniform mat4 InverseViewMatrix;
 
 #include <GetPosition.shadercode>
 
-// grids Parametres
-// NB_CASCADE is an define...
-uniform vec3 LPVPosition[NB_CASCADE]; // position of the grid
-uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
-uniform float LPVCellSize[NB_CASCADE]; // dim &
-uniform int LPVNbCell;// number cell in one dim
-uniform int CurrentLevel;
-
 // Sortie shader
-smooth out vec2 inTexCoord;
-smooth out vec3 inNormal;
+flat out vec2 inTexCoord;
+flat out vec3 inNormal;
 
 //invariant gl_Position;
 

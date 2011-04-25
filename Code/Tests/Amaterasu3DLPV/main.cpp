@@ -84,7 +84,7 @@ public:
 		m_ShowGrid = true;
 		m_DebugShowDirectOnly = false;
 		m_TriInterpolation = false;
-		m_DoOcclusion = true;
+		m_DoOcclusion = false;
 		m_ShowAll = true;
 		m_PropagatedShow = -1;
 		m_GridShow = 0;

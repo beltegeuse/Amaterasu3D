@@ -18,7 +18,7 @@ uniform mat4 InverseViewMatrix;
 #include <GetPosition.shadercode>
 
 // Output shader
-out vec3 inNormal;
+flat out vec3 inNormal;
 
 //invariant gl_Position;
 
@@ -33,7 +33,7 @@ void main()
 	// Get data from Buffers
 	vec3 Position = PositionFormDepth(DepthBuffer, outTexCoord).xyz;
 	vec3 Normal = normalize(texture(NormalBuffer, outTexCoord).xyz * 2.0 - 1.0);
-	float Depth = DepthToZPosition(texture(DepthBuffer, outTexCoord).r);
+	//float Depth = DepthToZPosition(texture(DepthBuffer, outTexCoord).r);
 	inNormal = Normal;
 
 	// Compute Surfel area

@@ -1,6 +1,8 @@
 #version 130
 #extension GL_EXT_geometry_shader4 : enable
 
+flat in float factor[gl_VerticesIn];
+
 uniform float values[NB];
 
 void main(void)
@@ -31,7 +33,7 @@ void main(void)
 	{
 		for(i=0; i< gl_VerticesIn; i++){
 			gl_Position = gl_PositionIn[i];
-			gl_Position.x = gl_Position.x+values[j];
+			gl_Position.x = gl_Position.x+values[j]-factor[i];
 			EmitVertex();
 		}
 	}

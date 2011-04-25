@@ -1,5 +1,8 @@
-#version 130
+#version 150
 #extension GL_EXT_geometry_shader4 : enable
+
+layout(points) in;
+layout(points, max_vertices = NB_CASCADE)out;
 
 // grids Parametres
 // NB_CASCADE is an define...
@@ -10,8 +13,8 @@ uniform int LPVNbCell;// number cell in one dim
 
 #include <LPVPosition.shadercode>
 
-smooth in vec2 inTexCoord[1];
-smooth in vec3 inNormal[1];
+flat in vec2 inTexCoord[1];
+flat in vec3 inNormal[1];
 
 smooth out vec2 outTexCoord;
 smooth out vec3 outNormal;
@@ -35,17 +38,19 @@ void main()
 			// Prevent self shadowing
 			Position += (outNormal*LPVCellSize[j]*0.5);
 			// Compute the cell ID
+			if(LPVCellSize[j] == 0)
+				break;
 			CellID = floor((Position.xyz - LPVPosition[j].xyz) / vec3(LPVCellSize[j]));
 			if(IsInGrid(CellID))
 			{
 				Pos2D = Convert3DTo2DTexcoord(CellID,j);
 				gl_Position = vec4(Pos2D * 2.0 - 1.0,0.0,1.0);
 				EmitVertex();
-				EndPrimitive();
 			}
 			else
 				break; // Fast terminaison
 		}
 	}
+	EndPrimitive();
 
 }
