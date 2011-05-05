@@ -9,7 +9,10 @@
 #define BINVOXMODEL_H_
 
 #include <string>
+
 #include <Graphics/SceneGraph/Model.h>
+#include <Math/Vector2.h>
+
 class BinvoxModel {
 private:
 	///// Attributes
@@ -24,6 +27,14 @@ public:
 	BinvoxModel(const std::string& file);
 	virtual ~BinvoxModel();
 
+	/*
+	 * Public methods
+	 */
+	/// Texture methods
+	Math::TVector2I TextureRepeat();
+	Math::TVector2I TextureSize();
+	TTexturePtr Create2DTexture();
+	/// Model methods
 	SceneGraph::Model* CreateDebugPointModel();
 
 private:

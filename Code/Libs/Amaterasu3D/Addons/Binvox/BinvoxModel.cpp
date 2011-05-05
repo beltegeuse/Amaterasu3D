@@ -11,6 +11,7 @@
 #include <Debug/Exceptions.h>
 #include <System/MediaManager.h>
 #include <Math/Vector3.h>
+#include <Utilities/Util.h>
 
 #include <vector>
 
@@ -175,7 +176,29 @@ SceneGraph::Model* BinvoxModel::CreateDebugPointModel()
 	//model->AddMaterial(DIFFUSE_MATERIAL,color);
 
 	return model;
+}
 
+Math::TVector2I BinvoxModel::TextureRepeat()
+{
+	Math::TVector2I repeat;
+	int Taille = sqrt(m_Depth);
+	repeat.x = NearestPowerOfTwo(Taille);
+	repeat.y = m_Depth/repeat.x;
+	return repeat;
+}
+
+Math::TVector2I BinvoxModel::TextureSize()
+{
+	Math::TVector2I size;
+	Math::TVector2I repeat = TextureRepeat();
+	size.x = m_Width*repeat.x;
+	size.y = m_Height*repeat.y;
+	return size;
+}
+
+TTexturePtr BinvoxModel::Create2DTexture()
+{
+	// Find how make and fill texture.
 }
 
 void BinvoxModel::LoadFile(const std::string& file)
