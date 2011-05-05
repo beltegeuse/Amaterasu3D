@@ -10,6 +10,10 @@
 #include <Logger/Logger.h>
 #include <Debug/Exceptions.h>
 #include <System/MediaManager.h>
+#include <Math/Vector3.h>
+
+#include <vector>
+
 BinvoxModel::BinvoxModel(const std::string& file) :
 m_Depth(0),m_Height(0),m_Width(0),
 m_Tx(0), m_Ty(0), m_Tz(0), m_Scale(1),
@@ -122,6 +126,56 @@ void BinvoxModel::LoadVoxels(std::ifstream *input)
 	}  // while
 
 	Logger::Log() << "[INFO] Read " << nr_voxels << " voxels\n";
+}
+
+SceneGraph::Model* BinvoxModel::CreateDebugPointModel()
+{
+	int size = m_Depth*m_Width*m_Height;
+
+	// Extract only fill voxels
+	std::vector<Math::TVector3I> voxels;
+	int wxh = m_Width*m_Height;
+	for(int x = 0; x < m_Width; x++)
+		for(int y = 0; y < m_Height; y++)
+			for(int z = 0; z < m_Depth; z++)
+				if(m_Data[x * wxh + z * m_Width + y] != 0)
+					voxels.push_back(Math::TVector3I(x,y,z));
+
+	float * vertexBuffer = new float[3*voxels.size()];
+	float * colorBuffer = new float[3*voxels.size()];
+	unsigned int* indiceBuffer = new unsigned int[voxels.size()];
+
+	for(int i = 0; i < voxels.size(); i++)
+	{
+		vertexBuffer[3*i] = voxels[i].x;
+		vertexBuffer[3*i+1] = voxels[i].y;
+		vertexBuffer[3*i+2] = voxels[i].z;
+		colorBuffer[3*i] = 1.0f;
+		colorBuffer[3*i+1] = 1.0f;
+		colorBuffer[3*i+2] = 1.0f;
+	}
+
+	for(int l=0; l < voxels.size(); l++)
+	{
+		indiceBuffer[l] = l;
+	}
+
+	SceneGraph::Model* model = new SceneGraph::Model;
+	model->SetDrawMode(GL_POINTS);
+	model->SetIndiceBuffer(indiceBuffer, voxels.size());
+	SceneGraph::ModelBuffer buffer;
+	buffer.buffer = vertexBuffer;
+	buffer.size = 3*voxels.size();
+	buffer.dimension = 3;
+	buffer.owner = true;
+	model->AddBuffer(buffer, VERTEX_ATTRIBUT);
+	buffer.buffer = colorBuffer;
+	model->AddBuffer(buffer, COLOR_ATTRIBUT);
+	model->CompileBuffers();
+	//model->AddMaterial(DIFFUSE_MATERIAL,color);
+
+	return model;
+
 }
 
 void BinvoxModel::LoadFile(const std::string& file)

@@ -9,7 +9,7 @@
 #define BINVOXMODEL_H_
 
 #include <string>
-
+#include <Graphics/SceneGraph/Model.h>
 class BinvoxModel {
 private:
 	///// Attributes
@@ -23,6 +23,8 @@ public:
 	// Constructor & Destuctors
 	BinvoxModel(const std::string& file);
 	virtual ~BinvoxModel();
+
+	SceneGraph::Model* CreateDebugPointModel();
 
 private:
 	/**
