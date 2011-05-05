@@ -3,7 +3,7 @@ import os
 import subprocess
 import time
 
-headers = ["testAll"] # 
+headers = [] # 
 
 def Usage():
     print("make.py Version 0.2 pour EodeGame")
