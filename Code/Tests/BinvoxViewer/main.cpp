@@ -54,7 +54,7 @@ public:
 		SettingsManager.SetProjection(0.1,1000.0,70.0);
 		// Load scene
 		Logger::Log() << "[INFO] Load Armadillo.binvox\n";
-		m_BinVox = new BinvoxModel("Dragon.binvox");
+		m_BinVox = new BinvoxModel("Happy.binvox");
 		m_VolumeTexture = m_BinVox->Create2DTexture();
 		//RootSceneGraph.AddChild(m_BinVox->CreateDebugPointModel());
 		RootSceneGraph.AddChild(m_BinVox->CreateCoordinateCubeModel());
