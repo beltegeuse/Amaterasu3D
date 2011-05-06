@@ -52,7 +52,7 @@ void RayMarching(vec3 Entree, vec3 Sortie)
 	// Loop variables
 	int i = 0;
 	float CurrentLenght = 0.0;
-	
+	vec3 Alpha = vec3(0.0);
 	for(; i <= NbIteration; i++)
 	{
 		if(CurrentLenght > Length) break;
@@ -60,14 +60,15 @@ void RayMarching(vec3 Entree, vec3 Sortie)
 		Position += Direction;
 		CurrentLenght += 1.0;
 		
-		if(isOccupency(Position)) 
+		Alpha += (GetVolumeData(Position).xyz/(GridDimension.x));
+
+		if(any(greaterThan(Alpha,vec3(1.0))))
 		{
-			Color = vec4 (1.0);
-			return;
+			break;
 		}
 	}
 	
-	Color = vec4 (0.0);
+	Color = vec4 (min(vec3(Alpha)*2.0,1.0),1.0);
 }
 
 void main()
