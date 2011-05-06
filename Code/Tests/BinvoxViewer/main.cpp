@@ -27,10 +27,10 @@ protected:
 	FBO * m_FrontFBO;
 	FBO * m_BackFBO;
 	BinvoxModel* m_BinVox;
-	bool m_debug;
+	bool m_Trilinear;
 public:
 	BinvoxViewer() :
-		m_debug(false)
+		m_Trilinear(false)
 	{
 	}
 
@@ -54,7 +54,7 @@ public:
 		SettingsManager.SetProjection(0.1,1000.0,70.0);
 		// Load scene
 		Logger::Log() << "[INFO] Load Armadillo.binvox\n";
-		m_BinVox = new BinvoxModel("Happy.binvox");
+		m_BinVox = new BinvoxModel("Dragon.binvox");
 		m_VolumeTexture = m_BinVox->Create2DTexture();
 		//RootSceneGraph.AddChild(m_BinVox->CreateDebugPointModel());
 		RootSceneGraph.AddChild(m_BinVox->CreateCoordinateCubeModel());
@@ -71,7 +71,7 @@ public:
 			 switch(event.key.keysym.sym)
 			 {
 				 case SDLK_F1:
-					 m_debug = !m_debug;
+					 m_Trilinear = !m_Trilinear;
 					 break;
 			 }
 		}
@@ -109,6 +109,7 @@ public:
 		m_VolumeTexture->activateMultiTex(CUSTOM_TEXTURE+2);
 		m_volumeRenderingShader->SetUniformVector("GridDimension", m_BinVox->GridSize());
 		m_volumeRenderingShader->SetUniformVector("GridTextureSize", Math::TVector4F(sizeTex.x, sizeTex.y, repeatTex.x, repeatTex.y));
+		m_volumeRenderingShader->SetUniform1i("GridInterpolation", m_Trilinear);
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);
 			glVertex2f(-1.0, -1.0);

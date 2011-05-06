@@ -221,7 +221,7 @@ TTexturePtr BinvoxModel::Create2DTexture()
 	Texture2DParams param;
 	glBindTexture(GL_TEXTURE_2D,tex->getIdTex());
 	param.applyParam();
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, texSize.x, texSize.y, 0, GL_LUMINANCE, GL_FLOAT, image);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, texSize.x, texSize.y, 0, GL_ALPHA, GL_FLOAT, image);
 	glBindTexture(GL_TEXTURE_2D,0);
 
 	delete[] image;
