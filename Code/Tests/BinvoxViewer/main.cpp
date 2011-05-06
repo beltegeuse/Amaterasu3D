@@ -21,7 +21,12 @@ class BinvoxViewer : public Application
 protected:
 	CameraFPS* m_Camera;
 	FPS m_FPS;
-	TShaderPtr m_BasicShader;
+	TShaderPtr m_CubeShader;
+	TShaderPtr m_volumeRenderingShader;
+	TTexturePtr m_VolumeTexture;
+	FBO * m_FrontFBO;
+	FBO * m_BackFBO;
+	BinvoxModel* m_BinVox;
 	bool m_debug;
 public:
 	BinvoxViewer() :
@@ -36,17 +41,23 @@ public:
 	virtual void OnInitialize()
 	{
 		// Camera Setup
-		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_Camera = new CameraFPS(Math::TVector3F(30,40,20), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
 		// Shaders
-		m_BasicShader = ShaderManager.LoadShader("BasicShader.shader");
+		m_CubeShader = ShaderManager.LoadShader("CubePass.shader");
+		m_volumeRenderingShader = ShaderManager.LoadShader("VolumeRendering.shader");
+		// FBO
+		m_BackFBO = m_CubeShader->GetFBO()->Copy();
+		m_FrontFBO = m_CubeShader->GetFBO();
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		SettingsManager.SetProjection(0.1,1000.0,70.0);
 		// Load scene
 		Logger::Log() << "[INFO] Load Armadillo.binvox\n";
-		BinvoxModel model("Armadillo.binvox");
-		RootSceneGraph.AddChild(model.CreateDebugPointModel());
+		m_BinVox = new BinvoxModel("Armadillo.binvox");
+		m_VolumeTexture = m_BinVox->Create2DTexture();
+		//RootSceneGraph.AddChild(m_BinVox->CreateDebugPointModel());
+		RootSceneGraph.AddChild(m_BinVox->CreateCoordinateCubeModel());
 	}
 
 	virtual void OnUpdate(double delta)
@@ -71,10 +82,44 @@ public:
 	{
 		MatrixManager.SetModeMatrix(MATRIX_3D);
 
-		m_BasicShader->Begin();
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		m_CubeShader->SetFBO(m_FrontFBO, false);
+		m_CubeShader->Begin();
 		m_Camera->GetView();
 		RootSceneGraph.Draw();
-		m_BasicShader->End();
+		m_CubeShader->End();
+
+//		m_CubeShader->GetFBO()->DrawDebug();
+
+		glCullFace(GL_FRONT);
+		m_CubeShader->SetFBO(m_BackFBO, false);
+		m_CubeShader->Begin();
+		m_Camera->GetView();
+		RootSceneGraph.Draw();
+		m_CubeShader->End();
+		glDisable(GL_CULL_FACE);
+
+		Math::TVector2I repeatTex = m_BinVox->TextureRepeat();
+		Math::TVector2I sizeTex = m_BinVox->TextureSize();
+
+		m_volumeRenderingShader->Begin();
+		m_FrontFBO->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_BackFBO->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+1);
+		m_VolumeTexture->activateMultiTex(CUSTOM_TEXTURE+2);
+		m_volumeRenderingShader->SetUniformVector("GridDimension", m_BinVox->GridSize());
+		m_volumeRenderingShader->SetUniformVector("GridTextureSize", Math::TVector4F(sizeTex.x, sizeTex.y, repeatTex.x, repeatTex.y));
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0, 0.0);
+			glVertex2f(-1.0, -1.0);
+			glTexCoord2f(0.0, 1.0);
+			glVertex2f(-1.0, 1.0);
+			glTexCoord2f(1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glTexCoord2f(1.0, 0.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+		m_volumeRenderingShader->End();
 
 		MatrixManager.SetModeMatrix(MATRIX_2D);
 

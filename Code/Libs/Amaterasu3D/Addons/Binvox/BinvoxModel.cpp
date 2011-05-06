@@ -7,11 +7,14 @@
 
 #include "BinvoxModel.h"
 
+#include <GL/glew.h>
+#include <GL/gl.h>
 #include <Logger/Logger.h>
 #include <Debug/Exceptions.h>
 #include <System/MediaManager.h>
 #include <Math/Vector3.h>
 #include <Utilities/Util.h>
+#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 
 #include <vector>
 
@@ -198,7 +201,49 @@ Math::TVector2I BinvoxModel::TextureSize()
 
 TTexturePtr BinvoxModel::Create2DTexture()
 {
-	// Find how make and fill texture.
+	/// Generate the Array
+	float* image = new float[m_Width*m_Height*m_Depth];
+	Math::TVector2I texSize = TextureSize();
+	Math::TVector2I repeat = TextureRepeat();
+
+	for(int rX = 0; rX < repeat.x; rX++)
+		for(int rY = 0; rY < repeat.y; rY++)
+			for(int i = 0; i < m_Width; i++)
+				for(int j = 0; j < m_Height; j++)
+				{
+					int x = rX*m_Depth+i;
+					int y = rY*m_Depth+j;
+					image[y*texSize.x + x] = GetData(i,j,rX+rY*repeat.x);
+				}
+
+	/// Generate the OpenGL texture
+	Texture* tex = new Texture(true);
+	Texture2DParams param;
+	glBindTexture(GL_TEXTURE_2D,tex->getIdTex());
+	param.applyParam();
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, texSize.x, texSize.y, 0, GL_R, GL_FLOAT, image);
+	glBindTexture(GL_TEXTURE_2D,0);
+
+	delete[] image;
+
+	return tex;
+}
+
+Math::TVector3F BinvoxModel::GridSize() const
+{
+	return Math::TVector3F(m_Width, m_Height, m_Depth);
+}
+
+SceneGraph::Group* BinvoxModel::CreateCoordinateCubeModel()
+{
+	DebugCubeLeaf* cube = new DebugCubeLeaf;
+	// Need translation because [-1,1]
+	Math::CMatrix4 scaleMat;
+	scaleMat.SetScaling(m_Width,m_Height, m_Depth);
+	SceneGraph::Group* group = new SceneGraph::Group;
+	group->LoadTransformMatrix(scaleMat);
+	group->AddChild(cube);
+	return group;
 }
 
 void BinvoxModel::LoadFile(const std::string& file)

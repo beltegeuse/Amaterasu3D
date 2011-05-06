@@ -29,25 +29,25 @@
 #include <Logger/Logger.h>
 
 GLfloat DebugCubeLeaf::CubeArray[24] = {
-		-1.0f, 1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
 		1.0f, 1.0f, 1.0f,
-		1.0f, -1.0f, 1.0f,
-		1.0f, 1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f
+		1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f
 };
 
 GLfloat DebugCubeLeaf::CubeArrayColor[24] = {
-		1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
 		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f, 0.0f, 1.0f,
 		1.0f, 1.0f, 0.0f,
-		1.0f, 1.0f, 1.0f
+		1.0f, 0.0f, 0.0f
 };
 
 GLuint DebugCubeLeaf::IndiceArray[36] = {

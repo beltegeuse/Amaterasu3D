@@ -11,7 +11,9 @@
 #include <string>
 
 #include <Graphics/SceneGraph/Model.h>
+#include <Graphics/SceneGraph/Group.h>
 #include <Math/Vector2.h>
+#include <Math/Vector3.h>
 
 class BinvoxModel {
 private:
@@ -30,12 +32,15 @@ public:
 	/*
 	 * Public methods
 	 */
+	/// Grid informations
+	Math::TVector3F GridSize() const;
 	/// Texture methods
 	Math::TVector2I TextureRepeat();
 	Math::TVector2I TextureSize();
 	TTexturePtr Create2DTexture();
 	/// Model methods
 	SceneGraph::Model* CreateDebugPointModel();
+	SceneGraph::Group* CreateCoordinateCubeModel();
 
 private:
 	/**
@@ -44,6 +49,10 @@ private:
 	void LoadFile(const std::string& file);
 	void LoadHeader(std::ifstream *input);
 	void LoadVoxels(std::ifstream *input);
+	float GetData(int x, int y, int z)
+	{
+		return m_Data[x * m_Width*m_Height + z * m_Width + y];
+	}
 };
 
 #endif /* BINVOXMODEL_H_ */
