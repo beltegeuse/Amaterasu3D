@@ -110,6 +110,7 @@ public:
 		m_volumeRenderingShader->SetUniformVector("GridDimension", m_BinVox->GridSize());
 		m_volumeRenderingShader->SetUniformVector("GridTextureSize", Math::TVector4F(sizeTex.x, sizeTex.y, repeatTex.x, repeatTex.y));
 		m_volumeRenderingShader->SetUniform1i("GridInterpolation", m_Trilinear);
+		ShaderHelperUniformImagePlane(m_volumeRenderingShader);
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0, 0.0);
 			glVertex2f(-1.0, -1.0);

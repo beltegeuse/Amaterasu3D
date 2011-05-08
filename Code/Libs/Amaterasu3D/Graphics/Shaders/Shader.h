@@ -216,9 +216,9 @@ private:
 //***********************
 #include <System/SettingsManager.h>
 #include <Graphics/MatrixManagement.h>
-inline void ShaderHelperUniformPositionFromView(Shader* shader)
+
+inline void ShaderHelperUniformImagePlane(Shader* shader)
 {
-	shader->SetUniform1f("FarClipping",CSettingsManager::Instance().GetFarClipping());
 	shader->SetUniform1f("NearClipping",CSettingsManager::Instance().GetNearClipping());
 	Math::TVector2F UnprojectInfo;
 	Math::CMatrix4 ProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
@@ -226,6 +226,12 @@ inline void ShaderHelperUniformPositionFromView(Shader* shader)
 	UnprojectInfo.y = -1.0f / ProjectionMatrix.a22;
 	shader->SetUniformVector("UnprojectInfo", UnprojectInfo);
 	shader->SetUniformMatrix4fv("InverseViewMatrix", CMatrixManager::Instance().GetMatrix(VIEW_MATRIX).Inverse());
+}
+
+inline void ShaderHelperUniformPositionFromView(Shader* shader)
+{
+	shader->SetUniform1f("FarClipping",CSettingsManager::Instance().GetFarClipping());
+	ShaderHelperUniformImagePlane(shader);
 }
 
 inline void ShaderHelperUniformPosition(Shader* shader, const Math::CMatrix4& projectionMatrix, const Math::CMatrix4& viewMatrix, float nearValue, float farValue)

@@ -24,3 +24,14 @@ vec4 PositionFormDepth(in sampler2D depthSampler, in vec2 texcoord)
     //screencoord = screencoord / screencoord.w;
     return screencoord;
 }
+
+vec4 PositionCameraPlane(in vec2 texcoord)
+{
+	vec4 screencoord = vec4(((texcoord.x)-0.5) * 2.0 * UnprojectInfo.x * NearClipping,
+						  ((-texcoord.y)+0.5) * 2.0 * UnprojectInfo.y * NearClipping,
+						  -NearClipping,
+						  1.0);
+	screencoord = InverseViewMatrix * screencoord;
+	//screencoord = screencoord / screencoord.w;
+	return screencoord;
+}

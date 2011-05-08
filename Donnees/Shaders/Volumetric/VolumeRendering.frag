@@ -14,6 +14,14 @@ uniform vec4 GridTextureSize; //xy texture size && zw Repeat texture part
 uniform bool GridInterpolation;
 //TODO: Add grid transformationn to know the grid position
 
+// To inverse the projections
+uniform float FarClipping;
+uniform float NearClipping;
+uniform vec2 UnprojectInfo;
+uniform mat4 InverseViewMatrix;
+
+#include <GetPosition.shadercode>
+
 // Entree
 smooth in vec2 outTexCoord;
 
@@ -122,6 +130,7 @@ void main()
 		if(all(equal(Front,vec3(0.0)))) // In the volume
 		{
 			Color = vec4 (1.0);
+			Front = PositionCameraPlane(outTexCoord).xyz / GridDimension;
 		}
 
 		RayMarching(Front,Back);
