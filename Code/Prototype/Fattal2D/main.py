@@ -37,11 +37,11 @@ class Ray:
 
 class LPM:
     '''This class describe the Light propagation maps'''
-    def __init__(self, nbAngles = 9, dim = (256,256)):
+    def __init__(self, nbAngles = 9, dim = 256):
         self.nbAngles = nbAngles
         self.dimension = dim
         
-    def GenerateRays(self, p1, p2, facesFactors):
+    def __GenerateRays(self, p1, p2, facesFactors):
         self.rays = []
         for i in range(self.dimension[0]):
                 offset = 1.0 / self.nbAngles
@@ -49,9 +49,27 @@ class LPM:
                 for k in range(self.nbAngles): #Doesn't works...
                     self.rays.append(Ray(Vector2D(facesFactors.x*i, factors.y*i),p1.Factor(1 - pos) + p2.Factor(pos)))
     
-
-def FattalAlgorithm(I, U):
-    pass
+    def GenerateRays(self, propagationOrientation):
+        if(propagationOrientation.x == 0):
+            pass
+        elif(propagationOrientation.y == 0):
+            pass
+        else:
+            raise Exception("Wrong orientation")
+    
+    def NumberRays(self):
+        return self.nbAngles*self.dimension
+        
+def FattalAlgorithm(I, U, nbPass = 3):
+    directions = [Vector2D(1,0),Vector2D(0,1), Vector2D(-1,0),Vector2D(0,-1)]
+    lpm = LPM()
+    
+    for i in range(nbPass):
+        for d in directions:
+            if i == 0:
+                pass # Border initialisation
+            for rId in range(lpm.NumberRays()):
+                pass # Compute the ray intersection with the grid
     
 if __name__=="__main__":
     I = Grid2D()
