@@ -22,7 +22,7 @@ void main()
 {	
 	vec4 shadowCoordinateWdivide = outShadowCoord / outShadowCoord.w ;
 	
-    // Used to lower moiré pattern and self-shadowing
+    // Used to lower moire pattern and self-shadowing
 	shadowCoordinateWdivide.z -= 0.001;
 	
 	float distanceFromLight = texture(ShadowBuffer, shadowCoordinateWdivide.st).r;
