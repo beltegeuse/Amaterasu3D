@@ -106,8 +106,8 @@ class Gird:
             tMax.y = (voxWorldPos.y + self.cellDimension.y - ray.position.y) / ray.direction.y
         
         # Determine the main direction
-        tDelta = Vector2D.Mult(self.cellDimension, Vector2D(1.0/ray.direction.x, 1.0/ray.direction.y))
-        
+        tDelta = Vector2D.Mult(self.cellDimension, Vector2D(1.0/abs(ray.direction.x), 1.0/abs(ray.direction.y)))
+        sDelta = ray.direction.Sign()
         cellIntersection.append(voxID.Copy())
         
         pos = ray.position.Copy()
@@ -115,11 +115,11 @@ class Gird:
             if(tMax.x < tMax.y):
                 pos = ray.NewPosition(tMax.x)
                 tMax.x += tDelta.x
-                voxID.x += 1
+                voxID.x += sDelta.x
             else:
                 pos = ray.NewPosition(tMax.y)
                 tMax.y += tDelta.y
-                voxID.y += 1
+                voxID.y += sDelta.y
             
             cellIntersection.append(voxID.Copy())
             intersections.append(pos)
@@ -156,12 +156,21 @@ if __name__ == '__main__':
     old_k_delay, old_k_interval = pygame.key.get_repeat()
     pygame.key.set_repeat(500, 30)
     
+    clicked = False
+    oldPosition = Vector2D()
+    
     while 1:
         screen.fill((0,0,0))
         #check for quit'n events
         event = pygame.event.poll()
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             break
+        if event.type == MOUSEBUTTONDOWN:
+            if not clicked:
+                oldPosition = Vector2D(event.pos[0],event.pos[1])
+            else:
+                ray = Ray(oldPosition, Vector2D(event.pos[0], event.pos[1]) - oldPosition)
+            clicked = not clicked
      
         grille.DrawRayIntersection(ray.Copy())
         grille.draw()
