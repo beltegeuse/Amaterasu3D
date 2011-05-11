@@ -104,32 +104,45 @@ class Gird:
             tMax.y = (voxWorldPos.y - ray.position.y) / ray.direction.y
         else:
             tMax.y = (voxWorldPos.y + self.cellDimension.y - ray.position.y) / ray.direction.y
-            
-        # Show the two first hit
-        Rt = ray.NewPosition(tMax.x)
-        pygame.draw.circle(self.screen, (255,255,0), (int(Rt.x), int(Rt.y)), 3)
-        Rt = ray.NewPosition(tMax.y)
-        pygame.draw.circle(self.screen, (255,255,0), (int(Rt.x), int(Rt.y)), 3)
         
         # Determine the main direction
         tDelta = Vector2D.Mult(self.cellDimension, Vector2D(1.0/ray.direction.x, 1.0/ray.direction.y))
         
+        cellIntersection.append(voxID.Copy())
+        
         pos = ray.position.Copy()
-        while(self.PointIsInGrid(pos)):
+        while True:
             if(tMax.x < tMax.y):
-                tMax.x += tDelta.x
                 pos = ray.NewPosition(tMax.x)
+                tMax.x += tDelta.x
+                voxID.x += 1
             else:
-                tMax.y += tDelta.y
                 pos = ray.NewPosition(tMax.y)
+                tMax.y += tDelta.y
+                voxID.y += 1
+            
+            cellIntersection.append(voxID.Copy())
             intersections.append(pos)
-                
+            
+            if(not self.PointIsInGrid(pos)):
+                break    
+            
         return (intersections, cellIntersection)
+    
+    def DrawCellIntersection(self, voxID):
+        p = Vector2D.Mult(voxID, self.cellDimension)
+        pygame.draw.rect(self.screen, (0,0,255), (p.x, p.y, self.cellDimension.x, self.cellDimension.y))
     
     def DrawRayIntersection(self, ray):
         intersections, cellIntersection = self.ComputeRayIntersections(ray)
+        #print "==========="
+        for voxID in cellIntersection:
+            #print voxID
+            self.DrawCellIntersection(voxID)
+
         for inter in intersections:
             pygame.draw.circle(self.screen, (255,0,0), (int(inter.x), int(inter.y)), 3)
+        
 
 if __name__ == '__main__':
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
@@ -150,9 +163,9 @@ if __name__ == '__main__':
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             break
      
+        grille.DrawRayIntersection(ray.Copy())
         grille.draw()
         ray.Draw(screen)
-        grille.DrawRayIntersection(ray.Copy())
         pygame.display.flip()
         pygame.time.wait(10)
     pygame.key.set_repeat(old_k_delay, old_k_interval)
