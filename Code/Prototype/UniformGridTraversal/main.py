@@ -18,6 +18,10 @@ class Vector2D:
         return Vector2D(self.x*a, self.y*a)
     
     @staticmethod
+    def Mult(v1, v2):
+        return Vector2D(v1.x*v2.x, v1.y*v2.y)
+    
+    @staticmethod
     def DotProduct(v1, v2):
         return v1.x*v2.x + v1.y*v2.y
     
@@ -68,8 +72,36 @@ class Gird:
         for i in range(self.NbCells.y):
             pygame.draw.line(self.screen,self.color,(0,self.cellDimension.y*i),(800,self.cellDimension.y*i))
 
+    def World2Voxels(self, v):
+        return Vector2D(int(v.x / self.cellDimension.x), int(v.y / self.cellDimension.y))
+    
+    def PointIsInGrid(self, v):
+        voxID = self.World2Voxels(v)
+        return voxID.x >= 0 and voxID.x < self.NbCells.x and voxID.y >= 0 and voxID.y < self.NbCells.y
+
     def ComputeRayIntersections(self, ray):
         intersections = []
+        voxID = self.World2Voxels(ray.position)
+        voxWorldPos = Vector2D.Mult(voxID, self.cellDimension)
+        
+        tMax = Vector2D()
+        
+        if(ray.direction.x < 0):
+            tMax.x = (voxWorldPos.x - ray.position.x) / ray.direction.x
+        else:
+            tMax.x = (voxWorldPos.x + self.cellDimension.x - ray.position.x) / ray.direction.x
+        
+        if(ray.direction.y < 0):
+            tMax.y = (voxWorldPos.y - ray.position.y) / ray.direction.y
+        else:
+            tMax.y = (voxWorldPos.y + self.cellDimension.y - ray.position.y) / ray.direction.y
+            
+        # Show the two first hit
+        Rt = ray.NewPosition(tMax.x)
+        pygame.draw.circle(self.screen, (255,255,0), (int(Rt.x), int(Rt.y)), 3)
+        Rt = ray.NewPosition(tMax.y)
+        pygame.draw.circle(self.screen, (255,255,0), (int(Rt.x), int(Rt.y)), 3)
+        
         return intersections
     
     def DrawRayIntersection(self, ray):
@@ -98,6 +130,7 @@ if __name__ == '__main__':
      
         grille.draw()
         ray.Draw(screen)
+        grille.DrawRayIntersection(ray.Copy())
         pygame.display.flip()
         pygame.time.wait(10)
     pygame.key.set_repeat(old_k_delay, old_k_interval)
