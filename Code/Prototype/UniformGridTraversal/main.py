@@ -89,6 +89,7 @@ class Gird:
 
     def ComputeRayIntersections(self, ray):
         intersections = []
+        cellIntersection = []
         voxID = self.World2Voxels(ray.position)
         voxWorldPos = Vector2D.Mult(voxID, self.cellDimension)
         
@@ -111,22 +112,22 @@ class Gird:
         pygame.draw.circle(self.screen, (255,255,0), (int(Rt.x), int(Rt.y)), 3)
         
         # Determine the main direction
-        tDelta = Vector2D(ray.direction.Sign(), self.cellDimension)
+        tDelta = Vector2D.Mult(self.cellDimension, Vector2D(1.0/ray.direction.x, 1.0/ray.direction.y))
         
         pos = ray.position.Copy()
         while(self.PointIsInGrid(pos)):
             if(tMax.x < tMax.y):
                 tMax.x += tDelta.x
-                pos = ray.position.NewPosition(tMax.x)
+                pos = ray.NewPosition(tMax.x)
             else:
                 tMax.y += tDelta.y
-                pos = ray.position.NewPosition(tMax.y)
+                pos = ray.NewPosition(tMax.y)
             intersections.append(pos)
                 
-        return intersections
+        return (intersections, cellIntersection)
     
     def DrawRayIntersection(self, ray):
-        intersections = self.ComputeRayIntersections(ray)
+        intersections, cellIntersection = self.ComputeRayIntersections(ray)
         for inter in intersections:
             pygame.draw.circle(self.screen, (255,0,0), (int(inter.x), int(inter.y)), 3)
 
