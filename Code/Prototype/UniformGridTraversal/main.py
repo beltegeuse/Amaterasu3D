@@ -84,8 +84,7 @@ class Gird:
         return Vector2D(int(v.x / self.cellDimension.x), int(v.y / self.cellDimension.y))
     
     def PointIsInGrid(self, v):
-        voxID = self.World2Voxels(v)
-        return voxID.x >= 0 and voxID.x < self.NbCells.x and voxID.y >= 0 and voxID.y < self.NbCells.y
+        return v.x >= 0 and v.x < self.cellDimension.x*self.NbCells.x and v.y >= 0 and v.y < self.cellDimension.y*self.NbCells.y
 
     def ComputeRayIntersections(self, ray):
         intersections = []
@@ -95,6 +94,7 @@ class Gird:
         
         tMax = Vector2D()
         
+        #TODO: Somes times direction component can be equal to 0
         if(ray.direction.x < 0):
             tMax.x = (voxWorldPos.x - ray.position.x) / ray.direction.x
         else:
@@ -121,11 +121,11 @@ class Gird:
                 tMax.y += tDelta.y
                 voxID.y += sDelta.y
             
-            cellIntersection.append(voxID.Copy())
-            intersections.append(pos)
-            
             if(not self.PointIsInGrid(pos)):
-                break    
+                break
+            
+            cellIntersection.append(voxID.Copy())
+            intersections.append(pos)  
             
         return (intersections, cellIntersection)
     
@@ -142,7 +142,28 @@ class Gird:
 
         for inter in intersections:
             pygame.draw.circle(self.screen, (255,0,0), (int(inter.x), int(inter.y)), 3)
-        
+
+        print intersections[-1]
+
+        # Loop texture coordinates
+#        if abs(ray.direction.x) > abs(ray.direction.y):
+#            print "Main direction X"
+#            print intersections[-1]
+#            # Main direction is X
+#            if(ray.direction.y > 0 and intersections[-1].y > self.NbCells.y*self.cellDimension.y):
+#                newPos = intersections[-1]
+#                newPos.y = 0
+#                ray.position = newPos
+#                self.DrawRayIntersection(ray)
+#                ray.Draw(self.screen)
+#            elif(ray.direction.y < 0 and intersections[-1].x < 0):
+#                newPos = intersections[-1]
+#                newPos.y = self.NbCells.y*self.cellDimension.y
+#                ray.position = newPos
+#                self.DrawRayIntersection(ray)
+#                ray.Draw(self.screen)
+#        else:
+#            print "Main direction Y"
 
 if __name__ == '__main__':
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
