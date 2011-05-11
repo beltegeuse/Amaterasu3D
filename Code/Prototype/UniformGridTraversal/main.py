@@ -3,6 +3,11 @@ from pygame.locals import *
 import os 
 from math import *
 
+def sign(t):
+    if t < 0:
+        return -1
+    return 1
+
 class Vector2D:
     def __init__(self,x = 0,y = 0):
         self.x = x
@@ -38,6 +43,9 @@ class Vector2D:
     
     def __str__(self):
         return "< "+str(self.x)+", "+str(self.y)+" >"
+    
+    def Sign(self):
+        return Vector2D(sign(self.x), sign(self.y))
     
 class Ray:
     def __init__(self, pos, dir):
@@ -102,6 +110,19 @@ class Gird:
         Rt = ray.NewPosition(tMax.y)
         pygame.draw.circle(self.screen, (255,255,0), (int(Rt.x), int(Rt.y)), 3)
         
+        # Determine the main direction
+        tDelta = Vector2D(ray.direction.Sign(), self.cellDimension)
+        
+        pos = ray.position.Copy()
+        while(self.PointIsInGrid(pos)):
+            if(tMax.x < tMax.y):
+                tMax.x += tDelta.x
+                pos = ray.position.NewPosition(tMax.x)
+            else:
+                tMax.y += tDelta.y
+                pos = ray.position.NewPosition(tMax.y)
+            intersections.append(pos)
+                
         return intersections
     
     def DrawRayIntersection(self, ray):
