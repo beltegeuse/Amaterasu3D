@@ -97,16 +97,28 @@ class Gird:
         #TODO: Somes times direction component can be equal to 0
         if(ray.direction.x < 0):
             tMax.x = (voxWorldPos.x - ray.position.x) / ray.direction.x
-        else:
+        elif(ray.direction.x > 0):
             tMax.x = (voxWorldPos.x + self.cellDimension.x - ray.position.x) / ray.direction.x
+        else:
+            tMax.x = 10000000;
         
         if(ray.direction.y < 0):
             tMax.y = (voxWorldPos.y - ray.position.y) / ray.direction.y
-        else:
+        elif(ray.direction.y > 0):
             tMax.y = (voxWorldPos.y + self.cellDimension.y - ray.position.y) / ray.direction.y
+        else:
+            tMax.y = 10000000
         
         # Determine the main direction
-        tDelta = Vector2D.Mult(self.cellDimension, Vector2D(1.0/abs(ray.direction.x), 1.0/abs(ray.direction.y)))
+        tDelta = Vector2D()
+        if(ray.direction.x != 0):
+            tDelta.x = self.cellDimension.x*1.0/abs(ray.direction.x)
+        else:
+            tDelta.x = 10000000
+        if(ray.direction.y != 0):
+            tDelta.y = self.cellDimension.y*1.0/abs(ray.direction.y)
+        else:
+            tDelta.y = 10000000
         sDelta = ray.direction.Sign()
         cellIntersection.append(voxID.Copy())
         
@@ -170,7 +182,7 @@ if __name__ == '__main__':
     pygame.init() 
     screen  = pygame.display.set_mode((800, 600))
     grille = Gird(screen)
-    ray = Ray(Vector2D(10,10), Vector2D(1,1))
+    ray = Ray(Vector2D(10,10), Vector2D(1,0))
     vitesse = 2
     
     # set up key repeating so we can hold down the key to scroll.
