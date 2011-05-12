@@ -53,6 +53,9 @@ class Ray:
         self.direction = dir
         self.direction.Normalize()
         
+        # Graphic attribut
+        self.color = (0,255,0)
+        
     def NewPosition(self, t):
         return Vector2D(self.position.x + self.direction.x * t,self.position.y + self.direction.y * t)
 
@@ -64,8 +67,8 @@ class Ray:
     
     def Draw(self, screen):
         EndPoint = self.position + self.direction.Factor(1000)
-        pygame.draw.circle(screen, (0,255,0), (int(self.position.x), int(self.position.y)), 3)
-        pygame.draw.aaline(screen, (0,255,0), (int(self.position.x), int(self.position.y)), (int(EndPoint.x), int(EndPoint.y)))
+        pygame.draw.circle(screen, self.color, (int(self.position.x), int(self.position.y)), 3)
+        pygame.draw.aaline(screen, self.color, (int(self.position.x), int(self.position.y)), (int(EndPoint.x), int(EndPoint.y)))
 
 class Gird:
     def __init__(self, screen, i = 10, j = 10):
@@ -151,8 +154,9 @@ class Gird:
         #print "==========="
         for voxID in cellIntersection:
             #print voxID
-            self.DrawCellIntersection(voxID)
-
+            #self.DrawCellIntersection(voxID)
+            pass
+        
         for inter in intersections:
             pygame.draw.circle(self.screen, (255,0,0), (int(inter.x), int(inter.y)), 3)
 
@@ -185,7 +189,7 @@ class Gird:
                     ray.position.y = 0
                 else:
                     needRecast = False
-            
+        
 
 if __name__ == '__main__':
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
