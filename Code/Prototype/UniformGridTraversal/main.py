@@ -64,8 +64,8 @@ class Ray:
     
     def Draw(self, screen):
         EndPoint = self.position + self.direction.Factor(1000)
-        pygame.draw.circle(screen, (0,255,0), (self.position.x, self.position.y), 3)
-        pygame.draw.aaline(screen, (0,255,0), (self.position.x, self.position.y), (int(EndPoint.x), int(EndPoint.y)))
+        pygame.draw.circle(screen, (0,255,0), (int(self.position.x), int(self.position.y)), 3)
+        pygame.draw.aaline(screen, (0,255,0), (int(self.position.x), int(self.position.y)), (int(EndPoint.x), int(EndPoint.y)))
 
 class Gird:
     def __init__(self, screen, i = 10, j = 10):
@@ -84,8 +84,8 @@ class Gird:
         return Vector2D(int(v.x / self.cellDimension.x), int(v.y / self.cellDimension.y))
     
     def PointIsInGrid(self, v):
-        #TODO: Probleme d'imprescion
-        return v.x >= 0 and v.x <= self.cellDimension.x*self.NbCells.x and v.y >= 0 and v.y <= self.cellDimension.y*self.NbCells.y
+        #TODO: Precision issue
+        return v.x >= -1 and v.x <= (self.cellDimension.x*self.NbCells.x + 1) and v.y >= -1 and v.y <= (self.cellDimension.y*self.NbCells.y + 1)
 
     def ComputeRayIntersections(self, ray):
         intersections = []
@@ -164,9 +164,28 @@ class Gird:
         return abs(f1 - f2) < 0.00001
     
     def DrawLoopRayIntersection(self, ray):
-        MainDirection = ray.x > ray.y
-        lastIntersection = self.DrawRayIntersection(ray)
+        MainDirection = ray.direction.x < ray.direction.y
         
+        needRecast = True
+        while needRecast:
+            lastIntersection = self.DrawRayIntersection(ray)
+            ray.Draw(self.screen)
+            ray.position = lastIntersection
+            if(MainDirection):
+                if(self.__floatTestingEqual(0, lastIntersection.x)):
+                    ray.position.x = 800
+                elif(self.__floatTestingEqual(800, lastIntersection.x)):
+                    ray.position.x = 0
+                else:
+                    needRecast = False
+            else:
+                if(self.__floatTestingEqual(0, lastIntersection.y)):
+                    ray.position.y = 600
+                elif(self.__floatTestingEqual(600, lastIntersection.y)):
+                    ray.position.y = 0
+                else:
+                    needRecast = False
+            
 
 if __name__ == '__main__':
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
@@ -196,9 +215,9 @@ if __name__ == '__main__':
                 ray = Ray(oldPosition, Vector2D(event.pos[0], event.pos[1]) - oldPosition)
             clicked = not clicked
      
-        grille.DrawRayIntersection(ray.Copy())
-        grille.draw()
+        grille.DrawLoopRayIntersection(ray.Copy())
         ray.Draw(screen)
+        grille.draw()
         pygame.display.flip()
         pygame.time.wait(10)
     pygame.key.set_repeat(old_k_delay, old_k_interval)
