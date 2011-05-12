@@ -84,7 +84,8 @@ class Gird:
         return Vector2D(int(v.x / self.cellDimension.x), int(v.y / self.cellDimension.y))
     
     def PointIsInGrid(self, v):
-        return v.x >= 0 and v.x < self.cellDimension.x*self.NbCells.x and v.y >= 0 and v.y < self.cellDimension.y*self.NbCells.y
+        #TODO: Probleme d'imprescion
+        return v.x >= 0 and v.x <= self.cellDimension.x*self.NbCells.x and v.y >= 0 and v.y <= self.cellDimension.y*self.NbCells.y
 
     def ComputeRayIntersections(self, ray):
         intersections = []
@@ -157,25 +158,15 @@ class Gird:
 
         print intersections[-1]
 
-        # Loop texture coordinates
-#        if abs(ray.direction.x) > abs(ray.direction.y):
-#            print "Main direction X"
-#            print intersections[-1]
-#            # Main direction is X
-#            if(ray.direction.y > 0 and intersections[-1].y > self.NbCells.y*self.cellDimension.y):
-#                newPos = intersections[-1]
-#                newPos.y = 0
-#                ray.position = newPos
-#                self.DrawRayIntersection(ray)
-#                ray.Draw(self.screen)
-#            elif(ray.direction.y < 0 and intersections[-1].x < 0):
-#                newPos = intersections[-1]
-#                newPos.y = self.NbCells.y*self.cellDimension.y
-#                ray.position = newPos
-#                self.DrawRayIntersection(ray)
-#                ray.Draw(self.screen)
-#        else:
-#            print "Main direction Y"
+        return intersections[-1]
+    
+    def __floatTestingEqual(self, f1, f2):
+        return abs(f1 - f2) < 0.00001
+    
+    def DrawLoopRayIntersection(self, ray):
+        MainDirection = ray.x > ray.y
+        lastIntersection = self.DrawRayIntersection(ray)
+        
 
 if __name__ == '__main__':
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
