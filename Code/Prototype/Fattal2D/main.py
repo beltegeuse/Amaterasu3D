@@ -245,11 +245,11 @@ class LPM:
         if(mainAxis == "X"):
             transformationMatrix.a11 = propagationOrientation
             transformationMatrix.a22 = propagationOrientation
-            self.dimension = self.grid.NbCells.x
+            self.dimension = self.grid.NbCells.y
         elif(mainAxis == "Y"):
             transformationMatrix.a21 = propagationOrientation
             transformationMatrix.a12 = propagationOrientation
-            self.dimension = self.grid.NbCells.y
+            self.dimension = self.grid.NbCells.x
         else:
             raise Exception("Impossible to find main axis")
         
@@ -270,7 +270,9 @@ class LPM:
         return self.nbAngles*self.dimension
         
 def FattalAlgorithm(I, U, screen, nbPass = 3):
-    directions = [
+    directions = [("X", 1, (0,255,0)),
+                  ("X", -1, (255,0,255)),
+                  ("Y", 1, (255,255,0)),
                   ("Y", -1, (0,0,255))]
     lpm = LPM(I)
     
