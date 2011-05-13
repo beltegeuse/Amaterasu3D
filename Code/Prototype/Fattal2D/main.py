@@ -87,18 +87,18 @@ class Ray:
         pygame.draw.aaline(screen, self.color, (int(self.position.x), int(self.position.y)), (int(EndPoint.x), int(EndPoint.y)))
 
 class Grid:
-    def __init__(self, screen, nbAngles, i = 8, j = 6):
+    def __init__(self, screen, nbAngles, i = 8, j = 6, screenRes = Vector2D(800,600)):
         self.screen = screen
-        self.dimension = Vector2D(800,600)
-        self.cellDimension = Vector2D(800 / i, 600 / j)
+        self.dimension = screenRes
+        self.cellDimension = Vector2D(self.dimension.x / i, self.dimension.y / j)
         self.NbCells = Vector2D(i,j)
         self.color = pygame.Color("White")
         
     def Draw(self):
         for i in range(self.NbCells.x):
-            pygame.draw.line(self.screen,self.color,(self.cellDimension.x*i,0),(self.cellDimension.x*i,600))
+            pygame.draw.line(self.screen,self.color,(self.cellDimension.x*i,0),(self.cellDimension.x*i,self.dimension.y))
         for i in range(self.NbCells.y):
-            pygame.draw.line(self.screen,self.color,(0,self.cellDimension.y*i),(800,self.cellDimension.y*i))
+            pygame.draw.line(self.screen,self.color,(0,self.cellDimension.y*i),(self.dimension.x,self.cellDimension.y*i))
 
     def World2Voxels(self, v):
         return Vector2D(int(v.x / self.cellDimension.x), int(v.y / self.cellDimension.y))
@@ -161,9 +161,54 @@ class Grid:
             
         return (intersections, cellIntersection)
     
+    def ComputeRayIntersectionsLoop(self, ray):
+        """Give an list of list of intersection points"""
+        MainDirection = abs(ray.direction.x) < abs(ray.direction.y)
+        
+        allIntersection = []
+        
+        needRecast = True
+        while needRecast:
+            # Compute intersections
+            intersections = self.ComputeRayIntersections(ray)[0]
+            
+            # If no intersection : break
+            if(len(intersections) == 0):
+                break
+            
+            # Add intersection
+            temp = [ray.position.Copy()]
+            temp.extend(intersections)
+            allIntersection.append(temp)
+            
+            # Change the ray position for the looping system
+            lastIntersection = intersections[-1]
+            ray.position = intersections[-1]
+            if self.__floatTestingEqual(0, lastIntersection.x) and self.__floatTestingEqual(0, lastIntersection.y):
+                break
+            elif self.__floatTestingEqual(self.dimension.x, lastIntersection.x) and self.__floatTestingEqual(self.dimension.y, lastIntersection.y):
+                break
+            
+            if(MainDirection):
+                if(self.__floatTestingEqual(0, lastIntersection.x)):
+                    ray.position.x = self.dimension.x
+                elif(self.__floatTestingEqual(self.dimension.x, lastIntersection.x)):
+                    ray.position.x = 0
+                else:
+                    needRecast = False
+            else:
+                if(self.__floatTestingEqual(0, lastIntersection.y)):
+                    ray.position.y = self.dimension.y
+                elif(self.__floatTestingEqual(self.dimension.y, lastIntersection.y)):
+                    ray.position.y = 0
+                else:
+                    needRecast = False
+        return allIntersection
+    
     def DrawCellIntersection(self, voxID):
         p = Vector2D.Mult(voxID, self.cellDimension)
         pygame.draw.rect(self.screen, (0,0,255), (p.x, p.y, self.cellDimension.x, self.cellDimension.y))
+    
     
     def DrawRayIntersection(self, ray):
         intersections, cellIntersection = self.ComputeRayIntersections(ray)
@@ -188,36 +233,15 @@ class Grid:
         return abs(f1 - f2) < 0.00001
     
     def DrawLoopRayIntersection(self, ray):
-        MainDirection = abs(ray.direction.x) < abs(ray.direction.y)
-        
-        needRecast = True
-        while needRecast:
-            lastIntersection = self.DrawRayIntersection(ray)
-            if lastIntersection == None:
-                break
-            
+        allIntersection = self.ComputeRayIntersectionsLoop(ray)
+        for intersections in allIntersection:
+            # Draw all intersection points
+            for inter in intersections:
+                pygame.draw.circle(self.screen, (255,0,0), (int(inter.x), int(inter.y)), 3)
+            # Draw the ray
+            ray.position = intersections[0]
             ray.Draw(self.screen)
-            ray.position = lastIntersection
             
-            if self.__floatTestingEqual(0, lastIntersection.x) and self.__floatTestingEqual(0, lastIntersection.y):
-                break
-            elif self.__floatTestingEqual(800, lastIntersection.x) and self.__floatTestingEqual(600, lastIntersection.y):
-                break
-            
-            if(MainDirection):
-                if(self.__floatTestingEqual(0, lastIntersection.x)):
-                    ray.position.x = 800
-                elif(self.__floatTestingEqual(800, lastIntersection.x)):
-                    ray.position.x = 0
-                else:
-                    needRecast = False
-            else:
-                if(self.__floatTestingEqual(0, lastIntersection.y)):
-                    ray.position.y = 600
-                elif(self.__floatTestingEqual(600, lastIntersection.y)):
-                    ray.position.y = 0
-                else:
-                    needRecast = False   
 
 class LPM:
     '''This class describe the Light propagation maps'''
@@ -269,7 +293,7 @@ class LPM:
     def NumberRays(self):
         return self.nbAngles*self.dimension
         
-def FattalAlgorithm(I, U, screen, nbPass = 3):
+def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True):
     directions = [("X", 1, (0,255,0)),("X", -1, (255,0,255)),("Y", 1, (0,0,255)),("Y", -1, (255,255,0))]
     #directions = [("Y", -1, (255,255,0))]
     lpm = LPM(I)
@@ -281,18 +305,28 @@ def FattalAlgorithm(I, U, screen, nbPass = 3):
                 pass # Border initialisation
             for rId in range(lpm.NumberRays()):
                 ray = lpm.rays[rId]
-                ray.color = color
-                ray.Draw(screen)
-                I.DrawLoopRayIntersection(ray)
+                if visualisation:
+                    ray.color = color
+                    ray.Draw(screen)
+                    I.DrawLoopRayIntersection(ray)
+                
     
 if __name__=="__main__":
+    # Constante
+    # Real value for first compute
+    RES = Vector2D(512,512)
+    NBCELL = Vector2D(16,16)
+    # Test value for drawing
+    RES = Vector2D(800,600)
+    NBCELL = Vector2D(8,6)
+    
     # Pygame initialisation
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
     pygame.init() 
-    screen  = pygame.display.set_mode((800, 600))
+    screen  = pygame.display.set_mode((RES.x, RES.y))
 
-    I = Grid(screen,1)
-    U = Grid(screen,6)
+    I = Grid(screen,1, NBCELL.x, NBCELL.y, RES)
+    U = Grid(screen,6, NBCELL.x, NBCELL.y, RES)
     
     while 1:
         screen.fill((0,0,0))
