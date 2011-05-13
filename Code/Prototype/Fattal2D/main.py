@@ -90,10 +90,26 @@ class Grid:
     def __init__(self, screen, nbAngles, i = 8, j = 6, screenRes = Vector2D(800,600)):
         self.screen = screen
         self.dimension = screenRes
+        self.nbAngles = nbAngles
         self.cellDimension = Vector2D(self.dimension.x / i, self.dimension.y / j)
         self.NbCells = Vector2D(i,j)
         self.color = pygame.Color("White")
         
+        # Intialisation angles data
+        self.data = []
+        for n in range(i*j):
+            t = []
+            for k in range(nbAngles):
+                t.append(0)
+            self.data.append(t)
+    
+    def Copy(self):
+        grid = Grid(self.screen, self.nbAngles, self.NbCells.x, self.NbCells.y, self.dimension)
+        for n in range(self.NbCells.x*self.NbCells.y):
+            for k in range(self.nbAngles):
+                grid.data[n][k] = self.data[n][k]
+        return grid
+    
     def Draw(self):
         for i in range(self.NbCells.x):
             pygame.draw.line(self.screen,self.color,(self.cellDimension.x*i,0),(self.cellDimension.x*i,self.dimension.y))
@@ -301,24 +317,38 @@ def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True):
     for i in range(nbPass):
         for (mainAxis, propaOri, color) in directions:
             lpm.GenerateRays(mainAxis, propaOri)
+            UTilde = U.Copy()
             if i == 0:
-                pass # Border initialisation
+                pass #TODO: Border initialisation
             for rId in range(lpm.NumberRays()):
                 ray = lpm.rays[rId]
                 if visualisation:
                     ray.color = color
                     ray.Draw(screen)
                     I.DrawLoopRayIntersection(ray)
-                
+                # Get all intersections (group of group of intersection)
+                Allintersections = I.ComputeRayIntersectionsLoop(ray)
+                for intersections in Allintersections:
+                    for i in range(len(intersections)-1):
+                        beginP = intersections[i]
+                        endP = intersections[i+1]
+                        v = endP - beginP
+                        dist = v.Length()
+                        # TODO: Update ray values
+                        # TODO: Update U and I values
     
 if __name__=="__main__":
     # Constante
     # Real value for first compute
     RES = Vector2D(512,512)
     NBCELL = Vector2D(16,16)
+    VIS = False
+    K = 1
+    S = 1
     # Test value for drawing
-    RES = Vector2D(800,600)
-    NBCELL = Vector2D(8,6)
+    #RES = Vector2D(800,600)
+    #NBCELL = Vector2D(8,6)
+    #VIS = True
     
     # Pygame initialisation
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
@@ -326,7 +356,12 @@ if __name__=="__main__":
     screen  = pygame.display.set_mode((RES.x, RES.y))
 
     I = Grid(screen,1, NBCELL.x, NBCELL.y, RES)
-    U = Grid(screen,6, NBCELL.x, NBCELL.y, RES)
+    # Intialise factors
+    I.K = K
+    I.S = S
+    
+    # Only 4 angles because we are in 2D problem
+    U = Grid(screen,4, NBCELL.x, NBCELL.y, RES)
     
     while 1:
         screen.fill((0,0,0))
@@ -334,7 +369,7 @@ if __name__=="__main__":
         event = pygame.event.poll()
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             break
-        FattalAlgorithm(I,U, screen, 1)
+        FattalAlgorithm(I,U, screen, 1, VIS)
         I.Draw()
         
         pygame.display.flip()
