@@ -188,8 +188,7 @@ class Gird:
                 elif(self.__floatTestingEqual(600, lastIntersection.y)):
                     ray.position.y = 0
                 else:
-                    needRecast = False
-        
+                    needRecast = False   
 
 if __name__ == '__main__':
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
