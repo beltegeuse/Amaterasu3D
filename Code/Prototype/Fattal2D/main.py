@@ -259,21 +259,19 @@ class LPM:
         # Generate new one
         samples = self.__GenerateFaceSampling()
         transVector = transformationMatrix.Transform(Vector2D(0,1))
-        offset = Vector2D.Mult(transVector, self.grid.cellDimension.Factor(1.0 / self.nbAngles))
+        offset = Vector2D.Mult(transVector, self.grid.cellDimension)
         #cellOffset = Vector2D.Mult(transVector,self.grid.cellDimension.Factor(0.5))
         for i in range(self.dimension):
             for j in range(self.nbAngles):
-                r = Ray(startupPosition+offset.Factor(self.nbAngles*i+j+0.5), transformationMatrix.Transform(samples[j]))
+                r = Ray(startupPosition+offset.Factor(i+0.5), transformationMatrix.Transform(samples[j]))
                 self.rays.append(r)
         
     def NumberRays(self):
         return self.nbAngles*self.dimension
         
 def FattalAlgorithm(I, U, screen, nbPass = 3):
-    directions = [("X", 1, (0,255,0)),
-                  ("X", -1, (255,0,255)),
-                  ("Y", 1, (255,255,0)),
-                  ("Y", -1, (0,0,255))]
+    directions = [("X", 1, (0,255,0)),("X", -1, (255,0,255)),("Y", 1, (0,0,255)),("Y", -1, (255,255,0))]
+    #directions = [("Y", -1, (255,255,0))]
     lpm = LPM(I)
     
     for i in range(nbPass):
