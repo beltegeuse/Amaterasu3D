@@ -45,6 +45,9 @@ class Vector2D:
     def __str__(self):
         return "< "+str(self.x)+", "+str(self.y)+" >"
     
+    def __repr__(self):
+        return str(self)
+    
     def Sign(self):
         return Vector2D(sign(self.x), sign(self.y))
 
@@ -116,8 +119,22 @@ class Grid:
         for i in range(self.NbCells.y):
             pygame.draw.line(self.screen,self.color,(0,self.cellDimension.y*i),(self.dimension.x,self.cellDimension.y*i))
 
+    def DrawData(self):
+        maxV = max(self.data)[0]
+        for i in range(self.NbCells.x):
+            for j in range(self.NbCells.y):
+                color = 255.0*(self.data[self.GetVoxelID(i,j)][0] / maxV)
+                pygame.draw.rect(self.screen,(color,color,color),(i*self.cellDimension.x, j*self.cellDimension.y, self.cellDimension.x, self.cellDimension.y))
+
     def World2Voxels(self, v):
         return Vector2D(int(v.x / self.cellDimension.x), int(v.y / self.cellDimension.y))
+    
+    def GetVoxelID(self, x, y):
+        return x+y*self.NbCells.x
+    
+    def World2VoxelsID(self, v):
+        v = self.World2Voxels(v)
+        return self.GetVoxelID(v.x, v.y)
     
     def PointIsInGrid(self, v):
         #TODO: Precision issue
@@ -186,20 +203,23 @@ class Grid:
         needRecast = True
         while needRecast:
             # Compute intersections
-            intersections = self.ComputeRayIntersections(ray)[0]
+            intersections = self.ComputeRayIntersections(ray.Copy())[0]
+            #print "Intersections : "+str(intersections)
             
             # If no intersection : break
             if(len(intersections) == 0):
                 break
             
             # Add intersection
-            temp = [ray.position.Copy()]
+            temp = []
+            if len(allIntersection) == 0:
+                temp.append(ray.position)
             temp.extend(intersections)
             allIntersection.append(temp)
             
             # Change the ray position for the looping system
             lastIntersection = intersections[-1]
-            ray.position = intersections[-1]
+            ray.position = intersections[-1].Copy()
             if self.__floatTestingEqual(0, lastIntersection.x) and self.__floatTestingEqual(0, lastIntersection.y):
                 break
             elif self.__floatTestingEqual(self.dimension.x, lastIntersection.x) and self.__floatTestingEqual(self.dimension.y, lastIntersection.y):
@@ -219,6 +239,7 @@ class Grid:
                     ray.position.y = 0
                 else:
                     needRecast = False
+        #print allIntersection
         return allIntersection
     
     def DrawCellIntersection(self, voxID):
@@ -308,20 +329,46 @@ class LPM:
         
     def NumberRays(self):
         return self.nbAngles*self.dimension
-        
+
+def GetMainDirectionVector(mainDir, value):
+    if mainDir == "X":
+        return Vector2D(value, 0)
+    elif mainDir == "Y":
+        return Vector2D(0, value)
+    else:
+        raise Exception("No found good main direction")
+
+def NormalizeCoordinatesVector(v):
+    t = (v + Vector2D(1,1)).Factor(0.5)
+    return Vector2D(int(t.x), int(t.y))
+
 def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True):
     directions = [("X", 1, (0,255,0)),("X", -1, (255,0,255)),("Y", 1, (0,0,255)),("Y", -1, (255,255,0))]
     #directions = [("Y", -1, (255,255,0))]
     lpm = LPM(I)
     
+    cellVolume = I.cellDimension.x*I.cellDimension.y
+    
     for i in range(nbPass):
         for (mainAxis, propaOri, color) in directions:
             lpm.GenerateRays(mainAxis, propaOri)
+            # Compute main directions
+            mainDirectionV = GetMainDirectionVector(mainAxis, propaOri)
+            normalizeDirectionV = NormalizeCoordinatesVector(mainDirectionV)
+            Ars = abs(Vector2D.DotProduct(mainDirectionV, I.cellDimension))
+            # Copy U gird 
             UTilde = U.Copy()
+            idDir = normalizeDirectionV.x + normalizeDirectionV.y*2
+            # Empty U direction because we take these energy
+            for iData in range(U.NbCells.x*U.NbCells.y):
+                U.data[iData][idDir] = 0
             if i == 0:
                 pass #TODO: Border initialisation
             for rId in range(lpm.NumberRays()):
                 ray = lpm.rays[rId]
+                rayValue = 0.0
+                if i == 0:
+                    rayValue = 1.0
                 if visualisation:
                     ray.color = color
                     ray.Draw(screen)
@@ -334,9 +381,27 @@ def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True):
                         endP = intersections[i+1]
                         v = endP - beginP
                         dist = v.Length()
-                        # TODO: Update ray values
-                        # TODO: Update U and I values
-    
+                        if dist == 0:
+                            continue
+                        # Know the CellID
+                        voxID = I.World2VoxelsID(beginP+v.Factor(0.5))
+                        #print beginP
+                        #print endP
+                        #print voxID
+                        # Precompute values for update U and I
+                        Wn = Vector2D.DotProduct(mainDirectionV, ray.direction)
+                        scatteringTerm = rayValue*(1 - exp(-1*dist*I.S/Wn))
+                        # Update ray value
+                        absortionCoeff = I.K+I.S
+                        absortionFactor = exp(-1*dist*absortionCoeff/Wn)
+                        UTildeValue = UTilde.data[voxID][idDir]
+                        rayValue = rayValue*absortionFactor+(UTildeValue*(1 - absortionFactor)/absortionCoeff)
+                        # I value
+                        # Only one direction so don't need to iterate
+                        I.data[voxID][0] += Ars*(1.0/(9))*scatteringTerm
+                        # Update U value
+                        for mID in range(4):
+                            U.data[voxID][mID] += Ars*(1.0/(9*4))*scatteringTerm
 if __name__=="__main__":
     # Constante
     # Real value for first compute
@@ -363,14 +428,18 @@ if __name__=="__main__":
     # Only 4 angles because we are in 2D problem
     U = Grid(screen,4, NBCELL.x, NBCELL.y, RES)
     
+    print "Begin Fattal resolution"
+    FattalAlgorithm(I,U, screen, 3, VIS)
+    print "End Fattal resolution"
+    print max(I.data)
+    
     while 1:
         screen.fill((0,0,0))
         #check for quit'n events
         event = pygame.event.poll()
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             break
-        FattalAlgorithm(I,U, screen, 1, VIS)
-        I.Draw()
+        I.DrawData()
         
         pygame.display.flip()
         pygame.time.wait(10)
