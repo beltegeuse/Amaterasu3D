@@ -284,9 +284,10 @@ class Grid:
 
 class LPM:
     '''This class describe the Light propagation maps'''
-    def __init__(self, grid, nbAngles = 9):
+    def __init__(self, grid, nbAngles = 9, LPMFactor = 1):
         self.nbAngles = nbAngles
         self.grid = grid
+        self.factor = 1
     
     def __GenerateFaceSampling(self):
         samples = []
@@ -324,13 +325,13 @@ class LPM:
         transVector = transformationMatrix.Transform(Vector2D(0,1))
         offset = Vector2D.Mult(transVector, self.grid.cellDimension)
         #cellOffset = Vector2D.Mult(transVector,self.grid.cellDimension.Factor(0.5))
-        for i in range(self.dimension):
+        for i in range(self.dimension*self.factor):
             for j in range(self.nbAngles):
-                r = Ray(startupPosition+offset.Factor(i+0.5), transformationMatrix.Transform(samples[j]))
+                r = Ray(startupPosition+offset.Factor((i+0.5)/self.factor), transformationMatrix.Transform(samples[j]))
                 self.rays.append(r)
         
     def NumberRays(self):
-        return self.nbAngles*self.dimension
+        return self.nbAngles*self.dimension*self.factor
 
 def GetMainDirectionVector(mainDir, value):
     if mainDir == "X":
@@ -340,14 +341,20 @@ def GetMainDirectionVector(mainDir, value):
     else:
         raise Exception("No found good main direction")
 
-def NormalizeCoordinatesVector(v):
-    t = (v + Vector2D(1,1)).Factor(0.5)
-    return Vector2D(int(t.x), int(t.y))
+def GetDirID(v):
+    if v.x == -1:
+        return 0
+    elif v.x == 1:
+        return 1
+    elif v.y == -1:
+        return 2
+    else:
+        return 3
 
-def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True):
+def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True, LPMFactor = 1):
     directions = [("X", 1, (0,255,0)),("X", -1, (255,0,255)),("Y", 1, (0,0,255)),("Y", -1, (255,255,0))]
     #directions = [("X", 1, (0,255,0))]
-    lpm = LPM(I)
+    lpm = LPM(I, 9, LPMFactor)
     
     beamMid = lpm.nbAngles*I.NbCells.y/2
     beamDynamic = lpm.nbAngles*int(I.NbCells.y*0.025)
@@ -356,21 +363,31 @@ def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True):
     
     cellVolumeInv = (1.0/(I.cellDimension.x*I.cellDimension.y))
     
+    if nbPass == -1:
+        nbPass = 100
+    
     for PassID in range(nbPass):
+        print "===== Loop resolution : " + str(PassID)
+        print "[INFO] Max in U : " + str(max(U.data))
+        if PassID != 0 and max(max(U.data)) < 0.0001:
+            print "Break !"
+            break
         for (mainAxis, propaOri, color) in directions:
+            print " **** New LPM direction"
+            print "[INFO] Generate rays ..."
             lpm.GenerateRays(mainAxis, propaOri)
             # Compute main directions
             mainDirectionV = GetMainDirectionVector(mainAxis, propaOri)
-            normalizeDirectionV = NormalizeCoordinatesVector(mainDirectionV)
             Ars = abs(Vector2D.DotProduct(mainDirectionV, I.cellDimension))
             # Copy U gird 
             UTilde = U.Copy()
-            idDir = normalizeDirectionV.x + normalizeDirectionV.y*2
+            idDir = GetDirID(mainDirectionV)
+            print "[INFO] Main axis : " + mainAxis + " | Propagation Dir : " + str(propaOri)
+            print "[INFO] Main direction vector : " + str(mainDirectionV)
+            print "[INFO] ID dir : " + str(idDir)
             # Empty U direction because we take these energy
             for iData in range(U.NbCells.x*U.NbCells.y):
                 U.data[iData][idDir] = 0
-            if PassID == 0:
-                pass #TODO: Border initialisation
             for rId in range(lpm.NumberRays()):
             #for rId in [5]:
                 ray = lpm.rays[rId]
@@ -394,13 +411,10 @@ def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True):
                         v = endP - beginP
                         dist = v.Length()
                         if dist == 0:
+                            #print "[DEBUG] Throw intersection ..."
                             continue
-                        #print dist
                         # Know the CellID
                         voxID = I.World2VoxelsID(beginP+v.Factor(0.5))
-                        #print beginP
-                        #print endP
-                        #print voxID
                         # Precompute values for update U and I
                         Wn = Vector2D.DotProduct(mainDirectionV, ray.direction)
                         #print "Factor : " + str(Wn)
@@ -413,23 +427,22 @@ def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True):
                         #print rayValue
                         # I value
                         # Only one direction so don't need to iterate
-                        #print "Ray Value : "+str(rayValue)
-                        #print "Cell contribution : " + str(cellVolumeInv*Ars*(1.0/(9*4))*scatteringTerm)
-                        I.data[voxID][0] += cellVolumeInv*Ars*(1.0/(9))*scatteringTerm
+                        I.data[voxID][0] += cellVolumeInv*Ars*(3.14/(9))*scatteringTerm
                         # Update U value
                         for mID in range(4):
-                            U.data[voxID][mID] += (cellVolumeInv/4.0)*Ars*(1.0/(9))*scatteringTerm
+                            U.data[voxID][mID] += (cellVolumeInv/4.0)*Ars*(3.14/(9*3))*scatteringTerm
 if __name__=="__main__":
     # Constante
     # Real value for first compute
     RES = Vector2D(512,512)
     NBCELL = Vector2D(64,64)
     VIS = False
-    NBPASS = 3
+    LPMFACTOR = 2
+    NBPASS = -1
     K = 1
     S = 1.0
     K = 0.0
-    S = 0.01
+    S = 0.9
     # Test value for drawing
     #RES = Vector2D(800,600)
     #NBCELL = Vector2D(8,6)
@@ -450,7 +463,7 @@ if __name__=="__main__":
     U = Grid(screen,4, NBCELL.x, NBCELL.y, RES)
     
     print "Begin Fattal resolution"
-    FattalAlgorithm(I,U, screen, NBPASS, VIS)
+    FattalAlgorithm(I,U, screen, NBPASS, VIS, LPMFACTOR)
     print "End Fattal resolution"
     print max(I.data)
     
@@ -465,5 +478,5 @@ if __name__=="__main__":
             I.DrawData()
         
         pygame.display.flip()
-        pygame.time.wait(1000)
+        pygame.time.wait(100)
     
