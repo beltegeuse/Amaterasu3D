@@ -21,12 +21,14 @@ class ApplicationWhite : public Application
 protected:
 	CameraFPS* m_Camera;
 	TShaderPtr m_ParaboloidShader;
-	//DeferredLighting* m_GI;
+	TShaderPtr m_CubeShader;
 	FPS m_FPS;
 	bool m_debug;
+	bool m_ParaboloidDraw;
 public:
 	ApplicationWhite() :
-		m_debug(false)
+		m_debug(false),
+		m_ParaboloidDraw(false)
 	{
 
 	}
@@ -45,6 +47,7 @@ public:
 		SettingsManager.SetProjection(1.0,4000.0,70.0);
 		// Load shader
 		m_ParaboloidShader = CShaderManager::Instance().LoadShader("ParaboloidProjection.shader");
+		m_CubeShader = CShaderManager::Instance().LoadShader("CubeProjection.shader");
 		// Create light 1
 //		PointLight light1;
 //		light1.LightColor = Color(1.0,1.0,1.0,0.0);
@@ -80,7 +83,7 @@ public:
 					 m_debug = !m_debug;
 					 break;
 				 case SDLK_F2:
-//					 m_GI->SetDebugMode(!m_GI->isDebugMode());
+					 m_ParaboloidDraw = !m_ParaboloidDraw;
 					 break;
 			 }
 		}
@@ -90,12 +93,26 @@ public:
 	virtual void OnRender()
 	{
 		MatrixManager.SetModeMatrix(MATRIX_3D);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_ParaboloidShader->Begin();
-		m_ParaboloidShader->SetUniform1f("FarClipping",4000.0f);
-		m_ParaboloidShader->SetUniform1f("NearClipping",1.0f);
-		RootSceneGraph.Draw();
-		m_ParaboloidShader->End();
+		if(m_ParaboloidDraw)
+		{
+			m_ParaboloidShader->Begin();
+			m_Camera->GetView();
+			m_ParaboloidShader->SetUniform1f("FarClipping",4000.0f);
+			m_ParaboloidShader->SetUniform1f("NearClipping",1.0f);
+			RootSceneGraph.Draw();
+			m_ParaboloidShader->End();
+		}
+		else
+		{
+			m_CubeShader->Begin();
+			m_Camera->GetView();
+			RootSceneGraph.Draw();
+			m_ParaboloidShader->End();
+
+			m_CubeShader->GetFBO()->DrawDebug();
+		}
 
 		MatrixManager.SetModeMatrix(MATRIX_2D);
 
