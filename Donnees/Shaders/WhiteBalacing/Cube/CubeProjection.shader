@@ -5,7 +5,7 @@
        <Matrix type="Projection" name="ProjectionMatrix" />
        <Matrix type="View" name="ViewMatrix" />
     </MatrixInput>
-    <OutputFrame depthType="Texture" size="Screen">
+    <OutputFrame depthType="RenderTarget" size="Custom" width=512 height=512>
     	<Frame name="ColorBuffer" type="RGBA" />
     </OutputFrame>
     <Textures>

@@ -5,6 +5,7 @@
 in vec3 VertexPosition;
 in vec2 VertexTexCoord;
 
+uniform mat4 TransformMatrix;
 uniform mat4 ProjectionMatrix;
 uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
@@ -18,5 +19,5 @@ void main ()
 {
     outTexCoord = VertexTexCoord;
     
-	gl_Position = ProjectionMatrix* ViewMatrix * ModelMatrix * vec4 (VertexPosition, 1.0);
+	gl_Position = ProjectionMatrix * TransformMatrix * ViewMatrix * ModelMatrix * vec4 (VertexPosition, 1.0);
 }

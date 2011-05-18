@@ -16,6 +16,12 @@
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
 
+struct FBOCube
+{
+	FBO* Fbo;
+	Math::CMatrix4 TransMatrix;
+};
+
 class ApplicationWhite : public Application
 {
 protected:
@@ -23,6 +29,7 @@ protected:
 	TShaderPtr m_ParaboloidShader;
 	TShaderPtr m_CubeShader;
 	FPS m_FPS;
+	FBOCube* m_CubeFBOs;
 	bool m_debug;
 	bool m_ParaboloidDraw;
 public:
@@ -48,25 +55,35 @@ public:
 		// Load shader
 		m_ParaboloidShader = CShaderManager::Instance().LoadShader("ParaboloidProjection.shader");
 		m_CubeShader = CShaderManager::Instance().LoadShader("CubeProjection.shader");
-		// Create light 1
-//		PointLight light1;
-//		light1.LightColor = Color(1.0,1.0,1.0,0.0);
-//		light1.Position = Math::TVector3F(0,20,0);
-//		light1.LightRaduis = 100.0;
-//		light1.LightIntensity = 1.0;
-//		m_GI->AddPointLight(light1);
-		// Create light 2
-//		SpotLight light2;
-//		light2.LightColor = Color(1.0,1.0,1.0,0.0);
-//		light2.Position = Math::TVector3F(-500,200,0);
-//		light2.LightRaduis = 4000.0;
-//		light2.LightIntensity = 1.0;
-//		light2.LightCutOff = 70;
-//		light2.Direction = Math::TVector3F(1.0,0.0,0.0);
-//		m_GI->AddSpotLight(light2);
+		// Creation des autres buffers
+		GenerateCubeBuffers();
 		// Load scene
 		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 		RootSceneGraph.AddChild(node1);
+	}
+
+	void GenerateCubeBuffers()
+	{
+		m_CubeFBOs = new FBOCube[5];
+
+		// Initialisation front face
+		m_CubeFBOs[0].Fbo = m_CubeShader->GetFBO();
+		m_CubeFBOs[0].TransMatrix.Identity();
+
+		// Set rotation
+		m_CubeFBOs[1].TransMatrix.SetRotationX(90);
+		m_CubeFBOs[2].TransMatrix.SetRotationX(-90);
+		m_CubeFBOs[3].TransMatrix.SetRotationY(90);
+		m_CubeFBOs[4].TransMatrix.SetRotationY(-90);
+
+		// Compute all
+		Math::CMatrix4 trans;
+		trans.SetTranslation(0.5,0.0,0.5);
+		for(int i = 1; i < 5; i++)
+		{
+			m_CubeFBOs[i].Fbo = m_CubeFBOs[0].Fbo->Copy();
+			m_CubeFBOs[i].TransMatrix = trans*m_CubeFBOs[i].TransMatrix;
+		}
 	}
 
 	virtual void OnUpdate(double delta)
@@ -93,12 +110,11 @@ public:
 	virtual void OnRender()
 	{
 		MatrixManager.SetModeMatrix(MATRIX_3D);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		m_Camera->GetView();
 		if(m_ParaboloidDraw)
 		{
 			m_ParaboloidShader->Begin();
-			m_Camera->GetView();
 			m_ParaboloidShader->SetUniform1f("FarClipping",4000.0f);
 			m_ParaboloidShader->SetUniform1f("NearClipping",1.0f);
 			RootSceneGraph.Draw();
@@ -106,10 +122,14 @@ public:
 		}
 		else
 		{
-			m_CubeShader->Begin();
-			m_Camera->GetView();
-			RootSceneGraph.Draw();
-			m_ParaboloidShader->End();
+			for(int i = 0; i < 5; i++)
+			{
+				m_CubeShader->SetFBO(m_CubeFBOs[i].Fbo, false);
+				m_CubeShader->Begin();
+				m_CubeShader->SetUniformMatrix4fv("TransformMatrix", m_CubeFBOs[i].TransMatrix);
+				RootSceneGraph.Draw();
+				m_CubeShader->End();
+			}
 
 			m_CubeShader->GetFBO()->DrawDebug();
 		}
