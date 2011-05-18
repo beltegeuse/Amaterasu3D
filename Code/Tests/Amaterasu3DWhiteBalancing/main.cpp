@@ -20,8 +20,8 @@ class ApplicationWhite : public Application
 {
 protected:
 	CameraFPS* m_Camera;
-	TShaderPtr m_gbuffer_shader;
-	DeferredLighting* m_GI;
+	TShaderPtr m_ParaboloidShader;
+	//DeferredLighting* m_GI;
 	FPS m_FPS;
 	bool m_debug;
 public:
@@ -44,10 +44,7 @@ public:
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		SettingsManager.SetProjection(1.0,4000.0,70.0);
 		// Load shader
-		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
-		// Load GI
-		m_GI = new DeferredLighting(RootSceneGraph);
-		m_GI->SetFBOGraphicBuffer(m_gbuffer_shader->GetFBO());
+		m_ParaboloidShader = CShaderManager::Instance().LoadShader("ParaboloidProjection.shader");
 		// Create light 1
 //		PointLight light1;
 //		light1.LightColor = Color(1.0,1.0,1.0,0.0);
@@ -56,14 +53,14 @@ public:
 //		light1.LightIntensity = 1.0;
 //		m_GI->AddPointLight(light1);
 		// Create light 2
-		SpotLight light2;
-		light2.LightColor = Color(1.0,1.0,1.0,0.0);
-		light2.Position = Math::TVector3F(-500,200,0);
-		light2.LightRaduis = 4000.0;
-		light2.LightIntensity = 1.0;
-		light2.LightCutOff = 70;
-		light2.Direction = Math::TVector3F(1.0,0.0,0.0);
-		m_GI->AddSpotLight(light2);
+//		SpotLight light2;
+//		light2.LightColor = Color(1.0,1.0,1.0,0.0);
+//		light2.Position = Math::TVector3F(-500,200,0);
+//		light2.LightRaduis = 4000.0;
+//		light2.LightIntensity = 1.0;
+//		light2.LightCutOff = 70;
+//		light2.Direction = Math::TVector3F(1.0,0.0,0.0);
+//		m_GI->AddSpotLight(light2);
 		// Load scene
 		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 		RootSceneGraph.AddChild(node1);
@@ -83,7 +80,7 @@ public:
 					 m_debug = !m_debug;
 					 break;
 				 case SDLK_F2:
-					 m_GI->SetDebugMode(!m_GI->isDebugMode());
+//					 m_GI->SetDebugMode(!m_GI->isDebugMode());
 					 break;
 			 }
 		}
@@ -93,47 +90,12 @@ public:
 	virtual void OnRender()
 	{
 		MatrixManager.SetModeMatrix(MATRIX_3D);
-		m_Camera->GetView();
 
-		Math::CMatrix4 P(1,0,0,0,
-						 0,1,0,0,
-						 0,0,1,1,
-						 0,0,0,0);
-
-		Math::CMatrix4 T(0.5,0,0,0,
-						 0,0.5,0,0,
-						 0,0,1,0,
-						 0.5,0.5,0,1);
-
-		Math::CMatrix4 S(-1,0,0,0,
-						 0,-1,0,0,
-						 0,0,1,0,
-						 0,0,1,1);
-
-		Math::CMatrix4 V = MatrixManager.GetMatrix(VIEW_MATRIX);
-		V.a14 = 0;
-		V.a24 = 0;
-		V.a34 = 0;
-		V.a44 = 1;
-
-		P = T*P*S*V.Inverse();
-
-		MatrixManager.SetProjectionMatrix(P);
-		V.Identity();
-
-
-
-		m_gbuffer_shader->Begin();
+		m_ParaboloidShader->Begin();
+		m_ParaboloidShader->SetUniform1f("FarClipping",4000.0f);
+		m_ParaboloidShader->SetUniform1f("NearClipping",1.0f);
 		RootSceneGraph.Draw();
-		m_gbuffer_shader->End();
-
-		if(m_debug)
-			m_gbuffer_shader->GetFBO()->DrawDebug();
-		else
-		{
-			m_Camera->GetView();
-			m_GI->ComputeIllumination();
-		}
+		m_ParaboloidShader->End();
 
 		MatrixManager.SetModeMatrix(MATRIX_2D);
 
