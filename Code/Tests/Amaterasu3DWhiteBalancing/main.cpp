@@ -94,14 +94,16 @@ public:
 		m_CubeFBOs[3].Model = new Rectangle2D(Math::TVector2I(0.0*size.x,0.75*size.y),Math::TVector2I(0.25*size.x,0.25*size.y));
 		m_CubeFBOs[4].Model = new Rectangle2D(Math::TVector2I(0.75*size.x,0.75*size.y),Math::TVector2I(1.0*size.x,0.25*size.y));
 
-		Math::CMatrix4 proj = Math::CMatrix4::CreatePerspectiveProjection(Math::TVector2F(-1,-1),Math::TVector2F(1,1),Near, Far);
+		m_CubeFBOs[1].ProjectionMatrix = Math::CMatrix4::CreatePerspectiveProjection(Math::TVector2F(-1,-1),Math::TVector2F(1,0),Near, Far);
+		m_CubeFBOs[2].ProjectionMatrix = Math::CMatrix4::CreatePerspectiveProjection(Math::TVector2F(-1,0),Math::TVector2F(1,1),Near, Far);
+		m_CubeFBOs[3].ProjectionMatrix = Math::CMatrix4::CreatePerspectiveProjection(Math::TVector2F(-1,-1),Math::TVector2F(0,1),Near, Far);
+		m_CubeFBOs[4].ProjectionMatrix = Math::CMatrix4::CreatePerspectiveProjection(Math::TVector2F(0,-1),Math::TVector2F(1,1),Near, Far);
 		Math::TVector2I NewSize = m_CubeFBOs[0].Fbo->GetSize();
 		NewSize.y = NewSize.y / 2;
 		for(int i = 1; i < 5; i++)
 		{
 			m_CubeFBOs[i].Fbo = m_CubeFBOs[0].Fbo->Copy();
-			//m_CubeFBOs[i].Fbo->SetSize(NewSize);
-			m_CubeFBOs[i].ProjectionMatrix = proj;
+			m_CubeFBOs[i].Fbo->SetSize(NewSize);
 			if(m_CubeFBOs[i].Model != 0)
 				m_CubeFBOs[i].Model->AddTextureMap(DIFFUSE_TEXTURE, m_CubeFBOs[i].Fbo->GetTexture("ColorBuffer"));
 		}
