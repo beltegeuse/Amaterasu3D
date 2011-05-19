@@ -19,5 +19,5 @@ void main ()
 {
     outTexCoord = VertexTexCoord;
     
-	gl_Position = ProjectionMatrix * TransformMatrix * ViewMatrix * ModelMatrix * vec4 (VertexPosition, 1.0);
+	gl_Position = ProjectionMatrix * TransformMatrix* ViewMatrix * ModelMatrix * vec4 (VertexPosition, 1.0);
 }

@@ -369,6 +369,21 @@ inline CMatrix4 CMatrix4::CreatePerspectiveFOV(float Fov, float Ratio, float Nea
     return res;
 }
 
+inline CMatrix4 CMatrix4::CreatePerspectiveProjection(const Math::TVector2F& LB, const Math::TVector2F& RT,float Near, float Far)
+{
+	CMatrix4 res;
+
+	float Width = LB.x - RT.x;
+	float Height = LB.y - RT.y;
+	float Dynamic = Far - Near;
+
+	res.a11 = 2*Near/Width; res.a12 = 0.0f; res.a13 = (LB.x+RT.x)/Width; res.a14 = 0.0f;
+	res.a21 = 0.0f; res.a22 = 2*Near/Height; res.a23 = (LB.y+RT.y)/Height; res.a24 = 0.0f;
+	res.a31 = 0.0f; res.a32 = 0.0f; res.a33 = -(Near+Far)/Dynamic; res.a34 = -2*Far*Near/Dynamic;
+	res.a41 = 0.0f; res.a42 = 0.0f; res.a43 = -1.0f; res.a44 = 0.0f;
+
+	return res;
+}
 
 /////////////////////////////////////////////////////////////
 /// Construit une matrice de vue

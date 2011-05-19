@@ -150,6 +150,11 @@ public:
 	FBO* Copy();
 	//! Specify new size of FBO
 	void SetSize(const Math::TVector2I& size);
+	Math::TVector2I GetSize() const
+	{
+		return m_SizeBuffers;
+	}
+
 private:
 	/*
 	 * Private methods

@@ -438,11 +438,11 @@ if __name__=="__main__":
     NBCELL = Vector2D(64,64)
     VIS = False
     LPMFACTOR = 2
-    NBPASS = -1
+    NBPASS = 3
     K = 1
     S = 1.0
     K = 0.0
-    S = 0.9
+    S = 0.01
     # Test value for drawing
     #RES = Vector2D(800,600)
     #NBCELL = Vector2D(8,6)

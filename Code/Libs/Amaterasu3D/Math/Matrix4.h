@@ -6,6 +6,7 @@
 //==========================================================
 #include <Math/Vector3.h>
 #include <Math/Vector4.h>
+#include <Math/Vector2.h>
 #include <Math/Matrix3.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -95,6 +96,11 @@ namespace Math
         // Construit une matrice de projection perspective
         //----------------------------------------------------------
         static CMatrix4 CreatePerspectiveFOV(float Fov, float Ratio, float Near, float Far);
+
+        //----------------------------------------------------------
+        // Build an projection matrix
+        //----------------------------------------------------------
+        static CMatrix4 CreatePerspectiveProjection(const Math::TVector2F& LB, const Math::TVector2F& RT,float Near, float Far);
 
         //----------------------------------------------------------
         // Construit une matrice de vue
