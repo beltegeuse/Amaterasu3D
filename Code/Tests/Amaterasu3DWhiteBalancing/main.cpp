@@ -32,14 +32,17 @@ protected:
 	TShaderPtr m_ParaboloidShader;
 	TShaderPtr m_CubeShader;
 	TShaderPtr m_2DDraw;
+	TShaderPtr m_SphereProjectionHemiCube;
 	FPS m_FPS;
 	FBOCube* m_CubeFBOs;
 	bool m_debug;
 	bool m_ParaboloidDraw;
+	bool m_HemiDraw;
 public:
 	ApplicationWhite() :
 		m_debug(false),
-		m_ParaboloidDraw(false)
+		m_ParaboloidDraw(false),
+		m_HemiDraw(false)
 	{
 
 	}
@@ -60,6 +63,8 @@ public:
 		m_ParaboloidShader = CShaderManager::Instance().LoadShader("ParaboloidProjection.shader");
 		m_CubeShader = CShaderManager::Instance().LoadShader("CubeProjection.shader");
 		m_2DDraw = CShaderManager::Instance().LoadShader("2DDraw.shader");
+		m_SphereProjectionHemiCube = CShaderManager::Instance().LoadShader("SphereProjectionHemiCube.shader");
+
 		// Creation des autres buffers
 		GenerateCubeBuffers();
 		// Load scene
@@ -125,23 +130,12 @@ public:
 				 case SDLK_F2:
 					 m_ParaboloidDraw = !m_ParaboloidDraw;
 					 break;
+				 case SDLK_F3:
+					 m_HemiDraw = !m_HemiDraw;
+					 break;
 			 }
 		}
 
-	}
-
-	void DrawQuad(const Math::TVector2F& BL, const Math::TVector2F& TR)
-	{
-		glBegin(GL_QUADS);
-			glTexCoord2f(0.0, 0.0);
-			glVertex2f(BL.x, BL.y);
-			glTexCoord2f(0.0, 1.0);
-			glVertex2f(BL.x, TR.y);
-			glTexCoord2f(1.0, 1.0);
-			glVertex2f(TR.x, TR.y);
-			glTexCoord2f(1.0, 0.0);
-			glVertex2f(TR.x, BL.y);
-		glEnd();
 	}
 
 	virtual void OnRender()
@@ -170,10 +164,27 @@ public:
 				m_CubeShader->End();
 			}
 			MatrixManager.SetProjectionMatrix(oldProjMatrix);
+
+			m_SphereProjectionHemiCube->Begin();
+			for(int i = 0; i < 5; i++)
+				m_CubeFBOs[i].Fbo->GetTexture("ColorBuffer")->activateMultiTex(CUSTOM_TEXTURE+i);
+
+			glBegin(GL_QUADS);
+				glVertex2f(-1.0, -1.0);
+				glVertex2f(-1.0, 1.0);
+				glVertex2f(1.0, 1.0);
+				glVertex2f(1.0, -1.0);
+			glEnd();
+
+			for(int i = 0; i < 5; i++)
+				m_CubeFBOs[i].Fbo->GetTexture("ColorBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+i);
+			m_SphereProjectionHemiCube->End();
+
+			m_SphereProjectionHemiCube->GetFBO()->DrawDebug();
 		}
 
 		MatrixManager.SetModeMatrix(MATRIX_2D);
-		if(!m_ParaboloidDraw)
+		if(!m_ParaboloidDraw && m_HemiDraw)
 		{
 			m_2DDraw->Begin();
 			for(int i = 0; i < 5; i++)

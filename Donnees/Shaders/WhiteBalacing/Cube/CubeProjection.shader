@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Shader name="ParaboloidProjection" type="Basic">
+<Shader name="CubeProjection" type="Basic">
 	<MatrixInput>
        <Matrix type="Model" name="ModelMatrix" />
        <Matrix type="Projection" name="ProjectionMatrix" />
