@@ -58,6 +58,10 @@ public:
 		if(EnvMode)
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, EnvMode);
 	}
+
+	virtual void applyPostParam()
+	{
+	}
 };
 
 class Texture2DParams : public TextureParams

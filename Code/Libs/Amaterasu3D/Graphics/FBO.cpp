@@ -55,6 +55,7 @@ FBO::FBO(const Math::TVector2I& size,
 		glBindTexture(GL_TEXTURE_2D, tex->getIdTex());
 		it->second.applyParam();
 		glTexImage2D(GL_TEXTURE_2D, 0, it->second.InternalFormat, size.x, size.y, 0, it->second.ExternalFormat, it->second.Precision, 0);
+		it->second.applyPostParam();
 		Logger::Log() << "   * Create new texture : " << it->first <<  " ( " << tex->getIdTex() << " )\n";
 	}
 	// ==== Construction de FBO pour Depth
@@ -68,6 +69,7 @@ FBO::FBO(const Math::TVector2I& size,
 			glBindTexture(GL_TEXTURE_2D, m_DepthID);
 			paramDepth.applyParam();
 			glTexImage2D( GL_TEXTURE_2D, 0, paramDepth.InternalFormat, size.x, size.y, 0, paramDepth.ExternalFormat, paramDepth.Precision, 0);
+			paramDepth.applyPostParam();
 			Logger::Log() <<" * Generate Depth Texture : " << m_DepthID << "\n";
 			m_ColoredBuffers["Depth"] = new Texture(false, m_DepthID);
 		}

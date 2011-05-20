@@ -49,16 +49,24 @@ public:
 	GLenum ExternalFormat;
 	GLenum InternalFormat;
 	GLenum Precision;
-
+	bool GenerateMipMapping;
 	FBOBufferParam() :
 		ExternalFormat(GL_RGBA),
 		InternalFormat(GL_RGBA),
-		Precision(GL_FLOAT)
+		Precision(GL_FLOAT),
+		GenerateMipMapping(false)
 	{
 		MinFiltering = GL_NEAREST;
 		MaxFiltering = GL_NEAREST;
 		SWrap = GL_CLAMP_TO_EDGE ;
 		TWrap = GL_CLAMP_TO_EDGE ;
+	}
+
+	//TODO: Add these possibility to the mother class ???
+	virtual void applyPostParam()
+	{
+		if(GenerateMipMapping)
+			glGenerateMipmap(GL_TEXTURE_2D);
 	}
 };
 

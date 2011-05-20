@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Shader name="SphereProjectionHemiCube" type="Basic">
-    <OutputFrame depthType="None" size="Screen">
-    	<Frame name="ColorBuffer" type="RGBA" />
+    <OutputFrame depthType="None" size="Custom" width=512 height=512>
+    	<Frame name="ColorBuffer" type="RGBA" mipmapping="True" />
     </OutputFrame>
     <Textures>
 		<Texture type="Custom" name="ZTex" id=0/>

@@ -140,6 +140,17 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 		TinyXMLGetAttributeValue<std::string>(frameNode,"type",&typeString);
 		Logger::Log() << "      * Create buffer : " << name << " ( " << typeString << " ) \n";
 		FBOTextureBufferParam param;
+		// Mipmapping parsing
+
+		bool mipmapping = false;
+		frameNode->Attribute("mipmapping",&mipmapping);
+		if(mipmapping)
+		{
+			Logger::Log() << "        * Mipmapping enable \n";
+			param.GenerateMipMapping = true;
+		}
+
+		// Parse the Image format
 		if(typeString == "RGBA")
 		{
 			// Nothing to do
