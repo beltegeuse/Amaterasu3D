@@ -68,6 +68,11 @@ public:
 		if(GenerateMipMapping)
 			glGenerateMipmap(GL_TEXTURE_2D);
 	}
+
+	virtual bool NeedUpdate()
+	{
+		return GenerateMipMapping;
+	}
 };
 
 /**

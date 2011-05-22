@@ -249,6 +249,18 @@ void FBO::UnBind()
 	if(m_ColoredBuffers.empty())
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
+	// Check if Texture need to be updated
+	for(std::map<std::string, FBOTextureBufferParam>::iterator it = m_BuffersParams.begin(); it != m_BuffersParams.end(); ++it)
+	{
+		if(it->second.NeedUpdate())
+		{
+			m_ColoredBuffers[it->first]->activateTextureMapping();
+			m_ColoredBuffers[it->first]->activateTexture();
+			it->second.applyPostParam();
+			m_ColoredBuffers[it->first]->desactivateTextureMapping();
+		}
+	}
+
 	m_IsActivated = false;
 }
 

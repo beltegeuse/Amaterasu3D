@@ -167,7 +167,9 @@ public:
 
 			m_SphereProjectionHemiCube->Begin();
 			for(int i = 0; i < 5; i++)
+			{
 				m_CubeFBOs[i].Fbo->GetTexture("ColorBuffer")->activateMultiTex(CUSTOM_TEXTURE+i);
+			}
 
 			glBegin(GL_QUADS);
 				glVertex2f(-1.0, -1.0);
@@ -177,7 +179,9 @@ public:
 			glEnd();
 
 			for(int i = 0; i < 5; i++)
+			{
 				m_CubeFBOs[i].Fbo->GetTexture("ColorBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+i);
+			}
 			m_SphereProjectionHemiCube->End();
 
 			m_SphereProjectionHemiCube->GetFBO()->DrawDebug();
