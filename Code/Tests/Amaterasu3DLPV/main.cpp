@@ -31,6 +31,7 @@ protected:
 	TShaderPtr m_LPVShowVPL;
 	TShaderPtr m_LPVLightingAllShader;
 	TShaderPtr m_ToneOperator;
+	TShaderPtr m_ShowLum;
 	// LPV object
 	LPV m_LPV;
 
@@ -190,6 +191,7 @@ private:
 		m_DeferredSpotShader = ShaderManager.LoadShader("DeferredSunLight.shader");
 		m_LPVShowVPL = ShaderManager.LoadShader("LPVShowVPL.shader");
 		m_ToneOperator = ShaderManager.LoadShader("FilmicToneOperator.shader");
+		m_ShowLum = ShaderManager.LoadShader("ShowLuminance.shader");
 		// Load Scene
 		LoadSponzaScene();
 		// Console commands
