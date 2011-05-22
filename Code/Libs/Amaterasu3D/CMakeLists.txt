@@ -43,8 +43,8 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/MatrixManagement.cpp
 	Graphics/Color.cpp
 	Graphics/FBO.cpp
-	#Graphics/GLSLShader.cpp
 	Graphics/Texture.cpp
+	Graphics/SceneManager.cpp
 	
 	System/GraphicsDevice.cpp
 	System/EventListeners.cpp
