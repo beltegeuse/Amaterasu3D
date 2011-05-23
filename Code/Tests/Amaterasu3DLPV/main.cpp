@@ -86,7 +86,7 @@ public:
 		m_ShowGrid = true;
 		m_DebugShowDirectOnly = false;
 		m_TriInterpolation = false;
-		m_DoOcclusion = false;
+		m_DoOcclusion = true;
 		m_ShowAll = true;
 		m_PropagatedShow = -1;
 		m_GridShow = 0;
@@ -210,7 +210,7 @@ private:
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(-50,20,1.0);
 		m_Light.LightRaduis = 500.0;
-		m_Light.LightIntensity = 1.0;
+		m_Light.LightIntensity = 10000.0;
 		//m_Light.LightCutOff = 70;
 		m_Light.Direction = Math::TVector3F(0.1,0.0,0.0);
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
@@ -330,26 +330,20 @@ private:
 		// ============= Compute Indirect lighting only
 		glClearColor(0.0f,0.0f,0.0f,0.f);
 
-		// ****** 1st Step : VPL Injection
-		m_Performances.BeginStep("  === Injection VPL");
-//		for(int i = 0; i < m_LPV.GetNumberCascade(); i++)
-//		{
-			m_LPV.BeginInjectionVPLPass(m_Level);
-			m_LPV.InjectVPLFromLight(m_Light, *m_SamplePointRSM);
-			m_LPV.EndInjectionVPLPass();
-		//}
-		m_Performances.EndStep();
 		// ******* 2nd Step : Geometry injection
 		m_Performances.BeginStep("  === Injection Geometry");
-//		for(int i = 0; i < m_LPV.GetNumberCascade(); i++)
-//		{
-			m_LPV.BeginInjectionGeometryPass(m_Level);
-			if(m_DoOcclusion)
-			{
-				m_LPV.InjectGeometryFromLight(m_Light, *m_SamplePointRSM);
-			}
-			m_LPV.EndInjectionGeometryPass();
-//		}
+		m_LPV.BeginInjectionGeometryPass(m_Level);
+		if(m_DoOcclusion)
+		{
+			m_LPV.InjectGeometryFromLight(m_Light, *m_SamplePointRSM);
+		}
+		m_LPV.EndInjectionGeometryPass();
+		m_Performances.EndStep();
+		// ****** 1st Step : VPL Injection
+		m_Performances.BeginStep("  === Injection VPL");
+		m_LPV.BeginInjectionVPLPass(m_Level);
+		m_LPV.InjectVPLFromLight(m_Light, *m_SamplePointRSM);
+		m_LPV.EndInjectionVPLPass();
 		m_Performances.EndStep();
 		// ******* 3th Step : Diffusion
 		m_Performances.BeginStep("  === Propagation");
@@ -411,7 +405,22 @@ private:
 
 			m_LPVLightingAllShader->End();
 
-			m_ToneOperator->Begin();
+//			m_ToneOperator->Begin();
+//			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
+//			glBegin(GL_QUADS);
+//				glTexCoord2f(0.0, 0.0);
+//				glVertex2f(-1.0, -1.0);
+//				glTexCoord2f(0.0, 1.0);
+//				glVertex2f(-1.0, 1.0);
+//				glTexCoord2f(1.0, 1.0);
+//				glVertex2f(1.0, 1.0);
+//				glTexCoord2f(1.0, 0.0);
+//				glVertex2f(1.0, -1.0);
+//			glEnd();
+//			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//			m_ToneOperator->End();
+
+			m_ShowLum->Begin();
 			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
 			glBegin(GL_QUADS);
 				glTexCoord2f(0.0, 0.0);
@@ -424,7 +433,9 @@ private:
 				glVertex2f(1.0, -1.0);
 			glEnd();
 			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-			m_ToneOperator->End();
+			m_ShowLum->End();
+
+			m_LPV.m_LPVInjectGeomerty->GetFBO()->DrawDebug();
 		}
 		else
 		{

@@ -89,6 +89,7 @@ public:
 		m_RSMShader->Begin();
 		// *** Send all Uniform values
 		m_RSMShader->SetUniform1f("LightRaduis",LightRaduis);
+		m_RSMShader->SetUniform1f("LightIntensity",LightIntensity);
 		m_RSMShader->SetUniformVector("LightPosition", Position);
 		m_RSMShader->SetUniformColor("LightColor", LightColor);
 		// * Draw the scene

@@ -18,7 +18,7 @@ uniform mat4 InverseViewMatrix;
 #include <GetPosition.shadercode>
 
 // Output shader
-flat out vec3 inNormal;
+smooth out vec3 inNormal;
 
 //invariant gl_Position;
 

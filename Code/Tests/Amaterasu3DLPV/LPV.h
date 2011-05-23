@@ -37,7 +37,7 @@
 
 class LPV
 {
-protected:
+public:
 	/*
 	 * Attributes
 	 */

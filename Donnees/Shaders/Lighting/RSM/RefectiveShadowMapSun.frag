@@ -82,7 +82,7 @@ void main()
 		float NdotL = max(dot(vec3(outNormal), LightDirection), 0.0);
 		if (NdotL > 0.0) {
 			// Add diffuse compoment
-			Flux += vec4((LightColor.rgb),1.0); //  LightAtt
+			Flux += vec4((LightColor.rgb),1.0) * LightIntensity; //  LightAtt
 		}
 		
 		//Flux = vec4(vec3(1.0),1.0);

@@ -3,7 +3,7 @@
 
 layout(points) in;
 
-layout(points, max_vertices = NB_CASCADE)out;
+layout(points, max_vertices = NB_CASCADE) out;
 
 // grids Parametres
 // NB_CASCADE is an define...
@@ -14,7 +14,7 @@ uniform int LPVNbCell;// number cell in one dim
 
 #include <LPVPosition.shadercode>
 
-flat in vec3 inNormal[1];
+smooth in vec3 inNormal[1];
 
 smooth out vec3 outNormal;
 smooth out float SurfelArea;

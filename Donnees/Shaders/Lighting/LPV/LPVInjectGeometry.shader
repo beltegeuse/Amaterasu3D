@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Shader name="2DDraw" type="Basic">
     <OutputFrame depthType="None" size="Custom" width=256 height=128>
-    	<Frame name="Grid" type="RGBA16" />
+    	<Frame name="Grid" type="RGBA32" />
     </OutputFrame>
     <Defines>
 		<Define name="NB_CASCADE" defaultValue="2" />
