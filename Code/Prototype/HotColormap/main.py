@@ -85,6 +85,7 @@ if __name__ == '__main__':
     
     print "Max pixel : "+str(maxV)
     
+    # Todo: Faire un operateur de Tone mapping
     
     # Initialisation de pygame
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
@@ -106,10 +107,12 @@ if __name__ == '__main__':
         print "Write image ..."
         for j in range(height):
             for i in range(width):
-#                Y = imageData[j*width+i][0]*0.17697+imageData[j*width+i][1]*0.81240+imageData[j*width+i][2]*0.01063
-#                v = maxC(minC(math.log10(Y),5.0),0.0)*50
-#                pxarray[i][j] = HotColormap(v)
-                 pxarray[i][j] = toColor(imageData[j*width+i], maxV)
+                Y = imageData[j*width+i][0]*0.17697+imageData[j*width+i][1]*0.81240+imageData[j*width+i][2]*0.01063
+                v = 0
+                if Y != 0.0:
+                    v = maxC(minC(math.log10(Y),5.0),0.0)*50
+                pxarray[i][j] = HotColormap(v)
+                #pxarray[i][j] = toColor(imageData[j*width+i], maxV)
         print "End Write image"
         
         pygame.display.flip()
