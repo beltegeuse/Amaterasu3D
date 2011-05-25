@@ -39,15 +39,18 @@ def HotColormap(i, m = 256.0):
     
     return (int(r*255),int(g*255),int(b*255))
 
-def min(v1,v2):
+def minC(v1,v2):
     if v1 > v2:
         return v2
     return v1
 
-def max(v1,v2):
+def maxC(v1,v2):
     if v1 < v2:
         return v2
     return v1
+
+def toColor(v, max):
+    return (int(v[0]*255 / max[0]),int(v[1]*255 / max[1]),int(v[2]*255 / max[2]))
 
 if __name__ == '__main__':
     if(len(sys.argv) < 2):
@@ -72,13 +75,16 @@ if __name__ == '__main__':
     
     imageData = []
     for j in range(height):
-        temp = []
         for i in range(width):
             indice = j*width+i
-            temp.append(R[indice]*0.17697+G[indice]*0.81240+B[indice]*0.01063)
-        imageData.append(temp)
+            imageData.append((R[indice],G[indice],B[indice]))
     
-    print "First pixel : "+str(imageData[0][0])
+    print "First pixel : "+str(imageData[0])
+    
+    maxV = max(imageData)
+    
+    print "Max pixel : "+str(maxV)
+    
     
     # Initialisation de pygame
     os.environ['SDL_VIDEO_CENTERED'] = '1' 
@@ -100,8 +106,10 @@ if __name__ == '__main__':
         print "Write image ..."
         for j in range(height):
             for i in range(width):
-                v = max(min(math.log10(imageData[i][j]),5.0),0.0)*50
-                pxarray[i][j] = HotColormap(v)
+#                Y = imageData[j*width+i][0]*0.17697+imageData[j*width+i][1]*0.81240+imageData[j*width+i][2]*0.01063
+#                v = maxC(minC(math.log10(Y),5.0),0.0)*50
+#                pxarray[i][j] = HotColormap(v)
+                 pxarray[i][j] = toColor(imageData[j*width+i], maxV)
         print "End Write image"
         
         pygame.display.flip()
