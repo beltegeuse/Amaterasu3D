@@ -148,6 +148,8 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 		{
 			Logger::Log() << "        * Mipmapping enable \n";
 			param.GenerateMipMapping = true;
+			param.MinFiltering = GL_LINEAR_MIPMAP_LINEAR;
+			param.MaxFiltering = GL_LINEAR;
 		}
 
 		// Parse the Image format

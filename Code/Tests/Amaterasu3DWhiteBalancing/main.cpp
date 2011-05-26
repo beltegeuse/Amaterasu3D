@@ -33,6 +33,7 @@ protected:
 	TShaderPtr m_CubeShader;
 	TShaderPtr m_2DDraw;
 	TShaderPtr m_SphereProjectionHemiCube;
+	TShaderPtr m_TestMipmapping;
 	FPS m_FPS;
 	FBOCube* m_CubeFBOs;
 	bool m_debug;
@@ -64,7 +65,7 @@ public:
 		m_CubeShader = CShaderManager::Instance().LoadShader("CubeProjection.shader");
 		m_2DDraw = CShaderManager::Instance().LoadShader("2DDraw.shader");
 		m_SphereProjectionHemiCube = CShaderManager::Instance().LoadShader("SphereProjectionHemiCube.shader");
-
+		m_TestMipmapping = CShaderManager::Instance().LoadShader("TestMipmappingRead.shader");
 		// Creation des autres buffers
 		GenerateCubeBuffers();
 		// Load scene
@@ -184,7 +185,17 @@ public:
 			}
 			m_SphereProjectionHemiCube->End();
 
-			m_SphereProjectionHemiCube->GetFBO()->DrawDebug();
+			m_TestMipmapping->Begin();
+			m_SphereProjectionHemiCube->GetFBO()->GetTexture("ColorBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+			glBegin(GL_QUADS);
+				glVertex2f(-1.0, -1.0);
+				glVertex2f(-1.0, 1.0);
+				glVertex2f(1.0, 1.0);
+				glVertex2f(1.0, -1.0);
+			glEnd();
+			m_SphereProjectionHemiCube->GetFBO()->GetTexture("ColorBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+			m_TestMipmapping->End();
+
 		}
 
 		MatrixManager.SetModeMatrix(MATRIX_2D);
