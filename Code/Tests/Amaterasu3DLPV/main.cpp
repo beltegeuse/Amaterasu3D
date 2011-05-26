@@ -19,7 +19,7 @@
 #include <Graphics/Lighting/LightShaders.h>
 #include <Addons/FPS/FPS.h>
 
-#include "LPV.h"
+#include <Addons/LPV/LPV.h>
 
 class ApplicationLPV : public Application
 {

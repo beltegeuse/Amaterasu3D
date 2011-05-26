@@ -11,6 +11,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Addons/Logo/Logo.cpp
 	Addons/PerformancePanel/PerformancePanel.cpp
 	Addons/Binvox/BinvoxModel.cpp
+	Addons/LPV/LPV.cpp
 	
 	Debug/Exceptions.cpp
 	Debug/OpenGLDebug.cpp

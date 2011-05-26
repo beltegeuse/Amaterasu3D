@@ -1,6 +1,5 @@
 SET(Amaterasu3DLPV_SRCS
 	main.cpp
-	LPV.cpp
 )
 
 
