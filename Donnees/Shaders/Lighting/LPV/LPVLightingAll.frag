@@ -112,9 +112,10 @@ void main()
 	float ShadowFactor = ComputeShadow(position);
 
 	// Compute light attenation
-	float SpotAtt = pow(SpotDot, 12.0); //TODO: uniform ???
-	float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
-
+	//float SpotAtt = pow(SpotDot, 12.0); //TODO: uniform ???
+	//float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
+	float LightAtt = LightIntensity / (LightDistance*LightDistance);
+	
 	// Initialise Black color
 	Color = vec4(0.0);
 
@@ -122,12 +123,12 @@ void main()
 	float NdotL = max(dot(normal, LightDirection), 0.0);
 	if (NdotL > 0.0) {
 		// Add diffuse compoment
-		Color += vec4((LightColor.rgb),1.0); //NdotL
+		Color += LightAtt*vec4((LightColor.rgb),1.0)*NdotL; //NdotL
 		// Compute reflect vector
-		vec3 R = reflect(-LightDirection, normal);
+		//vec3 R = reflect(-LightDirection, normal);
 		// Add specular compoment
-		float RdotE = max(dot(R, normalize(-position)), 0.0);
-		Color += clamp(vec4(LightAtt * LightColor.rgb * specularColor.rgb * pow(RdotE, specularColor.a),16.0),0.0,1.0);
+		//float RdotE = max(dot(R, normalize(-position)), 0.0);
+		//Color += clamp(vec4(LightAtt * LightColor.rgb * specularColor.rgb * pow(RdotE, specularColor.a),16.0),0.0,1.0);
 	}
 
 
@@ -135,6 +136,7 @@ void main()
 	Color *= vec4(diffuseColor,1.0);
 	Color *= ShadowFactor;
 
-	Color += vec4(diffuseColor*pow(vec3(ComputeIndirectLighting(position, normal)),vec3(1/2.2)),1.0);
+	Color += vec4(diffuseColor*vec3(ComputeIndirectLighting(position, normal)),1.0);
+	Color *= 0.2;
 	//Color += vec4(diffuseColor,1.0)*vec4(vec3(0.05),1.0);
 }

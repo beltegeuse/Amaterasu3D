@@ -71,23 +71,24 @@ void main()
 	float SpotDot = dot(normalize(LightSpotDirection), -LightDirection);
 	
 	Flux = vec4(0.0);
-	if(LightDistance > LightRaduis || SpotDot < LightCutOff)
-	{
+	//if(SpotDot < LightCutOff )
+	//{
 	    // Nothing to do
-	}
-	else
-	{
+	//}
+	//else
+	//{
 		// Compute light attenation
-	    float SpotAtt = pow(SpotDot, 9.0); //TODO: uniform ???
-	    float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
+	    //float SpotAtt = pow(SpotDot, 9.0); //TODO: uniform ???
+	    //float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
+		float LightAtt = LightIntensity / (LightDistance*LightDistance);
 
 		float NdotL = max(dot(vec3(outNormal), LightDirection), 0.0);
 		if (NdotL > 0.0) {
 			// Add diffuse compoment
-			Flux += vec4(LightAtt * (LightColor.rgb),1.0); // NdotL
+			Flux += vec4(LightAtt * (LightColor.rgb),1.0) * NdotL; // NdotL
 		}
 		
 		//Flux = vec4(vec3(1.0),1.0);
 		Flux *= diffuseColor;
-	}
+	//}
 }

@@ -32,8 +32,10 @@
 #include <Graphics/SceneGraph/Group.h>
 #include <Math/Matrix4.h>
 
+#include <cmath>
+
 //TODO: Generaliser
-class LightShaders : public SunLight
+class LightShaders : public SpotLight
 {
 private:
 	/*
@@ -57,7 +59,7 @@ public:
 	void Initialize()
 	{
 		//TODO
-		m_RSMShader = CShaderManager::Instance().LoadShader("RefectiveShadowMapSun.shader");
+		m_RSMShader = CShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
 	}
 	// Matrices methods
 	Math::CMatrix4 GetViewMatrix() const
@@ -69,7 +71,7 @@ public:
 	Math::CMatrix4 GetProjectionMatrix() const
 	{
 		Math::CMatrix4 LightProjectionMatrix;
-		LightProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(90.0, 1.0, 1.0, LightRaduis);
+		LightProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(70.0, 1.0, 1.0, LightRaduis);
 		return LightProjectionMatrix;
 	}
 
@@ -88,9 +90,21 @@ public:
 		// * Enable Shader
 		m_RSMShader->Begin();
 		// *** Send all Uniform values
+
+		/*
+		 *  uniform vec3 LightPosition;
+			uniform vec4 LightColor;
+			uniform vec3 LightSpotDirection;
+			uniform float LightRaduis;
+			uniform float LightIntensity;
+			uniform float LightCutOff; // cos value
+		 */
+
 		m_RSMShader->SetUniform1f("LightRaduis",LightRaduis);
 		m_RSMShader->SetUniform1f("LightIntensity",LightIntensity);
+		m_RSMShader->SetUniform1f("LightCutOff",cos(LightCutOff*(M_PI/180.0)));
 		m_RSMShader->SetUniformVector("LightPosition", Position);
+		m_RSMShader->SetUniformVector("LightSpotDirection", Direction);
 		m_RSMShader->SetUniformColor("LightColor", LightColor);
 		// * Draw the scene
 		scene->Draw();

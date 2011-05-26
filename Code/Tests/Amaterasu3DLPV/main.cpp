@@ -61,7 +61,8 @@ protected:
 	int m_Level;
 public:
 
-	ApplicationLPV()
+	ApplicationLPV() :
+		m_LPV(32,2.0)
 	{
 		/////////////////
 		// OpenGL setups
@@ -177,8 +178,9 @@ private:
 		m_LPV.Initialize();
 		m_Light.Initialize();
 		// Camera Setup
-		m_Camera = new CameraFPS(Math::TVector3F(0,0,0), Math::TVector3F(0,0,0));
-		m_Camera->SetSpeed(100.0);
+		// 12 -1 7   -4 .2 1.5
+		m_Camera = new CameraFPS(Math::TVector3F(12,7,-1), Math::TVector3F(-4,1.5,0.2));
+		m_Camera->SetSpeed(10.0);
 		// Initialise OpenGL
 		glClearColor(0.0f,0.0f,0.0f,1.f);
 		//////////////////
@@ -193,7 +195,7 @@ private:
 		m_ToneOperator = ShaderManager.LoadShader("FilmicToneOperator.shader");
 		m_ShowLum = ShaderManager.LoadShader("ShowLuminance.shader");
 		// Load Scene
-		LoadSponzaScene();
+		LoadSponzaTest();
 		// Console commands
 		Console.RegisterCommand("camera",Console::Bind(&ApplicationLPV::ShowInfoCamera, *this));
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationLPV::UpdateLightPosition, *this));
@@ -202,6 +204,23 @@ private:
 		// Create sample point texture
 		CreateSampleModel(512,512,&m_SamplePointRSM);
 		CreateSampleModel(800,600,&m_SamplePointCamera);
+	}
+
+	void LoadSponzaTest()
+	{
+		// Create light
+		m_Light.LightColor = Color(41230,34110,29860);
+		m_Light.Position = Math::TVector3F(12,7,-1);
+		m_Light.LightRaduis = 50.0;
+		m_Light.LightIntensity = 1.0;
+		m_Light.LightCutOff = 70;
+		//m_Light.LightCutOff = 70;
+		m_Light.Direction = Math::TVector3F(-4,1.5,0.2);
+		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.3DS");
+		Math::CMatrix4 transMatrix;
+		transMatrix.SetScaling(0.1,0.1,0.1);
+		//node->LoadTransformMatrix(transMatrix);
+		RootSceneGraph.AddChild(node);
 	}
 
 	void LoadSponzaScene()
@@ -292,7 +311,7 @@ private:
 	//! Draw the scene
 	virtual void OnRender()
 	{
-		UpdateLightWorldPos();
+		//UpdateLightWorldPos();
 		m_LPV.ComputeGridPosition(m_Camera);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -422,20 +441,21 @@ private:
 //			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 //			m_ToneOperator->End();
 
-//			m_ShowLum->Begin();
-//			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
-//			glBegin(GL_QUADS);
-//				glTexCoord2f(0.0, 0.0);
-//				glVertex2f(-1.0, -1.0);
-//				glTexCoord2f(0.0, 1.0);
-//				glVertex2f(-1.0, 1.0);
-//				glTexCoord2f(1.0, 1.0);
-//				glVertex2f(1.0, 1.0);
-//				glTexCoord2f(1.0, 0.0);
-//				glVertex2f(1.0, -1.0);
-//			glEnd();
-//			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-//			m_ShowLum->End();
+			m_ShowLum->Begin();
+			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
+			//m_Light.GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
+			glBegin(GL_QUADS);
+				glTexCoord2f(0.0, 0.0);
+				glVertex2f(-1.0, -1.0);
+				glTexCoord2f(0.0, 1.0);
+				glVertex2f(-1.0, 1.0);
+				glTexCoord2f(1.0, 1.0);
+				glVertex2f(1.0, 1.0);
+				glTexCoord2f(1.0, 0.0);
+				glVertex2f(1.0, -1.0);
+			glEnd();
+			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+			m_ShowLum->End();
 
 			//m_LPV.m_LPVInjectGeomerty->GetFBO()->DrawDebug();
 		}
