@@ -210,7 +210,7 @@ private:
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		m_Light.Position = Math::TVector3F(-50,20,1.0);
 		m_Light.LightRaduis = 500.0;
-		m_Light.LightIntensity = 10000.0;
+		m_Light.LightIntensity = 1.0;
 		//m_Light.LightCutOff = 70;
 		m_Light.Direction = Math::TVector3F(0.1,0.0,0.0);
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
@@ -405,6 +405,8 @@ private:
 
 			m_LPVLightingAllShader->End();
 
+			m_LPVLightingAllShader->GetFBO()->DrawDebug();
+
 //			m_ToneOperator->Begin();
 //			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
 //			glBegin(GL_QUADS);
@@ -420,22 +422,22 @@ private:
 //			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 //			m_ToneOperator->End();
 
-			m_ShowLum->Begin();
-			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
-			glBegin(GL_QUADS);
-				glTexCoord2f(0.0, 0.0);
-				glVertex2f(-1.0, -1.0);
-				glTexCoord2f(0.0, 1.0);
-				glVertex2f(-1.0, 1.0);
-				glTexCoord2f(1.0, 1.0);
-				glVertex2f(1.0, 1.0);
-				glTexCoord2f(1.0, 0.0);
-				glVertex2f(1.0, -1.0);
-			glEnd();
-			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-			m_ShowLum->End();
+//			m_ShowLum->Begin();
+//			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
+//			glBegin(GL_QUADS);
+//				glTexCoord2f(0.0, 0.0);
+//				glVertex2f(-1.0, -1.0);
+//				glTexCoord2f(0.0, 1.0);
+//				glVertex2f(-1.0, 1.0);
+//				glTexCoord2f(1.0, 1.0);
+//				glVertex2f(1.0, 1.0);
+//				glTexCoord2f(1.0, 0.0);
+//				glVertex2f(1.0, -1.0);
+//			glEnd();
+//			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//			m_ShowLum->End();
 
-			m_LPV.m_LPVInjectGeomerty->GetFBO()->DrawDebug();
+			//m_LPV.m_LPVInjectGeomerty->GetFBO()->DrawDebug();
 		}
 		else
 		{

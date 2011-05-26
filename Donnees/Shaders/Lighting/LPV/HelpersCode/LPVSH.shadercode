@@ -27,12 +27,12 @@ vec4 SHRotate(in vec3 dir, in vec2 vZHCoeffs)
 }
 
 //Create a cone SH with the given angle (function from crytek paper)
-/*vec4 SHProjectCone(in vec3 dir, float angle)
+vec4 SHProjectCone(in vec3 dir, float angle)
 {
   vec2 vZHCoeffs = vec2(0.5 * (1.0 - cos(angle)),           // 1/2 (1 - Cos[\[Alpha]])
                         0.75 * sin(angle) * sin(angle));   // 3/4 Sin[\[Alpha]]^2
   return SHRotate(dir, vZHCoeffs);
-}*/
+}
 
 ///////////////////////////////////////////////
 //////////// New functions ////////////////////
@@ -49,6 +49,7 @@ vec4 SHRotate(in vec3 dir, in vec2 vZHCoeffs)
 //#define SH_hemi_c vec4(0.25,-0.5,0.5,0.5)
 #define SH_c vec4(0.282094792,-0.488602512,0.488602512,-0.488602512)
 #define SH_cosLobe_c vec4(0.886226925,-1.02332671,1.02332671,-1.02332671)
+//#define SH_cosLobe_c vec4(0.25,-0.5,0.5,-0.5)
 
 //solid Angles
 // 0.4006696846f / 4Pi;
@@ -68,6 +69,8 @@ vec4 SH_evaluate(vec3 dir){
 vec4 SHCreateHemi(in vec3 dir)
 {
   //return SHRotate(dir, vec2(0.25,0.5));
+  //return SHRotate(dir, vec2(0.292893219, 0.375));
+  //return SHRotate(dir, vec2(0.5,0.75));
   //return SHRotate(dir, vec2(1.0,0.0));
   return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,dir.x);
 }
@@ -76,6 +79,7 @@ vec4 SHCreateHemi(in vec3 dir)
 vec4 SH_evaluateCosineLobe_direct( in vec3 dir ) {
 	//return SHRotate(dir, vec2(0.25,0.5));
 	//return SHRotate(dir, vec2(0.5,0.75));
+	//return SHRotate(dir, vec2(0.292893219, 0.375));
 	return SH_cosLobe_c * vec4(1.0,dir.y,dir.z,-dir.x);
 }
 

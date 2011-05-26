@@ -24,7 +24,7 @@ void main()
 	// Get all data
 	vec4 Flux = texture(FluxBuffer, outTexCoord); // TODO: Normalisation pb ????
 	// Compute SH
-	vec4 SH = SHCreateHemi(outNormal) / Pi;// ;
+	vec4 SH = SHCreateHemi(normalize(outNormal)) / Pi;// ;
 	//vec4 Flux = texture(FluxBuffer, outTexCoord); // * 1.0 / (512.0*512.0);
 	// Put into buffers
 	GridRed = SH * Flux.r;
