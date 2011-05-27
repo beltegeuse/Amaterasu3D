@@ -74,9 +74,9 @@ vec4 ComputeIndirectLighting(in vec3 Position, in vec3 Normal)
 
 		// Get texture coordinates
 		//vec2 TexCoordGrid = Convert3DTo2DTexcoord(Position);
-		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position, Normal, i); ///< And get coeff value
-		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position, Normal, i);
-		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, Normal, i);
+		CoeffGridRed = TrilinearInterpolationWorld(GridRed,Position, -Normal, i); ///< And get coeff value
+		CoeffGridGreen = TrilinearInterpolationWorld(GridGreen,Position, -Normal, i);
+		CoeffGridBlue = TrilinearInterpolationWorld(GridBlue,Position, -Normal, i);
 
 	
 		ReturnValue +=  vec4(max(dot(CoeffGridRed,SHEv) / 3.14,0.0) *factorNorm,

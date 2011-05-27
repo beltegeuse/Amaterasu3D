@@ -4,6 +4,7 @@
 #include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Graphics/SceneGraph/Model.h>
 #include <Graphics/Camera/CameraFPS.h>
+#include <Graphics/Camera/FixedCamera.h>
 #include <Logger/LoggerFile.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -38,7 +39,7 @@ protected:
 	SceneGraph::Model* m_SamplePointRSM;
 	SceneGraph::Model* m_SamplePointCamera;
 	// Camera
-	CameraFPS* m_Camera;
+	CameraAbstract* m_Camera;
 	Texture* m_GridTexture;
 	PerformancePanel m_Performances;
 	// FPS Counter
@@ -179,8 +180,8 @@ private:
 		m_Light.Initialize();
 		// Camera Setup
 		// 12 -1 7   -4 .2 1.5
-		m_Camera = new CameraFPS(Math::TVector3F(12,7,-1), Math::TVector3F(-4,1.5,0.2));
-		m_Camera->SetSpeed(10.0);
+		m_Camera = new CameraFPS(Math::TVector3F(-12,7,1), Math::TVector3F(4,1.5,-0.2));
+		//m_Camera->SetSpeed(10.0);
 		// Initialise OpenGL
 		glClearColor(0.0f,0.0f,0.0f,1.f);
 		//////////////////
@@ -210,12 +211,12 @@ private:
 	{
 		// Create light
 		m_Light.LightColor = Color(41230,34110,29860);
-		m_Light.Position = Math::TVector3F(12,7,-1);
+		m_Light.Position = Math::TVector3F(-12,7,1);
 		m_Light.LightRaduis = 50.0;
 		m_Light.LightIntensity = 1.0;
 		m_Light.LightCutOff = 70;
 		//m_Light.LightCutOff = 70;
-		m_Light.Direction = Math::TVector3F(-4,1.5,0.2);
+		m_Light.Direction = Math::TVector3F(4,1.5,-0.2);
 		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.3DS");
 		Math::CMatrix4 transMatrix;
 		transMatrix.SetScaling(0.1,0.1,0.1);
