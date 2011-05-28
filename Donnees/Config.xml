@@ -1,6 +1,6 @@
 <Config>
-	<Resolution x=400 y=400 />
+	<Resolution x=800 y=600 />
 	<Projection near=1.0 far=100.0 fov=70 />
 	<Data rootDir="../Donnees" />
-	<Logger type="File" file="log.out" />
+	<Logger type="Debug" file="log.out" />
 </Config>

@@ -65,7 +65,7 @@ public:
 		light2.Direction = Math::TVector3F(1.0,0.0,0.0);
 		m_GI->AddSpotLight(light2);
 		// Load scene
-		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
+		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("Living.dae");
 		RootSceneGraph.AddChild(node1);
 
 		Console.RegisterCommand("addlight",Console::Bind(&ApplicationDeferred::AddLight, *this));

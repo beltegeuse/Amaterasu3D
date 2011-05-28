@@ -74,23 +74,26 @@ float ComputeShadow(in vec3 position)
 
 
 	// *** takes samples for PCF
-	vec4 samples1;
-    samples1.x = texture(ShadowBuffer, shadowCoordinateWdivide.st+ShadowOffset * vec2( 0.0, 1.0)).r;
-    samples1.y = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2( 1.0, 0.0)).r;
-    samples1.z = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2( 0.0,-1.0)).r;
-    samples1.w = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2(-1.0, 1.0)).r;
+//	vec4 samples1;
+//    samples1.x = texture(ShadowBuffer, shadowCoordinateWdivide.st+ShadowOffset * vec2( 0.0, 1.0)).r;
+//    samples1.y = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2( 1.0, 0.0)).r;
+//    samples1.z = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2( 0.0,-1.0)).r;
+//    samples1.w = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2(-1.0, 1.0)).r;
+//
+//    vec4 samples2;
+//    samples2.x = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2(-1.0, 2.0)).r;
+//    samples2.y = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2( 2.0, 1.0)).r;
+//    samples2.z = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2( 1.0,-2.0)).r;
+//    samples2.w = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2(-2.0,-1.0)).r;
+//
+//    float shadow = dot(step(shadowCoordinateWdivide.z - 0.0001,samples1),vec4(0.125,0.125,0.125,0.125))
+//			   + dot(step(shadowCoordinateWdivide.z - 0.0001,samples2),vec4(0.125,0.125,0.125,0.125));
+//    shadow = mix(1.0,shadow,inside);
+//    shadow = shadow;
+	if(any(lessThan(shadowCoordinateWdivide.xyz,vec3(0.0))) || any(greaterThan(shadowCoordinateWdivide.xyz,vec3(1.0))) || ShadowCoord.w < 0.0)
+		return 0.0;
 
-    vec4 samples2;
-    samples2.x = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2(-1.0, 2.0)).r;
-    samples2.y = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2( 2.0, 1.0)).r;
-    samples2.z = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2( 1.0,-2.0)).r;
-    samples2.w = texture(ShadowBuffer,shadowCoordinateWdivide.st+ShadowOffset * vec2(-2.0,-1.0)).r;
-
-    float shadow = dot(step(shadowCoordinateWdivide.z - 0.0001,samples1),vec4(0.125,0.125,0.125,0.125))
-			   + dot(step(shadowCoordinateWdivide.z - 0.0001,samples2),vec4(0.125,0.125,0.125,0.125));
-    shadow = mix(1.0,shadow,inside);
-    shadow = shadow;
-
+	float shadow = step(shadowCoordinateWdivide.z - 0.001,texture(ShadowBuffer, shadowCoordinateWdivide.st).r)*1.0;
     return shadow;
 }
 

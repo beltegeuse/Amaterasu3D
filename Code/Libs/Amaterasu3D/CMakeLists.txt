@@ -12,6 +12,8 @@ SET(LIB_AMATERASU3D_SRCS
 	Addons/PerformancePanel/PerformancePanel.cpp
 	Addons/Binvox/BinvoxModel.cpp
 	Addons/LPV/LPV.cpp
+	Addons/ToneMappingOperator/AbsrtactToneOperator.cpp
+	Addons/ToneMappingOperator/PhotographicToneOperator.cpp
 	
 	Debug/Exceptions.cpp
 	Debug/OpenGLDebug.cpp

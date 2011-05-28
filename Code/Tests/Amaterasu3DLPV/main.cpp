@@ -21,6 +21,8 @@
 #include <Addons/FPS/FPS.h>
 
 #include <Addons/LPV/LPV.h>
+#include <Addons/ToneMappingOperator/AbsrtactToneOperator.h>
+#include <Addons/ToneMappingOperator/PhotographicToneOperator.h>
 
 class ApplicationLPV : public Application
 {
@@ -31,8 +33,8 @@ protected:
 	TShaderPtr m_DeferredSpotShader;
 	TShaderPtr m_LPVShowVPL;
 	TShaderPtr m_LPVLightingAllShader;
-	TShaderPtr m_ToneOperator;
 	TShaderPtr m_ShowLum;
+	AbsrtactToneOperator* m_ToneOperator;
 	// LPV object
 	LPV m_LPV;
 
@@ -193,8 +195,9 @@ private:
 		m_GBufferShader = ShaderManager.LoadShader("GBuffer.shader");
 		m_DeferredSpotShader = ShaderManager.LoadShader("DeferredSunLight.shader");
 		m_LPVShowVPL = ShaderManager.LoadShader("LPVShowVPL.shader");
-		m_ToneOperator = ShaderManager.LoadShader("FilmicToneOperator.shader");
+		//m_ToneOperator = ShaderManager.LoadShader("FilmicToneOperator.shader");
 		m_ShowLum = ShaderManager.LoadShader("ShowLuminance.shader");
+		m_ToneOperator = new PhotographicToneOperator(m_LPVLightingAllShader->GetFBO()->GetTexture("Color"));
 		// Load Scene
 		LoadSponzaTest();
 		// Console commands
@@ -212,7 +215,7 @@ private:
 		// Create light
 		m_Light.LightColor = Color(41230,34110,29860);
 		m_Light.Position = Math::TVector3F(-12,7,1);
-		m_Light.LightRaduis = 50.0;
+		m_Light.LightRaduis = 30.0;
 		m_Light.LightIntensity = 1.0;
 		m_Light.LightCutOff = 70;
 		//m_Light.LightCutOff = 70;
@@ -457,6 +460,9 @@ private:
 			glEnd();
 			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 			m_ShowLum->End();
+
+			m_ToneOperator->Compress();
+			m_ToneOperator->DrawDebug();
 
 			//m_LPV.m_LPVInjectGeomerty->GetFBO()->DrawDebug();
 		}

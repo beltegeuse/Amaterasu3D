@@ -58,8 +58,10 @@ public:
 	{
 		MinFiltering = GL_NEAREST;
 		MaxFiltering = GL_NEAREST;
-		SWrap = GL_CLAMP_TO_EDGE ;
-		TWrap = GL_CLAMP_TO_EDGE ;
+		//SWrap = GL_CLAMP_TO_EDGE ;
+		//TWrap = GL_CLAMP_TO_EDGE ;
+		SWrap = GL_CLAMP ;
+		TWrap = GL_CLAMP ;
 	}
 
 	//TODO: Add these possibility to the mother class ???
