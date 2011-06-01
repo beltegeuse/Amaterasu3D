@@ -177,6 +177,11 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 			param.InternalFormat = GL_RGBA32F;
 			param.ExternalFormat = GL_RGBA;
 		}
+		else if(typeString == "L")
+		{
+			param.InternalFormat = GL_LUMINANCE32F_ARB;
+			param.ExternalFormat = GL_LUMINANCE;
+		}
 		else
 			throw CException("unknow buffer type");
 		param.Attachment = glGetFragDataLocation(shader->GetProgramObject(),name.c_str());

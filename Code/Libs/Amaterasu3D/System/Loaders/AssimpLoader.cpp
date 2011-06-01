@@ -282,15 +282,16 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		GetMaterialPropreties(assimpMesh, scene->mMaterials[mesh->mMaterialIndex]);
 		// Check if is an Instance
 		bool foundInstance = false;
-		for(CachedAssimpMeshMap::iterator it = m_cached_geom.begin(); it != m_cached_geom.end(); it++)
-		{
-			if((*it)->IsInstance(*assimpMesh))
-			{
-				(*it)->SetInstance(*assimpMesh);
-				foundInstance = true;
-				break;
-			}
-		}
+		//TODO: Reactivativate instance system
+//		for(CachedAssimpMeshMap::iterator it = m_cached_geom.begin(); it != m_cached_geom.end(); it++)
+//		{
+//			if((*it)->IsInstance(*assimpMesh))
+//			{
+//				(*it)->SetInstance(*assimpMesh);
+//				foundInstance = true;
+//				break;
+//			}
+//		}
 
 		if(foundInstance)
 		{

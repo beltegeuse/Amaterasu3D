@@ -11,6 +11,9 @@ SET(LIB_AMATERASU3D_SRCS
 	Addons/Logo/Logo.cpp
 	Addons/PerformancePanel/PerformancePanel.cpp
 	Addons/Binvox/BinvoxModel.cpp
+	Addons/LPV/LPV.cpp
+	Addons/ToneMappingOperator/AbsrtactToneOperator.cpp
+	Addons/ToneMappingOperator/PhotographicToneOperator.cpp
 	
 	Debug/Exceptions.cpp
 	Debug/OpenGLDebug.cpp
@@ -26,6 +29,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Lighting/DeferredLighting/DeferredLighting.cpp
 	Graphics/Camera/CameraAbstract.cpp
 	Graphics/Camera/CameraFPS.cpp
+	Graphics/Camera/FixedCamera.cpp
 	Graphics/SceneGraph/DrawObject.cpp
 	Graphics/SceneGraph/Group.cpp
 	Graphics/SceneGraph/Debug/DebugCubeLeaf.cpp
