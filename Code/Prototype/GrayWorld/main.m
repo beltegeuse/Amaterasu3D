@@ -1,1 +1,1 @@
-GrayWorld('rendering.png','result.png','vonKries',1,1)
+GrayWorld('NoColorAdaptation.png','result3.png','cmccat2000',1,1)

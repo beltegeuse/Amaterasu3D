@@ -461,8 +461,8 @@ private:
 			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 			m_ShowLum->End();
 
-			m_ToneOperator->Compress();
-			m_ToneOperator->DrawDebug();
+//			m_ToneOperator->Compress();
+//			m_ToneOperator->DrawDebug();
 
 			//m_LPV.m_LPVInjectGeomerty->GetFBO()->DrawDebug();
 		}

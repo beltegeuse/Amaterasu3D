@@ -1,23 +1,48 @@
 
 /* ==============================
  * Conversion XYZ <-> RGB
- * ==============================
- */
+ * ==============================*/
+
 
 #define MRGBtoXYZ mat3(0.4124,0.3576,0.1805,0.2126,0.7152,0.0722,0.0193,0.1192,0.9505)
 #define MXYZtoRGB mat3(3.2405,-1.5371,-0.4985,-0.9693,1.8760,0.0416,0.0556,-0.2040,1.0572)
 
 vec3 RGBtoXYZ(in vec3 Color)
 {
-	return Color*transpose(MRGBtoXYZ);
+	return Color*MRGBtoXYZ;
 }
 
 vec3 XYZtoRGB(in vec3 Color)
 {
-	return Color*transpose(MXYZtoRGB);
+	return Color*MXYZtoRGB;
+}
+
+/* ==============================
+ * Conversion XYZ <-> xyY
+ * ==============================*/
+
+vec3 XYZtoxyY(in vec3 ColorXYZ)
+{
+	vec3 res;
+	float s = dot(ColorXYZ, vec3(1.0));
+
+	res.xy = ColorXYZ.xy / s;
+	res.z = ColorXYZ.y;
+
+	return res;
+}
+
+vec3 xyYtoXYZ(in vec3 ColorxyY)
+{
+	vec3 res;
+	res.x = (ColorxyY.x / ColorxyY.y) * ColorxyY.z;
+	res.y = ColorxyY.z;
+	res.z = ((1 - ColorxyY.x - ColorxyY.y) / ColorxyY.y) * ColorxyY.z;
+	return res;
 }
 
 #define D65XYZ vec3(95.047,100.00,108.883)
+//#define D65XYZ vec3(100,100,100)
 
 /* ==============================
  * CAT02 White chromatic adaptation
@@ -26,14 +51,20 @@ vec3 XYZtoRGB(in vec3 Color)
 
 #define MCAT02 mat3(0.7328,0.4296,-0.1624,-0.7036,1.6975,0.0061,0.0030,0.0136,0.9834)
 #define MCAT02Inv mat3(1.0961,-0.2789,0.1827,0.4544,0.4735,0.0721,-0.0096,-0.0057,1.0153)
+#define MBrandford mat3(0.8951,0.2664,-0.1614,-0.7502,1.7135,0.0367,0.0389,-0.0685,1.0296)
+#define MBrandfordInv mat3(0.9870,-0.1471,0.1600,0.4323,0.5184,0.0493,-0.0085,0.0400,0.9685)
 //mat3 MCAT02Trans = transpose(MCAT02);
 //mat3 MCAT02InvTrans = transpose(MCAT02Inv);
 
-vec3 ChromaticAdaptationCAT02(in vec3 ColorXYZ, in vec3 WhiteRef)
+vec3 ChromaticAdaptationCAT02(in vec3 Color, in vec3 WhiteRef)
 {
-	vec3 LMSw = WhiteRef*transpose(MCAT02);
-	vec3 LMSD65 = D65XYZ*transpose(MCAT02);
-	vec3 Gain = LMSD65 / LMSw;
+	vec3 LMSw = WhiteRef*transpose(MBrandford);
+	vec3 LMSD65 = D65XYZ*transpose(MBrandford);
+	mat3 Gain = mat3(LMSD65.x / LMSw.x,0,0,
+				0,LMSD65.y / LMSw.y,0,
+				0,0,LMSD65.z / LMSw.z) ;
 
-	return (Gain*(ColorXYZ*transpose(MCAT02)))*transpose(MCAT02Inv);
+	mat3 Trans = MXYZtoRGB*(MBrandfordInv*Gain*MBrandford)*MRGBtoXYZ;
+
+	return Color*Trans;
 }

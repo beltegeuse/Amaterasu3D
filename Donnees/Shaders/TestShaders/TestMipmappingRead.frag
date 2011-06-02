@@ -14,5 +14,5 @@ out vec4 ColorBuffer;
 
 void main()
 {
-	ColorBuffer = textureLod(MipmapTex, outTexCoord, 20);
+	ColorBuffer = textureLod(MipmapTex, outTexCoord, 10);
 }
