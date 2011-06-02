@@ -1,0 +1,1 @@
+GrayWorld('rendering.png','result.png','vonKries',1,1)
