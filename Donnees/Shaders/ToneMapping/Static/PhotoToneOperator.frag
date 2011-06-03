@@ -18,13 +18,13 @@ void main()
 	// Read data
 	vec3 HDRValue = texture(HDRBuffer,outTexCoord).xyz;
 	float Lw = texture(LuminanceBuffer,outTexCoord).r;
-	float La = texture(LuminanceBuffer,outTexCoord).r;
+	//float La = texture(LuminanceBuffer,outTexCoord).r;
 
 	// Compression
-	float Lm = (0.18/La)*Lw;
-	float Ld = Lm / ( Lm + 1 );
+	//float Lm = (0.18/La)*Lw;
+	//float Ld = Lm / ( Lm + 1 );
 
 
 
-	Result = vec4(Ld,Ld,Ld,1.0);
+	Result = vec4(vec3(Lw),1.0);
 }

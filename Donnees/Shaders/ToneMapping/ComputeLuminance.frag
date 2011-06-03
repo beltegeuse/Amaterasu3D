@@ -10,7 +10,7 @@ smooth in vec2 outTexCoord;
 uniform sampler2D HDRBuffer;
 
 // Output buffer
-out float Result;
+out vec4 Result;
 
 // Matlab proposition
 //const vec3 RGB2Lum = vec3(0.2552  1.0834  0);
@@ -21,5 +21,5 @@ void main()
 {
 	vec3 HDRValue = texture(HDRBuffer,outTexCoord).xyz;
 
-	Result = dot(HDRValue,RGB2Lum);
+	Result = vec4(dot(HDRValue,RGB2Lum));
 }
