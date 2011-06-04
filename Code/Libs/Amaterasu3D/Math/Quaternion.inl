@@ -28,7 +28,7 @@
 #include <stdlib.h>
 
 /////////////////////////////////////////////////////////////
-/// Constructeur par défaut
+/// Constructeur par dï¿½faut
 ///
 /// \param X : Composante X
 /// \param Y : Composante Y
@@ -47,7 +47,7 @@ w(W)
 
 
 /////////////////////////////////////////////////////////////
-/// Constructeur à partir d'une matrice
+/// Constructeur ï¿½ partir d'une matrice
 ///
 /// \param Matrix : Matrice source
 ///
@@ -59,7 +59,7 @@ inline CQuaternion::CQuaternion(const CMatrix4& Matrix)
 
 
 /////////////////////////////////////////////////////////////
-/// Constructeur à partir d'un axe et d'un angle
+/// Constructeur ï¿½ partir d'un axe et d'un angle
 ///
 /// \param Axis :  Axe de rotation
 /// \param Angle : Angle de rotation
@@ -72,7 +72,7 @@ inline CQuaternion::CQuaternion(const TVector3F& Axis, float Angle)
 
 
 /////////////////////////////////////////////////////////////
-/// Met le quaternion à l'identité
+/// Met le quaternion ï¿½ l'identitï¿½
 ///
 ////////////////////////////////////////////////////////////
 inline void CQuaternion::Identity()
@@ -101,9 +101,9 @@ inline void CQuaternion::Normalize()
 
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le conjugué
+/// Renvoie le conjuguï¿½
 ///
-/// \return Quanternion conjugué
+/// \return Quanternion conjuguï¿½
 ///
 ////////////////////////////////////////////////////////////
 inline CQuaternion CQuaternion::Conjugate() const
@@ -113,7 +113,7 @@ inline CQuaternion CQuaternion::Conjugate() const
 
 
 /////////////////////////////////////////////////////////////
-/// Construit une matrice de rotation à partir du quaternion
+/// Construit une matrice de rotation ï¿½ partir du quaternion
 ///
 /// \return Matrice construite
 ///
@@ -138,7 +138,7 @@ inline CMatrix4 CQuaternion::ToMatrix() const
 
 
 /////////////////////////////////////////////////////////////
-/// Construit le quaternion à partir d'une matrice de rotation
+/// Construit le quaternion ï¿½ partir d'une matrice de rotation
 ///
 /// \param Matrix : Matrice source
 ///
@@ -186,7 +186,7 @@ inline void CQuaternion::FromMatrix(const CMatrix4& Matrix)
 
 
 /////////////////////////////////////////////////////////////
-/// Construit le quaternion à partir d'un axe et d'un angle
+/// Construit le quaternion ï¿½ partir d'un axe et d'un angle
 ///
 /// \param Axis :  Axe de rotation
 /// \param Angle : Angle
@@ -236,7 +236,7 @@ inline void CQuaternion::ToAxisAngle(TVector3F& Axis, float& Angle) const
 
 
 /////////////////////////////////////////////////////////////
-/// Construit le quaternion à partir de 3 angles d'Euler
+/// Construit le quaternion ï¿½ partir de 3 angles d'Euler
 ///
 /// \param X : Angle autour de X
 /// \param Y : Angle autour de Y
@@ -254,11 +254,11 @@ inline void CQuaternion::FromEulerAngles(float X, float Y, float Z)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur de multiplication
+/// Opï¿½rateur de multiplication
 ///
-/// \param Quaternion : Quaternion à multiplier
+/// \param Quaternion : Quaternion ï¿½ multiplier
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline CQuaternion CQuaternion::operator *(const CQuaternion& Quaternion) const
@@ -269,13 +269,18 @@ inline CQuaternion CQuaternion::operator *(const CQuaternion& Quaternion) const
                        w * Quaternion.w - x * Quaternion.x - y * Quaternion.y - z * Quaternion.z);
 }
 
+inline CQuaternion CQuaternion::operator *(float scale) const
+{
+	return CQuaternion(x*scale, y*scale, z*scale, w*scale); 
+}
+
 
 /////////////////////////////////////////////////////////////
-/// opérateur de multiplication - affectation
+/// operateur de multiplication - affectation
 ///
-/// \param Quaternion : Quaternion à multiplier
+/// \param Quaternion : Quaternion a multiplier
 ///
-/// \return Résultat de l'opération
+/// \return Resultat de l'operation
 ///
 ////////////////////////////////////////////////////////////
 inline const CQuaternion& CQuaternion::operator *=(const CQuaternion& Quaternion)
@@ -286,13 +291,48 @@ inline const CQuaternion& CQuaternion::operator *=(const CQuaternion& Quaternion
 }
 
 
+float CQuaternion::Dot(const CQuaternion& q1, const CQuaternion& q2)
+{
+	return q1.x*q2.x + q1.y*q2.y + q1.z*q2.z + q1.w*q2.w;
+}
+
+//============ Interpolation
+CQuaternion CQuaternion::lerp(const CQuaternion &q1, const CQuaternion &q2, float t)
+{
+	 CQuaternion res = (q1*(1-t) + q2*t);
+	 res.Normalize();
+	 return res;
+}
+
+CQuaternion CQuaternion::slerp(const CQuaternion &q1, const CQuaternion &q2, float t)
+{
+	CQuaternion q3;
+	float dot = CQuaternion::dot(q1, q2);
+
+	/*	dot = cos(theta)
+		if (dot < 0), q1 and q2 are more than 90 degrees apart,
+		so we can invert one to reduce spinning	*/
+	if (dot < 0)
+	{
+		dot = -dot;
+		q3 = -q2;
+	} else q3 = q2;
+	
+	if (dot < 0.95f)
+	{
+		float angle = acosf(dot);
+		return (q1*sinf(angle*(1-t)) + q3*sinf(angle*t))/sinf(angle);
+	} else // if the angle is small, use linear interpolation								
+		return lerp(q1,q3,t);	
+}
+
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'opérateur >> entre un flux et un quaternion
+/// Surcharge de l'opï¿½rateur >> entre un flux et un quaternion
 ///
-/// \param  Stream :     Flux d'entrée
+/// \param  Stream :     Flux d'entrï¿½e
 /// \param Quaternion : Quaternion
 ///
-/// \return Référence sur le flux d'entrée
+/// \return Rï¿½fï¿½rence sur le flux d'entrï¿½e
 ///
 ////////////////////////////////////////////////////////////
 std::istream& operator >>(std::istream& Stream, CQuaternion& Quaternion)
@@ -302,12 +342,12 @@ std::istream& operator >>(std::istream& Stream, CQuaternion& Quaternion)
 
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'opérateur << entre un flux et un quaternion
+/// Surcharge de l'opï¿½rateur << entre un flux et un quaternion
 ///
 /// \param Stream :     Flux de sortie
 /// \param Quaternion : Quaternion
 ///
-/// \return Référence sur le flux de sortie
+/// \return Rï¿½fï¿½rence sur le flux de sortie
 ///
 ////////////////////////////////////////////////////////////
 std::ostream& operator <<(std::ostream& Stream, const CQuaternion& Quaternion)

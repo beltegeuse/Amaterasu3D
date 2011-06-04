@@ -91,22 +91,33 @@ namespace Math
         void ToAxisAngle(TVector3F& Axis, float& Angle) const;
 
         //----------------------------------------------------------
-        // Construit le quaternion � partir de 3 angles d'Euler
+        // Construit le quaternion a partir de 3 angles d'Euler
         //----------------------------------------------------------
         void FromEulerAngles(float X, float Y, float Z);
 
         //----------------------------------------------------------
-        // Op�rateur de multiplication
+        // Operateur de multiplication
         //----------------------------------------------------------
         CQuaternion operator *(const CQuaternion& Quaternion) const;
-
+        CQuaternion operator *(float scale) const;
         //----------------------------------------------------------
-        // Op�rateur de multiplication - affectation
+        // Operateur de multiplication - affectation
         //----------------------------------------------------------
         const CQuaternion& operator *=(const CQuaternion& Quaternion);
 
         //----------------------------------------------------------
-        // Donn�es membres
+		// Dot product
+		//----------------------------------------------------------
+        static inline float Dot(const CQuaternion& q1, const CQuaternion& q2);
+
+        //=========== Interpolation methods
+        // Linear interpolation
+        static CQuaternion lerp(const CQuaternion &q1, const CQuaternion &q2, float t);
+        // Linear spherical interpolation
+        static CQuaternion slerp(const CQuaternion &q1, const CQuaternion &q2, float t);
+
+        //----------------------------------------------------------
+        // Donnees membres
         //----------------------------------------------------------
         float x; ///< Composante X
         float y; ///< Composante Y
