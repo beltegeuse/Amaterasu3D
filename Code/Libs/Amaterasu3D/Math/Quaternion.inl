@@ -256,9 +256,9 @@ inline void CQuaternion::From3DVector(const Math::TVector3F& v)
 {
 	SphericalCoordinates s(v);
 	CQuaternion Qz(TVector3F(0, 0, 1), s.GetTheta());
-	CQuaternion Qx(TVector3F(0, 1, 0), s.GetPhy());
+	CQuaternion Qy(TVector3F(0, 1, 0), s.GetPhy()-M_PI/2.0);
 	
-	*this = Qx * Qz;
+	*this = Qz*Qy;
 }
 
 

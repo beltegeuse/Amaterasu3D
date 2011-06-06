@@ -14,6 +14,7 @@
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
 #include <Graphics/Camera/CameraFPS.h>
+#include <Graphics/Camera/FixedCamera.h>
 #include <Addons/FPS/FPS.h>
 
 #include <Math/Quaternion.h>
@@ -158,21 +159,34 @@ public:
 		while(m_TimePoints[m_AnimationSequence] < m_TotalTime)
 			m_AnimationSequence++;
 
+		// Position interpolation
 		float deltaTinterpolation = (m_TotalTime - m_TimePoints[m_AnimationSequence-1]) / ((float)(m_TimePoints[m_AnimationSequence]-m_TimePoints[m_AnimationSequence-1]));
 		Math::TVector3F newPos =  m_PositionInterpolator.Interpolation(m_AnimationSequence + deltaTinterpolation-1);
 
+		// Direction interpolation
+		Math::CQuaternion q1;
+		Math::CQuaternion q2;
+
+		q1.From3DVector(m_Points[m_AnimationSequence-1].Direction);
+		q2.From3DVector(m_Points[m_AnimationSequence].Direction);
+
+		Math::TVector3F newDir = Math::CQuaternion::slerp(q1, q2, deltaTinterpolation).ToMatrix().Transform(Math::TVector3F(1,0,0),1);
+
+
 		std::cout << "New Camera position : " << newPos << std::endl;
+		std::cout << "New Camera orientation : " << newDir << std::endl;
 		std::cout << "Total time : " << m_TotalTime << std::endl;
 
 		// Update camera
 		m_Camera->SetPosition(newPos);
+		m_Camera->SetTarget(newPos+newDir);
 	}
 };
 
 class ApplicationCamera : public Application
 {
 protected:
-	CameraFPS* m_Camera;
+	CameraAbstract* m_Camera;
 	CameraAnimation* m_CameraAnimation;
 	TShaderPtr m_gbuffer_shader;
 	DeferredLighting* m_GI;
@@ -192,8 +206,9 @@ public:
 	virtual void OnInitialize()
 	{
 		// Camera Setup
-		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
-		m_Camera->SetSpeed(200.0);
+		//m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_Camera = new FixedCamera(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		//m_Camera->SetSpeed(200.0);
 		m_CameraAnimation = new CameraAnimation(m_Camera);
 		AddControlPoints();
 		// Initialise OpenGL
@@ -220,9 +235,9 @@ public:
 
 	void AddControlPoints()
 	{
-		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0)-Math::TVector3F(3,4,2)),0);
-		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(300,400,2), Math::TVector3F(0,0,0)-Math::TVector3F(3,4,2)),10);
-		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(300,400,2000), Math::TVector3F(0,0,0)-Math::TVector3F(3,4,2)),10);
+		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(1,0,0)),0);
+		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(-1,0,0)),10);
+		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,1,0)),10);
 		m_CameraAnimation->Compile();
 	}
 
