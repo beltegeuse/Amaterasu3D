@@ -109,6 +109,8 @@ public:
 	{}
 	virtual ~CameraAnimation() {}
 
+	CameraAbstract* GetCamera() { return m_Camera; }
+
 	// Add Control point and delta time with other control point
 	void AddControlPoint(const CameraAnimationControlPoint& p, float deltaTime)
 	{
@@ -117,6 +119,12 @@ public:
 			m_TimePoints.push_back(0.0);
 		else
 			m_TimePoints.push_back(deltaTime+(*m_TimePoints.rbegin()));
+	}
+
+	void EraseAllControlPoints()
+	{
+		m_Points.erase(m_Points.begin(), m_Points.end());
+		m_TimePoints.erase(m_TimePoints.begin(), m_TimePoints.end());
 	}
 
 	// Initialise the animation & Initialise all interpolation system
@@ -186,15 +194,47 @@ public:
 class ApplicationCamera : public Application
 {
 protected:
-	CameraAbstract* m_Camera;
+	CameraFPS* m_Camera;
 	CameraAnimation* m_CameraAnimation;
 	TShaderPtr m_gbuffer_shader;
 	DeferredLighting* m_GI;
 	FPS m_FPS;
 	bool m_debug;
+	bool m_play;
 public:
+	/*
+	 * Console methods
+	 */
+	std::string ConsoleAddControlPoint(float deltaTime)
+	{
+		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(m_Camera->GetPosition(), m_Camera->GetTarget() - m_Camera->GetPosition()), deltaTime);
+		std::stringstream ss;
+		ss << "Add point : " << m_Camera->GetPosition() << " | " << m_Camera->GetTarget() - m_Camera->GetPosition() << " ( " << deltaTime << ")";
+		return ss.str();
+	}
+
+	void ConsoleCompilePlay()
+	{
+		m_play = true;
+		m_CameraAnimation->Compile();
+	}
+
+	void ConsoleStop()
+	{
+		m_play = false;
+	}
+
+	void ConsoleEraseAll()
+	{
+		m_CameraAnimation->EraseAllControlPoints();
+	}
+
+	/*
+	 * Constructor and destructors
+	 */
 	ApplicationCamera() :
-		m_debug(false)
+		m_debug(false),
+		m_play(false)
 	{
 
 	}
@@ -203,13 +243,15 @@ public:
 	{
 	}
 
+	/*
+	 * Other methods
+	 */
 	virtual void OnInitialize()
 	{
 		// Camera Setup
-		//m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
-		m_Camera = new FixedCamera(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
-		//m_Camera->SetSpeed(200.0);
-		m_CameraAnimation = new CameraAnimation(m_Camera);
+		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_Camera->SetSpeed(200.0);
+		m_CameraAnimation = new CameraAnimation(new FixedCamera(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0)));
 		AddControlPoints();
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
@@ -231,19 +273,29 @@ public:
 		// Load scene
 		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
 		RootSceneGraph.AddChild(node1);
+
+		// Add Console functions
+		Console.RegisterCommand("add",Console::Bind(&ApplicationCamera::ConsoleAddControlPoint, *this));
+		Console.RegisterCommand("compile",Console::Bind(&ApplicationCamera::ConsoleCompilePlay, *this));
+		Console.RegisterCommand("stop",Console::Bind(&ApplicationCamera::ConsoleStop, *this));
+		Console.RegisterCommand("erase",Console::Bind(&ApplicationCamera::ConsoleEraseAll, *this));
 	}
 
 	void AddControlPoints()
 	{
-		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(1,0,0)),0);
-		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(-1,0,0)),10);
-		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,1,0)),10);
-		m_CameraAnimation->Compile();
+//		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,1,0)),10);
+//		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,-1,0)),10);
+		//m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(1,0,0)),0);
+		//m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(-1,0,0)),10);
+		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,0,1)),10);
+		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,0,-1)),10);
+
 	}
 
 	virtual void OnUpdate(double delta)
 	{
-		m_CameraAnimation->Update(delta);
+		if(m_play)
+			m_CameraAnimation->Update(delta);
 	}
 
 	virtual void OnEvent(SDL_Event& event)
@@ -269,7 +321,12 @@ public:
 		MatrixManager.SetModeMatrix(MATRIX_3D);
 
 		m_gbuffer_shader->Begin();
-		m_Camera->GetView();
+
+		if(!m_play)
+			m_Camera->GetView();
+		else
+			m_CameraAnimation->GetCamera()->GetView();
+
 		RootSceneGraph.Draw();
 		m_gbuffer_shader->End();
 
@@ -277,7 +334,11 @@ public:
 			m_gbuffer_shader->GetFBO()->DrawDebug();
 		else
 		{
-			m_Camera->GetView();
+			if(!m_play)
+				m_Camera->GetView();
+			else
+				m_CameraAnimation->GetCamera()->GetView();
+
 			m_GI->ComputeIllumination();
 		}
 
@@ -295,7 +356,7 @@ int main()
 #endif
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	CFontManager::Instance().LoadFont("../Donnees/Fonts/eve.ttf", "arial");
+	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
 
 	std::cout << "[INFO] Begin ..." << std::endl;
 
