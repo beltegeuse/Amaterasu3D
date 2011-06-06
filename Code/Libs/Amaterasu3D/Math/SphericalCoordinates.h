@@ -29,7 +29,7 @@
 
 namespace Math
 {
-	/** \brief Classe gérant une représentation en coordonnées sphériques d'un vecteur
+	/** \brief Classe gerant une representation en coordonnees spheriques d'un vecteur
 	*/
 	class SphericalCoordinates
 	{
@@ -38,23 +38,23 @@ namespace Math
 		float m_phy, m_theta ;
 
 	private:
-		/** \brief Récupération de l'angle entre le vecteur (1,0) et le vecteur (x,y) */
+		/** \brief Rï¿½cupï¿½ration de l'angle entre le vecteur (1,0) et le vecteur (x,y) */
 		float Angle(float x, float y);
 
 	public:
-		/** \brief Changement du vecteur représenté en coordonnées sphériques */
+		/** \brief Changement du vecteur reprï¿½sentï¿½ en coordonnï¿½es sphï¿½riques */
 		void Set(Math::TVector3F const & v);
 
-		/** \brief Récupération du vecteur à partir des coordonnées sphériques */
+		/** \brief Rï¿½cupï¿½ration du vecteur ï¿½ partir des coordonnï¿½es sphï¿½riques */
 		Math::TVector3F Get() const;
 
-		/** \brief Construction des coordonnées sphériques sur la base d'un vecteur 3D */
+		/** \brief Construction des coordonnï¿½es sphï¿½riques sur la base d'un vecteur 3D */
 		SphericalCoordinates(Math::TVector3F const & v) ;
 
-		/** \brief Renvoie l'angle entre le vecteur projeté sur le plan x,y et l'axe X */
+		/** \brief Renvoie l'angle entre le vecteur projetï¿½ sur le plan x,y et l'axe X */
 		float GetTheta() const;
 
-		/** \brief Changement de l'angle entre le vecteur projeté sur le plan x,y et l'axe X */
+		/** \brief Changement de l'angle entre le vecteur projetï¿½ sur le plan x,y et l'axe X */
 		void SetTheta(float v);
 
 

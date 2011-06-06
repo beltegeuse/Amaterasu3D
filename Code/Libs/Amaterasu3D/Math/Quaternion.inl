@@ -252,6 +252,15 @@ inline void CQuaternion::FromEulerAngles(float X, float Y, float Z)
     *this = Qx * Qy * Qz;
 }
 
+inline void CQuaternion::From3DVector(const Math::TVector3F& v)
+{
+	SphericalCoordinates s(v);
+	CQuaternion Qz(TVector3F(0, 0, 1), s.GetTheta());
+	CQuaternion Qx(TVector3F(0, 1, 0), s.GetPhy());
+	
+	*this = Qx * Qz;
+}
+
 
 /////////////////////////////////////////////////////////////
 /// Op�rateur de multiplication
@@ -274,6 +283,10 @@ inline CQuaternion CQuaternion::operator *(float scale) const
 	return CQuaternion(x*scale, y*scale, z*scale, w*scale); 
 }
 
+inline CQuaternion CQuaternion::operator +(const CQuaternion& Quaternion) const
+{
+	return CQuaternion(x + Quaternion.x, y + Quaternion.y, z + Quaternion.z, w + Quaternion.w); 
+}
 
 /////////////////////////////////////////////////////////////
 /// operateur de multiplication - affectation
@@ -307,7 +320,7 @@ CQuaternion CQuaternion::lerp(const CQuaternion &q1, const CQuaternion &q2, floa
 CQuaternion CQuaternion::slerp(const CQuaternion &q1, const CQuaternion &q2, float t)
 {
 	CQuaternion q3;
-	float dot = CQuaternion::dot(q1, q2);
+	float dot = CQuaternion::Dot(q1, q2);
 
 	/*	dot = cos(theta)
 		if (dot < 0), q1 and q2 are more than 90 degrees apart,
@@ -315,13 +328,13 @@ CQuaternion CQuaternion::slerp(const CQuaternion &q1, const CQuaternion &q2, flo
 	if (dot < 0)
 	{
 		dot = -dot;
-		q3 = -q2;
+		q3 = q2*-1;
 	} else q3 = q2;
 	
 	if (dot < 0.95f)
 	{
 		float angle = acosf(dot);
-		return (q1*sinf(angle*(1-t)) + q3*sinf(angle*t))/sinf(angle);
+		return (q1*sinf(angle*(1-t)) + q3*sinf(angle*t))*(1.0/sinf(angle));
 	} else // if the angle is small, use linear interpolation								
 		return lerp(q1,q3,t);	
 }

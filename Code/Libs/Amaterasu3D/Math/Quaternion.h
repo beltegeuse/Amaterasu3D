@@ -29,7 +29,7 @@
 // En-t�tes
 //==========================================================
 #include <Math/Matrix4.h>
-
+#include <Math/SphericalCoordinates.h>
 
 namespace Math
 {
@@ -96,10 +96,21 @@ namespace Math
         void FromEulerAngles(float X, float Y, float Z);
 
         //----------------------------------------------------------
+        // Construit le quaternion a d'un vecteur 3D
+        //----------------------------------------------------------
+        void From3DVector(const TVector3F& v);
+
+        //----------------------------------------------------------
         // Operateur de multiplication
         //----------------------------------------------------------
         CQuaternion operator *(const CQuaternion& Quaternion) const;
         CQuaternion operator *(float scale) const;
+
+        //----------------------------------------------------------
+		// Operateur d'addition
+		//----------------------------------------------------------
+        CQuaternion operator +(const CQuaternion& Quaternion) const;
+
         //----------------------------------------------------------
         // Operateur de multiplication - affectation
         //----------------------------------------------------------
