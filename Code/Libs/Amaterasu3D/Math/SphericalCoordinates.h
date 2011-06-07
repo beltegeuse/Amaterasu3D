@@ -34,12 +34,12 @@ namespace Math
 	class SphericalCoordinates
 	{
 	protected:
-		float m_module ;
-		float m_phy, m_theta ;
+		double m_module ;
+		double m_phy, m_theta ;
 
 	private:
 		/** \brief R�cup�ration de l'angle entre le vecteur (1,0) et le vecteur (x,y) */
-		float Angle(float x, float y);
+		double Angle(double x, double y);
 
 	public:
 		/** \brief Changement du vecteur repr�sent� en coordonn�es sph�riques */
@@ -52,23 +52,23 @@ namespace Math
 		SphericalCoordinates(Math::TVector3F const & v) ;
 
 		/** \brief Renvoie l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
-		float GetTheta() const;
+		double GetTheta() const;
 
 		/** \brief Changement de l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
-		void SetTheta(float v);
+		void SetTheta(double v);
 
 
 		/** \brief Renvoie l'angle entre le vecteur et le plan (x,y) */
-		float GetPhy() const;
+		double GetPhy() const;
 
 		/** \brief Changement de l'angle entre le vecteur et le plan (x,y) */
-		void SetPhy(float v);
+		void SetPhy(double v);
 
 		/** \brief Renvoie le module */
-		float GetModule() const;
+		double GetModule() const;
 
 		/** \brief Changement du module */
-		void SetModule(float v);
+		void SetModule(double v);
 	} ;
 }
 

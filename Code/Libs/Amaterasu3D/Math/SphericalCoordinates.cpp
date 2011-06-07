@@ -26,17 +26,17 @@
 namespace Math
 {
 
-float SphericalCoordinates::Angle(float x, float y)
+double SphericalCoordinates::Angle(double x, double y)
 {
 	if(x==0.0f)
 	{
-		if(y>0.0f) return 3.14159265358979323846f/2.0f ;
-		return -3.14159265358979323846f/2.0f ;
+		if(y>0.0f) return M_PI_2 ;
+		return -M_PI_2 ;
 	}
-	float res = atan(y/x) ;
+	double res = atan(y/x) ;
 	if(x<0.0)
 	{
-		return res+3.14159265358979323846f;
+		return res+M_PI;
 	}
 	return res ;
 }
@@ -64,28 +64,30 @@ SphericalCoordinates::SphericalCoordinates(Math::TVector3F const & v)
 }
 
 /** \brief Renvoie l'angle entre le vecteur projeté sur le plan x,y et l'axe X */
-float SphericalCoordinates::GetTheta() const
-{ return m_theta ; }
+double SphericalCoordinates::GetTheta() const
+{
+	return m_theta ;
+}
 
 /** \brief Changement de l'angle entre le vecteur projeté sur le plan x,y et l'axe X */
-void SphericalCoordinates::SetTheta(float v)
+void SphericalCoordinates::SetTheta(double v)
 { m_theta = v ; }
 
 
 /** \brief Renvoie l'angle entre le vecteur et le plan (x,y) */
-float SphericalCoordinates::GetPhy() const
+double SphericalCoordinates::GetPhy() const
 { return m_phy ; }
 
 /** \brief Changement de l'angle entre le vecteur et le plan (x,y) */
-void SphericalCoordinates::SetPhy(float v)
+void SphericalCoordinates::SetPhy(double v)
 { m_phy = v ; }
 
 /** \brief Renvoie le module */
-float SphericalCoordinates::GetModule() const
+double SphericalCoordinates::GetModule() const
 { return m_module ; }
 
 /** \brief Changement du module */
-void SphericalCoordinates::SetModule(float v)
+void SphericalCoordinates::SetModule(double v)
 { m_module = v ; }
 
 };

@@ -252,13 +252,23 @@ inline void CQuaternion::FromEulerAngles(float X, float Y, float Z)
     *this = Qx * Qy * Qz;
 }
 
+#include <iostream>
+
 inline void CQuaternion::From3DVector(const Math::TVector3F& v)
 {
+	std::cout << "DEBUG : " << v << std::endl;
 	SphericalCoordinates s(v);
-	CQuaternion Qz(TVector3F(0, 0, 1), s.GetTheta());
-	CQuaternion Qy(TVector3F(0, 1, 0), s.GetPhy()-M_PI/2.0);
+	std::cout << "DEBUG : " << -s.GetTheta() << " | " << -s.GetPhy()+M_PI/2.0 << std::endl;
+	CQuaternion Qx(TVector3F(1, 0, 0), 0);
+	CQuaternion Qz(TVector3F(0, 0, 1), -s.GetTheta());
+	CQuaternion Qy(TVector3F(0, 1, 0), -s.GetPhy()+M_PI_2);
 	
-	*this = Qz*Qy;
+	*this = Qx*Qy*Qz;
+	Normalize();
+	
+	std::cout << "Matrix : ======" << std::endl;
+	std::cout << ToMatrix() << std::endl;
+	std::cout << "Matrix : ======" << std::endl;
 }
 
 
