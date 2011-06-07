@@ -353,6 +353,25 @@ CQuaternion CQuaternion::slerp(const CQuaternion &q1, const CQuaternion &q2, flo
 		return lerp(q1,q3,t);	
 }
 
+CQuaternion CQuaternion::slerpNoInvert(const CQuaternion &q1, const CQuaternion &q2, float t)
+{
+	float dot = CQuaternion::Dot(q1, q2);
+
+	if (dot > -0.95f && dot < 0.95f)
+	{
+		float angle = acosf(dot);			
+		return (q1*sinf(angle*(1-t)) + q2*sinf(angle*t))*(1.0/sinf(angle));
+	} else  // if the angle is small, use linear interpolation								
+		return lerp(q1,q2,t);
+}
+
+CQuaternion CQuaternion::squad(const CQuaternion &q1,const CQuaternion &q2,const CQuaternion &a,const CQuaternion &b,float t)
+{
+	CQuaternion c= slerpNoInvert(q1,q2,t),
+		       d= slerpNoInvert(a,b,t);		
+	return slerpNoInvert(c,d,2*t*(1-t));
+}
+
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur >> entre un flux et un quaternion
 ///

@@ -126,7 +126,10 @@ namespace Math
         static CQuaternion lerp(const CQuaternion &q1, const CQuaternion &q2, float t);
         // Linear spherical interpolation
         static CQuaternion slerp(const CQuaternion &q1, const CQuaternion &q2, float t);
-
+        // Linear spherical interpolation (no reduce splinning)
+        static CQuaternion slerpNoInvert(const CQuaternion &q1, const CQuaternion &q2, float t);
+        // Cubic spherical interpolation
+        static CQuaternion squad(const CQuaternion &q1,const CQuaternion &q2,const CQuaternion &a,const CQuaternion &b,float t);
         //----------------------------------------------------------
         // Donnees membres
         //----------------------------------------------------------
