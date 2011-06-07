@@ -285,10 +285,10 @@ public:
 	{
 //		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,1,0)),10);
 //		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,-1,0)),10);
-		//m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(1,0,0)),0);
-		//m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(-1,0,0)),10);
-		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,0,1)),10);
-		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,0,-1)),10);
+		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(1,0,0)),0);
+		m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(-1,0,0)),10);
+		//m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,0,1)),10);
+		//m_CameraAnimation->AddControlPoint(CameraAnimationControlPoint(Math::TVector3F(3,4,2), Math::TVector3F(0,0,-1)),10);
 
 	}
 
