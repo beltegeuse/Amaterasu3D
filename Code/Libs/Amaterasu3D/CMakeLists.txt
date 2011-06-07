@@ -14,6 +14,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Addons/LPV/LPV.cpp
 	Addons/ToneMappingOperator/AbsrtactToneOperator.cpp
 	Addons/ToneMappingOperator/PhotographicToneOperator.cpp
+	Addons/ToneMappingOperator/ManualMipmapping.cpp
 	
 	Debug/Exceptions.cpp
 	Debug/OpenGLDebug.cpp
