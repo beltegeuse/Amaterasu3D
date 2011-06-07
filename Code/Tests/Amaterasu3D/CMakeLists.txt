@@ -6,6 +6,7 @@ SET(TEST_Amaterasu3D
 	Math/test_vector2.cpp
 	Math/test_vector3.cpp
 	Math/test_matrix4.cpp
+	Math/test_quaternion.cpp
 	
 	# Old test version
 	#System/test_mediamanager.cpp
