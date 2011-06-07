@@ -9,6 +9,8 @@
 #define CAMERAANIMATION_H_
 
 #include <tinyxml.h>
+#include <TinyXMLHelper.h>
+#include <Logger/Logger.h>
 
 struct CameraAnimationControlPoint
 {
@@ -54,6 +56,11 @@ struct CameraAnimationControlPoint
 		Direction.ReadXML(eDirection);
 	}
 };
+
+std::ostream& operator <<(std::ostream& Stream, const CameraAnimationControlPoint& p)
+{
+	Stream << "[ Position : " << p.Position << " | Direction : " << p.Direction << " ]";
+}
 
 class CameraAnimation
 {
@@ -167,7 +174,7 @@ public:
 
 
 		// Write configuration animation
-		animationNode->SetAttribute("Looping",m_LoopAnimation);
+		animationNode->SetDoubleAttribute("Looping",m_LoopAnimation);
 
 		// Write all control points
 		for(int i = 0; i < m_Points.size(); i++)
@@ -179,9 +186,29 @@ public:
 		}
 	}
 
-	void ReadXML(TiXmlElement * element)
+	void ReadXML(TiXmlElement * animationNode)
 	{
+		// Get configuration
+		TinyXMLGetAttributeValue(animationNode, "Looping", &m_LoopAnimation);
 
+		Logger::Log() << "[INFO] Read animation camera XML structure ... \n";
+
+		// Get all points controls
+		TiXmlElement* controlPointNode = animationNode->FirstChildElement("ControlPoint");
+		while(controlPointNode)
+		{
+			// Extract all info
+			float time;
+			TinyXMLGetAttributeValue(controlPointNode, "Delta", &time);
+			CameraAnimationControlPoint p;
+			p.ReadXML(controlPointNode);
+
+			AddControlPoint(p, time);
+			Logger::Log() << "     * " << p << " ( " << time << " )\n";
+
+			// Pass to the next element
+			controlPointNode = controlPointNode->NextSiblingElement();
+		}
 	}
 
 	void WriteXMLFile(const std::string& path)
@@ -198,7 +225,30 @@ public:
 		doc.SaveFile(path);
 	}
 
-	void ReadXMLFile(const std::string& path);
+	void ReadXMLFile(const std::string& path)
+	{
+		TiXmlDocument doc( path.c_str() );
+		if(!doc.LoadFile())
+		{
+			Logger::Log() << "[ERROR] TinyXML error : " <<  doc.ErrorDesc() << "\n";
+			throw CLoadingFailed(path, "unable to load xml with TinyXML");
+		}
+
+		// Get the root
+		TiXmlHandle hdl(&doc);
+		TiXmlElement *animationNode = hdl.FirstChild("CameraAnimation").Element();
+		if(!animationNode)
+		{
+			throw CLoadingFailed(path, "unable to find CameraAnimation node in the XML file");
+		}
+
+		// Reinitialise the animation
+		EraseAllControlPoints();
+
+		// Load all information from XML file
+		ReadXML(animationNode);
+	}
+
 };
 
 #endif /* CAMERAANIMATION_H_ */

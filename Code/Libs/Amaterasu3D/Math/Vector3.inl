@@ -290,14 +290,9 @@ inline void CVector3<T>::WriteXML(TiXmlElement * element)
 template <>
 inline void CVector3<float>::WriteXML(TiXmlElement * element)
 {
-	// Copy to double to keep precision
-	double vX = x;
-	double vY = y;
-	double vZ = z; 
-	
-	element->SetAttribute("x", vX);
-	element->SetAttribute("y", vY);
-	element->SetAttribute("z", vZ);
+	element->SetDoubleAttribute("x", x);
+	element->SetDoubleAttribute("y", y);
+	element->SetDoubleAttribute("z", z);
 }
 
 template <class T>
@@ -307,25 +302,6 @@ inline void CVector3<T>::ReadXML(TiXmlElement * element)
 	TinyXMLGetAttributeValue(element, "y", &y);
 	TinyXMLGetAttributeValue(element, "z", &z);
 }
-
-// FIXME: Tricks to avoid presicion problem in tinyxml
-template <>
-inline void CVector3<float>::ReadXML(TiXmlElement * element)
-{
-	// Copy to double to keep precision
-	double vX;
-	double vY;
-	double vZ; 
-
-	TinyXMLGetAttributeValue(element, "x", &vX);
-	TinyXMLGetAttributeValue(element, "y", &vY);
-	TinyXMLGetAttributeValue(element, "z", &vZ);
-	
-	x = vX;
-	y = vY;
-	z = vZ;
-}
-
 
 /////////////////////////////////////////////////////////////
 /// Op�rateurs de multiplication avec un scalaire

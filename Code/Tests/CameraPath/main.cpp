@@ -66,6 +66,12 @@ public:
 		m_CameraAnimation->WriteXMLFile(fullpath);
 	}
 
+	void ConsoleRead(const std::string& path)
+	{
+		std::string fullpath = path+".xml";
+		m_CameraAnimation->ReadXMLFile(fullpath);
+	}
+
 	/*
 	 * Constructor and destructors
 	 */
@@ -117,6 +123,7 @@ public:
 		Console.RegisterCommand("stop",Console::Bind(&ApplicationCamera::ConsoleStop, *this));
 		Console.RegisterCommand("erase",Console::Bind(&ApplicationCamera::ConsoleEraseAll, *this));
 		Console.RegisterCommand("write",Console::Bind(&ApplicationCamera::ConsoleWrite, *this));
+		Console.RegisterCommand("read",Console::Bind(&ApplicationCamera::ConsoleRead, *this));
 	}
 
 	void AddControlPoints()
