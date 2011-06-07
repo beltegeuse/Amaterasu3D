@@ -19,52 +19,7 @@
 
 #include <Math/Quaternion.h>
 #include <Math/Vector3.h>
-template <class T> class CatmullRomInterpolation
-{
-protected:
-	/*
-	 * Attributes
-	 */
-	std::vector<T> m_Points;
-
-	/*
-	 * Private methods
-	 */
-	T ComputeInterpolation(T& p0, T& p1, T& p2, T& p3, float t)
-	{
-		return ((2.f*p1) + (p2 + (-p0))*t + (p0*2.f + p1*(-5.f) + p2*4.f + p3*(-1.f))*t*t + (p0*(-1.f) + p1*3.f + (-3.f)*p2 + p3)*t*t*t)*0.5f;
-	}
-public:
-	/*
-	 * Constructor & Destructors
-	 */
-	CatmullRomInterpolation() {}
-	virtual ~CatmullRomInterpolation() {}
-
-	/*
-	 * Points managements
-	 */
-	void AddPoint(const T& v)
-	{
-		if(m_Points.empty())
-		{
-			m_Points.push_back(v);
-			m_Points.push_back(v);
-		}
-		m_Points[m_Points.size() - 1] = v;
-		m_Points.push_back(v);
-	}
-	void EraseAllPoints() { m_Points.erase(m_Points.begin(), m_Points.end()); }
-
-	T Interpolation(float t)
-	{
-		Assert(t >= 0.0 && (t+1) <= (m_Points.size()+2) && m_Points.size() > 4);
-
-		int id = floor(t);
-
-		return ComputeInterpolation(m_Points[id], m_Points[id+1], m_Points[id+2], m_Points[id+3], t - id);
-	}
-};
+#include <Math/Interpolators/CatmullRomInterpolator.h>
 
 struct CameraAnimationControlPoint
 {
@@ -93,8 +48,8 @@ protected:
 	std::vector<CameraAnimationControlPoint> m_Points;
 	std::vector<float> m_TimePoints;
 
-	CatmullRomInterpolation<Math::TVector3F> m_PositionInterpolator;
-	CatmullRomInterpolation<float> m_TimeInterpolator;
+	CatmullRomInterpolator<Math::TVector3F> m_PositionInterpolator;
+	CatmullRomInterpolator<float> m_TimeInterpolator;
 
 	CameraAbstract* m_Camera;
 	bool m_IsCompiled;
