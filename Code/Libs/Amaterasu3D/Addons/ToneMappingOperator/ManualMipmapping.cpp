@@ -16,7 +16,7 @@ ManualMipmapping::ManualMipmapping(int initialeSize) :
 	// Init object parameters
 	m_InitialSize = NearestPowerOfTwo(m_InitialSize);
 	Logger::Log() << "[INFO] Creation of Manual Mip-mapping : " << m_InitialSize << "\n";
-	m_NbLevels = log(m_InitialSize)/log(2);
+	m_NbLevels = log(m_InitialSize)/log(2) + 1;
 	Logger::Log() << "[INFO] Number levels : " << m_NbLevels;
 }
 
@@ -40,22 +40,24 @@ void ManualMipmapping::Initialize()
 	param.ExternalFormat = GL_RGBA;
 
 	m_DownSamplerShader->Begin();
-	param.Attachment = glGetFragDataLocation(m_DownSamplerShader->GetProgramObject(),"BufferColor");
+	param.Attachment = glGetFragDataLocation(m_DownSamplerShader->GetProgramObject(),"ColorBuffer");
 	Logger::Log() << "           * Attachment : " << param.Attachment << "\n";
 	m_DownSamplerShader->End();
 
-	m_DownSamplerShader->SetFBO(CreateFBO(param, "BufferColor", m_InitialSize), true);
+	m_DownSamplerShader->SetFBO(CreateFBO(param, "ColorBuffer", m_InitialSize), true);
 
 	m_ManualMipmappingShader->Begin();
-	param.Attachment = glGetFragDataLocation(m_ManualMipmappingShader->GetProgramObject(),"BufferColor");
+	param.Attachment = glGetFragDataLocation(m_ManualMipmappingShader->GetProgramObject(),"ColorBuffer");
 	Logger::Log() << "           * Attachment : " << param.Attachment << "\n";
 	m_ManualMipmappingShader->End();
 
 	// Create FBOs
+	Logger::Log() << "[INFO] Create FBO \n";
 	m_Mipmaps = new FBO*[m_NbLevels];
-	for(int i = 0; i < 1; i++)
+	for(int i = 0; i < m_NbLevels; i++)
 	{
-		m_Mipmaps[i] = CreateFBO(param, "BufferColor", m_InitialSize/pow(2,i+1));
+		Logger::Log() << "    * Size of FBO : " << m_InitialSize/pow(2,i+1) << "\n";
+		m_Mipmaps[i] = CreateFBO(param, "ColorBuffer", m_InitialSize/pow(2,i+1));
 	}
 }
 
