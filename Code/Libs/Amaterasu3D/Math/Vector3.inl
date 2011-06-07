@@ -276,6 +276,7 @@ inline CVector3<T>::operator T*()
 {
     return &x;
 }
+#include <iostream>
 
 template <class T>
 inline void CVector3<T>::WriteXML(TiXmlElement * element)
@@ -285,12 +286,44 @@ inline void CVector3<T>::WriteXML(TiXmlElement * element)
 	element->SetAttribute("z", z);
 }
 
+// FIXME: Tricks to avoid presicion problem in tinyxml
+template <>
+inline void CVector3<float>::WriteXML(TiXmlElement * element)
+{
+	// Copy to double to keep precision
+	double vX = x;
+	double vY = y;
+	double vZ = z; 
+	
+	element->SetAttribute("x", vX);
+	element->SetAttribute("y", vY);
+	element->SetAttribute("z", vZ);
+}
+
 template <class T>
 inline void CVector3<T>::ReadXML(TiXmlElement * element)
 {
 	TinyXMLGetAttributeValue(element, "x", &x);
 	TinyXMLGetAttributeValue(element, "y", &y);
 	TinyXMLGetAttributeValue(element, "z", &z);
+}
+
+// FIXME: Tricks to avoid presicion problem in tinyxml
+template <>
+inline void CVector3<float>::ReadXML(TiXmlElement * element)
+{
+	// Copy to double to keep precision
+	double vX;
+	double vY;
+	double vZ; 
+
+	TinyXMLGetAttributeValue(element, "x", &vX);
+	TinyXMLGetAttributeValue(element, "y", &vY);
+	TinyXMLGetAttributeValue(element, "z", &vZ);
+	
+	x = vX;
+	y = vY;
+	z = vZ;
 }
 
 

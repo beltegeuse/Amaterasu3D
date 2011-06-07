@@ -60,6 +60,12 @@ public:
 		m_CameraAnimation->EraseAllControlPoints();
 	}
 
+	void ConsoleWrite(const std::string& path)
+	{
+		std::string fullpath = path+".xml";
+		m_CameraAnimation->WriteXMLFile(fullpath);
+	}
+
 	/*
 	 * Constructor and destructors
 	 */
@@ -110,6 +116,7 @@ public:
 		Console.RegisterCommand("compile",Console::Bind(&ApplicationCamera::ConsoleCompilePlay, *this));
 		Console.RegisterCommand("stop",Console::Bind(&ApplicationCamera::ConsoleStop, *this));
 		Console.RegisterCommand("erase",Console::Bind(&ApplicationCamera::ConsoleEraseAll, *this));
+		Console.RegisterCommand("write",Console::Bind(&ApplicationCamera::ConsoleWrite, *this));
 	}
 
 	void AddControlPoints()

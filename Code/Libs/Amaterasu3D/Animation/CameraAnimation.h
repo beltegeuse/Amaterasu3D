@@ -160,6 +160,45 @@ public:
 		m_Camera->SetPosition(newPos);
 		m_Camera->SetTarget(newPos+newDir);
 	}
+
+	// I/O Methods
+	void WriteXML(TiXmlElement * animationNode)
+	{
+
+
+		// Write configuration animation
+		animationNode->SetAttribute("Looping",m_LoopAnimation);
+
+		// Write all control points
+		for(int i = 0; i < m_Points.size(); i++)
+		{
+			TiXmlElement* controlPointNode = new TiXmlElement("ControlPoint");
+			controlPointNode->SetAttribute("Delta", m_TimePoints[i]);
+			m_Points[i].WriteXML(controlPointNode);
+			animationNode->LinkEndChild(controlPointNode);
+		}
+	}
+
+	void ReadXML(TiXmlElement * element)
+	{
+
+	}
+
+	void WriteXMLFile(const std::string& path)
+	{
+		TiXmlDocument doc;
+		TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "", "" );
+		TiXmlElement* animationNode = new TiXmlElement("CameraAnimation");
+		WriteXML(animationNode);
+
+		// Build hierachie
+		doc.LinkEndChild(decl);
+		doc.LinkEndChild(animationNode);
+
+		doc.SaveFile(path);
+	}
+
+	void ReadXMLFile(const std::string& path);
 };
 
 #endif /* CAMERAANIMATION_H_ */
