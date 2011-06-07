@@ -24,7 +24,7 @@
 
 
 /////////////////////////////////////////////////////////////
-/// Constructeur par défaut
+/// Constructeur par dï¿½faut
 ///
 /// \param X : Composante X du vecteur
 /// \param Y : Composante Y du vecteur
@@ -42,7 +42,7 @@ z(Z)
 
 
 /////////////////////////////////////////////////////////////
-/// Réinitialise le vecteur
+/// Rï¿½initialise le vecteur
 ///
 /// \param X : Composante X du vecteur
 /// \param Y : Composante Y du vecteur
@@ -61,7 +61,7 @@ inline void CVector3<T>::Set(T X, T Y, T Z)
 /////////////////////////////////////////////////////////////
 /// Renvoie la norme du vecteur
 ///
-/// \return Valeur de la norme du vecteur sqrt(x² + y² + z²)
+/// \return Valeur de la norme du vecteur sqrt(xï¿½ + yï¿½ + zï¿½)
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -72,9 +72,9 @@ inline T CVector3<T>::Length() const
 
 
 /////////////////////////////////////////////////////////////
-/// Renvoie la norme au carré du vecteur
+/// Renvoie la norme au carrï¿½ du vecteur
 ///
-/// \return Carré de la norme du vecteur (x² + y² + z²)
+/// \return Carrï¿½ de la norme du vecteur (xï¿½ + yï¿½ + zï¿½)
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -103,9 +103,9 @@ inline void CVector3<T>::Normalize()
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur unaire +
+/// Opï¿½rateur unaire +
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -116,9 +116,9 @@ inline CVector3<T> CVector3<T>::operator +() const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur unaire -
+/// Opï¿½rateur unaire -
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -129,11 +129,11 @@ inline CVector3<T> CVector3<T>::operator -() const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur binaire +
+/// Opï¿½rateur binaire +
 ///
-/// \param v : Vecteur à additionner
+/// \param v : Vecteur ï¿½ additionner
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -144,11 +144,11 @@ inline CVector3<T> CVector3<T>::operator +(const CVector3<T>& v) const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur binaire -
+/// Opï¿½rateur binaire -
 ///
-/// \param v : Vecteur à soustraire
+/// \param v : Vecteur ï¿½ soustraire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -158,11 +158,11 @@ inline CVector3<T> CVector3<T>::operator -(const CVector3<T>& v) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Opérateur +=
+/// Opï¿½rateur +=
 ///
-/// \param v : Vecteur à additioner
+/// \param v : Vecteur ï¿½ additioner
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -177,11 +177,11 @@ inline const CVector3<T>& CVector3<T>::operator +=(const CVector3<T>& v)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur -=
+/// Opï¿½rateur -=
 ///
-/// \param v : Vecteur à soustraire
+/// \param v : Vecteur ï¿½ soustraire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -196,11 +196,11 @@ inline const CVector3<T>& CVector3<T>::operator -=(const CVector3<T>& v)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur *= avec un scalaire
+/// Opï¿½rateur *= avec un scalaire
 ///
 /// \param t : Scalaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -215,11 +215,11 @@ inline const CVector3<T>& CVector3<T>::operator *=(T t)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur /= avec un scalaire
+/// Opï¿½rateur /= avec un scalaire
 ///
 /// \param t : Scalaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -234,9 +234,9 @@ inline const CVector3<T>& CVector3<T>::operator /=(T t)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur de comparaison ==
+/// Opï¿½rateur de comparaison ==
 ///
-/// \param v : Vecteur à comparer
+/// \param v : Vecteur ï¿½ comparer
 ///
 /// \return True si les deux vecteurs sont identiques
 ///
@@ -251,11 +251,11 @@ inline bool CVector3<T>::operator ==(const CVector3<T>& v) const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur de comparaison !=
+/// Opï¿½rateur de comparaison !=
 ///
-/// \param v : Vecteur à comparer
+/// \param v : Vecteur ï¿½ comparer
 ///
-/// \return True si les deux vecteurs sont différents
+/// \return True si les deux vecteurs sont diffï¿½rents
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -266,7 +266,7 @@ inline bool CVector3<T>::operator !=(const CVector3<T>& v) const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur de cast en T*
+/// Opï¿½rateur de cast en T*
 ///
 /// \return Pointeur sur les composantes du vecteur
 ///
@@ -277,14 +277,30 @@ inline CVector3<T>::operator T*()
     return &x;
 }
 
+template <class T>
+inline void CVector3<T>::WriteXML(TiXmlElement * element)
+{
+	element->SetAttribute("x", x);
+	element->SetAttribute("y", y);
+	element->SetAttribute("z", z);
+}
+
+template <class T>
+inline void CVector3<T>::ReadXML(TiXmlElement * element)
+{
+	TinyXMLGetAttributeValue(element, "x", &x);
+	TinyXMLGetAttributeValue(element, "y", &y);
+	TinyXMLGetAttributeValue(element, "z", &z);
+}
+
 
 /////////////////////////////////////////////////////////////
-/// Opérateurs de multiplication avec un scalaire
+/// Opï¿½rateurs de multiplication avec un scalaire
 ///
 /// \param v : Vecteur
 /// \param t : Scalaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -295,12 +311,12 @@ inline CVector3<T> operator *(const CVector3<T>& v, T t)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateurs de division par un scalaire
+/// Opï¿½rateurs de division par un scalaire
 ///
 /// \param v : Vecteur
 /// \param t : Scalaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -311,12 +327,12 @@ inline CVector3<T> operator /(const CVector3<T>& v, T t)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateurs de multiplication avec un scalaire
+/// Opï¿½rateurs de multiplication avec un scalaire
 ///
 /// \param t : Scalaire
 /// \param v : Vecteur
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -332,7 +348,7 @@ inline CVector3<T> operator *(T t, const CVector3<T>& v)
 /// \param v1 : Vecteur 1
 /// \param v2 : Vecteur 2
 ///
-/// \return Résultat du produit scalaire
+/// \return Rï¿½sultat du produit scalaire
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -348,7 +364,7 @@ inline T operator *(const CVector3<T>& v1, const CVector3<T>& v2)
 /// \param v1 : Vecteur 1
 /// \param v2 : Vecteur 2
 ///
-/// \return Résultat du produit vectoriel
+/// \return Rï¿½sultat du produit vectoriel
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -359,12 +375,12 @@ inline CVector3<T> operator ^(const CVector3<T>& v1, const CVector3<T>& v2)
 
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'opérateur >> entre un flux et un vecteur
+/// Surcharge de l'opï¿½rateur >> entre un flux et un vecteur
 ///
-/// \param Stream : Flux d'entrée
+/// \param Stream : Flux d'entrï¿½e
 /// \param Vector : Vecteur
 ///
-/// \return Référence sur le flux d'entrée
+/// \return Rï¿½fï¿½rence sur le flux d'entrï¿½e
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -375,12 +391,12 @@ inline std::istream& operator >>(std::istream& Stream, CVector3<T>& Vector)
 
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'opérateur << entre un flux et un vecteur
+/// Surcharge de l'opï¿½rateur << entre un flux et un vecteur
 ///
 /// \param Stream : Flux de sortie
 /// \param Vector : Vecteur
 ///
-/// \return Référence sur le flux de sortie
+/// \return Rï¿½fï¿½rence sur le flux de sortie
 ///
 ////////////////////////////////////////////////////////////
 template <class T>

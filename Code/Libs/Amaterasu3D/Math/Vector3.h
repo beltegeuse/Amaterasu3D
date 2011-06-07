@@ -31,6 +31,8 @@
 #include <limits>
 #include <iostream>
 #include <cmath>
+#include <tinyxml.h>
+#include <TinyXMLHelper.h>
 
 namespace Math
 {
@@ -101,6 +103,12 @@ namespace Math
         // Operateur de cast en T*
         //----------------------------------------------------------
         operator T*();
+
+        //----------------------------------------------------------
+		// XML operation
+		//----------------------------------------------------------
+        void WriteXML(TiXmlElement * element);
+        void ReadXML(TiXmlElement * element);
 
         //----------------------------------------------------------
         // Donnees membres

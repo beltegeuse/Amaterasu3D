@@ -8,6 +8,8 @@
 #ifndef CAMERAANIMATION_H_
 #define CAMERAANIMATION_H_
 
+#include <tinyxml.h>
+
 struct CameraAnimationControlPoint
 {
 	/*
@@ -19,10 +21,37 @@ struct CameraAnimationControlPoint
 	/*
 	 * Constructors & Destructors
 	 */
-	CameraAnimationControlPoint(const Math::TVector3F& position, const Math::TVector3F& direction) :
+	CameraAnimationControlPoint(const Math::TVector3F& position = Math::TVector3F(0,0,0), const Math::TVector3F& direction = Math::TVector3F(1,0,0)) :
 		Position(position), Direction(direction)
 	{
 		Direction.Normalize();
+	}
+
+	// Write all info into element
+	void WriteXML(TiXmlElement * element)
+	{
+		// Get information from vectors ...
+		TiXmlElement* ePosition = new TiXmlElement("Position");
+		TiXmlElement* eDirection = new TiXmlElement("Direction");
+
+		Position.WriteXML(ePosition);
+		Direction.WriteXML(eDirection);
+
+		// Create heirachical
+		element->LinkEndChild(ePosition);
+		element->LinkEndChild(eDirection);
+	}
+
+	// Read all info into element
+	void ReadXML(TiXmlElement * element)
+	{
+		TiXmlElement* ePosition = element->FirstChildElement("Position");
+		TiXmlElement* eDirection = element->FirstChildElement("Direction");
+
+		Assert(ePosition != 0 && eDirection != 0);
+
+		Position.ReadXML(ePosition);
+		Direction.ReadXML(eDirection);
 	}
 };
 

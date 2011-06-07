@@ -7,9 +7,10 @@ ENDIF()
 
 INCLUDE_DIRECTORIES(
 	${FREETYPE_INCLUDE_DIRS}
-        /usr/local/include/sigc++-2.0
+    /usr/local/include/sigc++-2.0
 	/usr/local/lib/sigc++-2.0/include
 	/usr/local/include/assimp
+	../Libs/TinyXML
 )
 
 # Unsupported :
