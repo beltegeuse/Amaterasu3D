@@ -5,7 +5,7 @@
     </OutputFrame>
 	<Textures>
 		<Texture type="Custom" name="HDRBuffer" id=0 />
-		<Texture type="Custom" name="LumianceBuffer" id=1 />
+		<Texture type="Custom" name="AdaptationBuffer" id=1 />
 	</Textures>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="PhotoToneOperator.frag" />

@@ -25,14 +25,16 @@
 #ifndef PHOTOGRAPHICTONEOPERATOR_H_
 #define PHOTOGRAPHICTONEOPERATOR_H_
 
+#include <Addons/ToneMappingOperator/ManualMipmapping.h>
 #include <Addons/ToneMappingOperator/AbsrtactToneOperator.h>
 #include <Graphics/Shaders/Shader.h>
 
 class PhotographicToneOperator : public AbsrtactToneOperator
 {
 protected:
-	TShaderPtr m_LuminanceShader;
 	TShaderPtr m_PhotoShader;
+	TShaderPtr m_PhotoAdaptationBuffer;
+	ManualMipmapping m_ManualMipmapping;
 public:
 	PhotographicToneOperator(Texture* HDRBuffer);
 	virtual ~PhotographicToneOperator();

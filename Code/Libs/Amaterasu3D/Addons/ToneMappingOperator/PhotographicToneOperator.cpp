@@ -25,10 +25,12 @@
 #include "PhotographicToneOperator.h"
 
 PhotographicToneOperator::PhotographicToneOperator(Texture* HDRBuffer) :
-	AbsrtactToneOperator(HDRBuffer)
+	AbsrtactToneOperator(HDRBuffer),
+	m_ManualMipmapping(128)
 {
-	m_LuminanceShader = CShaderManager::Instance().LoadShader("ComputeLuminance.shader");
+	m_PhotoAdaptationBuffer = CShaderManager::Instance().LoadShader("PhotoAdaptationLumSimple.shader");
 	m_PhotoShader = CShaderManager::Instance().LoadShader("PhotoToneOperator.shader");
+	m_ManualMipmapping.Initialize();
 }
 
 PhotographicToneOperator::~PhotographicToneOperator()
@@ -42,20 +44,31 @@ Texture* PhotographicToneOperator::GetLDRTexture()
 
 void PhotographicToneOperator::Compress()
 {
-	m_LuminanceShader->Begin();
-	m_HDRBuffer->activateMultiTex(CUSTOM_TEXTURE+0);
+	m_ManualMipmapping.Compute(m_HDRBuffer);
+
+	// Try something
+	m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels()-1)->activateTextureMapping();
+	m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels()-1)->activateTexture();
+	float lum = 0;
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_LUMINANCE,GL_FLOAT,&lum);
+	Logger::Log() << "Luminance : " << lum << "\n";
+	m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels()-1)->desactivateTextureMapping();
+
+	m_PhotoAdaptationBuffer->Begin();
+	m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels()-1)->activateMultiTex(CUSTOM_TEXTURE);
 	glBegin(GL_QUADS);
 		glVertex2f(-1.0, -1.0);
 		glVertex2f(-1.0, 1.0);
 		glVertex2f(1.0, 1.0);
 		glVertex2f(1.0, -1.0);
 	glEnd();
-	m_HDRBuffer->desactivateMultiTex(CUSTOM_TEXTURE+0);
-	m_LuminanceShader->End();
+	m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels()-1)->desactivateMultiTex(CUSTOM_TEXTURE);
+	m_PhotoAdaptationBuffer->End();
 
 	m_PhotoShader->Begin();
 	m_HDRBuffer->activateMultiTex(CUSTOM_TEXTURE+0);
-	m_LuminanceShader->GetFBO()->GetTexture("Result")->activateMultiTex(CUSTOM_TEXTURE+1);
+	m_PhotoAdaptationBuffer->GetFBO()->GetTexture("Result")->activateMultiTex(CUSTOM_TEXTURE+1);
+	//m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels()-1)->activateMultiTex(CUSTOM_TEXTURE+1);
 	glBegin(GL_QUADS);
 		glVertex2f(-1.0, -1.0);
 		glVertex2f(-1.0, 1.0);
@@ -63,7 +76,8 @@ void PhotographicToneOperator::Compress()
 		glVertex2f(1.0, -1.0);
 	glEnd();
 	m_HDRBuffer->desactivateMultiTex(CUSTOM_TEXTURE+0);
-	m_LuminanceShader->GetFBO()->GetTexture("Result")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+	//m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels()-1)->desactivateMultiTex(CUSTOM_TEXTURE+1);
+	m_PhotoAdaptationBuffer->GetFBO()->GetTexture("Result")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 	m_PhotoShader->End();
 }
 
