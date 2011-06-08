@@ -29,5 +29,5 @@ void main()
 	float Lm = (0.18/La)*Lw;
 	float Ld = Lm / ( Lm + 1 );
 
-	Result = vec4(vec3(Ld),1.0);
+	Result = vec4(vec3(Ld)*pow(HDRValue/vec3(Lw), vec3(0.65)),1.0);
 }
