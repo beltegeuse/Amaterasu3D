@@ -49,6 +49,13 @@ def maxC(v1,v2):
         return v2
     return v1
 
+def adpatationLuminance(numberList):
+    if len(numberList) == 0:
+        return float('nan')
+ 
+    floatNums = [float(x[0]*0.17697 + x[1]*0.81240 + x[2]*0.01063) for x in numberList]
+    return sum(floatNums) / len(numberList)
+
 def toColor(v, max):
     return (int(v[0]*255 / max[0]),int(v[1]*255 / max[1]),int(v[2]*255 / max[2]))
 
@@ -84,6 +91,8 @@ if __name__ == '__main__':
     maxV = max(imageData)
     
     print "Max pixel : "+str(maxV)
+    print "Mean : "+str(adpatationLuminance(imageData))
+    
     
     # Todo: Faire un operateur de Tone mapping
     
@@ -104,7 +113,6 @@ if __name__ == '__main__':
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             break
         
-        print "Write image ..."
         for j in range(height):
             for i in range(width):
                 Y = imageData[j*width+i][0]*0.17697+imageData[j*width+i][1]*0.81240+imageData[j*width+i][2]*0.01063
@@ -113,7 +121,6 @@ if __name__ == '__main__':
                     v = maxC(minC(math.log10(Y),5.0),0.0)*50
                 pxarray[i][j] = HotColormap(v)
                 #pxarray[i][j] = toColor(imageData[j*width+i], maxV)
-        print "End Write image"
         
         pygame.display.flip()
         pygame.time.wait(10)

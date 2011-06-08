@@ -146,6 +146,7 @@ void LPV::InjectGeometryFromLight(LightShaders& shader, SceneGraph::DrawObject& 
 	shader.GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
 	shader.GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
 	ShaderHelperUniformPosition(m_LPVInjectGeomerty, shader.GetProjectionMatrix(), shader.GetViewMatrix(), 1.0, shader.LightRaduis);
+	m_LPVInjectGeomerty->SetUniformVector("ObsPosition", shader.Position);
 	samples.Draw();
 	shader.GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 	shader.GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+1);

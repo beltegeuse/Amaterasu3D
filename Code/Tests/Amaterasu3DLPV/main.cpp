@@ -461,9 +461,8 @@ private:
 			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 			m_ShowLum->End();
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 			m_ToneOperator->Compress();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_ToneOperator->DrawDebug();
 
 			//m_LPV.m_LPVInjectGeomerty->GetFBO()->DrawDebug();

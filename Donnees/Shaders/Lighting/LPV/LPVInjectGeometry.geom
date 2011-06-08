@@ -12,6 +12,8 @@ uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform float LPVCellSize[NB_CASCADE]; // dim &
 uniform int LPVNbCell;// number cell in one dim
 
+uniform vec3 ObsPosition;
+
 #include <LPVPosition.shadercode>
 
 smooth in vec3 inNormal[1];
@@ -32,15 +34,16 @@ void main()
 		for(j=0; j < NB_CASCADE; j++)
 		{
 			outNormal = inNormal[i];
-			SurfelArea = 1.0;
+			float depth = length(ObsPosition-Position);
+			SurfelArea = (4.0*depth*depth)/(512.0*512.0);
 
 			Position = gl_PositionIn[i].xyz;
 			// Prevent self shadowing
-			Position += (outNormal*LPVCellSize[j]*0.5);
+			//Position += (outNormal*LPVCellSize[j]*0.5);
 			// Compute the cell ID
 			if(LPVCellSize[j] == 0)
 				break;
-			CellID = floor((Position.xyz - LPVPosition[j].xyz) / vec3(LPVCellSize[j]));
+			CellID = floor(((Position.xyz - LPVPosition[j].xyz) / vec3(LPVCellSize[j])) - vec3(0.5));
 			if(IsInGrid(CellID))
 			{
 				Pos2D = Convert3DTo2DTexcoord(CellID,j);

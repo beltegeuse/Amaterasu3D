@@ -78,7 +78,7 @@ void propagate(in vec2 pos, in int cascadeID,in mat3 orientation, inout vec4 out
 	vec4 occlusionSH = vec4(0.0);
 	if(DoOcclusion)
 	{
-		occlusionSH = Sample2DOffset3D(Occlusion,pos,-MainDirection * 0.5,cascadeID);
+		occlusionSH = Sample2DOffset3D(Occlusion,pos,+MainDirection * 0.5,cascadeID);
 	}
 
 	float occlusionFactor = 1.0;

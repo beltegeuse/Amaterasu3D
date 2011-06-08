@@ -80,7 +80,7 @@ void main()
 		// Compute light attenation
 	    //float SpotAtt = pow(SpotDot, 9.0); //TODO: uniform ???
 	    //float LightAtt = clamp(1.0 - LightDistance/LightRaduis, 0.0, 1.0) * LightIntensity * SpotAtt;
-		float LightAtt = LightIntensity / (LightDistance*LightDistance);
+		float LightAtt = LightIntensity / (1.0+LightDistance*LightDistance);
 
 		float NdotL = max(dot(vec3(outNormal), LightDirection), 0.0);
 		if (NdotL > 0.0) {

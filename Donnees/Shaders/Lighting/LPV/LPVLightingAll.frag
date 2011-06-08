@@ -140,6 +140,6 @@ void main()
 	Color *= ShadowFactor;
 
 	Color += vec4(diffuseColor*vec3(ComputeIndirectLighting(position, normal)),1.0);
-	Color *= 0.1;
+	Color *= 0.5;
 	//Color += vec4(diffuseColor,1.0)*vec4(vec3(0.05),1.0);
 }
