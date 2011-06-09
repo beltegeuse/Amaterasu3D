@@ -25,8 +25,12 @@
 #ifndef SCENEMANAGER_H_
 #define SCENEMANAGER_H_
 
+// Amaterasu3D includes
 #include <Singleton.h>
 #include <Graphics/SceneGraph/Group.h>
+
+// STL includes
+#include <map>
 
 class CSceneManager : public CSingleton<CSceneManager>
 {
@@ -43,6 +47,7 @@ public:
 	CSceneManager();
 	virtual ~CSceneManager();
 
+	void RenderAll();
 
 };
 
