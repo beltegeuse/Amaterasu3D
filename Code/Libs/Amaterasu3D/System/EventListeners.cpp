@@ -70,3 +70,10 @@ WindowListener::~WindowListener()
 	CEventManager::Instance().RemoveListener("WindowListener", this);
 }
 
+InputListener::InputListener()
+{}
+
+InputListener::~InputListener()
+{
+}
+

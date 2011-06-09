@@ -63,6 +63,14 @@ public:
 	virtual void MouseMoved(int x, int y) = 0;
 };
 
+//XXX Heritage en diament.
+class InputListener : public MouseListener, public KeyListener, public MouseMotionListener
+{
+public:
+	InputListener();
+	virtual ~InputListener();
+};
+
 class FrameListener : public EventListener
 {
 public:
