@@ -9,6 +9,7 @@ smooth in vec2 outTexCoord;
 // Texture to blur
 uniform sampler2D HDRBuffer;
 uniform sampler2D AdaptationBuffer;
+uniform float AdaptationLum;
 
 // Output buffer
 out vec4 Result;
@@ -21,12 +22,9 @@ void main()
 	// Read data
 	vec3 HDRValue = texture(HDRBuffer,outTexCoord).xyz;
 	float Lw = dot(HDRValue,RGB2Lum);
-	float La = texelFetch(AdaptationBuffer,ivec2(0),0).r;
-	//float La = dot(texture(AdaptationBuffer,outTexCoord).xyz,RGB2Lum);
-	//La = 10;
 
 	// Compression
-	float Lm = (0.18/La)*Lw;
+	float Lm = (0.18/AdaptationLum)*Lw;
 	float Ld = Lm / ( Lm + 1 );
 
 	Result = vec4(vec3(Ld)*pow(HDRValue/vec3(Lw), vec3(0.65)),1.0);

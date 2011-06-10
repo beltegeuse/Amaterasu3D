@@ -15,6 +15,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Addons/ToneMappingOperator/AbsrtactToneOperator.cpp
 	Addons/ToneMappingOperator/PhotographicToneOperator.cpp
 	Addons/ToneMappingOperator/ManualMipmapping.cpp
+	Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.cpp
 	
 	Debug/Exceptions.cpp
 	Debug/OpenGLDebug.cpp

@@ -27,14 +27,15 @@
 
 #include <Addons/ToneMappingOperator/ManualMipmapping.h>
 #include <Addons/ToneMappingOperator/AbsrtactToneOperator.h>
+#include <Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.h>
 #include <Graphics/Shaders/Shader.h>
 
 class PhotographicToneOperator : public AbsrtactToneOperator
 {
 protected:
 	TShaderPtr m_PhotoShader;
-	TShaderPtr m_PhotoAdaptationBuffer;
 	ManualMipmapping m_ManualMipmapping;
+	AdaptationLuminanceSimple m_AdaptationLum;
 public:
 	PhotographicToneOperator(Texture* HDRBuffer);
 	virtual ~PhotographicToneOperator();
