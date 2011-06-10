@@ -30,17 +30,15 @@
 
 class AbsrtactToneOperator
 {
-protected:
-	Texture* m_HDRBuffer;
 public:
-	AbsrtactToneOperator(Texture* HDRBuffer);
+	AbsrtactToneOperator();
 	virtual ~AbsrtactToneOperator();
 
 	/*
 	 * Virtual pure methods
 	 */
 	virtual Texture* GetLDRTexture() = 0;
-	virtual void Compress() = 0;
+	virtual void Compress(Texture* HDRBuffer) = 0;
 	virtual void DrawDebug() = 0;
 };
 

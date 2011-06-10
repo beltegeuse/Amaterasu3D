@@ -24,12 +24,10 @@
 
 #include "AbsrtactToneOperator.h"
 
-AbsrtactToneOperator::AbsrtactToneOperator(Texture* HDRBuffer) :
-	m_HDRBuffer(HDRBuffer)
+AbsrtactToneOperator::AbsrtactToneOperator()
 {
 }
 
 AbsrtactToneOperator::~AbsrtactToneOperator()
 {
-	// TODO Auto-generated destructor stub
 }

@@ -11,13 +11,13 @@
 #include <Addons/ToneMappingOperator/ManualMipmapping.h>
 
 class AdaptationLuminanceSimple {
-private:
+protected:
 	float m_LuminanceValue;
 public:
 	AdaptationLuminanceSimple();
 	virtual ~AdaptationLuminanceSimple();
 
-	void UpdateLuminance(ManualMipmapping* mipmapping);
+	virtual void UpdateLuminance(ManualMipmapping* mipmapping);
 	float GetAdaptationLuminance() const;
 };
 

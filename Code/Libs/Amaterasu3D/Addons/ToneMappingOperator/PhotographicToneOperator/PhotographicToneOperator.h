@@ -35,13 +35,13 @@ class PhotographicToneOperator : public AbsrtactToneOperator
 protected:
 	TShaderPtr m_PhotoShader;
 	ManualMipmapping m_ManualMipmapping;
-	AdaptationLuminanceSimple m_AdaptationLum;
+	AdaptationLuminanceSimple* m_AdaptationLum;
 public:
-	PhotographicToneOperator(Texture* HDRBuffer);
+	PhotographicToneOperator();
 	virtual ~PhotographicToneOperator();
 
 	virtual Texture* GetLDRTexture();
-	virtual void Compress();
+	virtual void Compress(Texture* HDRBuffer);
 	virtual void DrawDebug();
 };
 

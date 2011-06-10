@@ -22,7 +22,8 @@
 
 #include <Addons/LPV/LPV.h>
 #include <Addons/ToneMappingOperator/AbsrtactToneOperator.h>
-#include <Addons/ToneMappingOperator/PhotographicToneOperator.h>
+#include <Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.h>
+#include <Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperatorExp.h>
 
 class ApplicationLPV : public Application
 {
@@ -195,9 +196,14 @@ private:
 		m_GBufferShader = ShaderManager.LoadShader("GBuffer.shader");
 		m_DeferredSpotShader = ShaderManager.LoadShader("DeferredSunLight.shader");
 		m_LPVShowVPL = ShaderManager.LoadShader("LPVShowVPL.shader");
-		//m_ToneOperator = ShaderManager.LoadShader("FilmicToneOperator.shader");
 		m_ShowLum = ShaderManager.LoadShader("ShowLuminance.shader");
-		m_ToneOperator = new PhotographicToneOperator(m_LPVLightingAllShader->GetFBO()->GetTexture("Color"));
+
+		////////////////
+		// Creation of Tone mapping
+		////////////////
+		//m_ToneOperator = new PhotographicToneOperator();
+		m_ToneOperator = new PhotographicToneOperatorExp();
+
 		// Load Scene
 		LoadSponzaTest();
 		// Console commands
@@ -461,7 +467,7 @@ private:
 			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 			m_ShowLum->End();
 
-			m_ToneOperator->Compress();
+			m_ToneOperator->Compress(m_LPVLightingAllShader->GetFBO()->GetTexture("Color"));
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_ToneOperator->DrawDebug();
 

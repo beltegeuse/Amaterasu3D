@@ -13,9 +13,11 @@ SET(LIB_AMATERASU3D_SRCS
 	Addons/Binvox/BinvoxModel.cpp
 	Addons/LPV/LPV.cpp
 	Addons/ToneMappingOperator/AbsrtactToneOperator.cpp
-	Addons/ToneMappingOperator/PhotographicToneOperator.cpp
 	Addons/ToneMappingOperator/ManualMipmapping.cpp
+	Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.cpp
+	Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperatorExp.cpp
 	Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.cpp
+	Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimpleExp.cpp
 	
 	Debug/Exceptions.cpp
 	Debug/OpenGLDebug.cpp
