@@ -14,8 +14,9 @@ class AdaptationLuminanceSimpleExp : public AdaptationLuminanceSimple
 {
 protected:
 	float m_OldLumianceValue;
+	float m_Alpha;
 public:
-	AdaptationLuminanceSimpleExp();
+	AdaptationLuminanceSimpleExp(float alpha = 0.98);
 	virtual ~AdaptationLuminanceSimpleExp();
 
 	virtual void UpdateLuminance(ManualMipmapping* mipmapping);

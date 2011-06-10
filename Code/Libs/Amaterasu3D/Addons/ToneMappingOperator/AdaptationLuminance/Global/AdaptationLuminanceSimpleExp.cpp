@@ -7,8 +7,9 @@
 
 #include "AdaptationLuminanceSimpleExp.h"
 
-AdaptationLuminanceSimpleExp::AdaptationLuminanceSimpleExp() :
-m_OldLumianceValue(1.0)
+AdaptationLuminanceSimpleExp::AdaptationLuminanceSimpleExp(float alpha) :
+m_OldLumianceValue(1.0),
+m_Alpha(alpha)
 {
 }
 
@@ -20,5 +21,5 @@ void AdaptationLuminanceSimpleExp::UpdateLuminance(ManualMipmapping* mipmapping)
 {
 	m_OldLumianceValue = m_LuminanceValue;
 	AdaptationLuminanceSimple::UpdateLuminance(mipmapping);
-	m_LuminanceValue = (0.9)*m_OldLumianceValue + (0.1)*m_LuminanceValue;
+	m_LuminanceValue = (m_Alpha)*m_OldLumianceValue + (1.0 - m_Alpha)*m_LuminanceValue;
 }
