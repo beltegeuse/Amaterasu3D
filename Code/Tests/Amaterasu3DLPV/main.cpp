@@ -24,7 +24,7 @@
 #include <Addons/ToneMappingOperator/AbsrtactToneOperator.h>
 #include <Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.h>
 #include <Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperatorExp.h>
-
+#include <Addons/ToneMappingOperator/SumantToneOperator/SumantToneOperator.h>
 class ApplicationLPV : public Application
 {
 protected:
@@ -202,7 +202,8 @@ private:
 		// Creation of Tone mapping
 		////////////////
 		//m_ToneOperator = new PhotographicToneOperator();
-		m_ToneOperator = new PhotographicToneOperatorExp();
+		//m_ToneOperator = new PhotographicToneOperatorExp();
+		m_ToneOperator = new SumantToneOperator();
 
 		// Load Scene
 		LoadSponzaTest();
