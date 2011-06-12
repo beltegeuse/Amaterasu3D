@@ -25,6 +25,8 @@
 #include <Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.h>
 #include <Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperatorExp.h>
 #include <Addons/ToneMappingOperator/SumantToneOperator/SumantToneOperator.h>
+#include <Addons/ToneMappingOperator/DurandToneOperator/DurandToneOperator.h>
+
 class ApplicationLPV : public Application
 {
 protected:
@@ -203,7 +205,8 @@ private:
 		////////////////
 		//m_ToneOperator = new PhotographicToneOperator();
 		//m_ToneOperator = new PhotographicToneOperatorExp();
-		m_ToneOperator = new SumantToneOperator();
+		//m_ToneOperator = new SumantToneOperator();
+		m_ToneOperator = new DurandToneOperator();
 
 		// Load Scene
 		LoadSponzaTest();

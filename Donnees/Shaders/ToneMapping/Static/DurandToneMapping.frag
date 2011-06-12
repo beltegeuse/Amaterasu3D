@@ -24,8 +24,9 @@ void main()
 	float Lw = dot(HDRValue,RGB2Lum);
 	float La = dot(BiValue,RGB2Lum);
 	// Compression
-	float Lm = (0.18/La)*Lw;
-	float Ld = Lm / ( Lm + 1 );
+	//float Lm = (0.18/La)*Lw;
+	float Ld = Lw / (Lw + La);
+	//float Ld = Lm / ( 1 - Lm);
 
-	Result = vec4(vec3(Ld)*pow(HDRValue/vec3(Lw), vec3(0.65)),1.0);
+	Result = vec4(vec3(Ld)*pow(HDRValue/vec3(Lw), vec3(0.65)),1.0); // 0.65
 }
