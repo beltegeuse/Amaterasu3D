@@ -220,7 +220,8 @@ private:
 	void LoadSponzaTest()
 	{
 		// Create light
-		m_Light.LightColor = Color(41230,34110,29860);
+		//m_Light.LightColor = Color(41230,34110,29860);
+		m_Light.LightColor = Color(412,341,298);
 		m_Light.Position = Math::TVector3F(-12,7,1);
 		m_Light.LightRaduis = 30.0;
 		m_Light.LightIntensity = 1.0;
