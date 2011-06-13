@@ -205,8 +205,8 @@ private:
 		////////////////
 		//m_ToneOperator = new PhotographicToneOperator();
 		//m_ToneOperator = new PhotographicToneOperatorExp();
-		//m_ToneOperator = new SumantToneOperator();
-		m_ToneOperator = new DurandToneOperator();
+		m_ToneOperator = new SumantToneOperator();
+		//m_ToneOperator = new DurandToneOperator();
 
 		// Load Scene
 		LoadSponzaTest();
