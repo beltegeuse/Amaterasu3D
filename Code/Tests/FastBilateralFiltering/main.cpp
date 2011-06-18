@@ -40,6 +40,117 @@
 #include <Addons/Logo/Logo.h>
 #include <Graphics/SceneGraph/Other/Skydome.h>
 
+#include <Utilities/Util.h>
+class FastBilateralFiltering
+{
+private:
+	/*
+	 * Attributes
+	 */
+	Math::TVector3I m_Dimension;
+	Math::TVector2I m_InputDimension;
+	Math::TVector2I m_TextureRepeat;
+	// * Shaders
+	TShaderPtr m_InjectionStep;
+	TShaderPtr m_Diffusion;
+	TShaderPtr m_Slicing;
+
+	// If separable kernel
+	//TShaderPtr m_XDiffusion;
+	//TShaderPtr m_YDiffusion;
+	//TShaderPtr m_ZDiffusion;
+
+	/*
+	 * Privates methods
+	 */
+	void DrawQuad()
+	{
+		// Draw ...
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0, 0.0);
+			glVertex2f(-1.0, -1.0);
+			glTexCoord2f(0.0, 1.0);
+			glVertex2f(-1.0, 1.0);
+			glTexCoord2f(1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glTexCoord2f(1.0, 0.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+	}
+public:
+	FastBilateralFiltering(const Math::TVector3I dimension, const Math::TVector2I& input) :
+		m_Dimension(dimension),
+		m_InputDimension(input)
+	{
+		int Taille = sqrt(dimension.z);
+		m_TextureRepeat.x = NearestPowerOfTwo(Taille);
+		m_TextureRepeat.y = dimension.z/m_TextureRepeat.x;
+	}
+
+	void Initialize()
+	{
+		/////////////////////////
+		// Shaders loading
+		/////////////////////////
+		m_InjectionStep = CShaderManager::Instance().LoadShader("BilateralGridInjection.shader");
+		m_Slicing = CShaderManager::Instance().LoadShader("BilateralGridSlicing.shader");
+
+		/////////////////////////
+		// Texture creation
+		/////////////////////////
+		/*
+		 * 3D texture
+		 */
+		Math::TVector2I sizeTex = Math::TVector2I(m_Dimension.x*m_TextureRepeat.x,m_Dimension.y*m_TextureRepeat.y);
+		m_InjectionStep->GetFBO()->SetSize(sizeTex);
+		m_Diffusion->GetFBO()->SetSize(sizeTex);
+		/*
+		 * Slicing texture
+		 * rq : have the same size ...
+		 */
+		m_Slicing->GetFBO()->SetSize(m_InputDimension);
+	}
+
+	void Filtering(Texture* texture)
+	{
+		/////////////////////////
+		// Injection step
+		/////////////////////////
+		m_InjectionStep->Begin();
+		texture->activateMultiTex(CUSTOM_TEXTURE+0);
+		DrawQuad();
+		texture->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_InjectionStep->End();
+		/////////////////////////
+		// Diffusion
+		/////////////////////////
+		m_Diffusion->Begin();
+		m_InjectionStep->GetFBO()->GetTexture("Result")->activateMultiTex(CUSTOM_TEXTURE+0);
+		DrawQuad();
+		m_InjectionStep->GetFBO()->GetTexture("Result")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_Diffusion->End();
+
+		/////////////////////////
+		// Slicing
+		/////////////////////////
+		m_Slicing->Begin();
+		texture->activateMultiTex(CUSTOM_TEXTURE+1);
+		DrawQuad();
+		texture->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_Slicing->End();
+	}
+
+	Texture* GetResult()
+	{
+		return m_Slicing->GetFBO()->GetTexture("Result");
+	}
+
+	void DrawDebug()
+	{
+		m_Slicing->GetFBO()->DrawDebug();
+	}
+};
+
 class ApplicationShadow : public Application
 {
 protected:
