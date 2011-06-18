@@ -1,0 +1,9 @@
+
+/* ========================
+ * Log operations
+ * ======================== */
+#define LOG10 0.434294482
+float log10(float v)
+{
+	return log(v)*LOG10;
+}

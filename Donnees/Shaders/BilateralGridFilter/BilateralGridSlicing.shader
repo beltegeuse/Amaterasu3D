@@ -4,7 +4,8 @@
     	<Frame name="Result" type="RGBA32" />
     </OutputFrame>
 	<Textures>
-		<Texture type="Custom" name="InputBuffer" id=0 />
+		<Texture type="Custom" name="GridBuffer" id=0 />
+		<Texture type="Custom" name="InputBuffer" id=1 />
 	</Textures>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="BilateralGridSlicing.frag" />

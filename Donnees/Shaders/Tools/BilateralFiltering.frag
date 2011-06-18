@@ -18,7 +18,7 @@ uniform float SigR;
 // Output buffer
 out vec4 Result;
 
-#define LOG10 0.434294482
+#include <MathHelper.shadercode>
 
 float GetCoef(float v, float sig)
 {
@@ -50,7 +50,7 @@ void main()
 			PTexCoord = max(ivec2(0,0), min(SizeTextureInt, STexCoord+ivec2(i,j)));
 			Pvalue = texelFetch(InputBuffer, PTexCoord, 0).rgb;
 			dist = abs(dot(Pvalue,RGB2Lum) -  dot(Svalue,RGB2Lum));		
-			Coeff = GetCoef(length(PTexCoord - STexCoord), SigS)*GetCoef(log(dist)*LOG10, SigR);
+			Coeff = GetCoef(length(PTexCoord - STexCoord), SigS)*GetCoef(log10(dist), SigR);
 			K += Coeff;
 			Sum += Coeff*Pvalue;
 			//Sum += Pvalue;

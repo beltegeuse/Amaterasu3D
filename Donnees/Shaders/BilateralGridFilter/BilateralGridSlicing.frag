@@ -7,25 +7,11 @@ precision highp float;
 smooth in vec2 outTexCoord;
 
 // Texture
+uniform sampler2D GridBuffer;
 uniform sampler2D InputBuffer;
-
-// Constantes
-uniform vec2 SizeTexture;
-uniform int HalfSizeNeigbours;
-uniform float SigS;
-uniform float SigR;
 
 // Output buffer
 out vec4 Result;
-
-#define LOG10 0.434294482
-
-float GetCoef(float v, float sig)
-{
-	return exp(-(v*v)/(2.0*sig*sig));
-}
-
-const vec3 RGB2Lum = vec3(0.3576,0.7152,0.1192); 
 
 void main()
 {
