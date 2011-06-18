@@ -47,6 +47,7 @@ private:
 	/*
 	 * Attributes
 	 */
+	// * Texture information
 	Math::TVector3I m_Dimension;
 	Math::TVector2I m_InputDimension;
 	Math::TVector2I m_TextureRepeat;
@@ -54,6 +55,8 @@ private:
 	TShaderPtr m_InjectionStep;
 	TShaderPtr m_Diffusion;
 	TShaderPtr m_Slicing;
+	// * Point injection
+	SceneGraph::Model* m_SamplePoint;
 
 	// If separable kernel
 	//TShaderPtr m_XDiffusion;
@@ -77,6 +80,34 @@ private:
 			glVertex2f(1.0, -1.0);
 		glEnd();
 	}
+
+	void CreateSampleModel(int resX, int resY, SceneGraph::Model** model)
+	{
+		float * vertexBuffer = new float[resX*resY*2];
+		unsigned int * indiceBuffer = new unsigned int[resX*resY];
+		int l = 0;
+		for(int i = 0; i < resX; i++)
+			for(int j = 0; j < resY; j++)
+			{
+				vertexBuffer[l] =  i/(float)resX;
+				vertexBuffer[l+1] =  j/(float)resX;
+				l += 2;
+			}
+		for(int k=0; k < resX*resY; k++)
+		{
+			indiceBuffer[k] = k;
+		}
+		SceneGraph::ModelBuffer buffer;
+		buffer.buffer = vertexBuffer;
+		buffer.size = resX*resY*2;
+		buffer.dimension = 2;
+		buffer.owner = true;
+		(*model) = new SceneGraph::Model;
+		(*model)->SetDrawMode(GL_POINTS);
+		(*model)->SetIndiceBuffer(indiceBuffer, resX*resY);
+		(*model)->AddBuffer(buffer, VERTEX_ATTRIBUT);
+		(*model)->CompileBuffers();
+	}
 public:
 	FastBilateralFiltering(const Math::TVector3I dimension, const Math::TVector2I& input) :
 		m_Dimension(dimension),
@@ -89,6 +120,8 @@ public:
 
 	void Initialize()
 	{
+		CreateSampleModel(m_InputDimension.x, m_InputDimension.y, &m_SamplePoint);
+
 		/////////////////////////
 		// Shaders loading
 		/////////////////////////
@@ -118,7 +151,7 @@ public:
 		/////////////////////////
 		m_InjectionStep->Begin();
 		texture->activateMultiTex(CUSTOM_TEXTURE+0);
-		DrawQuad();
+		m_SamplePoint->Draw();
 		texture->desactivateMultiTex(CUSTOM_TEXTURE+0);
 		m_InjectionStep->End();
 		/////////////////////////

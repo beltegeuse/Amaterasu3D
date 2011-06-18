@@ -6,6 +6,6 @@
 	<Textures>
 		<Texture type="Custom" name="InputBuffer" id=0 />
 	</Textures>
-	<VertexShader filename="SimpleQuadDisplay.vert" />
+	<VertexShader filename="BilateralGridInjection.vert" />
 	<FragmentShader filename="BilateralGridInjection.frag" />
 </Shader>
