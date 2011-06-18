@@ -15,6 +15,7 @@ SET(TEST_Amaterasu3D
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	../../Libs/Amaterasu3D
+	../../Libs/TinyXML
 )
 
 ADD_EXECUTABLE(TestAmaterasu3D ${TEST_Amaterasu3D})

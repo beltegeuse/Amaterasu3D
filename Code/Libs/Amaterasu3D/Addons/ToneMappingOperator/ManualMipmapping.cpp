@@ -16,8 +16,8 @@ ManualMipmapping::ManualMipmapping(int initialeSize) :
 	// Init object parameters
 	m_InitialSize = NearestPowerOfTwo(m_InitialSize);
 	Logger::Log() << "[INFO] Creation of Manual Mip-mapping : " << m_InitialSize << "\n";
-	m_NbLevels = log(m_InitialSize)/log(2) + 1;
-	Logger::Log() << "[INFO] Number levels : " << m_NbLevels;
+	m_NbLevels = log(m_InitialSize)/log(2);
+	Logger::Log() << "[INFO] Number levels : " << m_NbLevels << "\n";
 }
 
 ManualMipmapping::~ManualMipmapping()
