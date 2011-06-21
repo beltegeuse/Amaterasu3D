@@ -43,8 +43,8 @@ void SumantToneOperator::Compress(Texture* HDRBuffer)
 	float Gcone = std::max(0.256*averageValues[0] + 0.67*averageValues[1] + 0.065*averageValues[2],0.0);
 
 	// Update all filters
-	m_RodBlenching.Update(m_Delta*100, Grod);
-	m_ConeBlenching.Update(m_Delta*10, Gcone);
+	m_RodBlenching.Update(m_Delta, Grod);
+	m_ConeBlenching.Update(m_Delta, Gcone);
 	m_ArodFilter.Update(Grod, m_Delta);
 	m_AconeFilter.Update(Gcone, m_Delta);
 

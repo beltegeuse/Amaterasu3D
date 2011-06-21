@@ -9,7 +9,7 @@
     <Materials>
     	<Material type="Diffuse" name="MaterialDiffuseColor" />
     </Materials>
-    <OutputFrame depthType="Texture" size="Custom" height=512 width=512>
+    <OutputFrame depthType="Texture" size="Custom" height=1024 width=1024>
     	<Frame name="Flux" type="RGBA32" />
     	<Frame name="Normal" type="RGBA32" />
     </OutputFrame>

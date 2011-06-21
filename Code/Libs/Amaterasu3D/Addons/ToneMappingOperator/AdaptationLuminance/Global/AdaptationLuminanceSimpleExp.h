@@ -17,7 +17,7 @@ protected:
 	float m_T0;
 	float m_Delta;
 public:
-	AdaptationLuminanceSimpleExp(float To = 0.15);
+	AdaptationLuminanceSimpleExp(float To = 2.0);
 	virtual ~AdaptationLuminanceSimpleExp();
 
 	virtual void UpdateLuminance(ManualMipmapping* mipmapping);

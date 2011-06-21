@@ -25,7 +25,8 @@ const vec3 RGB2Ycone = vec3(0.256,0.67,0.065);
 const vec3 RGB2Yrod = vec3(-0.702,1.039,0.433);
 
 // Others constantes
-const float n = 0.73;
+//const float n = 0.73;
+const float n = 1.0;
 const float blkFactor = 5.0 / 32.0; 
 const float whtFactor = 5.0;
 const float Sd = 0.1383;
