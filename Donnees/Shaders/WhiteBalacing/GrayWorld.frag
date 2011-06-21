@@ -5,6 +5,7 @@ precision highp float;
 
 // Texture unit
 uniform sampler2D LDRBuffer;
+uniform sampler2D LumBuffer;
 
 // Shader input
 smooth in vec2 outTexCoord;
@@ -16,8 +17,9 @@ out vec4 ColorBuffer;
 
 void main()
 {
-	vec3 Color = textureLod(LDRBuffer, outTexCoord, 0).rgb;
-	vec3 WhiteRef = textureLod(LDRBuffer, outTexCoord, 10).rgb*255;
+	vec3 Color = texture(LDRBuffer, outTexCoord).rgb;
+	vec3 WhiteRef = 0.25*texelFetch(LumBuffer, ivec2(0,0),0).rgb + 0.25*texelFetch(LumBuffer, ivec2(1,0),0).rgb + 0.25*texelFetch(LumBuffer, ivec2(1,1),0).rgb + 0.25*texelFetch(LumBuffer, ivec2(0,1),0).rgb;
+	WhiteRef *= 255;
 	//vec3 WhiteRef = vec3(94,80,69);
 	//vec3 WhiteRef = vec3(94.5361,100.0000,88.6811);
 	vec3 WhiteRefXYZ = RGBtoXYZ(WhiteRef); //vec3(76.9499,81.3973,72.1840);

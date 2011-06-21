@@ -37,6 +37,10 @@ protected:
 	TShaderPtr m_LPVShowVPL;
 	TShaderPtr m_LPVLightingAllShader;
 	TShaderPtr m_ShowLum;
+	TShaderPtr m_GreyWorld;
+
+	ManualMipmapping m_ManualMipmapping;
+
 	AbsrtactToneOperator* m_ToneOperator;
 	// LPV object
 	LPV m_LPV;
@@ -68,7 +72,8 @@ protected:
 public:
 
 	ApplicationLPV() :
-		m_LPV(32,2.0)
+		m_LPV(32,2.0),
+		m_ManualMipmapping(128)
 	{
 		/////////////////
 		// OpenGL setups
@@ -200,6 +205,8 @@ private:
 		m_LPVShowVPL = ShaderManager.LoadShader("LPVShowVPL.shader");
 		m_ShowLum = ShaderManager.LoadShader("ShowLuminance.shader");
 
+		m_GreyWorld = ShaderManager.LoadShader("GrayWorld.shader");
+		m_ManualMipmapping.Initialize();
 		////////////////
 		// Creation of Tone mapping
 		////////////////
@@ -262,7 +269,10 @@ private:
 		// Create light
 		//m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
 		//m_Light.LightColor = Color(412,341,298);
-		m_Light.LightColor = Color(412300,341100,298600);
+
+		m_Light.LightColor = Color(341100,341100,341100);
+		//m_Light.LightColor = Color(412300,341100,298600);
+
 		//m_Light.Position = Math::TVector3F(-50,20,1.0);
 		m_Light.Position = Math::TVector3F(-14.1498,21.6912,0.27393);
 
@@ -344,6 +354,25 @@ private:
 		m_Light.Position.x = 0.0;
 
 		m_Light.Direction = Math::TVector3F(0,0,0);
+	}
+
+	void WhiteBalancing()
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_ManualMipmapping.Compute(m_ToneOperator->GetLDRTexture());
+
+		m_GreyWorld->Begin();
+		m_ToneOperator->GetLDRTexture()->activateMultiTex(CUSTOM_TEXTURE+0);
+		m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels()-1)->activateMultiTex(CUSTOM_TEXTURE+1);
+		glBegin(GL_QUADS);
+			glVertex2f(-1.0, -1.0);
+			glVertex2f(-1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+		m_ToneOperator->GetLDRTexture()->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels()-1)->desactivateMultiTex(CUSTOM_TEXTURE+1);
+		m_GreyWorld->End();
 	}
 
 	//! Draw the scene
@@ -496,8 +525,11 @@ private:
 			m_ShowLum->End();
 
 			m_ToneOperator->Compress(m_LPVLightingAllShader->GetFBO()->GetTexture("Color"));
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_ToneOperator->DrawDebug();
+
+			WhiteBalancing();
 
 			//m_LPV.m_LPVInjectGeomerty->GetFBO()->DrawDebug();
 		}
