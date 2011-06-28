@@ -10,6 +10,7 @@
 
 // Amaterasu3D includes
 #include <Math/Matrix4.h>
+#include <Math/Quaternion.h>
 
 // STL includes
 #include <map>
@@ -21,11 +22,14 @@ protected:
 	/*
 	 * Typedef
 	 */
-	std::map<std::string, ISceneNode*> m_Children;
+	typedef std::map<std::string, ISceneNode*> SceneNodeList;
 
 	/*
 	 * Attributes
 	 */
+	// Hierachie
+	SceneNodeList m_Children;
+
 	// Node attributes
 	std::string m_Name;
 
@@ -35,6 +39,7 @@ protected:
 	// Geometrical attributes
 	// * Cache matrix management
 	bool m_NeedTransformationUpdate;
+	bool m_NeedTransformationLocalUpdate;
 	Math::CMatrix4 m_CachedWorldTransformationMatrix;
 	Math::CMatrix4 m_CachedLocalTransformationMatrix;
 	// * Geometry information
@@ -44,7 +49,7 @@ protected:
 
 
 public:
-	ISceneNode(ISceneNode* parent);
+	ISceneNode(const std::string& name, ISceneNode* parent);
 	virtual ~ISceneNode();
 
 	// General methods
@@ -56,14 +61,20 @@ public:
 
 	// * Change hierachie
 	void AddChild(ISceneNode* node);
-	void DeleteChild(ISceneNode* node);
+	void DetachChild(ISceneNode* node);
 	void DeleteAllChildren();
 
 	// Transformation management
-	bool IsNeedTransformationCacheUpdate() const;
+	bool IsNeedTransformationHierachicalCacheUpdate() const;
+	void NeedTransformationUpdate();
 	// * Getters
+	// -- Transformation
 	const Math::CMatrix4 GetLocalTransformation() const;
 	const Math::CMatrix4 GetWorldTransformation() const;
+	// -- Basic
+	Math::TVector3F GetPosition() const;
+	Math::TVector3F GetScale() const;
+	Math::CQuaternion GetOrientation() const;
 	// * Setters
 	// -- Basic
 	void SetPosition(Math::TVector3F position);
@@ -78,11 +89,12 @@ public:
 	//TODO: Do this part (Bounding box, sphere, ... etc).
 
 	// Virtual pure methods
-	void Render() = 0;
+	virtual void Render();
 
 protected:
 	//! Info : Can be call by parent or Transformation setters
-	void NeedTransformationCacheUpdate();
+	void NeedTransformationLocaleUpdate(); // < For matrix locale cache only
+	void NeedTransformationHierachicalCacheUpdate(); // < For know you or parents need Transformation update
 
 };
 

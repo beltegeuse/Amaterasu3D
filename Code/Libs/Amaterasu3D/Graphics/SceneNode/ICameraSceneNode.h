@@ -52,8 +52,6 @@ public:
 	float GetRatio() const;
 	float GetNear() const;
 	float GetFar() const;
-
-	void Render() {}
 };
 
 #endif /* ICAMERASCENENODE_H_ */

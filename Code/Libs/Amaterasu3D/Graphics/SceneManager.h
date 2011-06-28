@@ -27,19 +27,30 @@
 
 // Amaterasu3D includes
 #include <Singleton.h>
-#include <Graphics/SceneGraph/Group.h>
+#include <Graphics/SceneNode/ISceneNode.h>
+#include <Graphics/SceneNode/ILightSceneNode.h>
+#include <Graphics/SceneNode/ICameraSceneNode.h>
+#include <Graphics/SceneNode/IMeshSceneNode.h>
 
 // STL includes
 #include <map>
-
+#include <vector>
 class CSceneManager : public CSingleton<CSceneManager>
 {
 	MAKE_SINGLETON(CSceneManager)
 protected:
 	/*
+	 * Typedef
+	 */
+	typedef std::map<std::string, ILightSceneNode*> LightList;
+	typedef std::map<std::string, ICameraSceneNode*> CameraList;
+	/*
 	 * Attributes
 	 */
-	SceneGraph::Group m_Root;
+	LightList m_Lights;
+	CameraList m_Cameras;
+	ISceneNode * m_Root;
+
 public:
 	/*
 	 * Constructors & Destructors
@@ -47,6 +58,18 @@ public:
 	CSceneManager();
 	virtual ~CSceneManager();
 
+
+	/*
+	 * Public methods
+	 */
+	// Creators
+	ISceneNode* CreateSceneNode(ISceneNode* parent = 0);
+	ILightSceneNode* CreateLightNode(ISceneNode* parent = 0);
+	ICameraSceneNode* CreateCameraNode(ISceneNode* parent = 0);
+	IMeshSceneNode* LoadMesh(const std::string file, ISceneNode* parent = 0);
+	// Add Root
+	void AddScenegraphRoot(ISceneNode* node);
+	// Render all in scenegraph
 	void RenderAll();
 
 };
