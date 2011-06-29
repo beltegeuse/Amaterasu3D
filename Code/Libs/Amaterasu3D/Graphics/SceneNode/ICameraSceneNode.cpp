@@ -7,13 +7,13 @@
 
 #include "ICameraSceneNode.h"
 
-ICameraSceneNode::ICameraSceneNode() {
-	// TODO Auto-generated constructor stub
-
+ICameraSceneNode::ICameraSceneNode(const std::string& name, ISceneNode* parent) :
+	ISceneNode(name, parent)
+{
 }
 
-ICameraSceneNode::~ICameraSceneNode() {
-	// TODO Auto-generated destructor stub
+ICameraSceneNode::~ICameraSceneNode()
+{
 }
 
 // Projection management

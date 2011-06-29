@@ -1,6 +1,7 @@
 #include "Skydome.h"
 
 Skydome::Skydome() :
+IRenderableSceneNode("Skydome",0),
 m_Time(0.0)
 {
 	// TODO Auto-generated constructor stub

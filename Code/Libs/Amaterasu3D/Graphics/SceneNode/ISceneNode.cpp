@@ -29,7 +29,7 @@ ISceneNode* ISceneNode::GetParent()
  */
 void ISceneNode::AddChild(ISceneNode* node)
 {
-	Assert(m_Children.Find(node->GetName()) == m_Children.end());
+	Assert(m_Children.find(node->GetName()) == m_Children.end());
 	m_Children[node->GetName()] = node;
 }
 void ISceneNode::DetachChild(ISceneNode* node)
@@ -39,7 +39,7 @@ void ISceneNode::DetachChild(ISceneNode* node)
 void ISceneNode::DeleteAllChildren()
 {
 	for(SceneNodeList::iterator it = m_Children.begin(); it != m_Children.end(); ++it)
-		delete m_Children;
+		delete (it->second);
 	m_Children.erase(m_Children.begin(), m_Children.end());
 }
 
@@ -89,6 +89,11 @@ void ISceneNode::SetScale(Math::TVector3F scale)
 {
 	m_Scale = scale;
 	NeedTransformationLocaleUpdate();
+}
+void ISceneNode::LoadLocalTransformMatrix(const Math::CMatrix4& matrix)
+{
+	m_CachedLocalTransformationMatrix = matrix;
+	// FIXME: Update all parameters
 }
 // -- Others
 void ISceneNode::Move(Math::TVector3F offsetPosition)

@@ -31,7 +31,7 @@
 #include <Utilities/Util.h>
 #include <Debug/Exceptions.h>
 #include <Math/SphericalCoordinates.h>
-#include <Graphics/SceneGraph/Model.h>
+#include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
 
 
 /////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ void LPV::EndInjectionVPLPass()
 	glEnable(GL_DEPTH_TEST);
 }
 
-void LPV::InjectVPLFromLight(LightShaders& light, SceneGraph::DrawObject& samples)
+void LPV::InjectVPLFromLight(LightShaders& light, RenderableObject& samples)
 {
 	light.GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
 	light.GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+1);
@@ -141,7 +141,7 @@ void LPV::InjectVPLFromLight(LightShaders& light, SceneGraph::DrawObject& sample
 	light.GetFBO()->GetTexture("Normal")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 }
 
-void LPV::InjectGeometryFromLight(LightShaders& shader, SceneGraph::DrawObject& samples)
+void LPV::InjectGeometryFromLight(LightShaders& shader, RenderableObject& samples)
 {
 	shader.GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+2);
 	shader.GetFBO()->GetTexture("Normal")->activateMultiTex(CUSTOM_TEXTURE+1);
@@ -363,7 +363,7 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 void LPV::GenerateGridModels()
 {
 	Logger::Log() << "[INFO] Generate Grid models \n";
-	m_GridModels = new SceneGraph::Group*[m_NbCascadedLevels];
+	m_GridModels = new ISimpleRenderableSceneNode*[m_NbCascadedLevels];
 	for(int i = 0; i < m_NbCascadedLevels; i++)
 	{
 		Logger::Log() << "   * Generate Level : " <<  i << "\n";
@@ -372,7 +372,7 @@ void LPV::GenerateGridModels()
 	Logger::Log() << "[INFO] Generate Grid models (END) \n";
 }
 
-void LPV::CreateGridModel(SceneGraph::Group** GirdModel, int nbCellDim, int CellSize )
+void LPV::CreateGridModel(ISimpleRenderableSceneNode** GirdModel, int nbCellDim, int CellSize )
 {
 	// Allocation des buffers
 	float * vertexBuffer = new float[3*nbCellDim*nbCellDim*3*2];
@@ -444,22 +444,22 @@ void LPV::CreateGridModel(SceneGraph::Group** GirdModel, int nbCellDim, int Cell
 		indiceBuffer[l] = l;
 	}
 
-	SceneGraph::Model* model = new SceneGraph::Model;
-	model->SetDrawMode(GL_LINES);
-	model->SetIndiceBuffer(indiceBuffer, 3*nbCellDim*nbCellDim*2);
-	SceneGraph::ModelBuffer buffer;
+	ISimpleRenderableSceneNode* model = new ISimpleRenderableSceneNode("Grid",0);
+	model->GetObject().SetDrawMode(GL_LINES);
+	model->GetObject().SetIndiceBuffer(indiceBuffer, 3*nbCellDim*nbCellDim*2);
+	RenderableObject::RenderableBuffer buffer;
 	buffer.buffer = vertexBuffer;
 	buffer.size = 3*nbCellDim*nbCellDim*3*2;
 	buffer.dimension = 3;
 	buffer.owner = true;
-	model->AddBuffer(buffer, VERTEX_ATTRIBUT);
+	model->GetObject().AddBuffer(buffer, VERTEX_ATTRIBUT);
 	buffer.buffer = colorBuffer;
-	model->AddBuffer(buffer, COLOR_ATTRIBUT);
-	model->CompileBuffers();
-	model->AddMaterial(DIFFUSE_MATERIAL,color);
+	model->GetObject().AddBuffer(buffer, COLOR_ATTRIBUT);
+	model->GetObject().CompileBuffers();
+	model->GetObject().AddMaterial(DIFFUSE_MATERIAL,color);
 
-	(*GirdModel) = new SceneGraph::Group;
-	(*GirdModel)->AddChild(model);
+	(*GirdModel) = model;
+	//(*GirdModel)->AddChild(model);
 
 }
 
@@ -477,8 +477,8 @@ void LPV::DrawGrid(int level)
 	Math::CMatrix4 matGrid;
 	Math::TVector3F gridPos = GetGridPosition(level);
 	matGrid.SetTranslation(gridPos.x,gridPos.y,gridPos.z);
-	m_GridModels[level]->LoadTransformMatrix(matGrid);
-	m_GridModels[level]->Draw();
+	m_GridModels[level]->LoadLocalTransformMatrix(matGrid);
+	m_GridModels[level]->Render();
 }
 
 /////////////////////////////

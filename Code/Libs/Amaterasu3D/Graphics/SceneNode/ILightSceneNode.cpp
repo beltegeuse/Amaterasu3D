@@ -7,9 +7,9 @@
 
 #include "ILightSceneNode.h"
 
-ILightSceneNode::ILightSceneNode() {
-	// TODO Auto-generated constructor stub
-
+ILightSceneNode::ILightSceneNode(const std::string& name, ISceneNode* parent) :
+	ISceneNode(name, parent)
+{
 }
 
 ILightSceneNode::~ILightSceneNode() {

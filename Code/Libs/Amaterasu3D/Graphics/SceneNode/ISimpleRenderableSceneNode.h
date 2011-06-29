@@ -13,12 +13,16 @@
 
 class ISimpleRenderableSceneNode : public IRenderableSceneNode
 {
-private:
+protected:
+	/*
+	 * Attributes
+	 */
 	RenderableObject m_RenderObject;
 public:
-	ISimpleRenderableSceneNode();
+	ISimpleRenderableSceneNode(const std::string& name, ISceneNode* parent);
 	virtual ~ISimpleRenderableSceneNode();
 
+	RenderableObject& GetObject();
 	virtual void Render();
 };
 

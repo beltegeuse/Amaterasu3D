@@ -35,7 +35,7 @@ void RenderableObject::SetIndiceBuffer(unsigned int* buffer, int size)
 	m_indices_size = size;
 }
 
-void RenderableObject::AddBuffer(ModelBuffer buffer, ShaderAttributType type)
+void RenderableObject::AddBuffer(RenderableObject::RenderableBuffer buffer, ShaderAttributType type)
 {
 	Assert(!m_is_compiled);
 	m_buffers[type] = buffer;
@@ -130,7 +130,7 @@ void RenderableObject::SetDrawMode(GLenum mode)
 	m_DrawMode = mode;
 }
 
-bool RenderableObject::IsInstance(Model& model)
+bool RenderableObject::IsInstance(RenderableObject& model)
 {
 	// First test is the number of indices
 	if(m_indices_size != model.m_indices_size)
@@ -156,8 +156,8 @@ bool RenderableObject::IsInstance(Model& model)
 	if(m_buffers.find(VERTEX_ATTRIBUT) != m_buffers.end() && m_buffers[VERTEX_ATTRIBUT].size >= 11)
 	{
 		Logger::Log() << "[INFO] Try to find the transformations ... \n";
-		ModelBuffer b1 = m_buffers[VERTEX_ATTRIBUT];
-		ModelBuffer b2 = model.m_buffers[VERTEX_ATTRIBUT];
+		RenderableBuffer b1 = m_buffers[VERTEX_ATTRIBUT];
+		RenderableBuffer b2 = model.m_buffers[VERTEX_ATTRIBUT];
 		if(b1.buffer[0] != b2.buffer[0])
 		{
 			needTransformation = true;
@@ -235,7 +235,7 @@ bool RenderableObject::IsInstance(Model& model)
 	return true;
 }
 
-void RenderableObject::SetInstance(Model& model) const
+void RenderableObject::SetInstance(RenderableObject& model) const
 {
 	// Clear all model buffers
 	for(BufferMap::iterator it = model.m_buffers.begin(); it != model.m_buffers.end(); it++)
@@ -249,7 +249,7 @@ void RenderableObject::SetInstance(Model& model) const
 	// Set all new buffers
 	for(BufferMap::const_iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
-		ModelBuffer buffer = it->second;
+		RenderableBuffer buffer = it->second;
 		// Specify is not the owner
 		buffer.owner = false;
 		model.m_buffers[it->first] = buffer;

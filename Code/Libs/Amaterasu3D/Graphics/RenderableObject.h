@@ -8,6 +8,13 @@
 #ifndef DRAWABLEOBJECTS_H_
 #define DRAWABLEOBJECTS_H_
 
+// Amaterasu3D includes
+#include <Graphics/Texture.h>
+#include <Graphics/Shaders/Shader.h>
+
+// Other includes
+#include <GL/gl.h>
+
 class RenderableObject {
 public:
 	/*
@@ -30,7 +37,7 @@ private:
 	int m_indices_size;
 	// All data
 	typedef std::map<TextureType, TTexturePtr> TexturesMap;
-	typedef std::map<ShaderAttributType, ModelBuffer> BufferMap;
+	typedef std::map<ShaderAttributType, RenderableObject::RenderableBuffer> BufferMap;
 	typedef std::map<MaterialType, Color> MaterialMap;
 	BufferMap m_buffers;
 	TexturesMap m_textures_map;
@@ -48,7 +55,7 @@ public:
 	 */
 	void SetIndiceBuffer(unsigned int* buffer, int size);
 	// Add differents buffers
-	void AddBuffer(ModelBuffer buffer, ShaderAttributType type);
+	void AddBuffer(RenderableObject::RenderableBuffer buffer, ShaderAttributType type);
 	void AddTextureMap(TextureType type, TTexturePtr texture);
 	void AddMaterial(MaterialType type, Color color);
 	// Compile all buffers
@@ -56,10 +63,10 @@ public:
 	// Draw all buffers
 	virtual void Draw();
 	// To know if it's an Instance (only buffers)
-	bool IsInstance(Model& model); //FIXME: Re-add const
+	bool IsInstance(RenderableObject& model); //FIXME: Re-add const
 	// To clean up all buffers and link to the instance one
 	// Model is the object to set on Instance
-	void SetInstance(Model& model) const;
+	void SetInstance(RenderableObject& model) const;
 
 	void SetDrawMode(GLenum mode);
 };

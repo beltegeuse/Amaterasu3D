@@ -181,7 +181,7 @@ namespace Math
 
     #include "Matrix4.inl"
 
-} // namespace Yes
+} // namespace Math
 
 
 #endif // MATRIX4_H

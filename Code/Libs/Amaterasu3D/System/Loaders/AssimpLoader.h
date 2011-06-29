@@ -24,8 +24,8 @@
 
 #ifndef ASSIMPLOADER_H_
 #define ASSIMPLOADER_H_
-#include <Graphics/SceneGraph/Model.h>
-#include <Graphics/SceneGraph/Assimp/AssimpNode.h>
+#include <Graphics/RenderableObject.h>
+#include <Graphics/SceneNode/IMeshSceneNode.h>
 #include <System/Loaders/Loader.h>
 #include <Utilities/File.h>
 #include <assimp.h>
@@ -33,20 +33,20 @@
 #include <map>
 #include <string>
 
-class AssimpLoader : public ILoader<SceneGraph::AssimpNode>
+class AssimpLoader : public ILoader<IMeshSceneNode>
 {
 private:
 	// Attributs
 	struct aiLogStream m_assimp_stream;
-	typedef std::vector<SceneGraph::Model*> CachedAssimpMeshMap;
+	typedef std::vector<RenderableObject*> CachedAssimpMeshMap;
 	CachedAssimpMeshMap m_cached_geom;
 public:
 	AssimpLoader();
 	virtual ~AssimpLoader();
-	virtual SceneGraph::AssimpNode* LoadFromFile(const std::string& Filename);
+	virtual IMeshSceneNode* LoadFromFile(const std::string& Filename);
 private:
-	void GetMaterialPropreties(SceneGraph::Model* assimpMesh, const struct aiMaterial *mtl);
-	void BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scene, aiNode* nd);
+	void GetMaterialPropreties(RenderableObject* assimpMesh, const struct aiMaterial *mtl);
+	void BuildGroup(IMeshSceneNode* group, const aiScene* scene, aiNode* nd, const Math::CMatrix4& matrix);
 	TTexturePtr LoadTexture(const CFile& name);
 };
 

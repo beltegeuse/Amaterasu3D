@@ -35,7 +35,7 @@ private:
 	static GLuint IndiceArray[6];
 	unsigned int m_planebuffers[2];
 public:
-	DebugPlaneLeaf();
+	DebugPlaneLeaf(const std::string& name, ISceneNode* parent);
 	virtual ~DebugPlaneLeaf();
 
 	virtual void Draw();

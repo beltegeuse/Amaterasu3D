@@ -80,6 +80,7 @@ public:
 	void SetPosition(Math::TVector3F position);
 	void SetOrientation(Math::CQuaternion orientation);
 	void SetScale(Math::TVector3F scale);
+	void LoadLocalTransformMatrix(const Math::CMatrix4& matrix);
 	// -- Others
 	void Move(Math::TVector3F offsetPosition);
 	void Rotate(Math::CQuaternion rotation);

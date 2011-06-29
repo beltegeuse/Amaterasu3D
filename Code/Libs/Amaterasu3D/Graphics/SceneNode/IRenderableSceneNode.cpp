@@ -7,9 +7,9 @@
 
 #include "IRenderableSceneNode.h"
 
-IRenderableSceneNode::IRenderableSceneNode() {
-	// TODO Auto-generated constructor stub
-
+IRenderableSceneNode::IRenderableSceneNode(const std::string& name, ISceneNode* parent) :
+	ISceneNode(name, parent)
+{
 }
 
 IRenderableSceneNode::~IRenderableSceneNode() {

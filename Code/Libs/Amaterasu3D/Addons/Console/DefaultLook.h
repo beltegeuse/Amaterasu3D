@@ -26,10 +26,10 @@
 #define MYCONSOLE_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <Graphics/Font/GraphicString.h>
-#include <Graphics/SceneGraph/Rectangle2D.h>
+#include <Graphics/SceneNode/SimpleRenderable/Rectangle2D.h>
 #include <Graphics/Shaders/Shader.h>
 #include <Addons/Console/Look.h>
 #include <Math/Matrix4.h>
@@ -38,44 +38,44 @@
 
 
 ////////////////////////////////////////////////////////////
-/// Classe définissant un look personnalisé pour la console
+/// Classe dï¿½finissant un look personnalisï¿½ pour la console
 ////////////////////////////////////////////////////////////
 class DefaultLook : public Console::ILook
 {
 public :
 
     //----------------------------------------------------------
-    // Constructeur par défaut
+    // Constructeur par dï¿½faut
     //----------------------------------------------------------
     DefaultLook();
     virtual ~DefaultLook();
     //----------------------------------------------------------
-    // Fonction appelée lors de la mise à jour de la console
+    // Fonction appelï¿½e lors de la mise ï¿½ jour de la console
     //----------------------------------------------------------
     void Update(double delta);
 
     //----------------------------------------------------------
-    // Fonction appelée lors de l'affichage de la console
+    // Fonction appelï¿½e lors de l'affichage de la console
     //----------------------------------------------------------
     virtual void Draw(); // FIXME add CONST
 
     //----------------------------------------------------------
-    // Fonction appelée lors de l'activation / désactivation de la console
+    // Fonction appelï¿½e lors de l'activation / dï¿½sactivation de la console
     //----------------------------------------------------------
     virtual void Show(bool Visible);
 
     //----------------------------------------------------------
-    // Fonction appelée après l'appel à une commande
+    // Fonction appelï¿½e aprï¿½s l'appel ï¿½ une commande
     //----------------------------------------------------------
     virtual void CommandCalled(const std::string& Result);
 
     //----------------------------------------------------------
-    // Fonction appelée à chaque changement de la ligne courante
+    // Fonction appelï¿½e ï¿½ chaque changement de la ligne courante
     //----------------------------------------------------------
     virtual void TextChanged(const std::string& NewText);
 
     //----------------------------------------------------------
-    // Fonction appelée en cas d'erreur
+    // Fonction appelï¿½e en cas d'erreur
     //----------------------------------------------------------
     virtual void Error(const std::string& Message);
 
@@ -92,18 +92,18 @@ private :
     void AddLine(const std::string& Line = "> ", const CColor& Color = CColor::White);
 
     //----------------------------------------------------------
-    // Sélectionne la police suivante
+    // Sï¿½lectionne la police suivante
     //----------------------------------------------------------
     std::string  NextFont();
 
     //----------------------------------------------------------
-    // Données membres
+    // Donnï¿½es membres
     //----------------------------------------------------------
     static const std::string       s_Fonts[];     ///< Liste des polices disponibles
-    std::list<CGraphicString>      m_Lines;       ///< Dernières lignes affichées sur la console
-    Math::CMatrix4                 m_Transfo;     ///< Matrice de transformation associée à l'affichage de la console
+    std::list<CGraphicString>      m_Lines;       ///< Derniï¿½res lignes affichï¿½es sur la console
+    Math::CMatrix4                 m_Transfo;     ///< Matrice de transformation associï¿½e ï¿½ l'affichage de la console
     TState                         m_State;       ///< "Etat" de l'animation de la console
-    std::size_t                    m_CurrentFont; ///< Police actuellement utilisée
+    std::size_t                    m_CurrentFont; ///< Police actuellement utilisï¿½e
     TTexturePtr					   m_BackgroundTexture;
     TShaderPtr					   m_2DShader;
     Rectangle2D*				   m_Rectangle;

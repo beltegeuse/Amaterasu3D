@@ -36,10 +36,8 @@ private:
 	static GLfloat CubeArrayColor[24];
 	static GLuint IndiceArray[36];
 public:
-	DebugCubeLeaf();
+	DebugCubeLeaf(const std::string& name, ISceneNode* parent);
 	virtual ~DebugCubeLeaf();
-
-	virtual void Draw();
 };
 
 #endif /* DEBUGCUBELEAF_H_ */
