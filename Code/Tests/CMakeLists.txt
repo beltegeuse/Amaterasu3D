@@ -19,13 +19,14 @@ INCLUDE_DIRECTORIES(
 #    - Add compute RSM Position (InverseCamera matrix ... etc) [GLSL]
 #    - Pass all uniform to GLSL [main.cpp]
 #ADD_SUBDIRECTORY(Amaterasu3DReflectiveShadowMapping)
+
 ADD_SUBDIRECTORY(Amaterasu3DGBuffer)
 ADD_SUBDIRECTORY(Amaterasu3DGeometryShader)
-ADD_SUBDIRECTORY(Amaterasu3DWhiteBalancing)
+#ADD_SUBDIRECTORY(Amaterasu3DWhiteBalancing)
 ADD_SUBDIRECTORY(Amaterasu3DLPV)
 ADD_SUBDIRECTORY(Amaterasu3DSSAO)
 ADD_SUBDIRECTORY(CameraPath)
 ADD_SUBDIRECTORY(BinvoxViewer)
 ADD_SUBDIRECTORY(ShadowMap)
 ADD_SUBDIRECTORY(Mipmapping)
-ADD_SUBDIRECTORY(TestCould)
+#ADD_SUBDIRECTORY(TestCould)

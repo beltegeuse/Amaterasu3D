@@ -143,8 +143,8 @@ namespace Math
     //==========================================================
     // Fonctions globales relatives aux quaternions
     //==========================================================
-    std::istream& operator >>(std::istream& Stream, CQuaternion& Quaternion);
-    std::ostream& operator <<(std::ostream& Stream, const CQuaternion& Quaternion);
+    inline std::istream& operator >>(std::istream& Stream, CQuaternion& Quaternion);
+    inline std::ostream& operator <<(std::ostream& Stream, const CQuaternion& Quaternion);
 
     #include "Quaternion.inl"
 

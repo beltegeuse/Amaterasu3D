@@ -34,6 +34,7 @@ public:
 	virtual void Render();
 	void SetAssimpScene(const aiScene* scene);
 	void AddRenderableObject(RenderableObject* obj, const Math::CMatrix4& trans);
+	RenderableWorldObjectsList& GetRenderableObjects();
 	/*
 	 * Static methods
 	 */

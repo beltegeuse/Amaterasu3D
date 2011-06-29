@@ -1,6 +1,7 @@
 #include "ISceneNode.h"
-
-ISceneNode::ISceneNode(const std::string& name, ISceneNode* parent) : m_Name(name), m_Parent(parent)
+#include <Logger/Logger.h>
+ISceneNode::ISceneNode(const std::string& name, ISceneNode* parent) : m_Name(name), m_Parent(parent),
+m_NeedUpdate(false), m_NeedTransformationLocalUpdate(false), m_Position(Math::TVector3F(0,0,0)), m_Scale(Math::TVector3F(1,1,1))
 {
 	if(m_Parent)
 		m_Parent->AddChild(this);
@@ -30,7 +31,13 @@ ISceneNode* ISceneNode::GetParent()
 void ISceneNode::AddChild(ISceneNode* node)
 {
 	Assert(m_Children.find(node->GetName()) == m_Children.end());
+
+	// Need detach node
+	if(node->GetParent())
+		node->GetParent()->DetachChild(node);
+
 	m_Children[node->GetName()] = node;
+	node->SetParent(this);
 }
 void ISceneNode::DetachChild(ISceneNode* node)
 {
@@ -47,7 +54,7 @@ void ISceneNode::DeleteAllChildren()
  * Transformation
  */
 // Transformation management
-bool ISceneNode::IsNeedTransformationHierachicalCacheUpdate() const
+bool ISceneNode::IsNeedUpdate() const
 {
 	return m_NeedUpdate;
 }
@@ -119,23 +126,30 @@ void ISceneNode::NeedTransformationLocaleUpdate()
 }
 void ISceneNode::NeedUpdate()
 {
-	m_NeedUpdate = true;
-	if(m_Parent)
-		m_Parent->NeedUpdate();
+	if(!m_NeedUpdate)
+	{
+		Logger::Log() << "[DEBUG] ISceneNode::NeedUpdate() \n";
+		m_NeedUpdate = true;
+		if(m_Parent)
+			m_Parent->NeedUpdate();
+	}
 }
 /*
  * Render methods
  */
 void ISceneNode::UpdateTransformations()
 {
+	//Logger::Log() << "[DEBUG] ISceneNode::UpdateTransformations() \n";
 	// Matrix cache update
 	if(m_NeedUpdate)
 	{
 		m_NeedUpdate = false;
 
+		Logger::Log() << "[DEBUG] NeedUpdate : " << this << "\n";
 		// If need update local transformation matrix
 		if(m_NeedTransformationLocalUpdate)
 		{
+			Logger::Log() << "[DEBUG] NeedLocalUpdate : " << this << "\n";
 			Math::CMatrix4 positionMatrix, scaleMatrix;
 			positionMatrix.SetTranslation(m_Position.x, m_Position.y, m_Position.z);
 			scaleMatrix.SetScaling(m_Scale.x, m_Scale.y, m_Scale.z);
@@ -152,6 +166,21 @@ void ISceneNode::UpdateTransformations()
 		{
 			m_CachedWorldTransformationMatrix = m_CachedLocalTransformationMatrix;
 		}
+
+		// Propagate Update
+		for(SceneNodeList::iterator it = m_Children.begin(); it != m_Children.end(); it++)
+			it->second->UpdateTransformations();
+	}
+}
+
+void ISceneNode::SetParent(ISceneNode* node)
+{
+	m_Parent = node;
+	// TODO: Miss call in changes
+	if(IsNeedUpdate())
+	{
+		m_NeedUpdate = false; // < Force to renotify
+		NeedUpdate(); // < Notify to parent
 	}
 }
 

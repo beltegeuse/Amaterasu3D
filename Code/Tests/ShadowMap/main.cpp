@@ -31,14 +31,12 @@
 #include <stdlib.h>
 
 #include <Math/Matrix4.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
 #include <Addons/Logo/Logo.h>
-#include <Graphics/SceneGraph/Other/Skydome.h>
 
 class ApplicationShadow : public Application
 {
@@ -46,7 +44,7 @@ protected:
 	FPS m_FPS;
 	Logo m_Logo;
 	CameraFPS* m_Camera;
-	Skydome* m_Sky;
+	//Skydome* m_Sky;
 	TShaderPtr m_BasicShaderShadow;
 	TShaderPtr m_BasicShader;
 	TShaderPtr m_ShadowShader;
@@ -74,7 +72,7 @@ public:
 	virtual void OnInitialize()
 	{
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		m_Sky = new Skydome;
+		//m_Sky = new Skydome;
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(20.0);
@@ -97,21 +95,13 @@ public:
 		m_Light.Direction = Math::TVector3F(4.0,4.0,4.0);
 		// Load scene
 		// * Create first cube
-		SceneGraph::Group * cubeGroup = new SceneGraph::Group;
-		cubeGroup->AddChild(new DebugCubeLeaf);
-		Math::CMatrix4 matCube;
-		matCube.SetTranslation(4,4,4);
-		cubeGroup->LoadTransformMatrix(matCube);
+		ISimpleRenderableSceneNode* cube1 = SceneManager.CreateSimpleMesh(MESH_CUBE, "cube1", 0);
+		cube1->SetPosition(Math::TVector3F(4,4,4));
+		SceneManager.AddScenegraphRoot(cube1);
 		// * Create floor
-		SceneGraph::Group * cubeFloor = new SceneGraph::Group;
-		cubeFloor->AddChild(new DebugCubeLeaf);
-		Math::CMatrix4 matFloor;
-		matFloor.SetTranslation(0,0,0);
-		matFloor.SetScaling(10,1,10);
-		cubeFloor->LoadTransformMatrix(matFloor);
-		// Add to root
-		RootSceneGraph.AddChild(cubeGroup);
-		RootSceneGraph.AddChild(cubeFloor);
+		ISimpleRenderableSceneNode* cube2 = SceneManager.CreateSimpleMesh(MESH_CUBE, "cube2", 0);
+		cube2->SetScale(Math::TVector3F(10,1,10));
+		SceneManager.AddScenegraphRoot(cube2);
 
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationShadow::UpdateLightPosition, *this));
 	}
@@ -159,7 +149,7 @@ public:
 			// glCullFace(GL_BACK);
 			// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_ShadowShader->Begin();
-			RootSceneGraph.Draw(); // Draw the scene
+			SceneManager.RenderAll(); // Draw the scene
 			m_ShadowShader->End();
 			// glDisable(GL_CULL_FACE);
 			// * Revert transformations
@@ -178,7 +168,7 @@ public:
 			}
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			m_Sky->Draw();
+			//m_Sky->Draw();
 
 			m_ShadowShader->GetFBO()->GetTexture("Depth")->activateMultiTex(CUSTOM_TEXTURE+0);
 			glEnable(GL_CULL_FACE);
@@ -191,7 +181,7 @@ public:
 			{
 				m_Camera->GetView();
 			}
-			RootSceneGraph.Draw();
+			SceneManager.RenderAll();
 			m_BasicShaderShadow->End();
 			m_ShadowShader->GetFBO()->GetTexture("Depth")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 			if(m_cameraView)

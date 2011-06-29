@@ -8,14 +8,11 @@
 #include <stdlib.h>
 
 #include <Math/Matrix4.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
-#include <Graphics/SceneGraph/Model.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
-#include <Graphics/SceneGraph/Rectangle2D.h>
 #include <Addons/LPV/LPV.h>
 #include <Graphics/Lighting/LightShaders.h>
 
@@ -42,8 +39,8 @@ protected:
 	LightShaders m_Light;
 	float m_AngleLight;
 
-	SceneGraph::Model* m_SamplePointRSM;
-	SceneGraph::Model* m_SamplePointCamera;
+	RenderableObject* m_SamplePointRSM;
+	RenderableObject* m_SamplePointCamera;
 
 	LPV m_LPV;
 

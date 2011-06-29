@@ -32,11 +32,18 @@
 #include <Graphics/SceneNode/ICameraSceneNode.h>
 #include <Graphics/SceneNode/IRenderableSceneNode.h>
 #include <Graphics/SceneNode/IMeshSceneNode.h>
+#include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
 
 // STL includes
 #include <map>
 #include <vector>
 #include <list>
+
+enum SimpleMesh
+{
+	MESH_CUBE,
+	MESH_PLANE
+};
 
 class CSceneManager : public CSingleton<CSceneManager>
 {
@@ -75,7 +82,8 @@ public:
 	ISceneNode* CreateSceneNode(ISceneNode* parent = 0);
 	ILightSceneNode* CreateLightNode(ISceneNode* parent = 0);
 	ICameraSceneNode* CreateCameraNode(ISceneNode* parent = 0);
-	IMeshSceneNode* LoadMesh(const std::string file, ISceneNode* parent = 0);
+	ISimpleRenderableSceneNode* CreateSimpleMesh(const SimpleMesh& type, const std::string& name, ISceneNode* node);
+	IMeshSceneNode* LoadMesh(const std::string& file, ISceneNode* parent = 0);
 
 	// Add Root
 	void AddScenegraphRoot(ISceneNode* node);

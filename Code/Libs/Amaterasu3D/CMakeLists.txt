@@ -24,13 +24,12 @@ SET(LIB_AMATERASU3D_SRCS
 	#
 	Math/Rectangle.cpp
 	Math/SphericalCoordinates.cpp
-	
+	Math/Quaternion.cpp
 	#
 	# Graphics Section
 	#
 	
 	### SceneGraph
-	#Graphics/SceneGraph/Assimp/AssimpNode.cpp
 	Graphics/SceneNode/ICameraSceneNode.cpp  
 	Graphics/SceneNode/IMeshSceneNode.cpp        
 	Graphics/SceneNode/ISceneNode.cpp

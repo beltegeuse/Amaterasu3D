@@ -65,8 +65,7 @@ public:
 	void DeleteAllChildren();
 
 	// Transformation management
-	bool IsNeedTransformationHierachicalCacheUpdate() const;
-	void NeedTransformationUpdate();
+	bool IsNeedUpdate() const;
 	// * Getters
 	// -- Transformation
 	const Math::CMatrix4 GetLocalTransformation() const;
@@ -96,7 +95,7 @@ protected:
 	//! Info : Can be call by parent or Transformation setters
 	void NeedTransformationLocaleUpdate(); // < For matrix locale cache only
 	void NeedUpdate(); // < For know you or parents need Transformation update
-
+	void SetParent(ISceneNode* node);
 };
 
 #endif /* ISCENENODE_H_ */
