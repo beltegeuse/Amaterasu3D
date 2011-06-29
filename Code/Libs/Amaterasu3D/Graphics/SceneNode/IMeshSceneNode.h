@@ -13,8 +13,10 @@
 class IMeshSceneNode : public ISceneNode
 {
 public:
-	IMeshSceneNode();
+	IMeshSceneNode(const std::string& name, ISceneNode* parent);
 	virtual ~IMeshSceneNode();
+
+	virtual void Render();
 };
 
 #endif /* IMESHSCENENODE_H_ */

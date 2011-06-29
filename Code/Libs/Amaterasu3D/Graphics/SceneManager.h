@@ -35,6 +35,8 @@
 // STL includes
 #include <map>
 #include <vector>
+#include <list>
+
 class CSceneManager : public CSingleton<CSceneManager>
 {
 	MAKE_SINGLETON(CSceneManager)
@@ -44,11 +46,17 @@ protected:
 	 */
 	typedef std::map<std::string, ILightSceneNode*> LightList;
 	typedef std::map<std::string, ICameraSceneNode*> CameraList;
+	typedef std::list<IMeshSceneNode*> MeshList;
+
 	/*
 	 * Attributes
 	 */
+	// Scenegraph knows
 	LightList m_Lights;
 	CameraList m_Cameras;
+	MeshList m_Meshs;
+
+	// Root of the scenegraph
 	ISceneNode * m_Root;
 
 public:
@@ -67,6 +75,7 @@ public:
 	ILightSceneNode* CreateLightNode(ISceneNode* parent = 0);
 	ICameraSceneNode* CreateCameraNode(ISceneNode* parent = 0);
 	IMeshSceneNode* LoadMesh(const std::string file, ISceneNode* parent = 0);
+
 	// Add Root
 	void AddScenegraphRoot(ISceneNode* node);
 	// Render all in scenegraph

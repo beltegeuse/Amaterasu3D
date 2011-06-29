@@ -13,7 +13,7 @@
 class ILightSceneNode : public ISceneNode
 {
 public:
-	ILightSceneNode();
+	ILightSceneNode(const std::string& name, ISceneNode* parent);
 	virtual ~ILightSceneNode();
 };
 

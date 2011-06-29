@@ -31,6 +31,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Camera/CameraAbstract.cpp
 	Graphics/Camera/CameraFPS.cpp
 	Graphics/Camera/FixedCamera.cpp
+	
 	Graphics/SceneGraph/DrawObject.cpp
 	Graphics/SceneGraph/Group.cpp
 	Graphics/SceneGraph/Debug/DebugCubeLeaf.cpp
@@ -39,6 +40,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/SceneGraph/Rectangle2D.cpp
 	Graphics/SceneGraph/Other/Skydome.cpp
 	Graphics/SceneGraph/Assimp/AssimpNode.cpp
+	
 	Graphics/Font/FontManager.cpp
 	Graphics/Font/GraphicString.cpp
 	Graphics/Shaders/Shader.cpp

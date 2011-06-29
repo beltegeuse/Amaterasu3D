@@ -38,7 +38,7 @@ protected:
 
 	// Geometrical attributes
 	// * Cache matrix management
-	bool m_NeedTransformationUpdate;
+	bool m_NeedUpdate;
 	bool m_NeedTransformationLocalUpdate;
 	Math::CMatrix4 m_CachedWorldTransformationMatrix;
 	Math::CMatrix4 m_CachedLocalTransformationMatrix;
@@ -89,12 +89,12 @@ public:
 	//TODO: Do this part (Bounding box, sphere, ... etc).
 
 	// Virtual pure methods
-	virtual void Render();
+	virtual void UpdateTransformations();
 
 protected:
 	//! Info : Can be call by parent or Transformation setters
 	void NeedTransformationLocaleUpdate(); // < For matrix locale cache only
-	void NeedTransformationHierachicalCacheUpdate(); // < For know you or parents need Transformation update
+	void NeedUpdate(); // < For know you or parents need Transformation update
 
 };
 

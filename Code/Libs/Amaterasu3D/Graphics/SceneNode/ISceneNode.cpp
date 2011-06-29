@@ -49,7 +49,7 @@ void ISceneNode::DeleteAllChildren()
 // Transformation management
 bool ISceneNode::IsNeedTransformationHierachicalCacheUpdate() const
 {
-	return m_NeedTransformationUpdate;
+	return m_NeedUpdate;
 }
 // * Getters
 const Math::CMatrix4 ISceneNode::GetLocalTransformation() const
@@ -109,24 +109,24 @@ void ISceneNode::NeedTransformationLocaleUpdate()
 	if(!m_NeedTransformationLocalUpdate)
 	{
 		m_NeedTransformationLocalUpdate = true;
-		NeedTransformationHierachicalCacheUpdate();
+		NeedUpdate();
 	}
 }
-void ISceneNode::NeedTransformationHierachicalCacheUpdate()
+void ISceneNode::NeedUpdate()
 {
-	m_NeedTransformationUpdate = true;
+	m_NeedUpdate = true;
 	if(m_Parent)
-		m_Parent->NeedTransformationHierachicalCacheUpdate();
+		m_Parent->NeedUpdate();
 }
 /*
  * Render methods
  */
-void ISceneNode::Render()
+void ISceneNode::UpdateTransformations()
 {
 	// Matrix cache update
-	if(m_NeedTransformationUpdate)
+	if(m_NeedUpdate)
 	{
-		m_NeedTransformation = false;
+		m_NeedUpdate = false;
 
 		// If need update local transformation matrix
 		if(m_NeedTransformationLocalUpdate)
@@ -135,6 +135,7 @@ void ISceneNode::Render()
 			positionMatrix.SetTranslation(m_Position.x, m_Position.y, m_Position.z);
 			scaleMatrix.SetScaling(m_Scale.x, m_Scale.y, m_Scale.z);
 			m_CachedLocalTransformationMatrix = scaleMatrix*m_Orientation.ToMatrix()*positionMatrix;
+			m_NeedTransformationLocalUpdate = false;
 		}
 
 		// Update world transformation matrix

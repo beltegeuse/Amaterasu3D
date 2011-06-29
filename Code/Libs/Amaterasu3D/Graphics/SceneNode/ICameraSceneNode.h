@@ -33,7 +33,7 @@ private:
 	//TODO: See Abstract camera for other things ...
 
 public:
-	ICameraSceneNode();
+	ICameraSceneNode(const std::string& name, ISceneNode* parent);
 	virtual ~ICameraSceneNode();
 
 	// View management
@@ -52,6 +52,11 @@ public:
 	float GetRatio() const;
 	float GetNear() const;
 	float GetFar() const;
+
+	// To update Camera
+	virtual void UpdateTransformations();
+private:
+	void NeedProjectionUpdate();
 };
 
 #endif /* ICAMERASCENENODE_H_ */
