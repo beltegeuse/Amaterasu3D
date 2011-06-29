@@ -60,25 +60,21 @@ GLuint DebugCubeLeaf::IndiceArray[36] = {
 };
 
 
-DebugCubeLeaf::DebugCubeLeaf()
+DebugCubeLeaf::DebugCubeLeaf(const std::string& name, ISceneNode* parent) :
+	ISimpleRenderableSceneNode(name, parent)
 {
-	SetIndiceBuffer(IndiceArray, 36);
-	SceneGraph::ModelBuffer buffer;
+	m_RenderObject.SetIndiceBuffer(IndiceArray, 36);
+	RenderableObject::RenderableBuffer buffer;
 	buffer.buffer = CubeArray;
 	buffer.dimension = 3;
 	buffer.size = 24;
 	buffer.owner = false;
-	AddBuffer(buffer,VERTEX_ATTRIBUT);
+	m_RenderObject.AddBuffer(buffer,VERTEX_ATTRIBUT);
 	buffer.buffer = CubeArrayColor;
-	AddBuffer(buffer,COLOR_ATTRIBUT);
-	CompileBuffers();
+	m_RenderObject.AddBuffer(buffer,COLOR_ATTRIBUT);
+	m_RenderObject.CompileBuffers();
 }
 
 DebugCubeLeaf::~DebugCubeLeaf()
 {
-}
-
-void DebugCubeLeaf::Draw()
-{
-	SceneGraph::Model::Draw();
 }

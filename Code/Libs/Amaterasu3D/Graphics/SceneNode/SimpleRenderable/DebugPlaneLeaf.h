@@ -21,23 +21,25 @@
 //
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
-#ifndef _DrawObject_H
-#define _DrawObject_H
+#ifndef DEBUGPLANELEAF_H_
+#define DEBUGPLANELEAF_H_
 
-namespace SceneGraph
+#include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
+
+class DebugPlaneLeaf : public ISimpleRenderableSceneNode
 {
+private:
+	static GLfloat PlaneArray[24];
+	static GLuint IndiceArray[6];
+	unsigned int m_planebuffers[2];
+public:
+	DebugPlaneLeaf(const std::string& name, ISceneNode* parent);
+	virtual ~DebugPlaneLeaf();
 
-	/** \brief Classe m�re de tous les noeuds du graphe de sc�ne. */
-	class DrawObject
-	{
-	public :
-		DrawObject();
-		/** \brief Destructeur virtuel */
-		virtual ~DrawObject();
-		/** Gestion de l'affichage OpenGL */
-		virtual void Draw() = 0;
-	} ;
+	virtual void Draw();
+};
 
-}
 
-#endif 
+#endif /* DEBUGPLANELEAF_H_ */

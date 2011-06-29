@@ -28,9 +28,9 @@
 // Amaterasu includes
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Lighting/LightShaders.h>
-#include <Graphics/SceneGraph/DrawObject.h>
-#include <Graphics/SceneGraph/Group.h>
 #include <Graphics/Camera/CameraAbstract.h>
+#include <Graphics/RenderableObject.h>
+#include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
 #include <Math/Vector2.h>
 #include <Math/Vector3.h>
 #include <Math/Matrix4.h>
@@ -67,7 +67,7 @@ public:
 	/////////////////
 	// TODO: Do the same as CryTek (Double buffering technique)
 	FBO** m_PropagationFBOs; ///< To store all intermediary computation
-	SceneGraph::Group** m_GridModels; ///< To draw all grid
+	ISimpleRenderableSceneNode** m_GridModels; ///< To draw all grid
 
 public:
 	/*
@@ -106,13 +106,13 @@ public:
 	/// Injection VPL Pass
 	///////////////////////////////////
 	// TODO: Add the injection scheme
-	void InjectVPLFromLight(LightShaders& shader, SceneGraph::DrawObject& samples);
+	void InjectVPLFromLight(LightShaders& shader, RenderableObject& samples);
 	void BeginInjectionVPLPass(int level);
 	void EndInjectionVPLPass();
 	///////////////////////////////////
 	/// Injection Geometry Pass
 	///////////////////////////////////
-	void InjectGeometryFromLight(LightShaders& shader, SceneGraph::DrawObject& samples);
+	void InjectGeometryFromLight(LightShaders& shader, RenderableObject& samples);
 	void BeginInjectionGeometryPass(int level);
 	void EndInjectionGeometryPass();
 	///////////////////////////////////
@@ -131,7 +131,7 @@ public:
 
 private:
 	void GenerateGridModels();
-	void CreateGridModel(SceneGraph::Group** model, int nbCellDim, int CellSize );
+	void CreateGridModel(ISimpleRenderableSceneNode** model, int nbCellDim, int CellSize );
 
 
 };

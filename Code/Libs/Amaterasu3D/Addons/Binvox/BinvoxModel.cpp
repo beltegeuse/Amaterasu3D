@@ -14,7 +14,7 @@
 #include <System/MediaManager.h>
 #include <Math/Vector3.h>
 #include <Utilities/Util.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
+#include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
 
 #include <vector>
 
@@ -132,7 +132,7 @@ void BinvoxModel::LoadVoxels(std::ifstream *input)
 	Logger::Log() << "[INFO] Read " << nr_voxels << " voxels\n";
 }
 
-SceneGraph::Model* BinvoxModel::CreateDebugPointModel()
+ISimpleRenderableSceneNode* BinvoxModel::CreateDebugPointModel()
 {
 	int size = m_Depth*m_Width*m_Height;
 
@@ -164,18 +164,18 @@ SceneGraph::Model* BinvoxModel::CreateDebugPointModel()
 		indiceBuffer[l] = l;
 	}
 
-	SceneGraph::Model* model = new SceneGraph::Model;
-	model->SetDrawMode(GL_POINTS);
-	model->SetIndiceBuffer(indiceBuffer, voxels.size());
-	SceneGraph::ModelBuffer buffer;
+	ISimpleRenderableSceneNode* model = new ISimpleRenderableSceneNode("",0);
+	model->GetObject().SetDrawMode(GL_POINTS);
+	model->GetObject().SetIndiceBuffer(indiceBuffer, voxels.size());
+	RenderableObject::RenderableBuffer buffer;
 	buffer.buffer = vertexBuffer;
 	buffer.size = 3*voxels.size();
 	buffer.dimension = 3;
 	buffer.owner = true;
-	model->AddBuffer(buffer, VERTEX_ATTRIBUT);
+	model->GetObject().AddBuffer(buffer, VERTEX_ATTRIBUT);
 	buffer.buffer = colorBuffer;
-	model->AddBuffer(buffer, COLOR_ATTRIBUT);
-	model->CompileBuffers();
+	model->GetObject().AddBuffer(buffer, COLOR_ATTRIBUT);
+	model->GetObject().CompileBuffers();
 	//model->AddMaterial(DIFFUSE_MATERIAL,color);
 
 	return model;
@@ -234,16 +234,14 @@ Math::TVector3F BinvoxModel::GridSize() const
 	return Math::TVector3F(m_Width, m_Height, m_Depth);
 }
 
-SceneGraph::Group* BinvoxModel::CreateCoordinateCubeModel()
+DebugCubeLeaf* BinvoxModel::CreateCoordinateCubeModel()
 {
-	DebugCubeLeaf* cube = new DebugCubeLeaf;
+	DebugCubeLeaf* cube = new DebugCubeLeaf("CubeVoxbin", 0);
 	// Need translation because [-1,1]
 	Math::CMatrix4 scaleMat;
 	scaleMat.SetScaling(m_Width,m_Height, m_Depth);
-	SceneGraph::Group* group = new SceneGraph::Group;
-	group->LoadTransformMatrix(scaleMat);
-	group->AddChild(cube);
-	return group;
+	cube->LoadLocalTransformMatrix(scaleMat);
+	return cube;
 }
 
 void BinvoxModel::LoadFile(const std::string& file)

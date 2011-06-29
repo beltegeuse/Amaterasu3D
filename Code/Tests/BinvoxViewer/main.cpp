@@ -8,7 +8,6 @@
 #include <stdlib.h>
 
 #include <Math/Matrix4.h>
-#include <Graphics/SceneGraph/Model.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
@@ -56,8 +55,10 @@ public:
 		Logger::Log() << "[INFO] Load Armadillo.binvox\n";
 		m_BinVox = new BinvoxModel("Dragon.binvox");
 		m_VolumeTexture = m_BinVox->Create2DTexture();
+
+		// A voir
 		//RootSceneGraph.AddChild(m_BinVox->CreateDebugPointModel());
-		RootSceneGraph.AddChild(m_BinVox->CreateCoordinateCubeModel());
+		//RootSceneGraph.AddChild(m_BinVox->CreateCoordinateCubeModel()); // < FIXME
 	}
 
 	virtual void OnUpdate(double delta)
@@ -87,7 +88,7 @@ public:
 		m_CubeShader->SetFBO(m_FrontFBO, false);
 		m_CubeShader->Begin();
 		m_Camera->GetView();
-		RootSceneGraph.Draw();
+		SceneManager.RenderAll();
 		m_CubeShader->End();
 
 //		m_CubeShader->GetFBO()->DrawDebug();
@@ -96,7 +97,7 @@ public:
 		m_CubeShader->SetFBO(m_BackFBO, false);
 		m_CubeShader->Begin();
 		m_Camera->GetView();
-		RootSceneGraph.Draw();
+		SceneManager.RenderAll();
 		m_CubeShader->End();
 		glDisable(GL_CULL_FACE);
 

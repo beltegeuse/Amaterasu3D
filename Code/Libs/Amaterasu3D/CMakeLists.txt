@@ -5,6 +5,9 @@ IF(CMAKE_BUILD_TYPE MATCHES debug)
 ENDIF(CMAKE_BUILD_TYPE MATCHES debug)
 
 SET(LIB_AMATERASU3D_SRCS
+	#
+	# Addons Section
+	#
 	Addons/Console/Console.cpp
 	Addons/Console/DefaultLook.cpp
 	Addons/FPS/FPS.cpp
@@ -21,41 +24,54 @@ SET(LIB_AMATERASU3D_SRCS
 	Addons/ToneMappingOperator/SumantToneOperator/SumantToneOperator.cpp
 	Addons/ToneMappingOperator/DurandToneOperator/DurandToneOperator.cpp
 	
-	Debug/Exceptions.cpp
-	Debug/OpenGLDebug.cpp
-	
-	Logger/Logger.cpp
-	Logger/LoggerDebug.cpp
-	Logger/LoggerFile.cpp
-	
+	#
+	# Math Section
+	#
 	Math/Rectangle.cpp
 	Math/SphericalCoordinates.cpp
+	Math/Quaternion.cpp
+	#
+	# Graphics Section
+	#
 	
+	### SceneGraph
+	Graphics/SceneNode/ICameraSceneNode.cpp  
+	Graphics/SceneNode/IMeshSceneNode.cpp        
+	Graphics/SceneNode/ISceneNode.cpp
+ 	Graphics/SceneNode/ILightSceneNode.cpp   
+ 	Graphics/SceneNode/IRenderableSceneNode.cpp  
+ 	Graphics/SceneNode/ISimpleRenderableSceneNode.cpp
+ 	Graphics/SceneNode/Others/Skydome.cpp
+ 	Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.cpp
+ 	Graphics/SceneNode/SimpleRenderable/DebugPlaneLeaf.cpp
+ 	Graphics/SceneNode/SimpleRenderable/Rectangle2D.cpp
+ 	
+	### Other Graphics
+	Graphics/Font/FontManager.cpp
+	Graphics/Font/GraphicString.cpp
 	Graphics/Lighting/LightingPassAbstract.cpp
 	Graphics/Lighting/DeferredLighting/DeferredLighting.cpp
 	Graphics/Camera/CameraAbstract.cpp
 	Graphics/Camera/CameraFPS.cpp
 	Graphics/Camera/FixedCamera.cpp
-	Graphics/SceneGraph/DrawObject.cpp
-	Graphics/SceneGraph/Group.cpp
-	Graphics/SceneGraph/Debug/DebugCubeLeaf.cpp
-	Graphics/SceneGraph/Debug/DebugPlaneLeaf.cpp
-	Graphics/SceneGraph/Model.cpp
-	Graphics/SceneGraph/Rectangle2D.cpp
-	Graphics/SceneGraph/Other/Skydome.cpp
-	Graphics/SceneGraph/Assimp/AssimpNode.cpp
-	Graphics/Font/FontManager.cpp
-	Graphics/Font/GraphicString.cpp
+	
+	### Shader Graphics
 	Graphics/Shaders/Shader.cpp
 	Graphics/Shaders/ShaderUnit.cpp
 	Graphics/Shaders/GBufferShader.cpp
 	Graphics/Shaders/Compiler/ShaderCompiler.cpp
+	
+	### Core Graphics
 	Graphics/MatrixManagement.cpp
 	Graphics/Color.cpp
 	Graphics/FBO.cpp
 	Graphics/Texture.cpp
 	Graphics/SceneManager.cpp
+	Graphics/RenderableObject.cpp
 	
+	#
+	# System Section
+	#
 	System/GraphicsDevice.cpp
 	System/EventListeners.cpp
 	System/EventManager.cpp
@@ -68,6 +84,14 @@ SET(LIB_AMATERASU3D_SRCS
 	System/Loaders/AssimpLoader.cpp
 	System/Loaders/ImagesLoader.cpp
 	
+	#
+	# Other Section
+	#
+	Debug/Exceptions.cpp
+	Debug/OpenGLDebug.cpp
+	Logger/Logger.cpp
+	Logger/LoggerDebug.cpp
+	Logger/LoggerFile.cpp
 	Utilities/File.cpp
 	
 	Application.cpp

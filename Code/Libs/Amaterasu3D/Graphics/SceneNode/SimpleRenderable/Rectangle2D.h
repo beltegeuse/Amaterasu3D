@@ -21,41 +21,21 @@
 //
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
-#include "AssimpNode.h"
-#include <System/ResourceManager.h>
-#include <System/MediaManager.h>
 
-namespace SceneGraph
+#ifndef RECTANGLE2D_H_
+#define RECTANGLE2D_H_
+
+#include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
+#include <Math/Vector2.h>
+
+class Rectangle2D : public ISimpleRenderableSceneNode
 {
-AssimpNode::AssimpNode() :
-		m_scene(NULL)
-{
+public:
+	/*
+	 * Constructors & Destructors
+	 */
+	Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord = true, float offset=0);
+	virtual ~Rectangle2D();
+};
 
-}
-
-AssimpNode::~AssimpNode()
-{
-	//FIXME: Faire le release ...
-	if(!m_scene)
-	{
-		aiReleaseImport(m_scene);
-	}
-}
-
-void AssimpNode::SetAssimpScene(const aiScene* scene)
-{
-	m_scene = scene;
-}
-
-SceneGraph::AssimpNode* AssimpNode::LoadFromFile(const std::string& filename)
-{
-	SceneGraph::AssimpNode* Resource = CResourceManager::Instance().Get<SceneGraph::AssimpNode>(filename);
-	if(Resource == NULL)
-	{
-		Resource = CMediaManager::Instance().LoadMediaFromFile<SceneGraph::AssimpNode>(filename);
-		CResourceManager::Instance().Add(filename, Resource);
-	}
-	return Resource;
-}
-
-} // Namespace SceneGraph
+#endif /* RECTANGLE2D_H_ */

@@ -1,83 +1,57 @@
-//==========================================================
-// Amaterasu3D - perceptual 3D engine
-//
-// Copyright (C) 2004-2005 Adrien Gruson
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc.,
-// 59 Temple Place - Suite 330,
-// Boston, MA  02111-1307, USA.
-//
-// E-mail : adrien.gruson@gmail.com
-//==========================================================
-#include <GL/glew.h>
-#include <GL/gl.h>
+/*
+ * DrawableObjects.cpp
+ *
+ *  Created on: Jun 29, 2011
+ *      Author: adrien
+ */
 
-#include "Model.h"
-#include <Debug/Exceptions.h>
-#include <Logger/Logger.h>
-#include <Graphics/Shaders/Shader.h>
+#include "RenderableObject.h"
 
-namespace SceneGraph
-{
-
-Model::Model() :
-		m_indices_buffers(NULL),
-		m_indices(NULL),
-		m_is_compiled(false),
-		m_IsInstance(false),
-		m_DrawMode(GL_TRIANGLES)
+RenderableObject::RenderableObject() :
+m_indices_buffers(NULL),
+m_indices(NULL),
+m_is_compiled(false),
+m_IsInstance(false),
+m_DrawMode(GL_TRIANGLES)
 {
 }
 
-Model::~Model()
-{
+RenderableObject::~RenderableObject() {
 	if(m_IsInstance)
-		return;
+			return;
 
-	glDeleteBuffers(m_buffers.size()+1, m_indices_buffers);
-	delete[] m_indices_buffers;
-	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
-	{
-		if(it->second.owner)
-			delete[] it->second.buffer;
-	}
+		glDeleteBuffers(m_buffers.size()+1, m_indices_buffers);
+		delete[] m_indices_buffers;
+		for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
+		{
+			if(it->second.owner)
+				delete[] it->second.buffer;
+		}
 }
 
-void Model::SetIndiceBuffer(unsigned int* buffer, int size)
+void RenderableObject::SetIndiceBuffer(unsigned int* buffer, int size)
 {
 	m_indices = buffer;
 	m_indices_size = size;
 }
 
-void Model::AddBuffer(ModelBuffer buffer, ShaderAttributType type)
+void RenderableObject::AddBuffer(RenderableObject::RenderableBuffer buffer, ShaderAttributType type)
 {
 	Assert(!m_is_compiled);
 	m_buffers[type] = buffer;
 }
 
-void Model::AddTextureMap(TextureType type, TTexturePtr texture)
+void RenderableObject::AddTextureMap(TextureType type, TTexturePtr texture)
 {
 	m_textures_map[type] = texture;
 }
 
-void Model::AddMaterial(MaterialType type, Color color)
+void RenderableObject::AddMaterial(MaterialType type, Color color)
 {
 	m_material_map[type] = color;
 }
 
-void Model::CompileBuffers()
+void RenderableObject::CompileBuffers()
 {
 	Logger::Log() << "[INFO] Generate " << m_buffers.size()+1 << " buffers ... \n";
 	m_is_compiled = true;
@@ -99,7 +73,7 @@ void Model::CompileBuffers()
 	}
 }
 
-void Model::Draw()
+void RenderableObject::Draw()
 {
 	// pas de shader
 	if(!CShaderManager::Instance().activedShader())
@@ -151,12 +125,12 @@ void Model::Draw()
 	}
 }
 
-void Model::SetDrawMode(GLenum mode)
+void RenderableObject::SetDrawMode(GLenum mode)
 {
 	m_DrawMode = mode;
 }
 
-bool Model::IsInstance(Model& model)
+bool RenderableObject::IsInstance(RenderableObject& model)
 {
 	// First test is the number of indices
 	if(m_indices_size != model.m_indices_size)
@@ -182,8 +156,8 @@ bool Model::IsInstance(Model& model)
 	if(m_buffers.find(VERTEX_ATTRIBUT) != m_buffers.end() && m_buffers[VERTEX_ATTRIBUT].size >= 11)
 	{
 		Logger::Log() << "[INFO] Try to find the transformations ... \n";
-		ModelBuffer b1 = m_buffers[VERTEX_ATTRIBUT];
-		ModelBuffer b2 = model.m_buffers[VERTEX_ATTRIBUT];
+		RenderableBuffer b1 = m_buffers[VERTEX_ATTRIBUT];
+		RenderableBuffer b2 = model.m_buffers[VERTEX_ATTRIBUT];
 		if(b1.buffer[0] != b2.buffer[0])
 		{
 			needTransformation = true;
@@ -261,7 +235,7 @@ bool Model::IsInstance(Model& model)
 	return true;
 }
 
-void Model::SetInstance(Model& model) const
+void RenderableObject::SetInstance(RenderableObject& model) const
 {
 	// Clear all model buffers
 	for(BufferMap::iterator it = model.m_buffers.begin(); it != model.m_buffers.end(); it++)
@@ -275,7 +249,7 @@ void Model::SetInstance(Model& model) const
 	// Set all new buffers
 	for(BufferMap::const_iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
 	{
-		ModelBuffer buffer = it->second;
+		RenderableBuffer buffer = it->second;
 		// Specify is not the owner
 		buffer.owner = false;
 		model.m_buffers[it->first] = buffer;
@@ -284,5 +258,3 @@ void Model::SetInstance(Model& model) const
 	model.m_is_compiled = true;
 	model.m_indices_buffers = m_indices_buffers;
 }
-
-} // namespace SceneGraph

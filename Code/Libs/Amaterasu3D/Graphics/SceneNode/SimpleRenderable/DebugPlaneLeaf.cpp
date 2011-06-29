@@ -30,10 +30,6 @@
 #include <Graphics/Shaders/Shader.h>
 #include <Logger/Logger.h>
 
-
-namespace SceneGraph
-{
-
 GLfloat DebugPlaneLeaf::PlaneArray[24] = {
 		1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f,
@@ -46,9 +42,10 @@ GLuint DebugPlaneLeaf::IndiceArray[6] = {
 		};
 
 
-DebugPlaneLeaf::DebugPlaneLeaf()
+DebugPlaneLeaf::DebugPlaneLeaf(const std::string& name, ISceneNode* parent) :
+	ISimpleRenderableSceneNode(name, parent)
 {
-	// Génération des buffers
+	// Gï¿½nï¿½ration des buffers
 	Logger::Log() << "[INFO] Gen Buffer ...\n";
 	GLCheck(glGenBuffers( 2, m_planebuffers ));
 	// Buffer d'informations de vertex
@@ -104,6 +101,3 @@ void DebugPlaneLeaf::Draw()
 	if(colorSupport)
 		GLCheck(glDisableVertexAttribArray ( COLOR_ATTRIBUT ));
 }
-
-
-} // Namespace SceneGraph

@@ -26,7 +26,7 @@
 #define MEDIAMANAGER_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <System/Loaders/Loader.h>
 #include <Singleton.h>
@@ -35,10 +35,8 @@
 #include <Utilities/StringUtils.h>
 #include <Utilities/SmartPtr.h>
 #include <Graphics/Shaders/Shader.h>
-#include <Graphics/SceneGraph/Assimp/AssimpNode.h>
+#include <Graphics/SceneNode/IMeshSceneNode.h>
 #include <Graphics/Texture.h>
-//#include <Core/Model.h>
-//#include <Core/Image.h>
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
 #include <algorithm>
@@ -48,22 +46,22 @@
 #include <string>
 
 //==========================================================
-// Liste des médias pris en charge
+// Liste des mï¿½dias pris en charge
 //==========================================================
-typedef TYPELIST_3(Shader, SceneGraph::AssimpNode, Texture) MediaList;
+typedef TYPELIST_3(Shader, IMeshSceneNode, Texture) MediaList;
 
 ////////////////////////////////////////////////////////////
-/// Modèle de gestionnaire de média
+/// Modï¿½le de gestionnaire de mï¿½dia
 ////////////////////////////////////////////////////////////
 template <class T>
 struct CMediaHolder
 {
 	typedef std::map<std::string, CSmartPtr<ILoader<T> > > TLoadersMap;
-	TLoadersMap m_Loaders; ///< Chargeurs de T associés à leur extension
+	TLoadersMap m_Loaders; ///< Chargeurs de T associï¿½s ï¿½ leur extension
 };
 
 ////////////////////////////////////////////////////////////
-/// Gestionnaire de médias - "empilement" de CMediaHolder pour chaque média
+/// Gestionnaire de mï¿½dias - "empilement" de CMediaHolder pour chaque mï¿½dia
 ////////////////////////////////////////////////////////////
 class CMediaManager : public CSingleton<CMediaManager>, public CScatteredHierarchy<MediaList, CMediaHolder>
 {
@@ -74,7 +72,7 @@ public :
 
 
 	//----------------------------------------------------------
-	// Ajoute un répertoire de recherche pour les médias
+	// Ajoute un rï¿½pertoire de recherche pour les mï¿½dias
 	//----------------------------------------------------------
 	void AddSearchPath(const std::string& Path);
 	void AddSearchPathAndChilds(const std::string& Path);
@@ -89,7 +87,7 @@ public :
 	template <class T> void UnregisterLoader(const std::string& Extensions);
 
 	//----------------------------------------------------------
-	// Charge un T à partir d'un fichier
+	// Charge un T ï¿½ partir d'un fichier
 	//----------------------------------------------------------
 	template <class T> T* LoadMediaFromFile(const CFile& Filename) const;
 
@@ -99,14 +97,14 @@ public :
 	template <class T> void SaveMediaToFile(const T* Object, const CFile& Filename) const;
 
 	//----------------------------------------------------------
-	// Cherche un fichier dans les répertoires de recherche
+	// Cherche un fichier dans les rï¿½pertoires de recherche
 	//----------------------------------------------------------
 	CFile FindMedia(const CFile& Filename) const;
 
 private :
 
 	//----------------------------------------------------------
-	// Constructeur par défaut
+	// Constructeur par dï¿½faut
 	//----------------------------------------------------------
 	CMediaManager();
 
@@ -116,12 +114,12 @@ private :
 	~CMediaManager();
 
 	//----------------------------------------------------------
-	// Cherche le loader correspondant à une extension donnée
+	// Cherche le loader correspondant ï¿½ une extension donnï¿½e
 	//----------------------------------------------------------
 	template <class T> ILoader<T>& FindLoader(const CFile& Filename) const;
 
 	//----------------------------------------------------------
-	// Données membres
+	// Donnï¿½es membres
 	//----------------------------------------------------------
 	std::set<std::string> m_Paths; ///< Liste des chemins de recherche
 };

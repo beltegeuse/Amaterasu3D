@@ -23,11 +23,11 @@
 //==========================================================
 #include "DeferredLighting.h"
 #include <Graphics/MatrixManagement.h>
+#include <Graphics/SceneManager.h>
 #include <System/SettingsManager.h>
 #include <math.h>
 
-DeferredLighting::DeferredLighting(SceneGraph::Group& scene) :
-	m_Scene(scene),
+DeferredLighting::DeferredLighting() :
 	m_debug_mode(false)
 {
 	// Load shader
@@ -72,7 +72,7 @@ void DeferredLighting::SpotLightPass()
 //		glEnable(GL_CULL_FACE);
 //		glCullFace(GL_BACK);
 		m_simple_shader->Begin();
-		m_Scene.Draw(); // Draw the scene
+		CSceneManager::Instance().RenderAll(); // Draw the scene
 		m_simple_shader->End();
 //		glDisable(GL_CULL_FACE);
 		// * Revert transformations

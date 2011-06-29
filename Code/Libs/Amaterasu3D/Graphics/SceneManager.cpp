@@ -23,13 +23,59 @@
 //==========================================================
 
 #include "SceneManager.h"
+#include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
+#include <Graphics/SceneNode/SimpleRenderable/DebugPlaneLeaf.h>
 
 SINGLETON_IMPL(CSceneManager)
 
-CSceneManager::CSceneManager()
+CSceneManager::CSceneManager() :
+	m_Root(new ISceneNode("Root", 0))
 {
 }
 
 CSceneManager::~CSceneManager()
 {
+	delete m_Root;
+}
+
+IMeshSceneNode* CSceneManager::LoadMesh(const std::string& file, ISceneNode* parent)
+{
+	IMeshSceneNode* mesh = IMeshSceneNode::LoadFromFile(file, file, parent);
+	m_Meshs.push_back(mesh);
+	return mesh;
+}
+
+ISimpleRenderableSceneNode* CSceneManager::CreateSimpleMesh(const SimpleMesh& type, const std::string& name, ISceneNode* node)
+{
+	ISimpleRenderableSceneNode* obj = 0;
+	switch(type)
+	{
+	case MESH_CUBE:
+		obj =  new DebugCubeLeaf(name, node);
+		break;
+	case MESH_PLANE:
+		obj = new DebugPlaneLeaf(name, node);
+		break;
+	default:
+		throw new CException("Unknow Mesh type");
+	}
+	m_Meshs.push_back(obj);
+	return obj;
+}
+
+void CSceneManager::AddScenegraphRoot(ISceneNode* node)
+{
+	m_Root->AddChild(node);
+}
+
+void CSceneManager::RenderAll()
+{
+	// Update Transformation Cache
+	m_Root->UpdateTransformations();
+
+	// Render all Mesh
+	for(RenderableList::iterator it = m_Meshs.begin(); it != m_Meshs.end(); ++it)
+	{
+		(*it)->Render();
+	}
 }

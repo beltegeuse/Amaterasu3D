@@ -45,7 +45,7 @@ AssimpLoader::~AssimpLoader()
 	aiDetachAllLogStreams();
 }
 
-SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
+IMeshSceneNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 {
 	//XXX: Add automatic path append for textures
 	// Empty cache
@@ -54,14 +54,14 @@ SceneGraph::AssimpNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 	const struct aiScene* scene = aiImportFile(Filename.c_str(), aiProcessPreset_TargetRealtime_Fast);
 	if(!scene)
 		throw CException("assimp library can load model.");
-	SceneGraph::AssimpNode* group = new SceneGraph::AssimpNode;
-	BuildGroup(group, scene, scene->mRootNode);
+	IMeshSceneNode* group = new IMeshSceneNode(Filename, 0);
+	BuildGroup(group, scene, scene->mRootNode, Math::CMatrix4());
 	group->SetAssimpScene(scene);
 	Logger::Log() << "[INFO] Finish to load : " << Filename << " mesh : "<< scene->mNumMeshes << "\n";
 	return group;
 }
 
-void AssimpLoader::GetMaterialPropreties(SceneGraph::Model* assimpMesh, const struct aiMaterial *mtl)
+void AssimpLoader::GetMaterialPropreties(RenderableObject* assimpMesh, const struct aiMaterial *mtl)
 {
 	Color color;
 
@@ -127,16 +127,16 @@ void AssimpLoader::GetMaterialPropreties(SceneGraph::Model* assimpMesh, const st
 
 }
 
-void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scene, aiNode* nd)
+void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode, const aiScene* scene, aiNode* nd, const Math::CMatrix4& matrixUpp)
 {
 	// Load transformation
 	struct aiMatrix4x4 m = nd->mTransformation;
 	//aiTransposeMatrix4(&m);
-	Math::CMatrix4 matrix = Math::CMatrix4(m.a1,m.a2,m.a3,m.a4,
+	Math::CMatrix4 matrixLocalTrans = Math::CMatrix4(m.a1,m.a2,m.a3,m.a4,
 										   m.b1,m.b2,m.b3,m.b4,
 										   m.c1,m.c2,m.c3,m.c4,
 										   m.d1,m.d2,m.d3,m.d4);
-	group->LoadTransformMatrix(matrix);
+	Math::CMatrix4 globalTransformation = matrixLocalTrans*matrixUpp;
 
 	// draw all meshes assigned to this node
 	for (unsigned int n = 0; n < nd->mNumMeshes; ++n) {
@@ -149,7 +149,7 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 			Logger::Log() << "[INFO] Skip assimp mesh. No faces. \n";
 			continue;
 		}
-		SceneGraph::Model* assimpMesh = new SceneGraph::Model;
+		RenderableObject* assimpMesh = new RenderableObject;
 		// Build the indice faces
 		std::vector<unsigned int> indicesVector;
 		std::vector<float> vertexVector;
@@ -182,7 +182,7 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		assimpMesh->SetIndiceBuffer(indiceArray, indicesVector.size());
 		// * Vertex buffer
 		Logger::Log() << "[INFO] Add Vertex buffer ... \n";
-		SceneGraph::ModelBuffer buffer;
+		RenderableObject::RenderableBuffer buffer;
 		buffer.buffer = &mesh->mVertices[0].x;
 		buffer.dimension = 3;
 		buffer.size = maxIndice*3+3;
@@ -308,15 +308,13 @@ void AssimpLoader::BuildGroup(SceneGraph::AssimpNode* group, const aiScene* scen
 		}
 		// Attach to group
 		Logger::Log() << "[INFO] Add to father node... \n";
-		group->AddChild(assimpMesh);
 
+		meshSceneNode->AddRenderableObject(assimpMesh, globalTransformation);
 	}
 
 	// Add all childrens
 	for (int n = 0; n < nd->mNumChildren; ++n) {
-		SceneGraph::AssimpNode* assimpNode = new SceneGraph::AssimpNode;
-		BuildGroup(assimpNode, scene, nd->mChildren[n]);
-		group->AddChild(assimpNode);
+		BuildGroup(meshSceneNode, scene, nd->mChildren[n], globalTransformation);
 	}
 
 }

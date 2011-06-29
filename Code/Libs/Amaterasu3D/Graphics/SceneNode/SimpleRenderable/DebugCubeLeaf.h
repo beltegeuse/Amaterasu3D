@@ -21,27 +21,23 @@
 //
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
-#ifndef DEBUGPLANELEAF_H_
-#define DEBUGPLANELEAF_H_
+#ifndef DEBUGCUBELEAF_H_
+#define DEBUGCUBELEAF_H_
 
-#include <Graphics/SceneGraph/DrawObject.h>
+#include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-namespace SceneGraph
+class DebugCubeLeaf : public ISimpleRenderableSceneNode
 {
-	class DebugPlaneLeaf : public DrawObject
-	{
-	private:
-		static GLfloat PlaneArray[24];
-		static GLuint IndiceArray[6];
-		unsigned int m_planebuffers[2];
-	public:
-		DebugPlaneLeaf();
-		virtual ~DebugPlaneLeaf();
+private:
+	// Dessin de la geometrie
+	static GLfloat CubeArray[24];
+	static GLfloat CubeArrayColor[24];
+	static GLuint IndiceArray[36];
+public:
+	DebugCubeLeaf(const std::string& name, ISceneNode* parent);
+	virtual ~DebugCubeLeaf();
+};
 
-		virtual void Draw();
-	};
-}
-
-#endif /* DEBUGPLANELEAF_H_ */
+#endif /* DEBUGCUBELEAF_H_ */

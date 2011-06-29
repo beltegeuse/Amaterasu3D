@@ -31,14 +31,12 @@
 #include <stdlib.h>
 
 #include <Math/Matrix4.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
 #include <Addons/Logo/Logo.h>
-#include <Graphics/SceneGraph/Other/Skydome.h>
 
 #include <Utilities/Util.h>
 class FastBilateralFiltering
@@ -56,7 +54,7 @@ private:
 	TShaderPtr m_Diffusion;
 	TShaderPtr m_Slicing;
 	// * Point injection
-	SceneGraph::Model* m_SamplePoint;
+	RenderableObject* m_SamplePoint;
 
 	// If separable kernel
 	//TShaderPtr m_XDiffusion;
@@ -81,7 +79,7 @@ private:
 		glEnd();
 	}
 
-	void CreateSampleModel(int resX, int resY, SceneGraph::Model** model)
+	void CreateSampleModel(int resX, int resY, RenderableObject** model)
 	{
 		float * vertexBuffer = new float[resX*resY*2];
 		unsigned int * indiceBuffer = new unsigned int[resX*resY];
@@ -97,12 +95,12 @@ private:
 		{
 			indiceBuffer[k] = k;
 		}
-		SceneGraph::ModelBuffer buffer;
+		RenderableObject::RenderableBuffer buffer;
 		buffer.buffer = vertexBuffer;
 		buffer.size = resX*resY*2;
 		buffer.dimension = 2;
 		buffer.owner = true;
-		(*model) = new SceneGraph::Model;
+		(*model) = new RenderableObject;
 		(*model)->SetDrawMode(GL_POINTS);
 		(*model)->SetIndiceBuffer(indiceBuffer, resX*resY);
 		(*model)->AddBuffer(buffer, VERTEX_ATTRIBUT);

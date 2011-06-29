@@ -1,8 +1,6 @@
 #include <iostream>
 #include <Math/Matrix4.h>
 #include <System/MediaManager.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
-#include <Graphics/SceneGraph/Model.h>
 #include <Graphics/Camera/CameraFPS.h>
 #include <Graphics/Camera/FixedCamera.h>
 #include <Logger/LoggerFile.h>
@@ -45,8 +43,8 @@ protected:
 	// LPV object
 	LPV m_LPV;
 
-	SceneGraph::Model* m_SamplePointRSM;
-	SceneGraph::Model* m_SamplePointCamera;
+	RenderableObject* m_SamplePointRSM;
+	RenderableObject* m_SamplePointCamera;
 	// Camera
 	CameraAbstract* m_Camera;
 	Texture* m_GridTexture;
@@ -239,11 +237,11 @@ private:
 		m_Light.LightCutOff = 70;
 		//m_Light.LightCutOff = 70;
 		m_Light.Direction = Math::TVector3F(4,1.5,-0.2);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("scene04No.3DS");
-		Math::CMatrix4 transMatrix;
-		transMatrix.SetScaling(0.1,0.1,0.1);
+		IMeshSceneNode* node = SceneManager.LoadMesh("scene04No.3DS");
+		node->SetScale(Math::TVector3F(0.1,0.1,0.1));
+		//transMatrix.SetScaling(0.1,0.1,0.1);
 		//node->LoadTransformMatrix(transMatrix);
-		RootSceneGraph.AddChild(node);
+		SceneManager.AddScenegraphRoot(node);
 	}
 
 	void LoadSponzaTest()
@@ -257,11 +255,10 @@ private:
 		m_Light.LightCutOff = 70;
 		//m_Light.LightCutOff = 70;
 		m_Light.Direction = Math::TVector3F(4,1.5,-0.2);
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.3DS");
-		Math::CMatrix4 transMatrix;
-		transMatrix.SetScaling(0.1,0.1,0.1);
+		IMeshSceneNode* node = SceneManager.LoadMesh("sponza.3DS");
+		//node->SetScale(Math::TVector3F(0.1,0.1,0.1));
 		//node->LoadTransformMatrix(transMatrix);
-		RootSceneGraph.AddChild(node);
+		SceneManager.AddScenegraphRoot(node);
 	}
 
 	void LoadSponzaScene()
@@ -280,31 +277,29 @@ private:
 		m_Light.LightIntensity = 1.0;
 		//m_Light.LightCutOff = 70;
 		m_Light.Direction = Math::TVector3F(-13.4795,20.9599,0.226356) - m_Light.Position;
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("sponza.obj");
-		Math::CMatrix4 transMatrix;
-		transMatrix.SetScaling(0.01,0.01,0.01);
-		node->MultTransformMatrix(transMatrix);
-		RootSceneGraph.AddChild(node);
+		IMeshSceneNode* node = SceneManager.LoadMesh("sponza.obj");
+		node->SetScale(Math::TVector3F(0.01,0.01,0.01));
+		SceneManager.AddScenegraphRoot(node);
 	}
 
-	void LoadTestScene()
-	{
-		// Create light
-		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_Light.Position = Math::TVector3F(80,150,0);
-		m_Light.LightRaduis = 300.0;
-		m_Light.LightIntensity = 5.0;
-		//m_Light.LightCutOff = 70;
-		m_Light.Direction = Math::TVector3F(0.0,-200.0,-400);
-		// Load scene
-		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("TestScene2.obj");
-		Math::CMatrix4 transMatrix;
-		transMatrix.SetScaling(0.1,0.1,0.1);
-		node->LoadTransformMatrix(transMatrix);
-		RootSceneGraph.AddChild(node);
-	}
+//	void LoadTestScene()
+//	{
+//		// Create light
+//		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
+//		m_Light.Position = Math::TVector3F(80,150,0);
+//		m_Light.LightRaduis = 300.0;
+//		m_Light.LightIntensity = 5.0;
+//		//m_Light.LightCutOff = 70;
+//		m_Light.Direction = Math::TVector3F(0.0,-200.0,-400);
+//		// Load scene
+//		SceneGraph::AssimpNode* node = SceneGraph::AssimpNode::LoadFromFile("TestScene2.obj");
+//		Math::CMatrix4 transMatrix;
+//		transMatrix.SetScaling(0.1,0.1,0.1);
+//		node->LoadTransformMatrix(transMatrix);
+//		RootSceneGraph.AddChild(node);
+//	}
 
-	void CreateSampleModel(int resX, int resY, SceneGraph::Model** model)
+	void CreateSampleModel(int resX, int resY, RenderableObject** model)
 	{
 		float * vertexBuffer = new float[resX*resY*2];
 		unsigned int * indiceBuffer = new unsigned int[resX*resY];
@@ -320,12 +315,12 @@ private:
 		{
 			indiceBuffer[k] = k;
 		}
-		SceneGraph::ModelBuffer buffer;
+		RenderableObject::RenderableBuffer buffer;
 		buffer.buffer = vertexBuffer;
 		buffer.size = resX*resY*2;
 		buffer.dimension = 2;
 		buffer.owner = true;
-		(*model) = new SceneGraph::Model;
+		(*model) = new RenderableObject;
 		(*model)->SetDrawMode(GL_POINTS);
 		(*model)->SetIndiceBuffer(indiceBuffer, resX*resY);
 		(*model)->AddBuffer(buffer, VERTEX_ATTRIBUT);
@@ -402,7 +397,7 @@ private:
 		}
 //		transGrid = transGrid.Inverse();
 		m_Camera->GetView();
-		RootSceneGraph.Draw();
+		SceneManager.RenderAll();
 		m_GBufferShader->End();
 		m_Performances.EndStep();
 
@@ -410,7 +405,7 @@ private:
 
 		// ========== Second STEPS (RSM generation buffers)
 		m_Performances.BeginStep("RSM");
-		m_Light.Compute(&RootSceneGraph);
+		m_Light.Compute();
 		m_Performances.EndStep();
 
 		// ============= Compute Indirect lighting only

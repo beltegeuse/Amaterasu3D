@@ -33,6 +33,7 @@
 #include <Graphics/Font/FontManager.h>
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/MatrixManagement.h>
+#include <Graphics/SceneManager.h>
 #include <System/EventManager.h>
 #include <System/GraphicsDevice.h>
 
@@ -54,8 +55,7 @@ public:
 	CShaderManager& ShaderManager;
 	CMatrixManager& MatrixManager;
 	CEventManager& EventManager;
-	/// SceneGraph
-	SceneGraph::Group RootSceneGraph;
+	CSceneManager& SceneManager;
 protected:
 	/*
 	 * Constructors and destructors

@@ -10,8 +10,8 @@
 
 #include <string>
 
-#include <Graphics/SceneGraph/Model.h>
-#include <Graphics/SceneGraph/Group.h>
+#include <Graphics/Texture.h>
+#include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
 #include <Math/Vector2.h>
 #include <Math/Vector3.h>
 
@@ -39,8 +39,8 @@ public:
 	Math::TVector2I TextureSize();
 	TTexturePtr Create2DTexture();
 	/// Model methods
-	SceneGraph::Model* CreateDebugPointModel();
-	SceneGraph::Group* CreateCoordinateCubeModel();
+	ISimpleRenderableSceneNode* CreateDebugPointModel();
+	DebugCubeLeaf* CreateCoordinateCubeModel();
 
 private:
 	/**

@@ -1,6 +1,7 @@
 #include "Skydome.h"
 
 Skydome::Skydome() :
+IRenderableSceneNode("Skydome",0),
 m_Time(0.0)
 {
 	// TODO Auto-generated constructor stub
@@ -18,7 +19,7 @@ void Skydome::FrameStarted(double delta)
 	m_Time += delta;
 }
 
-void Skydome::Draw()
+void Skydome::Render()
 {
 	static Math::TVector3F eye(0.0f, 0.0f, 0.0f);
 	static Math::TVector3F look(0.0f, 0.0f, 1.0f);

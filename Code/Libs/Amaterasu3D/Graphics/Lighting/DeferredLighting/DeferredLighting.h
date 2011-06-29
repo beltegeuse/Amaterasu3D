@@ -27,7 +27,6 @@
 
 #include <Graphics/Lighting/LightingPassAbstract.h>
 #include <Graphics/Shaders/Shader.h>
-#include <Graphics/SceneGraph/Group.h>
 
 class DeferredLighting : public LightingPassAbstract
 {
@@ -36,10 +35,9 @@ private:
 	TShaderPtr m_point_light_shader;
 	TShaderPtr m_spot_light_shader;
 	TShaderPtr m_simple_shader;
-	SceneGraph::Group& m_Scene;
 	bool m_debug_mode;
 public:
-	DeferredLighting(SceneGraph::Group& scene);
+	DeferredLighting();
 	virtual ~DeferredLighting();
 
 	virtual void ComputeIllumination();

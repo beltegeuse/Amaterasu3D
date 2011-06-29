@@ -40,6 +40,7 @@ Application::Application() :
 	ShaderManager(CShaderManager::Instance()),
 	MatrixManager(CMatrixManager::Instance()),
 	EventManager(CEventManager::Instance()),
+	SceneManager(CSceneManager::Instance()),
 	m_TimeElapse(0.0),
 	m_IsRunning(true)
 {
@@ -57,7 +58,7 @@ Application::~Application()
 	SDL_Quit();
 
 	// Delete the Scene
-	RootSceneGraph.ClearAllChilds();
+	CSceneManager::Destroy();
 
 	// Destroy all manager
 	// * Destroy less important Managers

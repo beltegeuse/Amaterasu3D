@@ -29,7 +29,7 @@
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Lighting/LightingStructures.h>
 #include <Graphics/MatrixManagement.h>
-#include <Graphics/SceneGraph/Group.h>
+#include <Graphics/SceneManager.h>
 #include <Math/Matrix4.h>
 
 #include <cmath>
@@ -75,7 +75,7 @@ public:
 		return LightProjectionMatrix;
 	}
 
-	void Compute(SceneGraph::Group* scene)
+	void Compute()
 	{
 		// Fill in RSM spot buffers
 		// * Matrix Setup
@@ -107,7 +107,7 @@ public:
 		m_RSMShader->SetUniformVector("LightSpotDirection", Direction);
 		m_RSMShader->SetUniformColor("LightColor", LightColor);
 		// * Draw the scene
-		scene->Draw();
+		CSceneManager::Instance().RenderAll();
 		m_RSMShader->End();
 		// * Revert transformations
 		CMatrixManager::Instance().SetProjectionMatrix(oldProjectionMatrix);

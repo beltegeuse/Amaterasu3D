@@ -8,7 +8,6 @@
 #include <stdlib.h>
 
 #include <Math/Matrix4.h>
-#include <Graphics/SceneGraph/Model.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
@@ -54,21 +53,14 @@ public:
 		m_NoiseTex = Texture::LoadFromFile("random_normals.png");
 		// Load scene
 		// * Lucy loading
-		SceneGraph::AssimpNode* lucyModel = SceneGraph::AssimpNode::LoadFromFile("hi_lucy.ply");
-		SceneGraph::Model* lucyMesh = (SceneGraph::Model*)lucyModel->GetChilds()[0];
-		Math::CMatrix4 lucyModelMatrix;
-		lucyModelMatrix.SetScaling(1.0,1.0,1.0);
-		lucyModel->LoadTransformMatrix(lucyModelMatrix);
-		RootSceneGraph.AddChild(lucyModel);
-		lucyMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("marble.jpg"));
+		IMeshSceneNode* lucyModel = SceneManager.LoadMesh("hi_lucy.ply",0);
+		lucyModel->GetRenderableObjects().begin()->first->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("marble.jpg"));
+		SceneManager.AddScenegraphRoot(lucyModel);
 		// * Scene loading
-		SceneGraph::AssimpNode* sceneModel = SceneGraph::AssimpNode::LoadFromFile("uv_room.ply");
-		SceneGraph::Model* sceneMesh = (SceneGraph::Model*)sceneModel->GetChilds()[0];
-		sceneMesh->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("bricks2_color.jpg"));
-		Math::CMatrix4 sceneModelMatrix;
-		sceneModelMatrix.SetScaling(5.0/3.0,5.0/3.0,5.0/3.0);
-		sceneModel->LoadTransformMatrix(sceneModelMatrix);
-		RootSceneGraph.AddChild(sceneModel);
+		IMeshSceneNode* sceneModel  = SceneManager.LoadMesh("uv_room.ply",0);
+		sceneModel->GetRenderableObjects().begin()->first->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("bricks2_color.jpg"));
+		sceneModel->SetScale(Math::TVector3F(5.0/3.0,5.0/3.0,5.0/3.0));
+		SceneManager.AddScenegraphRoot(sceneModel);
 	}
 
 	virtual void OnUpdate(double delta)
@@ -95,7 +87,7 @@ public:
 
 		m_gbuffer_shader->Begin();
 		m_Camera->GetView();
-		RootSceneGraph.Draw();
+		SceneManager.RenderAll();
 		m_gbuffer_shader->End();
 
 		{

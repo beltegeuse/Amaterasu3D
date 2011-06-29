@@ -8,8 +8,7 @@
 #include <stdlib.h>
 
 #include <Math/Matrix4.h>
-#include <Graphics/SceneGraph/Debug/DebugCubeLeaf.h>
-#include <Graphics/SceneGraph/Model.h>
+#include <Graphics/SceneManager.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
@@ -46,7 +45,7 @@ public:
 		// Load shader
 		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		// Load GI
-		m_GI = new DeferredLighting(RootSceneGraph);
+		m_GI = new DeferredLighting();
 		m_GI->SetFBOGraphicBuffer(m_gbuffer_shader->GetFBO());
 		// Create light 1
 //		PointLight light1;
@@ -65,8 +64,8 @@ public:
 		light2.Direction = Math::TVector3F(1.0,0.0,0.0);
 		m_GI->AddSpotLight(light2);
 		// Load scene
-		SceneGraph::AssimpNode* node1 = SceneGraph::AssimpNode::LoadFromFile("Living.dae");
-		RootSceneGraph.AddChild(node1);
+		IMeshSceneNode* scene = SceneManager.LoadMesh("sponza.obj",0);
+		SceneManager.AddScenegraphRoot(scene);
 
 		Console.RegisterCommand("addlight",Console::Bind(&ApplicationDeferred::AddLight, *this));
 	}
@@ -110,7 +109,7 @@ public:
 
 		m_gbuffer_shader->Begin();
 		m_Camera->GetView();
-		RootSceneGraph.Draw();
+		SceneManager.RenderAll();
 		m_gbuffer_shader->End();
 
 		if(m_debug)

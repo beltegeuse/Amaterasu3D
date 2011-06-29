@@ -24,7 +24,7 @@
 
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include "DefaultLook.h"
 #include <sstream>
@@ -36,13 +36,13 @@
 #include <Graphics/MatrixManagement.h>
 
 ////////////////////////////////////////////////////////////
-// Données statiques
+// Donnï¿½es statiques
 ////////////////////////////////////////////////////////////
 const std::string DefaultLook::s_Fonts[] =  {"arial"};
 
 
 ////////////////////////////////////////////////////////////
-/// Constructeur par défaut
+/// Constructeur par dï¿½faut
 ///
 ////////////////////////////////////////////////////////////
 DefaultLook::DefaultLook() :
@@ -57,10 +57,10 @@ m_ShowText(false)
     // Position initiale : invisible
     m_Transfo.SetScaling(0, 0, 0);
 
-    // Création de la première ligne
+    // Crï¿½ation de la premiï¿½re ligne
     AddLine(); // FIXME
 
-    // Enregistrement des commandes spéciales console
+    // Enregistrement des commandes spï¿½ciales console
     CConsole::Instance().RegisterCommand("clear", Console::Bind(&std::list<CGraphicString>::clear, m_Lines));
     CConsole::Instance().RegisterCommand("font",  Console::Bind(&DefaultLook::NextFont, *this));
 
@@ -76,15 +76,15 @@ DefaultLook::~DefaultLook()
 }
 
 ////////////////////////////////////////////////////////////
-/// Fonction appelée lors de la mise à jour de la console
+/// Fonction appelï¿½e lors de la mise ï¿½ jour de la console
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::Update(double delta)
 {
     static float Scale = 0.0f;
 
-    // Mise à jour de la position de la console selon son état courant
-    // et mise à jour de celui-ci
+    // Mise ï¿½ jour de la position de la console selon son ï¿½tat courant
+    // et mise ï¿½ jour de celui-ci
     if (m_State == SHOWING)
     {
         m_Transfo.SetScaling(Scale, Scale, 1);
@@ -115,7 +115,7 @@ void DefaultLook::Update(double delta)
 
 
 ////////////////////////////////////////////////////////////
-/// Fonction appelée lors de l'affichage de la console
+/// Fonction appelï¿½e lors de l'affichage de la console
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::Draw()
@@ -126,14 +126,14 @@ void DefaultLook::Draw()
 
 		m_Rectangle = new Rectangle2D(Math::TVector2I(0,0),
 		              Math::TVector2I(CSettingsManager::Instance().GetSizeRenderingWindow().x,210.0));
-		m_Rectangle->AddTextureMap(DIFFUSE_TEXTURE, m_BackgroundTexture);
+		m_Rectangle->GetObject().AddTextureMap(DIFFUSE_TEXTURE, m_BackgroundTexture);
 		m_2DShader = CShaderManager::Instance().LoadShader("2DDraw.shader");
 	}
 
 	m_2DShader->Begin();
     // Envoi de la matrice de transformation de la console
 	CMatrixManager::Instance().PushMatrix(m_Transfo);
-	m_Rectangle->Draw();
+	m_Rectangle->Render();
 
 	m_2DShader->End(); ///FIXME: Normally add for texts
 
@@ -149,9 +149,9 @@ void DefaultLook::Draw()
 
 
 ////////////////////////////////////////////////////////////
-/// Fonction appelée lors de l'activation / désactivation de la console
+/// Fonction appelï¿½e lors de l'activation / dï¿½sactivation de la console
 ///
-/// \param Visible : Nouvel état de la console
+/// \param Visible : Nouvel ï¿½tat de la console
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::Show(bool Visible)
@@ -161,9 +161,9 @@ void DefaultLook::Show(bool Visible)
 
 
 ////////////////////////////////////////////////////////////
-/// Fonction appelée après l'appel à une commande
+/// Fonction appelï¿½e aprï¿½s l'appel ï¿½ une commande
 ///
-/// \param Result : Résultat de l'appel de la commande
+/// \param Result : Rï¿½sultat de l'appel de la commande
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::CommandCalled(const std::string& Result)
@@ -175,7 +175,7 @@ void DefaultLook::CommandCalled(const std::string& Result)
 
 
 ////////////////////////////////////////////////////////////
-/// Fonction appelée à chaque changement de la ligne courante
+/// Fonction appelï¿½e ï¿½ chaque changement de la ligne courante
 ///
 /// \param NewText : Nouveau texte
 ///
@@ -187,14 +187,14 @@ void DefaultLook::TextChanged(const std::string& NewText)
 
 
 ////////////////////////////////////////////////////////////
-/// Fonction appelée en cas d'erreur
+/// Fonction appelï¿½e en cas d'erreur
 ///
-/// \param Message : Message décrivant l'erreur
+/// \param Message : Message dï¿½crivant l'erreur
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::Error(const std::string& Message)
 {
-    // Décomposition du message en lignes
+    // Dï¿½composition du message en lignes
     std::string Line;
     std::istringstream iss(Message);
     while (std::getline(iss, Line))
@@ -207,31 +207,31 @@ void DefaultLook::Error(const std::string& Message)
 ////////////////////////////////////////////////////////////
 /// Ajoute une ligne
 ///
-/// \param Line :  Texte de la ligne à ajouter
+/// \param Line :  Texte de la ligne ï¿½ ajouter
 /// \param Color : Couleur du texte
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::AddLine(const std::string& Line, const CColor& Color)
 {
-    // On supprime la dernière ligne si nécessaire
+    // On supprime la derniï¿½re ligne si nï¿½cessaire
     if (m_Lines.size() == 10)
         m_Lines.pop_back();
 
-    // On décale les autres
+    // On dï¿½cale les autres
     for (std::list<CGraphicString>::iterator i = m_Lines.begin(); i != m_Lines.end(); ++i)
     {
         i->Position.y -= 20;
         i->Color.Set(i->Color.GetRed(), i->Color.GetGreen(), i->Color.GetBlue(), i->Color.GetAlpha() - 20);
     }
 
-    // Et on crée la nouvelle
+    // Et on crï¿½e la nouvelle
     //TODO : Add Color
     m_Lines.push_front(CGraphicString(Math::TVector2F(10, 190), Line, s_Fonts[m_CurrentFont], 20));
 }
 
 
 ////////////////////////////////////////////////////////////
-/// Sélectionne la police suivante
+/// Sï¿½lectionne la police suivante
 ///
 /// \return Nom de la nouvelle police
 ///

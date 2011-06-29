@@ -23,7 +23,8 @@
 //==========================================================
 #include "Rectangle2D.h"
 
-Rectangle2D::Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord, float offset)
+Rectangle2D::Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord, float offset) :
+ISimpleRenderableSceneNode("Rectangle2D", 0)
 {
 	// Create Vertex buffer
 	float* vertexBuffer = new float[8];
@@ -35,12 +36,12 @@ Rectangle2D::Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bott
 	vertexBuffer[5] = top.y;
 	vertexBuffer[6] = bottom.x;
 	vertexBuffer[7] = bottom.y;
-	SceneGraph::ModelBuffer buffer;
+	RenderableObject::RenderableBuffer buffer;
 	buffer.buffer = vertexBuffer;
 	buffer.dimension = 2;
 	buffer.size = 8;
 	buffer.owner = true;
-	AddBuffer(buffer, VERTEX_ATTRIBUT);
+	m_RenderObject.AddBuffer(buffer, VERTEX_ATTRIBUT);
 	// Create Texcoord buffer
 	if(generateUVCoord)
 	{
@@ -54,7 +55,7 @@ Rectangle2D::Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bott
 		uvBuffer[6] = 1-offset;
 		uvBuffer[7] = 0+offset;
 		buffer.buffer = uvBuffer;
-		AddBuffer(buffer,TEXCOORD_ATTRIBUT);
+		m_RenderObject.AddBuffer(buffer,TEXCOORD_ATTRIBUT);
 	}
 	// Create Index buffer
 	unsigned int* indiceBuffer = new unsigned int[6];
@@ -64,8 +65,8 @@ Rectangle2D::Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bott
 	indiceBuffer[3] = 0;
 	indiceBuffer[4] = 2;
 	indiceBuffer[5] = 3;
-	SetIndiceBuffer(indiceBuffer, 6);
-	CompileBuffers();
+	m_RenderObject.SetIndiceBuffer(indiceBuffer, 6);
+	m_RenderObject.CompileBuffers();
 }
 
 Rectangle2D::~Rectangle2D()

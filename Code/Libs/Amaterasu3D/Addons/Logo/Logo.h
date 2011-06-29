@@ -2,7 +2,7 @@
 #define LOGO_H_
 
 #include <Graphics/Texture.h>
-#include <Graphics/SceneGraph/Rectangle2D.h>
+#include <Graphics/SceneNode/SimpleRenderable/Rectangle2D.h>
 #include <Graphics/Shaders/Shader.h>
 class Logo {
 private:
