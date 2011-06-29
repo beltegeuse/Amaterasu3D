@@ -14,10 +14,10 @@
 #include <Graphics/MatrixManagement.h>
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Texture.h>
-#include <Graphics/SceneGraph/DrawObject.h>
+#include <Graphics/SceneNode/IRenderableSceneNode.h>
 #include <System/EventListeners.h>
 
-class Skydome : public SceneGraph::DrawObject, public FrameListener
+class Skydome : public IRenderableSceneNode, public FrameListener
 {
 private:
 	GLUquadric* m_Obj;
@@ -28,7 +28,7 @@ public:
 	Skydome();
 	virtual ~Skydome();
 
-	virtual void Draw();
+	virtual void Render();
 	virtual void FrameStarted(double delta);
 	virtual void FrameEnded() {}
 };

@@ -1,3 +1,5 @@
 ADD_SUBDIRECTORY(Libs)
 ADD_SUBDIRECTORY(Projects)
-ADD_SUBDIRECTORY(Tests)
+
+# Descative this pass because major changes in Scenegraph
+#ADD_SUBDIRECTORY(Tests)

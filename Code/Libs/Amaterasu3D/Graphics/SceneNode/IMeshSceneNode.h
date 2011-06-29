@@ -8,9 +8,9 @@
 #ifndef IMESHSCENENODE_H_
 #define IMESHSCENENODE_H_
 
-#include <Graphics/SceneNode/ISceneNode.h>
+#include <Graphics/SceneNode/IRenderableSceneNode.h>
 
-class IMeshSceneNode : public ISceneNode
+class IMeshSceneNode : public IRenderableSceneNode
 {
 public:
 	IMeshSceneNode(const std::string& name, ISceneNode* parent);

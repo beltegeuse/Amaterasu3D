@@ -34,13 +34,18 @@ CSceneManager::~CSceneManager()
 {
 }
 
+void CSceneManager::AddScenegraphRoot(ISceneNode* node)
+{
+	m_Root->AddChild(node);
+}
+
 void CSceneManager::RenderAll()
 {
 	// Update Transformation Cache
 	m_Root->UpdateTransformations();
 
 	// Render all Mesh
-	for(MeshList::iterator it = m_Meshs.begin(); it != m_Meshs.end(); ++it)
+	for(RenderableList::iterator it = m_Meshs.begin(); it != m_Meshs.end(); ++it)
 	{
 		(*it)->Render();
 	}

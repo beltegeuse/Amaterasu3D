@@ -18,7 +18,7 @@ void Skydome::FrameStarted(double delta)
 	m_Time += delta;
 }
 
-void Skydome::Draw()
+void Skydome::Render()
 {
 	static Math::TVector3F eye(0.0f, 0.0f, 0.0f);
 	static Math::TVector3F look(0.0f, 0.0f, 1.0f);

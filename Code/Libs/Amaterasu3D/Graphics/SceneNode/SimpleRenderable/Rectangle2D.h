@@ -21,21 +21,21 @@
 //
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
-#ifndef GEOMETRY_H_
-#define GEOMETRY_H_
 
-#include <Graphics/SceneGraph/DrawObject.h>
+#ifndef RECTANGLE2D_H_
+#define RECTANGLE2D_H_
 
-namespace SceneGraph
-{
-class Geometry : public DrawObject
+#include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
+#include <Math/Vector2.h>
+
+class Rectangle2D : public ISimpleRenderableSceneNode
 {
 public:
-	Geometry();
-	virtual ~Geometry();
-	virtual void Draw();
-
+	/*
+	 * Constructors & Destructors
+	 */
+	Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord = true, float offset=0);
+	virtual ~Rectangle2D();
 };
-}
 
-#endif /* GEOMETRY_H_ */
+#endif /* RECTANGLE2D_H_ */

@@ -30,6 +30,7 @@
 #include <Graphics/SceneNode/ISceneNode.h>
 #include <Graphics/SceneNode/ILightSceneNode.h>
 #include <Graphics/SceneNode/ICameraSceneNode.h>
+#include <Graphics/SceneNode/IRenderableSceneNode.h>
 #include <Graphics/SceneNode/IMeshSceneNode.h>
 
 // STL includes
@@ -46,7 +47,7 @@ protected:
 	 */
 	typedef std::map<std::string, ILightSceneNode*> LightList;
 	typedef std::map<std::string, ICameraSceneNode*> CameraList;
-	typedef std::list<IMeshSceneNode*> MeshList;
+	typedef std::list<IRenderableSceneNode*> RenderableList;
 
 	/*
 	 * Attributes
@@ -54,7 +55,7 @@ protected:
 	// Scenegraph knows
 	LightList m_Lights;
 	CameraList m_Cameras;
-	MeshList m_Meshs;
+	RenderableList m_Meshs;
 
 	// Root of the scenegraph
 	ISceneNode * m_Root;

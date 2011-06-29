@@ -21,23 +21,25 @@
 //
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
-#ifndef _DrawObject_H
-#define _DrawObject_H
+#ifndef DEBUGCUBELEAF_H_
+#define DEBUGCUBELEAF_H_
 
-namespace SceneGraph
+#include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
+
+class DebugCubeLeaf : public ISimpleRenderableSceneNode
 {
+private:
+	// Dessin de la geometrie
+	static GLfloat CubeArray[24];
+	static GLfloat CubeArrayColor[24];
+	static GLuint IndiceArray[36];
+public:
+	DebugCubeLeaf();
+	virtual ~DebugCubeLeaf();
 
-	/** \brief Classe m�re de tous les noeuds du graphe de sc�ne. */
-	class DrawObject
-	{
-	public :
-		DrawObject();
-		/** \brief Destructeur virtuel */
-		virtual ~DrawObject();
-		/** Gestion de l'affichage OpenGL */
-		virtual void Draw() = 0;
-	} ;
+	virtual void Draw();
+};
 
-}
-
-#endif 
+#endif /* DEBUGCUBELEAF_H_ */
