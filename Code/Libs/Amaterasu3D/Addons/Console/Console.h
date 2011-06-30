@@ -26,7 +26,7 @@
 #define CONSOLE_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <Singleton.h>
 #include <Addons/Console/Functor.h>
@@ -45,10 +45,10 @@ class CConsole : public CSingleton<CConsole>, public FrameListener
 public :
 
 	//----------------------------------------------------------
-	// Constructeur par défaut
+	// Constructeur par dï¿½faut
 	//----------------------------------------------------------
 	CConsole();
-
+	virtual ~CConsole();
 	//----------------------------------------------------------
 	// Change l'apparence de la console
 	//----------------------------------------------------------
@@ -60,12 +60,12 @@ public :
 	void RegisterCommand(const std::string& Name, const Console::CFunctor& Function);
 
 	//----------------------------------------------------------
-	// Envoie un nouveau caractère à la console
+	// Envoie un nouveau caractï¿½re ï¿½ la console
 	//----------------------------------------------------------
 	void SendChar(char Character);
 
 	//----------------------------------------------------------
-	// Met à jour la console
+	// Met ï¿½ jour la console
 	//----------------------------------------------------------
 	virtual void FrameStarted(double delta);
 	virtual void FrameEnded() {} ///< Doesn't need
@@ -76,14 +76,14 @@ public :
 	void Draw() const;
 
 	//----------------------------------------------------------
-	// Active ou désactive la console
+	// Active ou dï¿½sactive la console
 	//----------------------------------------------------------
 	void Enable(bool Enabled);
 	bool IsEnable() const;
 private :
 
 	//----------------------------------------------------------
-	// Donne la liste des commandes enregistrées
+	// Donne la liste des commandes enregistrï¿½es
 	//----------------------------------------------------------
 	std::string GetCommands() const;
 
@@ -98,11 +98,11 @@ private :
 	typedef std::map<std::string, Console::CFunctor> TCommandTable;
 
 	//----------------------------------------------------------
-	// Données membres
+	// Donnï¿½es membres
 	//----------------------------------------------------------
-	TCommandTable             m_Commands; ///< Table des commandes enregistrées
+	TCommandTable             m_Commands; ///< Table des commandes enregistrï¿½es
 	std::string               m_Current;  ///< Ligne courante
-	CSmartPtr<Console::ILook> m_Look;     ///< Pointeur sur la classe gérant l'apparence de la console
+	CSmartPtr<Console::ILook> m_Look;     ///< Pointeur sur la classe gï¿½rant l'apparence de la console
 	bool                      m_Enabled;  ///< Indique si la console est active ou non
 };
 

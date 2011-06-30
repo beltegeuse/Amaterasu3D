@@ -71,4 +71,5 @@ ISimpleRenderableSceneNode("Rectangle2D", 0)
 
 Rectangle2D::~Rectangle2D()
 {
+	Logger::Log() << "[DEBUG] Delete Rectangle2D \n";
 }

@@ -120,7 +120,9 @@ void Application::InitializeOpenGL()
 void Application::Event(SDL_Event& event)
 {
 	if(event.window.event == SDL_WINDOWEVENT_CLOSE)
+	{
 		Exit();
+	}
 	if(event.type == SDL_KEYDOWN)
 	{
 		 switch(event.key.keysym.sym)

@@ -23,7 +23,7 @@
 //==========================================================
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <Addons/Console/Console.h>
 #include <Debug/Exceptions.h>
@@ -31,13 +31,13 @@
 #include <Addons/Console/DefaultLook.h>
 
 ////////////////////////////////////////////////////////////
-// Implémentation des méthodes du singleton
+// Implï¿½mentation des mï¿½thodes du singleton
 ////////////////////////////////////////////////////////////
 SINGLETON_IMPL(CConsole)
 
 
 ////////////////////////////////////////////////////////////
-/// Constructeur par défaut
+/// Constructeur par dï¿½faut
 ///
 ////////////////////////////////////////////////////////////
 CConsole::CConsole() :
@@ -46,6 +46,10 @@ m_Look   (NULL),
 m_Enabled(false)
 {
     RegisterCommand("?", Console::Bind(&CConsole::GetCommands, *this));
+}
+
+CConsole::~CConsole()
+{
 }
 
 
@@ -62,12 +66,11 @@ void CConsole::ChangeLook(Console::ILook* NewLook)
     m_Look = NewLook;
 }
 
-
 ////////////////////////////////////////////////////////////
 /// Enregistre une nouvelle commande
 ///
 /// \param Name :     Nom de la commande
-/// \param Function : Foncteur contenant la fonction associée
+/// \param Function : Foncteur contenant la fonction associï¿½e
 ///
 ////////////////////////////////////////////////////////////
 void CConsole::RegisterCommand(const std::string& Name, const Console::CFunctor& Function)
@@ -77,18 +80,18 @@ void CConsole::RegisterCommand(const std::string& Name, const Console::CFunctor&
 
 
 ////////////////////////////////////////////////////////////
-/// Envoie un nouveau caractère à la console
+/// Envoie un nouveau caractï¿½re ï¿½ la console
 ///
-/// \param Character : Caractère
+/// \param Character : Caractï¿½re
 ///
 ////////////////////////////////////////////////////////////
 void CConsole::SendChar(char Character)
 {
-    // Si la console n'est pas active on ne traite pas le caractère
+    // Si la console n'est pas active on ne traite pas le caractï¿½re
     if (!m_Enabled)
         return;
 
-    // Traitement du caractère
+    // Traitement du caractï¿½re
     switch (Character)
     {
         // Saut de ligne : on traite la commande et on efface la ligne
@@ -101,13 +104,13 @@ void CConsole::SendChar(char Character)
             }
             break;
 
-        // Backspace : on efface le dernier caractère
+        // Backspace : on efface le dernier caractï¿½re
         case '\b' :
             if (!m_Current.empty())
                 m_Current.erase(m_Current.size() - 1);
             break;
 
-        // Tout le reste : on ajoute le caractère à la ligne courante
+        // Tout le reste : on ajoute le caractï¿½re ï¿½ la ligne courante
         default :
             m_Current += Character;
             break;
@@ -119,7 +122,7 @@ void CConsole::SendChar(char Character)
 
 
 ////////////////////////////////////////////////////////////
-/// Met à jour la console
+/// Met ï¿½ jour la console
 ///
 ////////////////////////////////////////////////////////////
 void CConsole::FrameStarted(double delta)
@@ -139,7 +142,7 @@ void CConsole::Draw() const
 
 
 ////////////////////////////////////////////////////////////
-/// Active ou désactive la console
+/// Active ou dï¿½sactive la console
 ///
 /// \param Enabled : Active / inactive
 ///
@@ -157,9 +160,9 @@ bool CConsole::IsEnable() const
 
 
 ////////////////////////////////////////////////////////////
-/// Donne la liste des commandes enregistrées
+/// Donne la liste des commandes enregistrï¿½es
 ///
-/// \return Chaîne contenant la liste des commandes enregistrées
+/// \return Chaï¿½ne contenant la liste des commandes enregistrï¿½es
 ///
 ////////////////////////////////////////////////////////////
 std::string CConsole::GetCommands() const
@@ -178,7 +181,7 @@ std::string CConsole::GetCommands() const
 ////////////////////////////////////////////////////////////
 void CConsole::ProcessCurrent()
 {
-    // On récupère la commande
+    // On rï¿½cupï¿½re la commande
     std::string Command;
     std::istringstream iss(m_Current);
     iss >> Command;
@@ -186,14 +189,14 @@ void CConsole::ProcessCurrent()
     // On recherche la commande dans la table des commandes
     TCommandTable::iterator It = m_Commands.find(Command);
 
-    // Si elle s'y trouve on appelle la fonction correspondante, sinon on génère une erreur
+    // Si elle s'y trouve on appelle la fonction correspondante, sinon on gï¿½nï¿½re une erreur
     if (It != m_Commands.end())
     {
-        // Récupération des paramètres
+        // Rï¿½cupï¿½ration des paramï¿½tres
         std::string Params;
         std::getline(iss, Params);
 
-        // Appel du foncteur correspondant à la commande -
+        // Appel du foncteur correspondant ï¿½ la commande -
         // s'il y a une erreur on la rattrape et on l'affiche dans la console
         try
         {

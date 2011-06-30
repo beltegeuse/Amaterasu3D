@@ -115,6 +115,7 @@ void ShaderUnit::ShowCompilerLog(unsigned int id, ShaderCompiler& compiler)
 		{
 			Logger::Log() << "[LOG] Compiler LOG : No log available \n";
 		}
+		free(compilerLog);
 	}
 }
 

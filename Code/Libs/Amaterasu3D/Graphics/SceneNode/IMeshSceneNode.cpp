@@ -17,6 +17,8 @@ IMeshSceneNode::~IMeshSceneNode()
 
 	for(RenderableWorldObjectsList::iterator it = m_Objects.begin(); it != m_Objects.end(); ++it)
 		delete it->first;
+
+	m_Objects.clear();
 }
 
 void IMeshSceneNode::SetAssimpScene(const aiScene* scene)

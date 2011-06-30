@@ -27,10 +27,11 @@
 PhotographicToneOperator::PhotographicToneOperator() :
 	AbsrtactToneOperator(),
 	m_ManualMipmapping(128),
-	m_AdaptationLum(new AdaptationLuminanceSimple)
+	m_AdaptationLum(0)
 {
 	m_PhotoShader = CShaderManager::Instance().LoadShader("PhotoToneOperator.shader");
 	m_ManualMipmapping.Initialize();
+	m_AdaptationLum = new AdaptationLuminanceSimple;
 }
 
 PhotographicToneOperator::~PhotographicToneOperator()

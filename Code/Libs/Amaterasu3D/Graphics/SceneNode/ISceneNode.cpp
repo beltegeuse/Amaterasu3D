@@ -11,6 +11,15 @@ ISceneNode::~ISceneNode()
 	// Detach form the scenegraph
 	if(m_Parent)
 		m_Parent->DetachChild(this);
+
+	// Delete all childs
+	//TODO: Voir la destruction du graphe de scene
+	SceneNodeList::iterator it = m_Children.begin();
+	while(it != m_Children.end())
+	{
+		delete it->second; // < With the delete => Unattach child
+		it = m_Children.begin();
+	}
 }
 
 /*

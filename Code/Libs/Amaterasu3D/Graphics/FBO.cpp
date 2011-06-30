@@ -125,12 +125,8 @@ FBO::FBO(const Math::TVector2I& size,
 
 	CheckFBOStatus();
 
-//	if(sizeBufferDraw == 0)
-//	{
-//		//FIXME: Only for double buffer (GL_FRONT otherwise)
-//		glDrawBuffer(GL_BACK);
-//		glReadBuffer(GL_BACK);
-//	}
+	// Delete allocated objects
+	delete[] buffersDraw;
 }
 
 void FBO::CheckFBOStatus()

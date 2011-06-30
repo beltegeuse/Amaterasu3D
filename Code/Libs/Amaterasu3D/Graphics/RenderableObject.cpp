@@ -18,15 +18,20 @@ m_DrawMode(GL_TRIANGLES)
 
 RenderableObject::~RenderableObject() {
 	if(m_IsInstance)
-			return;
+		return;
 
-		glDeleteBuffers(m_buffers.size()+1, m_indices_buffers);
-		delete[] m_indices_buffers;
-		for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
+	Logger::Log() << "[DEBUG] Delete RenderableObject : \n";
+
+	glDeleteBuffers(m_buffers.size()+1, m_indices_buffers);
+	delete[] m_indices_buffers;
+	for(BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
+	{
+		if(it->second.owner)
 		{
-			if(it->second.owner)
-				delete[] it->second.buffer;
+			Logger::Log() << "[DEBUG] * Delete buffer dim : " << it->second.dimension << "\n";
+			delete[] it->second.buffer;
 		}
+	}
 }
 
 void RenderableObject::SetIndiceBuffer(unsigned int* buffer, int size)
