@@ -22,7 +22,6 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 //==========================================================
 // En-t�tes
 //==========================================================
@@ -39,15 +38,14 @@
 ///
 ////////////////////////////////////////////////////////////
 CFile::CFile(const std::string& Name) :
-m_Name(Name)
+		m_Name(Name)
 {
 #ifdef WIN32
-    std::replace(m_Name.begin(), m_Name.end(), '/', '\\');
+	std::replace(m_Name.begin(), m_Name.end(), '/', '\\');
 #else
-    std::replace(m_Name.begin(), m_Name.end(), '\\', '/');
+	std::replace(m_Name.begin(), m_Name.end(), '\\', '/');
 #endif
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Constructeur � partir d'un const char*
@@ -56,11 +54,10 @@ m_Name(Name)
 ///
 ////////////////////////////////////////////////////////////
 CFile::CFile(const char* Name) :
-m_Name(Name)
+		m_Name(Name)
 {
-    std::replace(m_Name.begin(), m_Name.end(), '/', '\\');
+	std::replace(m_Name.begin(), m_Name.end(), '/', '\\');
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Indique si le fichier existe ou non
@@ -71,9 +68,8 @@ m_Name(Name)
 bool CFile::Exists() const
 {
 	std::ifstream File(m_Name.c_str());
-    return File.is_open();
+	return File.is_open();
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie le nom du fichier avec son chemin complet
@@ -83,9 +79,8 @@ bool CFile::Exists() const
 ////////////////////////////////////////////////////////////
 const std::string& CFile::Fullname() const
 {
-    return m_Name;
+	return m_Name;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie le nom du fichier sans son chemin
@@ -95,14 +90,13 @@ const std::string& CFile::Fullname() const
 ////////////////////////////////////////////////////////////
 std::string CFile::Filename() const
 {
-    std::string::size_type Pos = m_Name.find_last_of("\\/");
+	std::string::size_type Pos = m_Name.find_last_of("\\/");
 
-    if (Pos != std::string::npos)
-        return m_Name.substr(Pos + 1, std::string::npos);
-    else
-        return m_Name;
+	if (Pos != std::string::npos)
+		return m_Name.substr(Pos + 1, std::string::npos);
+	else
+		return m_Name;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie le nom du fichier sans extension ni chemin
@@ -112,9 +106,8 @@ std::string CFile::Filename() const
 ////////////////////////////////////////////////////////////
 std::string CFile::ShortFilename() const
 {
-    return Filename().substr(0, Filename().find_last_of("."));
+	return Filename().substr(0, Filename().find_last_of("."));
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie l'extension du fichier
@@ -124,10 +117,10 @@ std::string CFile::ShortFilename() const
 ////////////////////////////////////////////////////////////
 std::string CFile::Extension() const
 {
-    std::string::size_type Pos = m_Name.find_last_of(".");
-    if (Pos != std::string::npos)
-        return m_Name.substr(Pos + 1, std::string::npos);
-    else
-        return "";
+	std::string::size_type Pos = m_Name.find_last_of(".");
+	if (Pos != std::string::npos)
+		return m_Name.substr(Pos + 1, std::string::npos);
+	else
+		return "";
 }
 

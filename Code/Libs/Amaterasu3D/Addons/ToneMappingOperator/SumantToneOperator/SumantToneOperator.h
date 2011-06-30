@@ -31,7 +31,7 @@
 #include <Addons/ToneMappingOperator/SumantToneOperator/ExpFilter.h>
 #include <Addons/ToneMappingOperator/ManualMipmapping.h>
 
-class SumantToneOperator : public FrameListener, public AbsrtactToneOperator
+class SumantToneOperator: public FrameListener, public AbsrtactToneOperator
 {
 protected:
 	/*
@@ -63,8 +63,13 @@ public:
 	virtual void DrawDebug();
 
 	// From FrameListener
-	virtual void FrameStarted(double delta) { m_Delta = delta; }
-	virtual void FrameEnded() {}
+	virtual void FrameStarted(double delta)
+	{
+		m_Delta = delta;
+	}
+	virtual void FrameEnded()
+	{
+	}
 };
 
 #endif /* SUMANTTONEOPERATOR_H_ */

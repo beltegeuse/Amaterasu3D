@@ -31,70 +31,67 @@
 #include <Math/Vector3.h>
 #include <Math/Vector4.h>
 
-
 namespace Math
 {
-    ////////////////////////////////////////////////////////////
-    /// Plans � 4 composantes r�elles
-    ////////////////////////////////////////////////////////////
-    class CPlane
-    {
-    public :
+////////////////////////////////////////////////////////////
+/// Plans � 4 composantes r�elles
+////////////////////////////////////////////////////////////
+class CPlane
+{
+public:
 
-        //----------------------------------------------------------
-        // Constructeur par d�faut
-        //----------------------------------------------------------
-        CPlane(float A = 0.0f, float B = 0.0f, float C = 0.0f, float D = 0.0f);
+	//----------------------------------------------------------
+	// Constructeur par d�faut
+	//----------------------------------------------------------
+	CPlane(float A = 0.0f, float B = 0.0f, float C = 0.0f, float D = 0.0f);
 
-        //----------------------------------------------------------
-        // Constructeur � partir de trois points
-        //----------------------------------------------------------
-        CPlane(const TVector3F& v0, const TVector3F& v1, const TVector3F& v2);
+	//----------------------------------------------------------
+	// Constructeur � partir de trois points
+	//----------------------------------------------------------
+	CPlane(const TVector3F& v0, const TVector3F& v1, const TVector3F& v2);
 
-        //----------------------------------------------------------
-        // Constructeur � partir d'une normale et d'un point
-        //----------------------------------------------------------
-        CPlane(const TVector3F& Normal, const TVector3F& Point);
+	//----------------------------------------------------------
+	// Constructeur � partir d'une normale et d'un point
+	//----------------------------------------------------------
+	CPlane(const TVector3F& Normal, const TVector3F& Point);
 
-        //----------------------------------------------------------
-        // Construit le plan � partir de trois points
-        //----------------------------------------------------------
-        void BuildFromPoints(const TVector3F& v0, const TVector3F& v1, const TVector3F& v2);
+	//----------------------------------------------------------
+	// Construit le plan � partir de trois points
+	//----------------------------------------------------------
+	void BuildFromPoints(const TVector3F& v0, const TVector3F& v1,
+			const TVector3F& v2);
 
-        //----------------------------------------------------------
-        // Renvoie la plus courte distance entre le plan et un point
-        //----------------------------------------------------------
-        float DistanceToPoint(const TVector3F& Point) const;
-        float DistanceToPoint(const TVector4F& Point) const;
+	//----------------------------------------------------------
+	// Renvoie la plus courte distance entre le plan et un point
+	//----------------------------------------------------------
+	float DistanceToPoint(const TVector3F& Point) const;
+	float DistanceToPoint(const TVector4F& Point) const;
 
-        //----------------------------------------------------------
-        // Op�rateurs de comparaison
-        //----------------------------------------------------------
-        bool operator ==(const CPlane& p) const;
-        bool operator !=(const CPlane& p) const;
+	//----------------------------------------------------------
+	// Op�rateurs de comparaison
+	//----------------------------------------------------------
+	bool operator ==(const CPlane& p) const;
+	bool operator !=(const CPlane& p) const;
 
-        //----------------------------------------------------------
-        // Intersections
-        //----------------------------------------------------------
+	//----------------------------------------------------------
+	// Intersections
+	//----------------------------------------------------------
 
-        //----------------------------------------------------------
-        // Donn�es membres
-        //----------------------------------------------------------
-        TVector3F n; ///< Normale du plan
-        float     d; ///< Distance du plan � l'originie
-    };
+	//----------------------------------------------------------
+	// Donn�es membres
+	//----------------------------------------------------------
+	TVector3F n; ///< Normale du plan
+	float d; ///< Distance du plan � l'originie
+};
 
+//==========================================================
+// Fonctions globales relatives aux plan
+//==========================================================
+std::istream& operator >>(std::istream& Stream, CPlane& Plane);
+std::ostream& operator <<(std::ostream& Stream, const CPlane& Plane);
 
-    //==========================================================
-    // Fonctions globales relatives aux plan
-    //==========================================================
-    std::istream& operator >>(std::istream& Stream, CPlane& Plane);
-    std::ostream& operator <<(std::ostream& Stream, const CPlane& Plane);
-
-    #include "Plane.inl"
-
+#include "Plane.inl"
 
 }
-
 
 #endif // PLANE_H

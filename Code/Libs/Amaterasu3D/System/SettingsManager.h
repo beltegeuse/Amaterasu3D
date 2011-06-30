@@ -31,9 +31,9 @@
 // SettingsManager : Class which handle usefull
 // information for all the renderer
 /////////////////////////////////////////////
-class CSettingsManager : public CSingleton<CSettingsManager>
+class CSettingsManager: public CSingleton<CSettingsManager>
 {
-	MAKE_SINGLETON(CSettingsManager)
+MAKE_SINGLETON(CSettingsManager)
 private:
 	// Attributes
 	//! Size of the rendering window

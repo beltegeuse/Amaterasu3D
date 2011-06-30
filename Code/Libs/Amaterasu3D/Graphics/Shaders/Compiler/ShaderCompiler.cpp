@@ -40,11 +40,12 @@
 ////////////////////////////////////////
 /// Exception class For ShaderCompiler
 ////////////////////////////////////////
-CShaderCompilerException::CShaderCompilerException(const std::string& message, int line)
+CShaderCompilerException::CShaderCompilerException(const std::string& message,
+		int line)
 {
 	std::stringstream ss;
 	ss << "[ShaderCompiler] ";
-	if(line != -1)
+	if (line != -1)
 	{
 		ss << " (Line : " << line << ") ";
 	}
@@ -52,17 +53,18 @@ CShaderCompilerException::CShaderCompilerException(const std::string& message, i
 	m_Message += ss.str();
 }
 
-
 ////////////////////////////////////////
 /// Shader Compiler class
 ////////////////////////////////////////
 
-ShaderCompiler::ShaderCompiler(const std::string& code, const ShaderCompilerConfig& config) :
+ShaderCompiler::ShaderCompiler(const std::string& code,
+		const ShaderCompilerConfig& config) :
 		m_Config(config)
 {
 	std::vector<std::string> vectorResult;
-	Split(code, vectorResult,"\n");
-	m_LinesCode.insert(m_LinesCode.begin(),vectorResult.begin(),vectorResult.end());
+	Split(code, vectorResult, "\n");
+	m_LinesCode.insert(m_LinesCode.begin(), vectorResult.begin(),
+			vectorResult.end());
 }
 
 ShaderCompiler::~ShaderCompiler()
@@ -85,26 +87,28 @@ void ShaderCompiler::ResolveDefinesRules()
 	/////////////////////////////////////
 	boost::regex re("[ ]*#[ ]*(version|extension)");
 	std::list<std::string>::iterator it;
-	for(it = m_LinesCode.begin(); it != m_LinesCode.end(); ++it)
+	for (it = m_LinesCode.begin(); it != m_LinesCode.end(); ++it)
 	{
 		boost::cmatch matches;
 		boost::match_results<std::string::const_iterator> what;
-		if(!boost::regex_search(it->c_str(),matches,re))
+		if (!boost::regex_search(it->c_str(), matches, re))
 		{
 			break;
 		}
 	}
 
-	if(it == m_LinesCode.end())
+	if (it == m_LinesCode.end())
 		throw CShaderCompilerException("Empty source file ???");
 
 	////////////////////////////
 	// Add all defines
 	////////////////////////////
 	ShaderCompilerConfig::DefineMap defs = m_Config.GetDefines();
-	for(ShaderCompilerConfig::DefineMap::iterator it2 = defs.begin(); it2 != defs.end(); it2++)
-	{
-		Logger::Log() << "   *   |- " << it2->first << " : " << it2->second << "\n";
+	for (ShaderCompilerConfig::DefineMap::iterator it2 = defs.begin();
+			it2 != defs.end(); it2++)
+			{
+		Logger::Log() << "   *   |- " << it2->first << " : " << it2->second
+				<< "\n";
 		std::stringstream ss;
 		ss << "#define " << it2->first << " " << it2->second;
 		m_LinesCode.insert(it, ss.str());
@@ -120,14 +124,15 @@ void ShaderCompiler::ResolveIncludeRules()
 	 */
 	//XXX: Add multiple include support
 	boost::regex re("[ ]*#[ ]*include[ ]+[\"<](.*)[\">].*");
-	std::map<std::string,std::list<std::string>::iterator> IncludeV;
-	for(std::list<std::string>::iterator it = m_LinesCode.begin(); it != m_LinesCode.end(); ++it)
-	{
+	std::map<std::string, std::list<std::string>::iterator> IncludeV;
+	for (std::list<std::string>::iterator it = m_LinesCode.begin();
+			it != m_LinesCode.end(); ++it)
+			{
 		boost::cmatch matches;
 		boost::match_results<std::string::const_iterator> what;
-		if(boost::regex_search(it->c_str(),matches,re))
+		if (boost::regex_search(it->c_str(), matches, re))
 		{
-			find= true;
+			find = true;
 			std::string fileName(matches[1].first, matches[1].second);
 			Logger::Log() << "[Compiler] Found include : " << fileName << "\n";
 			IncludeV[fileName] = it;
@@ -136,21 +141,23 @@ void ShaderCompiler::ResolveIncludeRules()
 	/*
 	 * Modify code pass
 	 */
-	for(std::map<std::string,std::list<std::string>::iterator>::iterator it = IncludeV.begin(); it != IncludeV.end(); ++it)
+	for (std::map<std::string, std::list<std::string>::iterator>::iterator it =
+			IncludeV.begin(); it != IncludeV.end(); ++it)
 	{
 		// Delete the current line
 		std::list<std::string>::iterator pos = m_LinesCode.erase(it->second);
 		// Add text code
 		// * Find file
-		std::string path = CMediaManager::Instance().FindMedia(it->first).Fullname();
+		std::string path =
+				CMediaManager::Instance().FindMedia(it->first).Fullname();
 		// * Open file
 		std::string includeCode = LoadFile(path);
 		std::vector<std::string> vectorResult;
-		Split(includeCode, vectorResult,"\n");
-		m_LinesCode.insert(pos,vectorResult.begin(),vectorResult.end());
+		Split(includeCode, vectorResult, "\n");
+		m_LinesCode.insert(pos, vectorResult.begin(), vectorResult.end());
 	}
 
-	if(find)
+	if (find)
 	{
 		Logger::Log() << "Code : \n" << GetCode() << "\n";
 	}
@@ -159,37 +166,40 @@ void ShaderCompiler::ResolveIncludeRules()
 void ShaderCompiler::AnalyseCompilerLog(const std::string& log)
 {
 	std::vector<std::string> vectorResult;
-	Split(log, vectorResult,"\n");
+	Split(log, vectorResult, "\n");
 	boost::regex reATI("(ERROR:)\\s[0-9]:([0-9]*):\\s([\\s\\D\\W\\d]*)");
 	boost::regex reNvidia("0\\(([0-9]*)\\)\\s");
-	for(std::vector<std::string>::iterator it = vectorResult.begin(); it != vectorResult.end(); ++it)
-	{
+	for (std::vector<std::string>::iterator it = vectorResult.begin();
+			it != vectorResult.end(); ++it)
+			{
 		Logger::Log() << "[LOG] " << (*it) << "\n";
 		boost::cmatch matches;
 		boost::match_results<std::string::iterator> what;
 		std::string lineNumberString;
 		bool match = false;
-		if(boost::regex_search(it->c_str(),matches,reATI))
+		if (boost::regex_search(it->c_str(), matches, reATI))
 		{
 			lineNumberString = std::string(matches[2].first, matches[2].second);
 			match = true;
 		}
-		else if(boost::regex_search(it->c_str(),matches,reNvidia))
+		else if (boost::regex_search(it->c_str(), matches, reNvidia))
 		{
 			lineNumberString = std::string(matches[1].first, matches[1].second);
 			match = true;
 		}
 
-		if(match)
+		if (match)
 		{
 			std::stringstream ss;
 			ss << lineNumberString;
 			int lineNumber;
 			ss >> lineNumber;
-			Logger::Log() << "[Compiler] Error line found : " << lineNumber << "\n";
+			Logger::Log() << "[Compiler] Error line found : " << lineNumber
+					<< "\n";
 			std::list<std::string>::iterator i = m_LinesCode.begin();
-			std::advance(i, lineNumber-1);
-			Logger::Log() << "[Compiler] [Line] " << lineNumber << " : " << *i << "\n";
+			std::advance(i, lineNumber - 1);
+			Logger::Log() << "[Compiler] [Line] " << lineNumber << " : " << *i
+					<< "\n";
 		}
 	}
 }
@@ -198,7 +208,7 @@ const std::string ShaderCompiler::LoadFile(const std::string& path)
 {
 	std::ifstream file(path.c_str(), std::ios::in);
 	// Check if the file is open
-	if(!file) // if not
+	if (!file) // if not
 	{
 		throw CLoadingFailed(path, "enable to load the source shader");
 	}
@@ -214,9 +224,10 @@ const std::string ShaderCompiler::LoadFile(const std::string& path)
 const std::string ShaderCompiler::GetCode() const
 {
 	std::stringstream res;
-	for(std::list<std::string>::const_iterator it = m_LinesCode.begin(); it != m_LinesCode.end(); ++it)
-	{
-		res  << (*it) << "\n";
+	for (std::list<std::string>::const_iterator it = m_LinesCode.begin();
+			it != m_LinesCode.end(); ++it)
+			{
+		res << (*it) << "\n";
 	}
 	return res.str();
 }

@@ -22,7 +22,7 @@ private:
 	 * Methode privee
 	 * Affichage du message.
 	 */
-    virtual void Write(const std::string& Message) = 0;
+	virtual void Write(const std::string& Message) = 0;
 
 public:
 	/**
@@ -39,16 +39,16 @@ public:
 	/**
 	 * Get de l'instance de Logger.
 	 */
-    static Logger& Log();
-    static void Kill();
-    /**
-     * Definition de l'operateur de flux.
-     */
-    template <class T>
-    Logger& operator <<(const T& ToLog);
+	static Logger& Log();
+	static void Kill();
+	/**
+	 * Definition de l'operateur de flux.
+	 */
+	template<class T>
+	Logger& operator <<(const T& ToLog);
 };
 
-template <class T>
+template<class T>
 Logger& Logger::operator <<(const T& ToLog)
 {
 	std::ostringstream ss;
@@ -59,17 +59,19 @@ Logger& Logger::operator <<(const T& ToLog)
 
 struct Print
 {
-  Print(const std::string& Text) : m_Text(Text) {}
+	Print(const std::string& Text) :
+			m_Text(Text)
+	{
+	}
 
-  const std::string& operator ()() const
-  {
-	  return m_Text;
-  }
+	const std::string& operator ()() const
+	{
+		return m_Text;
+	}
 
-private :
+private:
 
-  std::string m_Text;
+	std::string m_Text;
 };
-
 
 #endif /* LOGGER_H_ */

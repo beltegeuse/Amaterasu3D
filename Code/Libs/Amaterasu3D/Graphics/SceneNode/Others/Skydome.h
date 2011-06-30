@@ -27,14 +27,13 @@
 
 #include <GL/glew.h>
 
-
 #include <Graphics/MatrixManagement.h>
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Texture.h>
 #include <Graphics/SceneNode/IRenderableSceneNode.h>
 #include <System/EventListeners.h>
 
-class Skydome : public IRenderableSceneNode, public FrameListener
+class Skydome: public IRenderableSceneNode, public FrameListener
 {
 private:
 	GLUquadric* m_Obj;
@@ -47,7 +46,9 @@ public:
 
 	virtual void Render();
 	virtual void FrameStarted(double delta);
-	virtual void FrameEnded() {}
+	virtual void FrameEnded()
+	{
+	}
 };
 
 #endif /* SKYDOME_H_ */

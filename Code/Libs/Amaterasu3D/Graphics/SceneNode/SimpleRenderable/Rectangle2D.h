@@ -28,13 +28,14 @@
 #include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
 #include <Math/Vector2.h>
 
-class Rectangle2D : public ISimpleRenderableSceneNode
+class Rectangle2D: public ISimpleRenderableSceneNode
 {
 public:
 	/*
 	 * Constructors & Destructors
 	 */
-	Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord = true, float offset=0);
+	Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom,
+			bool generateUVCoord = true, float offset = 0);
 	virtual ~Rectangle2D();
 };
 

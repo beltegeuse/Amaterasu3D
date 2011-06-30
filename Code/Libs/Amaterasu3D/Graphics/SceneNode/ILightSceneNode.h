@@ -27,7 +27,7 @@
 
 #include <Graphics/SceneNode/ISceneNode.h>
 
-class ILightSceneNode : public ISceneNode
+class ILightSceneNode: public ISceneNode
 {
 public:
 	ILightSceneNode(const std::string& name, ISceneNode* parent);

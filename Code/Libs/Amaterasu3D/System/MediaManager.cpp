@@ -22,7 +22,6 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 //==========================================================
 // En-t�tes
 //==========================================================
@@ -35,17 +34,15 @@
 //////////////////////////////////////////////////////////////
 SINGLETON_IMPL(CMediaManager)
 
-
 /////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
 ///
 ////////////////////////////////////////////////////////////
 CMediaManager::CMediaManager()
 {
-    m_Paths.insert("");
-    Logger::Log() << "[INFO] MediaManager creation .... \n";
+	m_Paths.insert("");
+	Logger::Log() << "[INFO] MediaManager creation .... \n";
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Destructeur
@@ -56,7 +53,6 @@ CMediaManager::~CMediaManager()
 
 }
 
-
 /////////////////////////////////////////////////////////////
 /// Ajoute un r�pertoire de recherche pour les m�dias
 ///
@@ -65,13 +61,13 @@ CMediaManager::~CMediaManager()
 ////////////////////////////////////////////////////////////
 void CMediaManager::AddSearchPath(const std::string& Path)
 {
-    if (Path.empty() || (*Path.rbegin() == '\\') || (*Path.rbegin() == '/'))
-        m_Paths.insert(Path);
-    else
+	if (Path.empty() || (*Path.rbegin() == '\\') || (*Path.rbegin() == '/'))
+		m_Paths.insert(Path);
+	else
 #ifdef WIN32
-    m_Paths.insert(Path + "\\");
+		m_Paths.insert(Path + "\\");
 #else
-    m_Paths.insert(Path + "/");
+		m_Paths.insert(Path + "/");
 #endif
 }
 
@@ -83,9 +79,9 @@ void CMediaManager::AddSearchPathAndChilds(const std::string& Path)
 
 	// find childs directories to add...
 	boost::filesystem::directory_iterator end_itr;
-	for ( boost::filesystem::directory_iterator itr( Path ); itr != end_itr; ++itr )
+	for (boost::filesystem::directory_iterator itr(Path); itr != end_itr; ++itr)
 	{
-		if ( boost::filesystem::is_directory(itr->status()) )
+		if (boost::filesystem::is_directory(itr->status()))
 		{
 			AddSearchPathAndChilds(itr->path().string());
 		}
@@ -102,21 +98,24 @@ void CMediaManager::AddSearchPathAndChilds(const std::string& Path)
 ////////////////////////////////////////////////////////////
 CFile CMediaManager::FindMedia(const CFile& Filename) const
 {
-    // Parcours de la liste des chemins de recherche
-    for (std::set<std::string>::const_iterator i = m_Paths.begin(); i != m_Paths.end(); ++i)
-    {
-        CFile RetFile = *i + Filename.Fullname();
-        if (RetFile.Exists())
-            return RetFile;
-    }
+	// Parcours de la liste des chemins de recherche
+	for (std::set<std::string>::const_iterator i = m_Paths.begin();
+			i != m_Paths.end(); ++i)
+			{
+		CFile RetFile = *i + Filename.Fullname();
+		if (RetFile.Exists())
+			return RetFile;
+	}
 
-    //// DEBUG
-    Logger::Log() << "===== PATH : \n";
-    for (std::set<std::string>::const_iterator i = m_Paths.begin(); i != m_Paths.end(); ++i)
-    {
-    	Logger::Log() << "  * " << *i + Filename.Fullname() << "\n";
-    }
+	//// DEBUG
+	Logger::Log() << "===== PATH : \n";
+	for (std::set<std::string>::const_iterator i = m_Paths.begin();
+			i != m_Paths.end(); ++i)
+			{
+		Logger::Log() << "  * " << *i + Filename.Fullname() << "\n";
+	}
 
-    // Si le fichier est introuvable, on lance une exception
-    throw CLoadingFailed(Filename.Fullname(), "Fichier introuvable dans les repertoires de recherche");
+	// Si le fichier est introuvable, on lance une exception
+	throw CLoadingFailed(Filename.Fullname(),
+			"Fichier introuvable dans les repertoires de recherche");
 }

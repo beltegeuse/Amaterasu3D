@@ -27,7 +27,7 @@
 
 #include <Addons/ToneMappingOperator/AbsrtactToneOperator.h>
 
-class DurandToneOperator : public AbsrtactToneOperator
+class DurandToneOperator: public AbsrtactToneOperator
 {
 protected:
 	/*

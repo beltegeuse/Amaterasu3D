@@ -25,10 +25,11 @@
 #include "ILightSceneNode.h"
 
 ILightSceneNode::ILightSceneNode(const std::string& name, ISceneNode* parent) :
-	ISceneNode(name, parent)
+		ISceneNode(name, parent)
 {
 }
 
-ILightSceneNode::~ILightSceneNode() {
+ILightSceneNode::~ILightSceneNode()
+{
 	// TODO Auto-generated destructor stub
 }

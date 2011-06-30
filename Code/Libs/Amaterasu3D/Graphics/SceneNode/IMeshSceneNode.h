@@ -31,8 +31,7 @@
 #include <assimp.h>
 #include <map>
 
-
-class IMeshSceneNode : public IRenderableSceneNode //, public IResource
+class IMeshSceneNode: public IRenderableSceneNode //, public IResource
 {
 private:
 	typedef std::map<RenderableObject*, Math::CMatrix4> RenderableWorldObjectsList;
@@ -50,12 +49,14 @@ public:
 	 */
 	virtual void Render();
 	void SetAssimpScene(const aiScene* scene);
-	void AddRenderableObject(RenderableObject* obj, const Math::CMatrix4& trans);
+	void AddRenderableObject(RenderableObject* obj,
+			const Math::CMatrix4& trans);
 	RenderableWorldObjectsList& GetRenderableObjects();
 	/*
 	 * Static methods
 	 */
-	static IMeshSceneNode* LoadFromFile(const std::string& path, const std::string& name, ISceneNode* parent);
+	static IMeshSceneNode* LoadFromFile(const std::string& path,
+			const std::string& name, ISceneNode* parent);
 };
 
 //typedef CSmartPtr<IMeshSceneNode, CResourceCOM> IMeshPtr;

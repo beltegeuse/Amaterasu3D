@@ -36,79 +36,82 @@
 #include <list>
 #include <Graphics/Texture.h>
 
-
 ////////////////////////////////////////////////////////////
 /// Classe d�finissant un look personnalis� pour la console
 ////////////////////////////////////////////////////////////
-class DefaultLook : public Console::ILook
+class DefaultLook: public Console::ILook
 {
-public :
+public:
 
-    //----------------------------------------------------------
-    // Constructeur par d�faut
-    //----------------------------------------------------------
-    DefaultLook();
-    virtual ~DefaultLook();
-    //----------------------------------------------------------
-    // Fonction appel�e lors de la mise � jour de la console
-    //----------------------------------------------------------
-    void Update(double delta);
+	//----------------------------------------------------------
+	// Constructeur par d�faut
+	//----------------------------------------------------------
+	DefaultLook();
+	virtual ~DefaultLook();
+	//----------------------------------------------------------
+	// Fonction appel�e lors de la mise � jour de la console
+	//----------------------------------------------------------
+	void Update(double delta);
 
-    //----------------------------------------------------------
-    // Fonction appel�e lors de l'affichage de la console
-    //----------------------------------------------------------
-    virtual void Draw(); // FIXME add CONST
+	//----------------------------------------------------------
+	// Fonction appel�e lors de l'affichage de la console
+	//----------------------------------------------------------
+	virtual void Draw(); // FIXME add CONST
 
-    //----------------------------------------------------------
-    // Fonction appel�e lors de l'activation / d�sactivation de la console
-    //----------------------------------------------------------
-    virtual void Show(bool Visible);
+	//----------------------------------------------------------
+	// Fonction appel�e lors de l'activation / d�sactivation de la console
+	//----------------------------------------------------------
+	virtual void Show(bool Visible);
 
-    //----------------------------------------------------------
-    // Fonction appel�e apr�s l'appel � une commande
-    //----------------------------------------------------------
-    virtual void CommandCalled(const std::string& Result);
+	//----------------------------------------------------------
+	// Fonction appel�e apr�s l'appel � une commande
+	//----------------------------------------------------------
+	virtual void CommandCalled(const std::string& Result);
 
-    //----------------------------------------------------------
-    // Fonction appel�e � chaque changement de la ligne courante
-    //----------------------------------------------------------
-    virtual void TextChanged(const std::string& NewText);
+	//----------------------------------------------------------
+	// Fonction appel�e � chaque changement de la ligne courante
+	//----------------------------------------------------------
+	virtual void TextChanged(const std::string& NewText);
 
-    //----------------------------------------------------------
-    // Fonction appel�e en cas d'erreur
-    //----------------------------------------------------------
-    virtual void Error(const std::string& Message);
+	//----------------------------------------------------------
+	// Fonction appel�e en cas d'erreur
+	//----------------------------------------------------------
+	virtual void Error(const std::string& Message);
 
-private :
+private:
 
-    //----------------------------------------------------------
-    // Types
-    //----------------------------------------------------------
-    enum TState {STOPPED, HIDDING, SHOWING};
+	//----------------------------------------------------------
+	// Types
+	//----------------------------------------------------------
+	enum TState
+	{
+		STOPPED, HIDDING, SHOWING
+	};
 
-    //----------------------------------------------------------
-    // Ajoute une ligne
-    //----------------------------------------------------------
-    void AddLine(const std::string& Line = "> ", const CColor& Color = CColor::White);
+	//----------------------------------------------------------
+	// Ajoute une ligne
+	//----------------------------------------------------------
+	void AddLine(const std::string& Line = "> ", const CColor& Color =
+			CColor::White);
 
-    //----------------------------------------------------------
-    // S�lectionne la police suivante
-    //----------------------------------------------------------
-    std::string  NextFont();
+	//----------------------------------------------------------
+	// S�lectionne la police suivante
+	//----------------------------------------------------------
+	std::string NextFont();
 
-    //----------------------------------------------------------
-    // Donn�es membres
-    //----------------------------------------------------------
-    static const std::string       s_Fonts[];     ///< Liste des polices disponibles
-    std::list<CGraphicString>      m_Lines;       ///< Derni�res lignes affich�es sur la console
-    Math::CMatrix4                 m_Transfo;     ///< Matrice de transformation associ�e � l'affichage de la console
-    TState                         m_State;       ///< "Etat" de l'animation de la console
-    std::size_t                    m_CurrentFont; ///< Police actuellement utilis�e
-    TTexturePtr					   m_BackgroundTexture;
-    TShaderPtr					   m_2DShader;
-    Rectangle2D*				   m_Rectangle;
-    bool 						   m_ShowText;
-    float						   m_Height;
+	//----------------------------------------------------------
+	// Donn�es membres
+	//----------------------------------------------------------
+	static const std::string s_Fonts[]; ///< Liste des polices disponibles
+	std::list<CGraphicString> m_Lines; ///< Derni�res lignes affich�es sur la console
+	Math::CMatrix4 m_Transfo; ///< Matrice de transformation associ�e � l'affichage de la console
+	TState m_State; ///< "Etat" de l'animation de la console
+	std::size_t m_CurrentFont; ///< Police actuellement utilis�e
+	TTexturePtr m_BackgroundTexture;
+	TShaderPtr m_2DShader;
+	Rectangle2D* m_Rectangle;
+	bool m_ShowText;
+	float m_Height;
 };
 
 #endif // MYCONSOLE_H

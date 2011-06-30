@@ -22,12 +22,10 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 //==========================================================
 // En-tetes
 //==========================================================
 #include <Math/Rectangle.h>
-
 
 namespace Math
 {
@@ -40,12 +38,10 @@ namespace Math
 ///
 ////////////////////////////////////////////////////////////
 CRectangle::CRectangle(const TVector2I& Start, const TVector2I& Size) :
-Origin(Start),
-End   (Start + Size)
+		Origin(Start), End(Start + Size)
 {
 
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Constructeur � partir de 2 coordonn�es et 2 dimensions
@@ -57,12 +53,10 @@ End   (Start + Size)
 ///
 ////////////////////////////////////////////////////////////
 CRectangle::CRectangle(int Left, int Top, int Width, int Height) :
-Origin(Left, Top),
-End   (Left + Width, Top + Height)
+		Origin(Left, Top), End(Left + Width, Top + Height)
 {
 
 }
-
 
 /////////////////////////////////////////////////////////////
 /// R�initialise le rectangle
@@ -75,10 +69,9 @@ End   (Left + Width, Top + Height)
 ////////////////////////////////////////////////////////////
 void CRectangle::Set(int Left, int Top, int Width, int Height)
 {
-    Origin.Set(Left, Top);
-    End.Set(Left + Width, Top + Height);
+	Origin.Set(Left, Top);
+	End.Set(Left + Width, Top + Height);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie le cot� gauche du rectangle
@@ -88,9 +81,8 @@ void CRectangle::Set(int Left, int Top, int Width, int Height)
 ////////////////////////////////////////////////////////////
 int CRectangle::Left() const
 {
-    return Origin.x;
+	return Origin.x;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie le cot� droit du rectangle
@@ -100,9 +92,8 @@ int CRectangle::Left() const
 ////////////////////////////////////////////////////////////
 int CRectangle::Right() const
 {
-    return End.x;
+	return End.x;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie le cot� haut du rectangle
@@ -112,9 +103,8 @@ int CRectangle::Right() const
 ////////////////////////////////////////////////////////////
 int CRectangle::Top() const
 {
-    return Origin.y;
+	return Origin.y;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie le cot� bas du rectangle
@@ -124,9 +114,8 @@ int CRectangle::Top() const
 ////////////////////////////////////////////////////////////
 int CRectangle::Bottom() const
 {
-    return End.y;
+	return End.y;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie la largeur du rectangle
@@ -136,9 +125,8 @@ int CRectangle::Bottom() const
 ////////////////////////////////////////////////////////////
 int CRectangle::Width() const
 {
-    return End.x - Origin.x;
+	return End.x - Origin.x;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie la hauteur du rectangle
@@ -148,9 +136,8 @@ int CRectangle::Width() const
 ////////////////////////////////////////////////////////////
 int CRectangle::Height() const
 {
-    return End.y - Origin.y;
+	return End.y - Origin.y;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie la taille du rectangle
@@ -160,9 +147,8 @@ int CRectangle::Height() const
 ////////////////////////////////////////////////////////////
 TVector2I CRectangle::Size() const
 {
-    return End - Origin;
+	return End - Origin;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Test d'intersection avec un point
@@ -174,12 +160,12 @@ TVector2I CRectangle::Size() const
 ////////////////////////////////////////////////////////////
 TIntersection CRectangle::Intersects(const TVector2I& Point) const
 {
-    if ((Point.x >= Origin.x) && (Point.y >= Origin.y) && (Point.x <= End.x) && (Point.y <= End.y))
-        return INT_IN;
-    else
-        return INT_OUT;
+	if ((Point.x >= Origin.x) && (Point.y >= Origin.y) && (Point.x <= End.x)
+			&& (Point.y <= End.y))
+		return INT_IN;
+	else
+		return INT_OUT;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Test d'intersection avec un rectangle
@@ -191,19 +177,19 @@ TIntersection CRectangle::Intersects(const TVector2I& Point) const
 ////////////////////////////////////////////////////////////
 TIntersection CRectangle::Intersects(const CRectangle& Rect) const
 {
-    // Calcul du rectangle d'intersection
-    TVector2I Start(std::max(Origin.x, Rect.Origin.x), std::max(Origin.y, Rect.Origin.y));
-    TVector2I End(std::min(End.x, Rect.End.x), std::min(End.y, Rect.End.y));
-    CRectangle Overlap(Start, End - Start);
+	// Calcul du rectangle d'intersection
+	TVector2I Start(std::max(Origin.x, Rect.Origin.x),
+			std::max(Origin.y, Rect.Origin.y));
+	TVector2I End(std::min(End.x, Rect.End.x), std::min(End.y, Rect.End.y));
+	CRectangle Overlap(Start, End - Start);
 
-    if ((Start.x > End.x) || (Start.y > End.y))
-        return INT_OUT;
-    else if ((Overlap == *this) || (Overlap == Rect))
-        return INT_IN;
-    else
-        return INT_INTERSECTS;
+	if ((Start.x > End.x) || (Start.y > End.y))
+		return INT_OUT;
+	else if ((Overlap == *this) || (Overlap == Rect))
+		return INT_IN;
+	else
+		return INT_INTERSECTS;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Op�rateur de comparaison ==
@@ -215,9 +201,8 @@ TIntersection CRectangle::Intersects(const CRectangle& Rect) const
 ////////////////////////////////////////////////////////////
 bool CRectangle::operator ==(const CRectangle& Rect) const
 {
-    return (Origin == Rect.Origin) && (End == Rect.End);
+	return (Origin == Rect.Origin) && (End == Rect.End);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Op�rateur de comparaison !=
@@ -229,9 +214,8 @@ bool CRectangle::operator ==(const CRectangle& Rect) const
 ////////////////////////////////////////////////////////////
 bool CRectangle::operator !=(const CRectangle& Rect) const
 {
-    return !(*this == Rect);
+	return !(*this == Rect);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur >> pour saisir un rectangle
@@ -244,9 +228,8 @@ bool CRectangle::operator !=(const CRectangle& Rect) const
 ////////////////////////////////////////////////////////////
 std::istream& operator >>(std::istream& Stream, CRectangle& Rect)
 {
-    return Stream >> Rect.Origin >> Rect.End;
+	return Stream >> Rect.Origin >> Rect.End;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur << pour afficher un rectangle
@@ -259,7 +242,7 @@ std::istream& operator >>(std::istream& Stream, CRectangle& Rect)
 ////////////////////////////////////////////////////////////
 std::ostream& operator <<(std::ostream& Stream, const CRectangle& Rect)
 {
-    return Stream << Rect.Origin << " " << Rect.End;
+	return Stream << Rect.Origin << " " << Rect.End;
 }
 
 } // namespace Yes

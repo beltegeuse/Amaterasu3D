@@ -39,7 +39,9 @@
 class CListenerManagerAbstract
 {
 public:
-	virtual ~CListenerManagerAbstract() {}
+	virtual ~CListenerManagerAbstract()
+	{
+	}
 	/*
 	 * Pure virtual functions
 	 */
@@ -48,8 +50,8 @@ public:
 	virtual void OnEndRender() = 0;
 };
 
-template <class T>
-class CListenerManager : public CListenerManagerAbstract
+template<class T>
+class CListenerManager: public CListenerManagerAbstract
 {
 protected:
 	typedef std::vector<T*> TListenerVector;
@@ -58,17 +60,25 @@ public:
 	/*
 	 * Constructors and destructors
 	 */
-	CListenerManager() {}
-	virtual ~CListenerManager() {}
+	CListenerManager()
+	{
+	}
+	virtual ~CListenerManager()
+	{
+	}
 
 	/*
 	 * Public functions
 	 */
-	void AddListener(T* listener) { m_Listeners.push_back(listener); }
-	void RemoveListener(T* listener){
+	void AddListener(T* listener)
+	{
+		m_Listeners.push_back(listener);
+	}
+	void RemoveListener(T* listener)
+	{
 		typename TListenerVector::iterator it;
 		it = std::find(m_Listeners.begin(), m_Listeners.end(), listener);
-		if(it == m_Listeners.end())
+		if (it == m_Listeners.end())
 			throw CException("Enable to find listener to delete");
 		m_Listeners.erase(it);
 	}
@@ -77,95 +87,109 @@ public:
 ////////////////////////////////////////////////////////////
 /// Definition des differents listeners manager
 ////////////////////////////////////////////////////////////
-class CFrameListenerManager : public CListenerManager<FrameListener>
+class CFrameListenerManager: public CListenerManager<FrameListener>
 {
 public:
-	virtual void OnEvent(SDL_Event& event) {}
-	virtual void OnUpdate(double delta) {
-		for(TListenerVector::iterator it = m_Listeners.begin(); it != m_Listeners.end(); it++)
-		{
+	virtual void OnEvent(SDL_Event& event)
+	{
+	}
+	virtual void OnUpdate(double delta)
+	{
+		for (TListenerVector::iterator it = m_Listeners.begin();
+				it != m_Listeners.end(); it++)
+				{
 			(*it)->FrameStarted(delta);
 		}
 	}
-	virtual void OnEndRender() {
-		for(TListenerVector::iterator it = m_Listeners.begin(); it != m_Listeners.end(); it++)
-		{
+	virtual void OnEndRender()
+	{
+		for (TListenerVector::iterator it = m_Listeners.begin();
+				it != m_Listeners.end(); it++)
+				{
 			(*it)->FrameEnded();
 		}
 	}
 };
 
-template < class T >
-class CNoFrameListenerManager : public CListenerManager<T>
+template<class T>
+class CNoFrameListenerManager: public CListenerManager<T>
 {
 public:
-	virtual void OnUpdate(double delta) {
+	virtual void OnUpdate(double delta)
+	{
 	}
-	virtual void OnEndRender() {
+	virtual void OnEndRender()
+	{
 	}
 };
 
-class CMouseListenerManager : public CNoFrameListenerManager<MouseListener>
+class CMouseListenerManager: public CNoFrameListenerManager<MouseListener>
 {
 public:
 	virtual void OnEvent(SDL_Event& event)
 	{
-		if(event.type == SDL_MOUSEBUTTONDOWN)
+		if (event.type == SDL_MOUSEBUTTONDOWN)
 		{
-			for(TListenerVector::iterator it = m_Listeners.begin(); it != m_Listeners.end(); it++)
-			{
+			for (TListenerVector::iterator it = m_Listeners.begin();
+					it != m_Listeners.end(); it++)
+					{
 				(*it)->MousePressed();
 			}
 		}
-		else if(event.type == SDL_MOUSEBUTTONUP)
+		else if (event.type == SDL_MOUSEBUTTONUP)
 		{
-			for(TListenerVector::iterator it = m_Listeners.begin(); it != m_Listeners.end(); it++)
-			{
+			for (TListenerVector::iterator it = m_Listeners.begin();
+					it != m_Listeners.end(); it++)
+					{
 				(*it)->MouseReleased();
 			}
 		}
 	}
 };
 
-class CKeyListenerManager : public CNoFrameListenerManager<KeyListener>
+class CKeyListenerManager: public CNoFrameListenerManager<KeyListener>
 {
 public:
 	virtual void OnEvent(SDL_Event& event)
 	{
-		if(event.type == SDL_KEYDOWN)
+		if (event.type == SDL_KEYDOWN)
 		{
-			for(TListenerVector::iterator it = m_Listeners.begin(); it != m_Listeners.end(); it++)
-			{
+			for (TListenerVector::iterator it = m_Listeners.begin();
+					it != m_Listeners.end(); it++)
+					{
 				(*it)->KeyPressed(event.key.keysym.sym);
 			}
 		}
-		else if(event.type == SDL_KEYUP)
+		else if (event.type == SDL_KEYUP)
 		{
-			for(TListenerVector::iterator it = m_Listeners.begin(); it != m_Listeners.end(); it++)
-			{
+			for (TListenerVector::iterator it = m_Listeners.begin();
+					it != m_Listeners.end(); it++)
+					{
 				(*it)->KeyReleased(event.key.keysym.sym);
 			}
 		}
 	}
 };
 
-class CMouseMotionListenerManager : public CNoFrameListenerManager<MouseMotionListener>
+class CMouseMotionListenerManager: public CNoFrameListenerManager<
+		MouseMotionListener>
 {
 public:
 	virtual void OnEvent(SDL_Event& event)
 	{
-		if(event.type == SDL_MOUSEMOTION)
+		if (event.type == SDL_MOUSEMOTION)
 		{
-			for(TListenerVector::iterator it = m_Listeners.begin(); it != m_Listeners.end(); it++)
-			{
-				(*it)->MouseMoved(event.motion.xrel,event.motion.yrel);
+			for (TListenerVector::iterator it = m_Listeners.begin();
+					it != m_Listeners.end(); it++)
+					{
+				(*it)->MouseMoved(event.motion.xrel, event.motion.yrel);
 			}
 		}
 	}
 };
 
 //XXX: Not implemented
-class CWindowListenerManager : public CNoFrameListenerManager<MouseMotionListener>
+class CWindowListenerManager: public CNoFrameListenerManager<MouseMotionListener>
 {
 
 };
@@ -173,24 +197,27 @@ class CWindowListenerManager : public CNoFrameListenerManager<MouseMotionListene
 ////////////////////////////////
 // Class manage all Events
 ////////////////////////////////
-class CEventManager : public CSingleton<CEventManager>
+class CEventManager: public CSingleton<CEventManager>
 {
-	MAKE_SINGLETON(CEventManager)
+MAKE_SINGLETON(CEventManager)
 private:
-	typedef std::map<std::string,CListenerManagerAbstract*> TListenerManagerMap;
+	typedef std::map<std::string, CListenerManagerAbstract*> TListenerManagerMap;
 	TListenerManagerMap m_Managers;
 public:
 	/*
 	 * Constructors and destructors
 	 */
-	CEventManager() {
+	CEventManager()
+	{
 		m_Managers["FrameListener"] = new CFrameListenerManager;
 		m_Managers["MouseListener"] = new CMouseListenerManager;
 		m_Managers["KeyListener"] = new CKeyListenerManager;
 		m_Managers["MouseMotionListener"] = new CMouseMotionListenerManager;
 		//TODO: m_Managers.push_back(new CWindowListenerManager);
 	}
-	virtual ~CEventManager() {}
+	virtual ~CEventManager()
+	{
+	}
 
 	/*
 	 * Methodes de mise a jour
@@ -199,13 +226,16 @@ public:
 	void OnUpdate(double delta);
 	void OnEndRender();
 
-	template <typename T> void AddListener(const std::string& name, T* listener)
+	template<typename T> void AddListener(const std::string& name, T* listener)
 	{
-		dynamic_cast< CListenerManager<T>* >(m_Managers[name])->AddListener(listener);
+		dynamic_cast<CListenerManager<T>*>(m_Managers[name])->AddListener(
+				listener);
 	}
-	template <typename T> void RemoveListener(const std::string& name, T* listener)
+	template<typename T> void RemoveListener(const std::string& name,
+			T* listener)
 	{
-		dynamic_cast< CListenerManager<T>* >(m_Managers[name])->RemoveListener(listener);
+		dynamic_cast<CListenerManager<T>*>(m_Managers[name])->RemoveListener(
+				listener);
 	}
 };
 

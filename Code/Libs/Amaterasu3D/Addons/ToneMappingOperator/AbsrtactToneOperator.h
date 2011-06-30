@@ -27,7 +27,6 @@
 
 #include <Graphics/FBO.h>
 
-
 class AbsrtactToneOperator
 {
 public:

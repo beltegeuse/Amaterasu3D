@@ -23,10 +23,12 @@
 //==========================================================
 #include "LightingPassAbstract.h"
 
-LightingPassAbstract::LightingPassAbstract() {
+LightingPassAbstract::LightingPassAbstract()
+{
 }
 
-LightingPassAbstract::~LightingPassAbstract() {
+LightingPassAbstract::~LightingPassAbstract()
+{
 }
 
 void LightingPassAbstract::SetFBOGraphicBuffer(FBO* fbo)

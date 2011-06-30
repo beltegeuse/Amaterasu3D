@@ -28,7 +28,7 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-class DebugPlaneLeaf : public ISimpleRenderableSceneNode
+class DebugPlaneLeaf: public ISimpleRenderableSceneNode
 {
 private:
 	static GLfloat PlaneArray[24];
@@ -40,6 +40,5 @@ public:
 
 	virtual void Draw();
 };
-
 
 #endif /* DEBUGPLANELEAF_H_ */

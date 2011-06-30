@@ -26,18 +26,17 @@
 #define SINGLETON_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <cstdlib>
 
-
 ////////////////////////////////////////////////////////////
-/// Template servant à construire les classes singleton
+/// Template servant ï¿½ construire les classes singleton
 ////////////////////////////////////////////////////////////
-template <class T>
+template<class T>
 class CSingleton
 {
-public :
+public:
 
 	//----------------------------------------------------------------
 	// Renvoie l'instance unique de la classe
@@ -51,7 +50,7 @@ public :
 	}
 
 	//----------------------------------------------------------------
-	// Détruit l'instance unique de la classe
+	// Dï¿½truit l'instance unique de la classe
 	//----------------------------------------------------------------
 	static void Destroy()
 	{
@@ -59,22 +58,26 @@ public :
 		Inst = NULL;
 	}
 
-protected :
+protected:
 
 	//----------------------------------------------------------------
-	// Constructeur par défaut
+	// Constructeur par dï¿½faut
 	//----------------------------------------------------------------
-	CSingleton() {}
+	CSingleton()
+	{
+	}
 
 	//----------------------------------------------------------------
 	// Destructeur
 	//----------------------------------------------------------------
-	~CSingleton() {}
+	~CSingleton()
+	{
+	}
 
-private :
+private:
 
 	//----------------------------------------------------------------
-	// Données membres
+	// Donnï¿½es membres
 	//----------------------------------------------------------------
 	static T* Inst; ///< Instance unique de la classe
 
@@ -86,9 +89,9 @@ private :
 };
 
 ////////////////////////////////////////////////////////////
-/// Macro automatisant la création d'un singleton --
-/// à placer dans la définition de la classe concernée.
-/// La raison pour laquelle il faut redéfinir (et masquer)
+/// Macro automatisant la crï¿½ation d'un singleton --
+/// ï¿½ placer dans la dï¿½finition de la classe concernï¿½e.
+/// La raison pour laquelle il faut redï¿½finir (et masquer)
 /// la fonction Instance() reste obscure, mais si ce n'est pas
 /// fait le client obtient des erreurs de link sur Inst
 ////////////////////////////////////////////////////////////
@@ -107,7 +110,6 @@ private :
 		{ \
 			return CSingleton<Class>::Instance(); \
 		} \
-
 
 
 #endif // SINGLETON_H

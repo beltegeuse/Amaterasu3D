@@ -30,7 +30,7 @@
 #include <Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.h>
 #include <Graphics/Shaders/Shader.h>
 
-class PhotographicToneOperator : public AbsrtactToneOperator
+class PhotographicToneOperator: public AbsrtactToneOperator
 {
 protected:
 	TShaderPtr m_PhotoShader;

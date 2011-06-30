@@ -27,7 +27,8 @@
 
 #include <Addons/ToneMappingOperator/ManualMipmapping.h>
 
-class AdaptationLuminanceSimple {
+class AdaptationLuminanceSimple
+{
 protected:
 	float m_LuminanceValue;
 public:

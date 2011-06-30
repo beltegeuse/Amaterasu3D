@@ -43,12 +43,15 @@
 ////////////////////////////////////////////////////////////
 class CGraphicString
 {
-public :
+public:
 
 	//----------------------------------------------------------
 	// Constructeur par d�faut
 	//----------------------------------------------------------
-	CGraphicString(const Math::TVector2F& StringPosition = Math::TVector2F(0, 0), const std::string& StringText = "Seagull", const std::string& font = "arial", int size = 18);
+	CGraphicString(
+			const Math::TVector2F& StringPosition = Math::TVector2F(0, 0),
+			const std::string& StringText = "Seagull", const std::string& font =
+					"arial", int size = 18);
 	virtual ~CGraphicString();
 	//----------------------------------------------------------
 	// Affiche la cha�ne de caract�res � l'�cran
@@ -61,12 +64,11 @@ public :
 	//----------------------------------------------------------
 	// Donnees membres
 	//----------------------------------------------------------
-	Math::TVector2F   Position; ///< Position du texte � l'�cran
-	std::string Text;     ///< Cha�ne de caract�res
-	CColor      Color;    ///< Couleur du texte
+	Math::TVector2F Position; ///< Position du texte � l'�cran
+	std::string Text; ///< Cha�ne de caract�res
+	CColor Color; ///< Couleur du texte
 	rat_texture_font* texture;
 	int Size;
 };
-
 
 #endif // GRAPHICSTRING_H

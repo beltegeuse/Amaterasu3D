@@ -22,25 +22,21 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <System/Resource.h>
 #include <System/ResourceManager.h>
 
-
 /////////////////////////////////////////////////////////////
-/// Constructeur par défaut
+/// Constructeur par dï¿½faut
 ///
 ////////////////////////////////////////////////////////////
 IResource::IResource() :
-m_Name    (""),
-m_RefCount(1)
+		m_Name(""), m_RefCount(1)
 {
 
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Destructeur
@@ -48,47 +44,44 @@ m_RefCount(1)
 ////////////////////////////////////////////////////////////
 IResource::~IResource()
 {
-    if (m_Name != "")
-        CResourceManager::Instance().Remove(m_Name);
+	if (m_Name != "")
+		CResourceManager::Instance().Remove(m_Name);
 }
 
-
 /////////////////////////////////////////////////////////////
-/// Renvoie le nom associé à la ressource
+/// Renvoie le nom associï¿½ ï¿½ la ressource
 ///
-/// \return Nom attribué à la ressource
+/// \return Nom attribuï¿½ ï¿½ la ressource
 ///
 ////////////////////////////////////////////////////////////
 const std::string& IResource::GetName() const
 {
-    return m_Name;
+	return m_Name;
 }
 
-
 /////////////////////////////////////////////////////////////
-/// Ajoute une référence sur la ressource
+/// Ajoute une rï¿½fï¿½rence sur la ressource
 ///
 ////////////////////////////////////////////////////////////
 void IResource::AddRef()
 {
-    ++m_RefCount;
+	++m_RefCount;
 }
 
-
 /////////////////////////////////////////////////////////////
-/// Retire une référence sur la ressource
+/// Retire une rï¿½fï¿½rence sur la ressource
 ///
-/// \return Nombre de références restantes sur la ressource
+/// \return Nombre de rï¿½fï¿½rences restantes sur la ressource
 ///
 ////////////////////////////////////////////////////////////
 int IResource::Release()
 {
-    // Décrémentation du compteur de références
-    int RefCount = --m_RefCount;
+	// Dï¿½crï¿½mentation du compteur de rï¿½fï¿½rences
+	int RefCount = --m_RefCount;
 
-    // S'il n'y a plus de référence sur la ressource, on la détruit
-    if (RefCount == 0)
-        delete this;
+	// S'il n'y a plus de rï¿½fï¿½rence sur la ressource, on la dï¿½truit
+	if (RefCount == 0)
+		delete this;
 
-    return RefCount;
+	return RefCount;
 }

@@ -27,7 +27,7 @@
 
 #include <Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.h>
 
-class PhotographicToneOperatorExp : public PhotographicToneOperator
+class PhotographicToneOperatorExp: public PhotographicToneOperator
 {
 public:
 	PhotographicToneOperatorExp();

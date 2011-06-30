@@ -28,7 +28,7 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-class DebugCubeLeaf : public ISimpleRenderableSceneNode
+class DebugCubeLeaf: public ISimpleRenderableSceneNode
 {
 private:
 	// Dessin de la geometrie

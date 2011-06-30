@@ -30,20 +30,15 @@
 #include <Graphics/Shaders/Shader.h>
 #include <Logger/Logger.h>
 
-GLfloat DebugPlaneLeaf::PlaneArray[24] = {
-		1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f,
-		1.0f, 1.0f, 1.0f, -1.0f,0.0f, -1.0f,
-		0.0f, 0.0f, 1.0f, -1.0f,0.0f, 1.0f,
-	};
+GLfloat DebugPlaneLeaf::PlaneArray[24] =
+{ 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f,
+		1.0f, 1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, };
 
-GLuint DebugPlaneLeaf::IndiceArray[6] = {
-		0,1,2,2,1,3
-		};
-
+GLuint DebugPlaneLeaf::IndiceArray[6] =
+{ 0, 1, 2, 2, 1, 3 };
 
 DebugPlaneLeaf::DebugPlaneLeaf(const std::string& name, ISceneNode* parent) :
-	ISimpleRenderableSceneNode(name, parent)
+		ISimpleRenderableSceneNode(name, parent)
 {
 	// G�n�ration des buffers
 	Logger::Log() << "[INFO] Gen Buffer ...\n";
@@ -51,11 +46,13 @@ DebugPlaneLeaf::DebugPlaneLeaf(const std::string& name, ISceneNode* parent) :
 	// Buffer d'informations de vertex
 	Logger::Log() << "[INFO] Fill Array Buffer ...\n";
 	GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_planebuffers[0]));
-	GLCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(PlaneArray), PlaneArray, GL_STATIC_DRAW));
+	GLCheck(
+			glBufferData(GL_ARRAY_BUFFER, sizeof(PlaneArray), PlaneArray, GL_STATIC_DRAW));
 	// Buffer d'indices
 	Logger::Log() << "[INFO] Fill Element Array Buffer ...\n";
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_planebuffers[1]));
-	GLCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(IndiceArray), IndiceArray, GL_STATIC_DRAW));
+	GLCheck(
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(IndiceArray), IndiceArray, GL_STATIC_DRAW));
 }
 
 DebugPlaneLeaf::~DebugPlaneLeaf()
@@ -66,38 +63,45 @@ DebugPlaneLeaf::~DebugPlaneLeaf()
 void DebugPlaneLeaf::Draw()
 {
 	// pas de shader
-	if(!CShaderManager::Instance().activedShader())
+	if (!CShaderManager::Instance().activedShader())
 	{
-		Logger::Log() << "[Warning] No actived shader. Nothings to render ... \n";
+		Logger::Log()
+				<< "[Warning] No actived shader. Nothings to render ... \n";
 	}
 	//  * Les differents blindings ...
 	GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_planebuffers[0]));
 	// Les disponibilites du shaders
-	bool vertexSupport = CShaderManager::Instance().currentShader()->IsAttributAvailable(VERTEX_ATTRIBUT);
-	bool colorSupport = CShaderManager::Instance().currentShader()->IsAttributAvailable(COLOR_ATTRIBUT);
+	bool vertexSupport =
+			CShaderManager::Instance().currentShader()->IsAttributAvailable(
+					VERTEX_ATTRIBUT);
+	bool colorSupport =
+			CShaderManager::Instance().currentShader()->IsAttributAvailable(
+					COLOR_ATTRIBUT);
 
-	if(!(vertexSupport || colorSupport))
+	if (!(vertexSupport || colorSupport))
 	{
 		// Nothings to render ...
 		return;
 	}
 	// Activation des buffers
-	if(vertexSupport)
+	if (vertexSupport)
 	{
-		glEnableVertexAttribArray (VERTEX_ATTRIBUT);
-		GLCheck(glVertexAttribPointer(VERTEX_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0));
+		glEnableVertexAttribArray(VERTEX_ATTRIBUT);
+		GLCheck(
+				glVertexAttribPointer(VERTEX_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0));
 	}
-	if(colorSupport)
+	if (colorSupport)
 	{
-		glEnableVertexAttribArray (COLOR_ATTRIBUT);
-		GLCheck(glVertexAttribPointer(COLOR_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), ((float*)NULL + (3))));
+		glEnableVertexAttribArray(COLOR_ATTRIBUT);
+		GLCheck(
+				glVertexAttribPointer(COLOR_ATTRIBUT, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), ((float*)NULL + (3))));
 	}
 	// * le dessins en lui meme
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_planebuffers[1]));
 	GLCheck(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 	// Desactivation des buffers
-	if(vertexSupport)
+	if (vertexSupport)
 		GLCheck(glDisableVertexAttribArray ( VERTEX_ATTRIBUT ));
-	if(colorSupport)
+	if (colorSupport)
 		GLCheck(glDisableVertexAttribArray ( COLOR_ATTRIBUT ));
 }

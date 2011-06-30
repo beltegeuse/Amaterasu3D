@@ -25,7 +25,7 @@
 #include "ICameraSceneNode.h"
 
 ICameraSceneNode::ICameraSceneNode(const std::string& name, ISceneNode* parent) :
-	ISceneNode(name, parent)
+		ISceneNode(name, parent)
 {
 }
 
@@ -76,15 +76,16 @@ float ICameraSceneNode::GetFar() const
 void ICameraSceneNode::UpdateTransformations()
 {
 	ISceneNode::UpdateTransformations();
-	if(m_NeedUpdateProjectionMatrix)
+	if (m_NeedUpdateProjectionMatrix)
 	{
-		m_ProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(m_FOV, m_Ratio, m_Near, m_Far);
+		m_ProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(m_FOV,
+				m_Ratio, m_Near, m_Far);
 		m_NeedUpdateProjectionMatrix = false;
 	}
 }
 void ICameraSceneNode::NeedProjectionUpdate()
 {
-	if(!m_NeedUpdateProjectionMatrix)
+	if (!m_NeedUpdateProjectionMatrix)
 	{
 		m_NeedUpdateProjectionMatrix = true;
 		NeedUpdate();

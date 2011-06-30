@@ -27,7 +27,7 @@
 
 #include <Graphics/Shaders/Shader.h>
 
-class GBufferShader : public Shader
+class GBufferShader: public Shader
 {
 private:
 	// Attributes
@@ -38,7 +38,8 @@ private:
 	bool m_use_texSpecular;
 	bool m_use_tangants;
 public:
-	GBufferShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader = 0);
+	GBufferShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader,
+			ShaderUnit * GeometryShader = 0);
 	virtual ~GBufferShader();
 
 	virtual void OnDraw();

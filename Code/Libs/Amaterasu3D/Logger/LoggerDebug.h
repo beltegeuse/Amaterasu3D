@@ -7,7 +7,7 @@
 
 #include <Logger/Logger.h>
 
-class LoggerDebug : public Logger
+class LoggerDebug: public Logger
 {
 private:
 	//! Definition de la fonction Write.

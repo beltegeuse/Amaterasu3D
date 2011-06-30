@@ -29,9 +29,9 @@
 #include <Singleton.h>
 #include <sigc++/signal.h>
 
-class CMatrixManager : public CSingleton<CMatrixManager>
+class CMatrixManager: public CSingleton<CMatrixManager>
 {
-	MAKE_SINGLETON(CMatrixManager)
+MAKE_SINGLETON(CMatrixManager)
 private:
 	/*
 	 * Attributes

@@ -31,71 +31,72 @@
 #include <exception>
 #include <string>
 
-    ////////////////////////////////////////////////////////////
-    /// Classe de base pour les exceptions
-    ////////////////////////////////////////////////////////////
-    class CException : public std::exception
-    {
-    public :
+////////////////////////////////////////////////////////////
+/// Classe de base pour les exceptions
+////////////////////////////////////////////////////////////
+class CException: public std::exception
+{
+public:
 
-        //----------------------------------------------------------
-        // Constructeur
-        //----------------------------------------------------------
-        CException(const std::string& Message = "");
+	//----------------------------------------------------------
+	// Constructeur
+	//----------------------------------------------------------
+	CException(const std::string& Message = "");
 
-        //----------------------------------------------------------
-        // Destructeur
-        //----------------------------------------------------------
-        virtual ~CException() throw();
+	//----------------------------------------------------------
+	// Destructeur
+	//----------------------------------------------------------
+	virtual ~CException() throw ();
 
-        //----------------------------------------------------------
-        // Renvoie le message associï¿½ ï¿½ l'exception
-        //----------------------------------------------------------
-        virtual const char* what() const throw();
+	//----------------------------------------------------------
+	// Renvoie le message associï¿½ ï¿½ l'exception
+	//----------------------------------------------------------
+	virtual const char* what() const throw ();
 
-    protected :
+protected:
 
-        //----------------------------------------------------------
-        // Donnees membres
-        //----------------------------------------------------------
-        std::string m_Message; ///< Message dï¿½crivant l'exception
-    };
+	//----------------------------------------------------------
+	// Donnees membres
+	//----------------------------------------------------------
+	std::string m_Message; ///< Message dï¿½crivant l'exception
+};
 
-
-    ////////////////////////////////////////////////////////////
-    /// Exception lancï¿½e si une condition n'est pas vï¿½rifiï¿½e
-    ////////////////////////////////////////////////////////////
-    struct CAssertException : public CException
-    {
-        CAssertException(const std::string& File, int Line, const std::string& Message);
-    };
-    #ifdef _DEBUG
-    #   define Assert(condition) if (!(condition)) throw CAssertException(__FILE__, __LINE__, "Condition non satisfaite\n" #condition)
-    #else
-        inline void DoNothing(bool) {}
-    #   define Assert(condition) DoNothing(!(condition))
-    #endif
+////////////////////////////////////////////////////////////
+/// Exception lancï¿½e si une condition n'est pas vï¿½rifiï¿½e
+////////////////////////////////////////////////////////////
+struct CAssertException: public CException
+{
+	CAssertException(const std::string& File, int Line,
+			const std::string& Message);
+};
+#ifdef _DEBUG
+#   define Assert(condition) if (!(condition)) throw CAssertException(__FILE__, __LINE__, "Condition non satisfaite\n" #condition)
+#else
+inline void DoNothing(bool)
+{
+}
+#   define Assert(condition) DoNothing(!(condition))
+#endif
 
 //==========================================================
 // Exception lancee lors d'erreur de chargement de fichiers
 //==========================================================
-struct CLoadingFailed : public CException
+struct CLoadingFailed: public CException
 {
 	CLoadingFailed(const std::string& File, const std::string& Message);
 };
 
 ////////////////////////////////////////////////////////////
-/// Exception lancée lors d'une erreur de conversion
+/// Exception lancï¿½e lors d'une erreur de conversion
 ////////////////////////////////////////////////////////////
-struct CBadConversion : public CException
+struct CBadConversion: public CException
 {
- CBadConversion(const std::string& Error);
+	CBadConversion(const std::string& Error);
 };
 
-struct CLoggerException : public CException
+struct CLoggerException: public CException
 {
 	CLoggerException(const std::string& Message);
 };
-
 
 #endif // EXCEPTION_H

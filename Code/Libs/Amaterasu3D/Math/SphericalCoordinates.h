@@ -29,47 +29,46 @@
 
 namespace Math
 {
-	/** \brief Classe gerant une representation en coordonnees spheriques d'un vecteur
-	*/
-	class SphericalCoordinates
-	{
-	protected:
-		double m_module ;
-		double m_phy, m_theta ;
+/** \brief Classe gerant une representation en coordonnees spheriques d'un vecteur
+ */
+class SphericalCoordinates
+{
+protected:
+	double m_module;
+	double m_phy, m_theta;
 
-	private:
-		/** \brief R�cup�ration de l'angle entre le vecteur (1,0) et le vecteur (x,y) */
-		double Angle(double x, double y);
+private:
+	/** \brief R�cup�ration de l'angle entre le vecteur (1,0) et le vecteur (x,y) */
+	double Angle(double x, double y);
 
-	public:
-		/** \brief Changement du vecteur repr�sent� en coordonn�es sph�riques */
-		void Set(Math::TVector3F const & v);
+public:
+	/** \brief Changement du vecteur repr�sent� en coordonn�es sph�riques */
+	void Set(Math::TVector3F const & v);
 
-		/** \brief R�cup�ration du vecteur � partir des coordonn�es sph�riques */
-		Math::TVector3F Get() const;
+	/** \brief R�cup�ration du vecteur � partir des coordonn�es sph�riques */
+	Math::TVector3F Get() const;
 
-		/** \brief Construction des coordonn�es sph�riques sur la base d'un vecteur 3D */
-		SphericalCoordinates(Math::TVector3F const & v) ;
+	/** \brief Construction des coordonn�es sph�riques sur la base d'un vecteur 3D */
+	SphericalCoordinates(Math::TVector3F const & v);
 
-		/** \brief Renvoie l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
-		double GetTheta() const;
+	/** \brief Renvoie l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
+	double GetTheta() const;
 
-		/** \brief Changement de l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
-		void SetTheta(double v);
+	/** \brief Changement de l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
+	void SetTheta(double v);
 
+	/** \brief Renvoie l'angle entre le vecteur et le plan (x,y) */
+	double GetPhy() const;
 
-		/** \brief Renvoie l'angle entre le vecteur et le plan (x,y) */
-		double GetPhy() const;
+	/** \brief Changement de l'angle entre le vecteur et le plan (x,y) */
+	void SetPhy(double v);
 
-		/** \brief Changement de l'angle entre le vecteur et le plan (x,y) */
-		void SetPhy(double v);
+	/** \brief Renvoie le module */
+	double GetModule() const;
 
-		/** \brief Renvoie le module */
-		double GetModule() const;
-
-		/** \brief Changement du module */
-		void SetModule(double v);
-	} ;
+	/** \brief Changement du module */
+	void SetModule(double v);
+};
 }
 
 #endif /*SPHERICALCOORDINATES_H_*/

@@ -29,7 +29,7 @@
 SINGLETON_IMPL(CSceneManager)
 
 CSceneManager::CSceneManager() :
-	m_Root(new ISceneNode("Root", 0))
+		m_Root(new ISceneNode("Root", 0))
 {
 }
 
@@ -38,20 +38,22 @@ CSceneManager::~CSceneManager()
 	delete m_Root;
 }
 
-IMeshSceneNode* CSceneManager::LoadMesh(const std::string& file, ISceneNode* parent)
+IMeshSceneNode* CSceneManager::LoadMesh(const std::string& file,
+		ISceneNode* parent)
 {
 	IMeshSceneNode* mesh = IMeshSceneNode::LoadFromFile(file, file, parent);
 	m_Meshs.push_back(mesh);
 	return mesh;
 }
 
-ISimpleRenderableSceneNode* CSceneManager::CreateSimpleMesh(const SimpleMesh& type, const std::string& name, ISceneNode* node)
+ISimpleRenderableSceneNode* CSceneManager::CreateSimpleMesh(
+		const SimpleMesh& type, const std::string& name, ISceneNode* node)
 {
 	ISimpleRenderableSceneNode* obj = 0;
-	switch(type)
+	switch (type)
 	{
 	case MESH_CUBE:
-		obj =  new DebugCubeLeaf(name, node);
+		obj = new DebugCubeLeaf(name, node);
 		break;
 	case MESH_PLANE:
 		obj = new DebugPlaneLeaf(name, node);
@@ -74,8 +76,9 @@ void CSceneManager::RenderAll()
 	m_Root->UpdateTransformations();
 
 	// Render all Mesh
-	for(RenderableList::iterator it = m_Meshs.begin(); it != m_Meshs.end(); ++it)
-	{
+	for (RenderableList::iterator it = m_Meshs.begin(); it != m_Meshs.end();
+			++it)
+			{
 		(*it)->Render();
 	}
 }

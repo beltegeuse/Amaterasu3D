@@ -30,7 +30,7 @@
 #include <Enum.h>
 #include <tinyxml.h>
 
-class ShadersLoader : public ILoader<Shader>
+class ShadersLoader: public ILoader<Shader>
 {
 public:
 	ShadersLoader();

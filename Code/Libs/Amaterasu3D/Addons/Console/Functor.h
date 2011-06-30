@@ -26,7 +26,7 @@
 #define FUNCTOR_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <Utilities/SmartPtr.h>
 #include <Utilities/StringUtils.h>
@@ -40,12 +40,14 @@ namespace Console
 ////////////////////////////////////////////////////////////
 class IFunction
 {
-public :
+public:
 
 	//----------------------------------------------------------
 	// Destructeur virtuel
 	//----------------------------------------------------------
-	virtual ~IFunction() {}
+	virtual ~IFunction()
+	{
+	}
 
 	//----------------------------------------------------------
 	// Effectue l'appel de fonction
@@ -54,35 +56,32 @@ public :
 };
 
 ////////////////////////////////////////////////////////////
-/// Classe définissant un foncteur (objet fonction)
+/// Classe dï¿½finissant un foncteur (objet fonction)
 ////////////////////////////////////////////////////////////
 class CFunctor
 {
-public :
+public:
 
 	//----------------------------------------------------------
-	// Construit le foncteur à partir d'une fonction
+	// Construit le foncteur ï¿½ partir d'une fonction
 	//----------------------------------------------------------
 	CFunctor(IFunction* Func = NULL);
 
 	//----------------------------------------------------------
-	// Effectue l'appel à la fonction
+	// Effectue l'appel ï¿½ la fonction
 	//----------------------------------------------------------
 	std::string operator ()(const std::string& Params = "") const;
 
-private :
+private:
 
 	//----------------------------------------------------------
-	// Données membres
+	// Donnï¿½es membres
 	//----------------------------------------------------------
 	CSmartPtr<IFunction> m_Function; ///< Pointeur sur l'objet stockant la fonction
 };
 
 #include "Functor.inl"
 
-
-
 } // namespace Console
-
 
 #endif // FUNCTOR_H

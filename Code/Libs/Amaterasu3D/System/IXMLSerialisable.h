@@ -31,11 +31,12 @@
 class IXMLSerialisable
 {
 public:
-	virtual ~IXMLSerialisable() {};
+	virtual ~IXMLSerialisable()
+	{
+	}
 
 	virtual void WriteXML(TiXmlElement * element) const;
 	virtual void void ReadXML(TiXmlElement * element);
 };
-
 
 #endif /* IXMLSERIALISABLE_H_ */

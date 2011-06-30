@@ -31,108 +31,107 @@
 #include <Math/Vector2.h>
 #include <iostream>
 
-
 // TODO : mettre ailleurs !
 ////////////////////////////////////////////////////////////
 /// Types d'intersections
 ////////////////////////////////////////////////////////////
 enum TIntersection
 {
-    INT_IN,        ///< Completement a l'interieur
-    INT_OUT,       ///< Completement a l'exterieur
-    INT_INTERSECTS ///< Intersection
+	INT_IN, ///< Completement a l'interieur
+	INT_OUT, ///< Completement a l'exterieur
+	INT_INTERSECTS
+///< Intersection
 };
-
 
 namespace Math
 {
-    ////////////////////////////////////////////////////////////
-    /// Class des rectangles 2D a coordonnees entieres
-    ////////////////////////////////////////////////////////////
-    class CRectangle
-    {
-    public :
+////////////////////////////////////////////////////////////
+/// Class des rectangles 2D a coordonnees entieres
+////////////////////////////////////////////////////////////
+class CRectangle
+{
+public:
 
-        //----------------------------------------------------------
-        // Constructeur par defaut
-        //----------------------------------------------------------
-        CRectangle(const TVector2I& Start = TVector2I(0, 0), const TVector2I& Size = TVector2I(0, 0));
+	//----------------------------------------------------------
+	// Constructeur par defaut
+	//----------------------------------------------------------
+	CRectangle(const TVector2I& Start = TVector2I(0, 0), const TVector2I& Size =
+			TVector2I(0, 0));
 
-        //----------------------------------------------------------
-        // Constructeur e partir de 2 coordonnees et 2 dimensions
-        //----------------------------------------------------------
-        CRectangle(int Left, int Top, int Width, int Height);
+	//----------------------------------------------------------
+	// Constructeur e partir de 2 coordonnees et 2 dimensions
+	//----------------------------------------------------------
+	CRectangle(int Left, int Top, int Width, int Height);
 
-        //----------------------------------------------------------
-        // Reinitialise le rectangle
-        //----------------------------------------------------------
-        void Set(int Left, int Top, int Width, int Height);
+	//----------------------------------------------------------
+	// Reinitialise le rectangle
+	//----------------------------------------------------------
+	void Set(int Left, int Top, int Width, int Height);
 
-        //----------------------------------------------------------
-        // Renvoie le cote gauche du rectangle
-        //----------------------------------------------------------
-        int Left() const;
+	//----------------------------------------------------------
+	// Renvoie le cote gauche du rectangle
+	//----------------------------------------------------------
+	int Left() const;
 
-        //----------------------------------------------------------
-        // Renvoie le cote droit du rectangle
-        //----------------------------------------------------------
-        int Right() const;
+	//----------------------------------------------------------
+	// Renvoie le cote droit du rectangle
+	//----------------------------------------------------------
+	int Right() const;
 
-        //----------------------------------------------------------
-        // Renvoie le cote haut du rectangle
-        //----------------------------------------------------------
-        int Top() const;
+	//----------------------------------------------------------
+	// Renvoie le cote haut du rectangle
+	//----------------------------------------------------------
+	int Top() const;
 
-        //----------------------------------------------------------
-        // Renvoie le cote bas du rectangle
-        //----------------------------------------------------------
-        int Bottom() const;
+	//----------------------------------------------------------
+	// Renvoie le cote bas du rectangle
+	//----------------------------------------------------------
+	int Bottom() const;
 
-        //----------------------------------------------------------
-        // Renvoie la largeur du rectangle
-        //----------------------------------------------------------
-        int Width() const;
+	//----------------------------------------------------------
+	// Renvoie la largeur du rectangle
+	//----------------------------------------------------------
+	int Width() const;
 
-        //----------------------------------------------------------
-        // Renvoie la hauteur du rectangle
-        //----------------------------------------------------------
-        int Height() const;
+	//----------------------------------------------------------
+	// Renvoie la hauteur du rectangle
+	//----------------------------------------------------------
+	int Height() const;
 
-        //----------------------------------------------------------
-        // Renvoie la taille du rectangle
-        //----------------------------------------------------------
-        TVector2I Size() const;
+	//----------------------------------------------------------
+	// Renvoie la taille du rectangle
+	//----------------------------------------------------------
+	TVector2I Size() const;
 
-        //----------------------------------------------------------
-        // Test d'intersection avec un point
-        //----------------------------------------------------------
-        TIntersection Intersects(const TVector2I& Point) const;
+	//----------------------------------------------------------
+	// Test d'intersection avec un point
+	//----------------------------------------------------------
+	TIntersection Intersects(const TVector2I& Point) const;
 
-        //----------------------------------------------------------
-        // Test d'intersection avec un rectangle
-        //----------------------------------------------------------
-        TIntersection Intersects(const CRectangle& Rect) const;
+	//----------------------------------------------------------
+	// Test d'intersection avec un rectangle
+	//----------------------------------------------------------
+	TIntersection Intersects(const CRectangle& Rect) const;
 
-        //----------------------------------------------------------
-        // Operateurs de comparaison
-        //----------------------------------------------------------
-        bool operator ==(const CRectangle& Rect) const;
-        bool operator !=(const CRectangle& Rect) const;
+	//----------------------------------------------------------
+	// Operateurs de comparaison
+	//----------------------------------------------------------
+	bool operator ==(const CRectangle& Rect) const;
+	bool operator !=(const CRectangle& Rect) const;
 
-        //----------------------------------------------------------
-        // Donnees membres
-        //----------------------------------------------------------
-        TVector2I Origin; ///< Coin haut-gauche
-        TVector2I End;    ///< Coin bas-droit
-    };
+	//----------------------------------------------------------
+	// Donnees membres
+	//----------------------------------------------------------
+	TVector2I Origin; ///< Coin haut-gauche
+	TVector2I End; ///< Coin bas-droit
+};
 
-    //==========================================================
-    // Fonctions globales relatives aux rectangles
-    //==========================================================
-    std::istream& operator >>(std::ostream& Stream, CRectangle& Rect);
-    std::ostream& operator <<(std::ostream& Stream, const CRectangle& Rect);
+//==========================================================
+// Fonctions globales relatives aux rectangles
+//==========================================================
+std::istream& operator >>(std::ostream& Stream, CRectangle& Rect);
+std::ostream& operator <<(std::ostream& Stream, const CRectangle& Rect);
 
 } // namespace Yes
-
 
 #endif // RECTANGLE_H

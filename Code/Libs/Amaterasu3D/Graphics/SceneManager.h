@@ -41,13 +41,12 @@
 
 enum SimpleMesh
 {
-	MESH_CUBE,
-	MESH_PLANE
+	MESH_CUBE, MESH_PLANE
 };
 
-class CSceneManager : public CSingleton<CSceneManager>
+class CSceneManager: public CSingleton<CSceneManager>
 {
-	MAKE_SINGLETON(CSceneManager)
+MAKE_SINGLETON(CSceneManager)
 protected:
 	/*
 	 * Typedef
@@ -74,7 +73,6 @@ public:
 	CSceneManager();
 	virtual ~CSceneManager();
 
-
 	/*
 	 * Public methods
 	 */
@@ -82,7 +80,8 @@ public:
 	ISceneNode* CreateSceneNode(ISceneNode* parent = 0);
 	ILightSceneNode* CreateLightNode(ISceneNode* parent = 0);
 	ICameraSceneNode* CreateCameraNode(ISceneNode* parent = 0);
-	ISimpleRenderableSceneNode* CreateSimpleMesh(const SimpleMesh& type, const std::string& name, ISceneNode* node);
+	ISimpleRenderableSceneNode* CreateSimpleMesh(const SimpleMesh& type,
+			const std::string& name, ISceneNode* node);
 	IMeshSceneNode* LoadMesh(const std::string& file, ISceneNode* parent = 0);
 
 	// Add Root

@@ -25,102 +25,149 @@
 
 bool GetSDLChar(SDL_Event& event, char* c)
 {
-	switch(event.key.keysym.sym)
+	switch (event.key.keysym.sym)
 	{
 	case SDLK_q:
-		(*c) = 'q'; break;
+		(*c) = 'q';
+		break;
 	case SDLK_w:
-			(*c) = 'w'; break;
+		(*c) = 'w';
+		break;
 	case SDLK_e:
-			(*c) = 'e'; break;
+		(*c) = 'e';
+		break;
 	case SDLK_r:
-			(*c) = 'r'; break;
+		(*c) = 'r';
+		break;
 	case SDLK_t:
-			(*c) = 't'; break;
+		(*c) = 't';
+		break;
 	case SDLK_y:
-			(*c) = 'y'; break;
+		(*c) = 'y';
+		break;
 	case SDLK_u:
-			(*c) = 'u'; break;
+		(*c) = 'u';
+		break;
 	case SDLK_i:
-			(*c) = 'i'; break;
+		(*c) = 'i';
+		break;
 	case SDLK_o:
-			(*c) = 'o'; break;
+		(*c) = 'o';
+		break;
 	case SDLK_p:
-			(*c) = 'p'; break;
+		(*c) = 'p';
+		break;
 	case SDLK_a:
-			(*c) = 'a'; break;
+		(*c) = 'a';
+		break;
 	case SDLK_s:
-			(*c) = 's'; break;
+		(*c) = 's';
+		break;
 	case SDLK_d:
-			(*c) = 'd'; break;
+		(*c) = 'd';
+		break;
 	case SDLK_f:
-			(*c) = 'f'; break;
+		(*c) = 'f';
+		break;
 	case SDLK_g:
-			(*c) = 'g'; break;
+		(*c) = 'g';
+		break;
 	case SDLK_h:
-			(*c) = 'h'; break;
+		(*c) = 'h';
+		break;
 	case SDLK_j:
-			(*c) = 'j'; break;
+		(*c) = 'j';
+		break;
 	case SDLK_k:
-			(*c) = 'k'; break;
+		(*c) = 'k';
+		break;
 	case SDLK_l:
-			(*c) = 'l'; break;
+		(*c) = 'l';
+		break;
 	case SDLK_z:
-			(*c) = 'z'; break;
+		(*c) = 'z';
+		break;
 	case SDLK_x:
-			(*c) = 'x'; break;
+		(*c) = 'x';
+		break;
 	case SDLK_c:
-			(*c) = 'c'; break;
+		(*c) = 'c';
+		break;
 	case SDLK_v:
-			(*c) = 'v'; break;
+		(*c) = 'v';
+		break;
 	case SDLK_b:
-			(*c) = 'b'; break;
+		(*c) = 'b';
+		break;
 	case SDLK_n:
-			(*c) = 'n'; break;
+		(*c) = 'n';
+		break;
 	case SDLK_m:
-			(*c) = 'm'; break;
+		(*c) = 'm';
+		break;
 	case SDLK_0:
-		(*c) = '0'; break;
+		(*c) = '0';
+		break;
 	case SDLK_1:
-		(*c) = '1'; break;
+		(*c) = '1';
+		break;
 	case SDLK_2:
-		(*c) = '2'; break;
+		(*c) = '2';
+		break;
 	case SDLK_3:
-		(*c) = '3'; break;
+		(*c) = '3';
+		break;
 	case SDLK_4:
-		(*c) = '4'; break;
+		(*c) = '4';
+		break;
 	case SDLK_5:
-		(*c) = '5'; break;
+		(*c) = '5';
+		break;
 	case SDLK_6:
-		(*c) = '6'; break;
+		(*c) = '6';
+		break;
 	case SDLK_7:
-		(*c) = '7'; break;
+		(*c) = '7';
+		break;
 	case SDLK_8:
-		(*c) = '8'; break;
+		(*c) = '8';
+		break;
 	case SDLK_9:
-		(*c) = '9'; break;
+		(*c) = '9';
+		break;
 	case SDLK_SPACE:
-		(*c) = ' '; break;
+		(*c) = ' ';
+		break;
 	case SDLK_RETURN:
-		(*c) = '\n'; break;
+		(*c) = '\n';
+		break;
 	case SDLK_RETURN2:
-		(*c) = '\n'; break;
+		(*c) = '\n';
+		break;
 	case SDLK_HASH:
-		(*c) = '#'; break;
+		(*c) = '#';
+		break;
 	case SDLK_QUOTE:
-		(*c) = '"'; break;
+		(*c) = '"';
+		break;
 	case SDLK_RIGHTPAREN:
-		(*c) = ')'; break;
+		(*c) = ')';
+		break;
 	case SDLK_LEFTPAREN:
-		(*c) = '('; break;
+		(*c) = '(';
+		break;
 	case SDLK_RIGHTBRACKET:
-		(*c) = ']'; break;
+		(*c) = ']';
+		break;
 	case SDLK_LEFTBRACKET:
-		(*c) = '['; break;
+		(*c) = '[';
+		break;
 	case SDLK_SLASH:
-		(*c) = '/'; break;
+		(*c) = '/';
+		break;
 	case SDLK_BACKSPACE:
-		(*c) = '\b'; break;
+		(*c) = '\b';
+		break;
 	default:
 		return false;
 	}

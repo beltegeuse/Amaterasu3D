@@ -22,22 +22,20 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <System/ResourceManager.h>
 #include <Logger/Logger.h>
 #include <Debug/Exceptions.h>
 
 ////////////////////////////////////////////////////////////
-// Implémentation des méthodes du singleton
+// Implï¿½mentation des mï¿½thodes du singleton
 ////////////////////////////////////////////////////////////
 SINGLETON_IMPL(CResourceManager)
 
-
 /////////////////////////////////////////////////////////////
-/// Constructeur par défaut
+/// Constructeur par dï¿½faut
 ///
 ////////////////////////////////////////////////////////////
 CResourceManager::CResourceManager()
@@ -45,62 +43,60 @@ CResourceManager::CResourceManager()
 
 }
 
-
 /////////////////////////////////////////////////////////////
 /// Destructeur
 ///
 ////////////////////////////////////////////////////////////
 CResourceManager::~CResourceManager()
 {
-    // S'il reste des ressources dans la liste, on le signale
-    if (!m_Resources.empty())
-    {
-        Logger::Log() << "** warning ** leak resources :\n";
+	// S'il reste des ressources dans la liste, on le signale
+	if (!m_Resources.empty())
+	{
+		Logger::Log() << "** warning ** leak resources :\n";
 
-        for (TResourcesMap::const_iterator i = m_Resources.begin(); i != m_Resources.end(); ++i)
-        {
-            Logger::Log() << " - " << i->second->GetName() << "\n";
-        }
-    }
+		for (TResourcesMap::const_iterator i = m_Resources.begin();
+				i != m_Resources.end(); ++i)
+				{
+			Logger::Log() << " - " << i->second->GetName() << "\n";
+		}
+	}
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Ajoute une ressource
 ///
-/// \param Name :     Nom associé à la ressource
-/// \param Resource : Pointeur sur la ressource à ajouter
+/// \param Name :     Nom associï¿½ ï¿½ la ressource
+/// \param Resource : Pointeur sur la ressource ï¿½ ajouter
 ///
 ////////////////////////////////////////////////////////////
 void CResourceManager::Add(const std::string& Name, IResource* Resource)
 {
-    Assert(Resource != NULL);
+	Assert(Resource != NULL);
 
-    // Si la ressource avait déjà été chargée, on le signale
-    if (m_Resources.find(Name) != m_Resources.end())
-        Logger::Log() << Name << " : ressource déjà chargée !\n";
+	// Si la ressource avait dï¿½jï¿½ ï¿½tï¿½ chargï¿½e, on le signale
+	if (m_Resources.find(Name) != m_Resources.end())
+		Logger::Log() << Name << " : ressource dï¿½jï¿½ chargï¿½e !\n";
 
-    // Ajout de la ressource à la liste
-    m_Resources[Name] = Resource;
-    Resource->m_Name = Name;
+	// Ajout de la ressource ï¿½ la liste
+	m_Resources[Name] = Resource;
+	Resource->m_Name = Name;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Retire une ressource
 ///
-/// \param Name : Nom de la ressource à retirer
+/// \param Name : Nom de la ressource ï¿½ retirer
 ///
 ////////////////////////////////////////////////////////////
 void CResourceManager::Remove(const std::string& Name)
 {
-    // Recherche de la ressource dans la table
-    TResourcesMap::iterator It = m_Resources.find(Name);
+	// Recherche de la ressource dans la table
+	TResourcesMap::iterator It = m_Resources.find(Name);
 
-    // Si la ressource n'avait pas été chargée, on le signale
-    if (It == m_Resources.end())
-        Logger::Log() << Name << " : ressource détruite mais non-chargée !\n";
+	// Si la ressource n'avait pas ï¿½tï¿½ chargï¿½e, on le signale
+	if (It == m_Resources.end())
+		Logger::Log() << Name << " : ressource dï¿½truite mais non-chargï¿½e !\n";
 
-    // Retrait de la ressource de la liste
-    m_Resources.erase(It);
+	// Retrait de la ressource de la liste
+	m_Resources.erase(It);
 }

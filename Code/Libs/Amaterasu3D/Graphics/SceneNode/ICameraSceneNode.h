@@ -29,7 +29,7 @@
 #include <Graphics/SceneNode/ISceneNode.h>
 #include <Math/Matrix4.h>
 
-class ICameraSceneNode : public ISceneNode
+class ICameraSceneNode: public ISceneNode
 {
 private:
 	/*

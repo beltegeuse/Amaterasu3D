@@ -28,22 +28,25 @@ SINGLETON_IMPL(CEventManager)
 
 void CEventManager::OnEvent(SDL_Event& event)
 {
-	for(TListenerManagerMap::iterator it = m_Managers.begin(); it != m_Managers.end(); ++it)
-	{
+	for (TListenerManagerMap::iterator it = m_Managers.begin();
+			it != m_Managers.end(); ++it)
+			{
 		it->second->OnEvent(event);
 	}
 }
 void CEventManager::OnUpdate(double delta)
 {
-	for(TListenerManagerMap::iterator it = m_Managers.begin(); it != m_Managers.end(); ++it)
-	{
+	for (TListenerManagerMap::iterator it = m_Managers.begin();
+			it != m_Managers.end(); ++it)
+			{
 		it->second->OnUpdate(delta);
 	}
 }
 void CEventManager::OnEndRender()
 {
-	for(TListenerManagerMap::iterator it = m_Managers.begin(); it != m_Managers.end(); ++it)
-	{
+	for (TListenerManagerMap::iterator it = m_Managers.begin();
+			it != m_Managers.end(); ++it)
+			{
 		it->second->OnEndRender();
 	}
 }

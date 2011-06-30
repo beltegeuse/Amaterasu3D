@@ -26,30 +26,29 @@
 #define SMARTPTR_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <cstdlib>
 #include <Utilities/SmartPtrPolicies.h>
 #include <Debug/Exceptions.h>
 
+////////////////////////////////////////////////////////////
+// Dï¿½clarations anticipï¿½es
+////////////////////////////////////////////////////////////
+template<class, template<class > class> class CSmartPtr;
+template<class T, template<class > class Ownership> T*& GetPtr(
+		CSmartPtr<T, Ownership>& Ptr);
 
 ////////////////////////////////////////////////////////////
-// Déclarations anticipées
+/// Pointeurs intelligents ï¿½ base de polices
 ////////////////////////////////////////////////////////////
-template <class, template <class> class> class CSmartPtr;
-template <class T, template <class> class Ownership> T*& GetPtr(CSmartPtr<T, Ownership>& Ptr);
-
-
-////////////////////////////////////////////////////////////
-/// Pointeurs intelligents à base de polices
-////////////////////////////////////////////////////////////
-template <class T, template <class> class Ownership = CRefCount>
-class CSmartPtr : public Ownership<T>
+template<class T, template<class > class Ownership = CRefCount>
+class CSmartPtr: public Ownership<T>
 {
-public :
+public:
 
 	//----------------------------------------------------------
-	// Constructeur par défaut
+	// Constructeur par dï¿½faut
 	//----------------------------------------------------------
 	CSmartPtr();
 
@@ -59,7 +58,7 @@ public :
 	CSmartPtr(const CSmartPtr& Copy);
 
 	//----------------------------------------------------------
-	// Constructeur à partir d'un pointeur
+	// Constructeur ï¿½ partir d'un pointeur
 	//----------------------------------------------------------
 	CSmartPtr(T* Pointer);
 
@@ -69,27 +68,27 @@ public :
 	~CSmartPtr();
 
 	//----------------------------------------------------------
-	// Opérateurs de déréférencement
+	// Opï¿½rateurs de dï¿½rï¿½fï¿½rencement
 	//----------------------------------------------------------
-	T& operator * () const;
+	T& operator *() const;
 	T* operator ->() const;
 
 	//----------------------------------------------------------
-	// Opérateur d'affectation
+	// Opï¿½rateur d'affectation
 	//----------------------------------------------------------
 	const CSmartPtr& operator =(const CSmartPtr& Pointer);
 
 	//----------------------------------------------------------
-	// Opérateur d'affectation (à partir d'un pointeur brut)
+	// Opï¿½rateur d'affectation (ï¿½ partir d'un pointeur brut)
 	//----------------------------------------------------------
 	const CSmartPtr& operator =(T* Ptr);
 
 	//----------------------------------------------------------
-	// Opérateur de cast en T*
+	// Opï¿½rateur de cast en T*
 	//----------------------------------------------------------
 	operator T*() const;
 
-private :
+private:
 
 	//----------------------------------------------------------
 	// Amis
@@ -102,13 +101,11 @@ private :
 	void Swap(CSmartPtr& Ptr);
 
 	//----------------------------------------------------------
-	// Données membres
+	// Donnï¿½es membres
 	//----------------------------------------------------------
-	T* m_Data; ///< Pointeur vers la données stockée
+	T* m_Data; ///< Pointeur vers la donnï¿½es stockï¿½e
 };
 
 #include "SmartPtr.inl"
-
-
 
 #endif // SMARTPTR_H

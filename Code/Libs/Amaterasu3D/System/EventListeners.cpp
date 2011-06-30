@@ -71,7 +71,8 @@ WindowListener::~WindowListener()
 }
 
 InputListener::InputListener()
-{}
+{
+}
 
 InputListener::~InputListener()
 {

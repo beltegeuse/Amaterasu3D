@@ -3,15 +3,16 @@
 
 #include <Debug/Exceptions.h>
 
-struct GraphicsDeviceException : public CException
+struct GraphicsDeviceException: public CException
 {
 	GraphicsDeviceException(const std::string& reason) :
-		CException("[GrapicsDevice] " + reason)
+			CException("[GrapicsDevice] " + reason)
 	{
 	}
 };
 
-class GraphicsDevice {
+class GraphicsDevice
+{
 public:
 	/*
 	 * Constructors & destructors

@@ -36,7 +36,7 @@
 ////////////////////////////////////////
 /// Exception class For ShaderCompiler
 ////////////////////////////////////////
-struct CShaderCompilerException : public CException
+struct CShaderCompilerException: public CException
 {
 	CShaderCompilerException(const std::string& message, int line = -1);
 };
@@ -55,15 +55,24 @@ private:
 	typedef std::map<std::string, std::string> DefineMap;
 	DefineMap m_Defines;
 public:
-	ShaderCompilerConfig() {}
-	virtual ~ShaderCompilerConfig() {}
+	ShaderCompilerConfig()
+	{
+	}
+	virtual ~ShaderCompilerConfig()
+	{
+	}
 
 	void AddDefine(const std::string& name, const std::string& value)
-	{ m_Defines[name] = value; }
+	{
+		m_Defines[name] = value;
+	}
 
 private:
 	friend class ShaderCompiler;
-	DefineMap GetDefines() { return m_Defines; }
+	DefineMap GetDefines()
+	{
+		return m_Defines;
+	}
 };
 
 ////////////////////////////////////////
@@ -81,7 +90,8 @@ public:
 	/*
 	 * Constructors and Destructors
 	 */
-	ShaderCompiler(const std::string& code, const ShaderCompilerConfig& config = ShaderCompilerConfig());
+	ShaderCompiler(const std::string& code, const ShaderCompilerConfig& config =
+			ShaderCompilerConfig());
 	virtual ~ShaderCompiler();
 
 	/*

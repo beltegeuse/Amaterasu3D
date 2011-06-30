@@ -32,7 +32,8 @@
 // Other includes
 #include <GL/gl.h>
 
-class RenderableObject {
+class RenderableObject
+{
 public:
 	/*
 	 * Structure definition
@@ -72,7 +73,8 @@ public:
 	 */
 	void SetIndiceBuffer(unsigned int* buffer, int size);
 	// Add differents buffers
-	void AddBuffer(RenderableObject::RenderableBuffer buffer, ShaderAttributType type);
+	void AddBuffer(RenderableObject::RenderableBuffer buffer,
+			ShaderAttributType type);
 	void AddTextureMap(TextureType type, TTexturePtr texture);
 	void AddMaterial(MaterialType type, Color color);
 	// Compile all buffers

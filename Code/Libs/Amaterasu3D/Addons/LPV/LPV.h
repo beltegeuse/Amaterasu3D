@@ -73,7 +73,8 @@ public:
 	/*
 	 * Constructors and Destructors
 	 */
-	LPV(int nbCells = 32, int sizeCells = 16, int propagationSteps = 8, int nbLevels = 2);
+	LPV(int nbCells = 32, int sizeCells = 16, int propagationSteps = 8,
+			int nbLevels = 2);
 	virtual ~LPV();
 
 	/*
@@ -90,16 +91,22 @@ public:
 	{
 		// WARNING : Don't forgot to update the uniform update on Lighting pass
 		//FIXME: MODIFY METHODS !!!
-		shader->SetUniformVectorArray("LPVPosition[0]", m_NbCascadedLevels, m_GirdPosition);
-		shader->SetUniformVector("LPVSize",Math::TVector4F(m_TextureSize.x,m_TextureSize.y,m_TextureRepeat.x,m_TextureRepeat.y));
-		shader->SetUniform1fv("LPVCellSize[0]",m_NbCascadedLevels, m_CellSize);
+		shader->SetUniformVectorArray("LPVPosition[0]", m_NbCascadedLevels,
+				m_GirdPosition);
+		shader->SetUniformVector(
+				"LPVSize",
+				Math::TVector4F(m_TextureSize.x, m_TextureSize.y,
+						m_TextureRepeat.x, m_TextureRepeat.y));
+		shader->SetUniform1fv("LPVCellSize[0]", m_NbCascadedLevels, m_CellSize);
 		shader->SetUniform1i("LPVNbCell", m_NbCellDim);
 	}
 
 	void DrawGrids();
 	void DrawGrid(int level);
 	int GetNumberCascade() const
-	{ return m_NbCascadedLevels; }
+	{
+		return m_NbCascadedLevels;
+	}
 
 	//TODO: Can fusion Inject methods
 	///////////////////////////////////
@@ -112,7 +119,8 @@ public:
 	///////////////////////////////////
 	/// Injection Geometry Pass
 	///////////////////////////////////
-	void InjectGeometryFromLight(LightShaders& shader, RenderableObject& samples);
+	void InjectGeometryFromLight(LightShaders& shader,
+			RenderableObject& samples);
 	void BeginInjectionGeometryPass(int level);
 	void EndInjectionGeometryPass();
 	///////////////////////////////////
@@ -131,8 +139,8 @@ public:
 
 private:
 	void GenerateGridModels();
-	void CreateGridModel(ISimpleRenderableSceneNode** model, int nbCellDim, int CellSize );
-
+	void CreateGridModel(ISimpleRenderableSceneNode** model, int nbCellDim,
+			int CellSize);
 
 };
 

@@ -45,22 +45,22 @@
 //*********************************************************
 //*********************************************************
 
-
-ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type, const ShaderCompilerConfig& config)
+ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type,
+		const ShaderCompilerConfig& config)
 {
 	Logger::Log() << "[INFO] Compile shader file : " << path << "\n";
 	// ID Creation
-	if(type == VERTEX_SHADER)
+	if (type == VERTEX_SHADER)
 	{
 		Logger::Log() << "  * Shader type : VERTEX \n";
-		m_ID = glCreateShaderObjectARB (GL_VERTEX_SHADER_ARB);
+		m_ID = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
 	}
-	else if(type == FRAGMENT_SHADER)
+	else if (type == FRAGMENT_SHADER)
 	{
 		Logger::Log() << "  * Shader type : FRAGMENT \n";
 		m_ID = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
 	}
-	else if(type == GEOMETRY_SHADER)
+	else if (type == GEOMETRY_SHADER)
 	{
 		Logger::Log() << "  * Shader type : GEOMETRY \n";
 		m_ID = glCreateShaderObjectARB(GL_GEOMETRY_SHADER_ARB);
@@ -68,23 +68,23 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type, cons
 	else
 		throw CException("Unknow shader type ...");
 	// Use own shader Compiler to add extra stuff to GLSL langage
-	ShaderCompiler compiler(LoadFile (path),config);
+	ShaderCompiler compiler(LoadFile(path), config);
 	compiler.Compile();
 	const std::string source = compiler.GetCode();
 	// Use GLSL To compile the current shader code
 	const char * bufferPtr = source.c_str();
 	GLint lenght = source.size();
-	glShaderSource (m_ID, 1, &bufferPtr, &lenght ) ;
+	glShaderSource(m_ID, 1, &bufferPtr, &lenght);
 	// Compile the shader
 	Logger::Log() << "  * Building .... \n";
-	glCompileShader (m_ID) ;
+	glCompileShader(m_ID);
 	// Show all the Complilation log
 	ShowCompilerLog(m_ID, compiler);
 	// Check if it's compiled
 	GLint compiled = 0;
 	glGetObjectParameterivARB(m_ID, GL_COMPILE_STATUS, &compiled);
-	if(!compiled)
-		throw CException("compile problem on "+path);
+	if (!compiled)
+		throw CException("compile problem on " + path);
 }
 
 ShaderUnit::~ShaderUnit()
@@ -93,18 +93,18 @@ ShaderUnit::~ShaderUnit()
 
 void ShaderUnit::ShowCompilerLog(unsigned int id, ShaderCompiler& compiler)
 {
-	if(id == 0)
+	if (id == 0)
 	{
 		throw CException("invalid Shader program");
 	}
 	GLint blen = 0;
 	GLsizei slen = 0;
-	glGetShaderiv(id, GL_INFO_LOG_LENGTH , &blen);
+	glGetShaderiv(id, GL_INFO_LOG_LENGTH, &blen);
 	if (blen > 1)
 	{
-		GLcharARB* compilerLog = (GLcharARB*)malloc(blen);
+		GLcharARB* compilerLog = (GLcharARB*) malloc(blen);
 		glGetInfoLogARB(id, blen, &slen, compilerLog);
-		if(compilerLog!=0)
+		if (compilerLog != 0)
 		{
 			Logger::Log() << "[LOG] **** Compiler LOG **** \n";
 			//Logger::Log() << compilerLog;
@@ -133,7 +133,7 @@ const std::string ShaderUnit::LoadFile(const std::string& path)
 	Logger::Log() << "[INFO] LoadFile : " << path << "\n";
 	std::ifstream file(path.c_str(), std::ios::in);
 	// Check if the file is open
-	if(!file) // if not
+	if (!file) // if not
 	{
 		throw CLoadingFailed(path, "enable to load the source shader");
 	}

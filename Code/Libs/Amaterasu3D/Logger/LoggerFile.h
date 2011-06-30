@@ -10,9 +10,7 @@
 #include <iostream>
 #include <fstream>
 
-
-
-class LoggerFile : public Logger
+class LoggerFile: public Logger
 {
 private:
 	/**

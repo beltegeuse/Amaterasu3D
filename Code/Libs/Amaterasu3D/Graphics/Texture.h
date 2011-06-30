@@ -40,12 +40,8 @@ public:
 	GLenum TextureMode;
 
 	TextureParams(GLenum textureMode) :
-		SWrap(GL_REPEAT),
-		TWrap(GL_REPEAT),
-		MinFiltering(GL_LINEAR),
-		MaxFiltering(GL_LINEAR),
-		EnvMode(0),
-		TextureMode(textureMode)
+			SWrap(GL_REPEAT), TWrap(GL_REPEAT), MinFiltering(GL_LINEAR), MaxFiltering(
+					GL_LINEAR), EnvMode(0), TextureMode(textureMode)
 	{
 	}
 
@@ -55,7 +51,7 @@ public:
 		glTexParameterf(TextureMode, GL_TEXTURE_WRAP_T, TWrap);
 		glTexParameteri(TextureMode, GL_TEXTURE_MAG_FILTER, MaxFiltering);
 		glTexParameteri(TextureMode, GL_TEXTURE_MIN_FILTER, MinFiltering);
-		if(EnvMode)
+		if (EnvMode)
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, EnvMode);
 	}
 
@@ -64,23 +60,25 @@ public:
 	}
 };
 
-class Texture2DParams : public TextureParams
+class Texture2DParams: public TextureParams
 {
 public:
 	Texture2DParams() :
-		TextureParams(GL_TEXTURE_2D)
-	{}
+			TextureParams(GL_TEXTURE_2D)
+	{
+	}
 };
 
-class Texture3DParams : public TextureParams
+class Texture3DParams: public TextureParams
 {
 public:
 	Texture3DParams() :
-		TextureParams(GL_TEXTURE_3D)
-	{}
+			TextureParams(GL_TEXTURE_3D)
+	{
+	}
 };
 
-class Texture2DMipmapsParams : public Texture2DParams
+class Texture2DMipmapsParams: public Texture2DParams
 {
 public:
 	Texture2DMipmapsParams()
@@ -90,7 +88,7 @@ public:
 };
 
 //Class Texture
-class Texture : public IResource
+class Texture: public IResource
 {
 
 protected:
@@ -98,16 +96,18 @@ protected:
 	//Pointeur sur la texture
 	GLuint m_idTex;
 	//Donnees
-	GLenum  m_TextureMode;
+	GLenum m_TextureMode;
 
-public :
+public:
 
 	// ======== Constructeurs & Destructeur
-	Texture(bool create = true, GLuint id = 0, GLenum textureMode = GL_TEXTURE_2D);
+	Texture(bool create = true, GLuint id = 0, GLenum textureMode =
+			GL_TEXTURE_2D);
 	virtual ~Texture();
 
 	// Static methods to load textures
-	static CSmartPtr<Texture, CResourceCOM> LoadFromFile(const std::string& name);
+	static CSmartPtr<Texture, CResourceCOM> LoadFromFile(
+			const std::string& name);
 
 	// ======== OpenGL methodes
 	//   * Pour les methodes normales
@@ -128,6 +128,5 @@ public :
 };
 
 typedef CSmartPtr<Texture, CResourceCOM> TTexturePtr;
-
 
 #endif

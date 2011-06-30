@@ -30,7 +30,7 @@
 /////////////////////////////////
 // Classe to show performances
 /////////////////////////////////
-class FPS : public FrameListener
+class FPS: public FrameListener
 {
 private:
 	/*

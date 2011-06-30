@@ -25,11 +25,10 @@
 #include "PhotographicToneOperator.h"
 
 PhotographicToneOperator::PhotographicToneOperator() :
-	AbsrtactToneOperator(),
-	m_ManualMipmapping(128),
-	m_AdaptationLum(0)
+		AbsrtactToneOperator(), m_ManualMipmapping(128), m_AdaptationLum(0)
 {
-	m_PhotoShader = CShaderManager::Instance().LoadShader("PhotoToneOperator.shader");
+	m_PhotoShader = CShaderManager::Instance().LoadShader(
+			"PhotoToneOperator.shader");
 	m_ManualMipmapping.Initialize();
 	m_AdaptationLum = new AdaptationLuminanceSimple;
 }
@@ -51,15 +50,16 @@ void PhotographicToneOperator::Compress(Texture* HDRBuffer)
 	m_AdaptationLum->UpdateLuminance(&m_ManualMipmapping);
 
 	m_PhotoShader->Begin();
-	HDRBuffer->activateMultiTex(CUSTOM_TEXTURE+0);
-	m_PhotoShader->SetUniform1f("AdaptationLum", m_AdaptationLum->GetAdaptationLuminance());
+	HDRBuffer->activateMultiTex(CUSTOM_TEXTURE + 0);
+	m_PhotoShader->SetUniform1f("AdaptationLum",
+			m_AdaptationLum->GetAdaptationLuminance());
 	glBegin(GL_QUADS);
-		glVertex2f(-1.0, -1.0);
-		glVertex2f(-1.0, 1.0);
-		glVertex2f(1.0, 1.0);
-		glVertex2f(1.0, -1.0);
+	glVertex2f(-1.0, -1.0);
+	glVertex2f(-1.0, 1.0);
+	glVertex2f(1.0, 1.0);
+	glVertex2f(1.0, -1.0);
 	glEnd();
-	HDRBuffer->desactivateMultiTex(CUSTOM_TEXTURE+0);
+	HDRBuffer->desactivateMultiTex(CUSTOM_TEXTURE + 0);
 	m_PhotoShader->End();
 }
 

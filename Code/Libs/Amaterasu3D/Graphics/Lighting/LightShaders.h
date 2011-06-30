@@ -35,7 +35,7 @@
 #include <cmath>
 
 //TODO: Generaliser
-class LightShaders : public SpotLight
+class LightShaders: public SpotLight
 {
 private:
 	/*
@@ -50,7 +50,8 @@ public:
 	{
 	}
 	virtual ~LightShaders()
-	{}
+	{
+	}
 
 	/*
 	 * Public methods
@@ -59,7 +60,8 @@ public:
 	void Initialize()
 	{
 		//TODO
-		m_RSMShader = CShaderManager::Instance().LoadShader("RefectiveShadowMapSpot.shader");
+		m_RSMShader = CShaderManager::Instance().LoadShader(
+				"RefectiveShadowMapSpot.shader");
 	}
 	// Matrices methods
 	Math::CMatrix4 GetViewMatrix() const
@@ -71,7 +73,8 @@ public:
 	Math::CMatrix4 GetProjectionMatrix() const
 	{
 		Math::CMatrix4 LightProjectionMatrix;
-		LightProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(70.0, 1.0, 1.0, LightRaduis);
+		LightProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(70.0, 1.0,
+				1.0, LightRaduis);
 		return LightProjectionMatrix;
 	}
 
@@ -82,7 +85,8 @@ public:
 		Math::CMatrix4 oldProjectionMatrix;
 		Math::CMatrix4 oldViewMatrix;
 		// * Save old transformations
-		oldProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
+		oldProjectionMatrix = CMatrixManager::Instance().GetMatrix(
+				PROJECTION_MATRIX);
 		oldViewMatrix = CMatrixManager::Instance().GetMatrix(VIEW_MATRIX);
 		// * Go to the camera view
 		CMatrixManager::Instance().SetProjectionMatrix(GetProjectionMatrix());
@@ -93,16 +97,17 @@ public:
 
 		/*
 		 *  uniform vec3 LightPosition;
-			uniform vec4 LightColor;
-			uniform vec3 LightSpotDirection;
-			uniform float LightRaduis;
-			uniform float LightIntensity;
-			uniform float LightCutOff; // cos value
+		 uniform vec4 LightColor;
+		 uniform vec3 LightSpotDirection;
+		 uniform float LightRaduis;
+		 uniform float LightIntensity;
+		 uniform float LightCutOff; // cos value
 		 */
 
-		m_RSMShader->SetUniform1f("LightRaduis",LightRaduis);
-		m_RSMShader->SetUniform1f("LightIntensity",LightIntensity);
-		m_RSMShader->SetUniform1f("LightCutOff",cos(LightCutOff*(M_PI/180.0)));
+		m_RSMShader->SetUniform1f("LightRaduis", LightRaduis);
+		m_RSMShader->SetUniform1f("LightIntensity", LightIntensity);
+		m_RSMShader->SetUniform1f("LightCutOff",
+				cos(LightCutOff * (M_PI / 180.0)));
 		m_RSMShader->SetUniformVector("LightPosition", Position);
 		m_RSMShader->SetUniformVector("LightSpotDirection", Direction);
 		m_RSMShader->SetUniformColor("LightColor", LightColor);
@@ -114,9 +119,10 @@ public:
 		CMatrixManager::Instance().SetViewMatrix(oldViewMatrix);
 	}
 
-	FBO* GetFBO() { return m_RSMShader->GetFBO(); }
-
-
+	FBO* GetFBO()
+	{
+		return m_RSMShader->GetFBO();
+	}
 
 };
 

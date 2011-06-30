@@ -26,19 +26,18 @@
 #define UTIL_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <vector>
 
-
 /////////////////////////////////////////////////////////////
-/// Foncteur servant à faire le ménage dans les collections
+/// Foncteur servant ï¿½ faire le mï¿½nage dans les collections
 /// de pointeurs
 ///
 ////////////////////////////////////////////////////////////
 struct Delete
 {
-	template <class T> void operator ()(T*& p) const
+	template<class T> void operator ()(T*& p) const
 	{
 		delete p;
 		p = NULL;
@@ -46,10 +45,10 @@ struct Delete
 };
 
 ////////////////////////////////////////////////////////////
-/// Renvoie une valeur approchée d'un nombre à la plus proche
+/// Renvoie une valeur approchï¿½e d'un nombre ï¿½ la plus proche
 /// plus grande puissance de 2
 ///
-/// \param Value : Nombre à tester
+/// \param Value : Nombre ï¿½ tester
 ///
 /// \return Puissance de 2 correspondante
 ///

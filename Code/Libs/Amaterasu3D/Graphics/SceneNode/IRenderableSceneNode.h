@@ -27,7 +27,7 @@
 
 #include <Graphics/SceneNode/ISceneNode.h>
 
-class IRenderableSceneNode : public ISceneNode
+class IRenderableSceneNode: public ISceneNode
 {
 public:
 	IRenderableSceneNode(const std::string& name, ISceneNode* parent);

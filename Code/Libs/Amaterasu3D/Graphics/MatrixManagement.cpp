@@ -27,29 +27,29 @@
 SINGLETON_IMPL(CMatrixManager)
 
 CMatrixManager::CMatrixManager(int maxMatrix) :
-m_MaxMatrix(maxMatrix),
-m_MatrixMode(MATRIX_3D)
+		m_MaxMatrix(maxMatrix), m_MatrixMode(MATRIX_3D)
 {
 	m_IdentityMatrix.Identity();
 }
 
 CMatrixManager::~CMatrixManager()
 {
-	if(!m_Matrix.empty())
-		std::cout << "[WARNING] There still somes matrix in the stack..." << std::endl;
+	if (!m_Matrix.empty())
+		std::cout << "[WARNING] There still somes matrix in the stack..."
+				<< std::endl;
 }
 
 void CMatrixManager::PushMatrix(const Math::CMatrix4& matrix)
 {
 	// Debug limit
-	if(m_MaxMatrix < (int)m_Matrix.size())
+	if (m_MaxMatrix < (int) m_Matrix.size())
 		throw CException("Matrix stack is full.");
 
 	// stack the new matrix
-	if(m_Matrix.empty())
+	if (m_Matrix.empty())
 		m_Matrix.push_back(matrix);
 	else
-		m_Matrix.push_back(m_Matrix.back()*matrix);
+		m_Matrix.push_back(m_Matrix.back() * matrix);
 
 	m_signal_event.emit(MODEL_MATRIX);
 	m_signal_event.emit(NORMAL_MATRIX);
@@ -58,7 +58,7 @@ void CMatrixManager::PushMatrix(const Math::CMatrix4& matrix)
 
 void CMatrixManager::PopMatrix()
 {
-	if(m_Matrix.empty())
+	if (m_Matrix.empty())
 		throw CException("Matrix stack is empty. Unable to pop matrix");
 	m_Matrix.pop_back();
 
@@ -78,21 +78,21 @@ int CMatrixManager::StackSize() const
 
 const Math::CMatrix4& CMatrixManager::GetMatrix(MatrixType type)
 {
-	if(type == MODEL_MATRIX)
+	if (type == MODEL_MATRIX)
 	{
-		if(m_Matrix.empty())
+		if (m_Matrix.empty())
 			return m_IdentityMatrix;
 		return m_Matrix.back();
 	}
-	else if(type == VIEW_MATRIX)
+	else if (type == VIEW_MATRIX)
 	{
 		return m_ViewMatrix;
 	}
-	else if(type == PROJECTION_MATRIX)
+	else if (type == PROJECTION_MATRIX)
 	{
 		return m_ProjectionMatrix;
 	}
-	else if(type == NORMAL_MATRIX)
+	else if (type == NORMAL_MATRIX)
 	{
 		// Update
 		m_NormalMatrix = GetMatrix(MODEL_MATRIX).Inverse().Transpose();
@@ -119,20 +119,21 @@ void CMatrixManager::SetViewMatrix(const Math::CMatrix4& matrix)
 void CMatrixManager::SetModeMatrix(MatrixMode mode)
 {
 	// Nothings to Do
-	if(m_MatrixMode == mode)
+	if (m_MatrixMode == mode)
 		return;
 
-	if(mode == MATRIX_2D)
+	if (mode == MATRIX_2D)
 	{
 		// Compute the Matrix
 		Math::CMatrix4 mat;
-		Math::TVector2I size = CSettingsManager::Instance().GetSizeRenderingWindow();
-		mat.OrthoOffCenter(0,0,size.x,size.y);
+		Math::TVector2I size =
+				CSettingsManager::Instance().GetSizeRenderingWindow();
+		mat.OrthoOffCenter(0, 0, size.x, size.y);
 		m_ProjectionMatrixOld = m_ProjectionMatrix;
 		SetProjectionMatrix(mat);
 		glDisable(GL_DEPTH_TEST);
 	}
-	else if(mode == MATRIX_3D)
+	else if (mode == MATRIX_3D)
 	{
 		// Revert good perpective matrix
 		SetProjectionMatrix(m_ProjectionMatrixOld);

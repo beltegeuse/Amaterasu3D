@@ -29,7 +29,8 @@
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Texture.h>
 
-class ManualMipmapping {
+class ManualMipmapping
+{
 private:
 	/*
 	 * Attributes
@@ -68,7 +69,8 @@ private:
 	/*
 	 * Private methods
 	 */
-	FBO* CreateFBO(FBOTextureBufferParam p, const std::string& buffername, int size);
+	FBO* CreateFBO(FBOTextureBufferParam p, const std::string& buffername,
+			int size);
 	void DrawQuad();
 };
 

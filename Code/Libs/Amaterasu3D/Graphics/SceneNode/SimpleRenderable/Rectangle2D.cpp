@@ -23,8 +23,9 @@
 //==========================================================
 #include "Rectangle2D.h"
 
-Rectangle2D::Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom, bool generateUVCoord, float offset) :
-ISimpleRenderableSceneNode("Rectangle2D", 0)
+Rectangle2D::Rectangle2D(const Math::TVector2I& top,
+		const Math::TVector2I& bottom, bool generateUVCoord, float offset) :
+		ISimpleRenderableSceneNode("Rectangle2D", 0)
 {
 	// Create Vertex buffer
 	float* vertexBuffer = new float[8];
@@ -43,19 +44,19 @@ ISimpleRenderableSceneNode("Rectangle2D", 0)
 	buffer.owner = true;
 	m_RenderObject.AddBuffer(buffer, VERTEX_ATTRIBUT);
 	// Create Texcoord buffer
-	if(generateUVCoord)
+	if (generateUVCoord)
 	{
 		float* uvBuffer = new float[8];
-		uvBuffer[0] = 0+offset;
-		uvBuffer[1] = 0+offset;
-		uvBuffer[2] = 0+offset;
-		uvBuffer[3] = 1-offset;
-		uvBuffer[4] = 1-offset;
-		uvBuffer[5] = 1-offset;
-		uvBuffer[6] = 1-offset;
-		uvBuffer[7] = 0+offset;
+		uvBuffer[0] = 0 + offset;
+		uvBuffer[1] = 0 + offset;
+		uvBuffer[2] = 0 + offset;
+		uvBuffer[3] = 1 - offset;
+		uvBuffer[4] = 1 - offset;
+		uvBuffer[5] = 1 - offset;
+		uvBuffer[6] = 1 - offset;
+		uvBuffer[7] = 0 + offset;
 		buffer.buffer = uvBuffer;
-		m_RenderObject.AddBuffer(buffer,TEXCOORD_ATTRIBUT);
+		m_RenderObject.AddBuffer(buffer, TEXCOORD_ATTRIBUT);
 	}
 	// Create Index buffer
 	unsigned int* indiceBuffer = new unsigned int[6];

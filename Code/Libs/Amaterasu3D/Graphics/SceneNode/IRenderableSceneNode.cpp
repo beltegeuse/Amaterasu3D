@@ -24,11 +24,13 @@
 
 #include "IRenderableSceneNode.h"
 
-IRenderableSceneNode::IRenderableSceneNode(const std::string& name, ISceneNode* parent) :
-	ISceneNode(name, parent)
+IRenderableSceneNode::IRenderableSceneNode(const std::string& name,
+		ISceneNode* parent) :
+		ISceneNode(name, parent)
 {
 }
 
-IRenderableSceneNode::~IRenderableSceneNode() {
+IRenderableSceneNode::~IRenderableSceneNode()
+{
 	// TODO Auto-generated destructor stub
 }

@@ -22,14 +22,12 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 //==========================================================
 // En-tetes
 //==========================================================
 #include "GraphicString.h"
 
 #include <Graphics/Font/FontManager.h>
-
 
 //namespace Yes
 //{
@@ -44,10 +42,9 @@
 /// \param StringSize :     Taille
 ///
 ////////////////////////////////////////////////////////////
-CGraphicString::CGraphicString(const Math::TVector2F& StringPosition, const std::string& StringText,  const std::string& StringFont, int size) :
-Position(StringPosition),
-Text(StringText),
-Size(size)
+CGraphicString::CGraphicString(const Math::TVector2F& StringPosition,
+		const std::string& StringText, const std::string& StringFont, int size) :
+		Position(StringPosition), Text(StringText), Size(size)
 {
 	texture = CFontManager::Instance().GetTexture(StringFont);
 }
@@ -58,17 +55,18 @@ CGraphicString::~CGraphicString()
 	//CFontManager::Instance().DeleteTexture(texture);
 }
 
-
 /////////////////////////////////////////////////////////////
 /// Affiche la cha�ne de caract�res � l'�cran
 ///
 ////////////////////////////////////////////////////////////
 void CGraphicString::Draw()
 {
-    CFontManager::Instance().rat_texture_font_render_text(texture, Position.x, Position.y, const_cast<char*>(Text.c_str()), Size);
-}
+	CFontManager::Instance().rat_texture_font_render_text(texture, Position.x,
+			Position.y, const_cast<char*>(Text.c_str()), Size);
+		}
 
-void CGraphicString::SetString(std::string text){
+void CGraphicString::SetString(std::string text)
+{
 	Text = text;
 }
 

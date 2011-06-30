@@ -33,10 +33,10 @@
 
 //Constructeur
 Texture::Texture(bool create, GLuint id, GLenum textureMode) :
-	m_TextureMode(textureMode)
+		m_TextureMode(textureMode)
 {
-	if(create)
-		glGenTextures(1,&m_idTex);
+	if (create)
+		glGenTextures(1, &m_idTex);
 	else
 		m_idTex = id;
 }
@@ -74,14 +74,14 @@ GLuint Texture::getIdTex()
 
 void Texture::activateMultiTex(int unit)
 {
-	glActiveTexture(GL_TEXTURE0+unit);
+	glActiveTexture(GL_TEXTURE0 + unit);
 	activateTextureMapping();
 	activateTexture();
 }
 
 void Texture::desactivateMultiTex(int unit)
 {
-	glActiveTexture(GL_TEXTURE0+unit);
+	glActiveTexture(GL_TEXTURE0 + unit);
 	desactivateTextureMapping();
 	glActiveTexture(GL_TEXTURE0);
 }
@@ -89,9 +89,10 @@ void Texture::desactivateMultiTex(int unit)
 TTexturePtr Texture::LoadFromFile(const std::string& filename)
 {
 	TTexturePtr Resource = CResourceManager::Instance().Get<Texture>(filename);
-	if(Resource == NULL)
+	if (Resource == NULL)
 	{
-		Resource = CMediaManager::Instance().LoadMediaFromFile<Texture>(filename);
+		Resource = CMediaManager::Instance().LoadMediaFromFile<Texture>(
+				filename);
 		CResourceManager::Instance().Add(filename, Resource);
 	}
 	return Resource;

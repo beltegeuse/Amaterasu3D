@@ -27,7 +27,8 @@
 
 #include <Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.h>
 #include <System/EventListeners.h>
-class AdaptationLuminanceSimpleExp : public AdaptationLuminanceSimple, public FrameListener
+class AdaptationLuminanceSimpleExp: public AdaptationLuminanceSimple,
+		public FrameListener
 {
 protected:
 	float m_OldLumianceValue;
@@ -39,7 +40,9 @@ public:
 
 	virtual void UpdateLuminance(ManualMipmapping* mipmapping);
 	virtual void FrameStarted(double delta);
-	virtual void FrameEnded() {}
+	virtual void FrameEnded()
+	{
+	}
 };
 
 #endif /* ADAPTATIONLUMINANCESIMPLEEXP_H_ */

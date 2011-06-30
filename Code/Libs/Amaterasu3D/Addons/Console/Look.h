@@ -26,56 +26,57 @@
 #define LOOK_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <string>
 
 namespace Console
 {
-	////////////////////////////////////////////////////////////
-	/// Classe à dériver pour personnaliser l'apparence de la console
-	////////////////////////////////////////////////////////////
-	class ILook
+////////////////////////////////////////////////////////////
+/// Classe ï¿½ dï¿½river pour personnaliser l'apparence de la console
+////////////////////////////////////////////////////////////
+class ILook
+{
+public:
+
+	//----------------------------------------------------------
+	// Destructeur
+	//----------------------------------------------------------
+	virtual ~ILook()
 	{
-	public :
+	}
 
-		//----------------------------------------------------------
-		// Destructeur
-		//----------------------------------------------------------
-		virtual ~ILook() {}
+	//----------------------------------------------------------
+	// Fonction appelï¿½e lors de la mise ï¿½ jour de la console (Listener functions)
+	//----------------------------------------------------------
+	virtual void Update(double delta) = 0;
 
-		//----------------------------------------------------------
-		// Fonction appelée lors de la mise à jour de la console (Listener functions)
-		//----------------------------------------------------------
-		virtual void Update(double delta) = 0;
+	//----------------------------------------------------------
+	// Fonction appelï¿½e lors de l'affichage de la console
+	//----------------------------------------------------------
+	virtual void Draw() = 0; // FIXME add CONST
 
-		//----------------------------------------------------------
-		// Fonction appelée lors de l'affichage de la console
-		//----------------------------------------------------------
-		virtual void Draw() = 0;  // FIXME add CONST
+	//----------------------------------------------------------
+	// Fonction appelï¿½e lors de l'activation / dï¿½sactivation de la console
+	//----------------------------------------------------------
+	virtual void Show(bool Visible) = 0;
 
-		//----------------------------------------------------------
-		// Fonction appelée lors de l'activation / désactivation de la console
-		//----------------------------------------------------------
-		virtual void Show(bool Visible) = 0;
+	//----------------------------------------------------------
+	// Fonction appelï¿½e aprï¿½s l'appel ï¿½ une commande
+	//----------------------------------------------------------
+	virtual void CommandCalled(const std::string& Result) = 0;
 
-		//----------------------------------------------------------
-		// Fonction appelée après l'appel à une commande
-		//----------------------------------------------------------
-		virtual void CommandCalled(const std::string& Result) = 0;
+	//----------------------------------------------------------
+	// Fonction appelï¿½e ï¿½ chaque changement de la ligne courante
+	//----------------------------------------------------------
+	virtual void TextChanged(const std::string& NewText) = 0;
 
-		//----------------------------------------------------------
-		// Fonction appelée à chaque changement de la ligne courante
-		//----------------------------------------------------------
-		virtual void TextChanged(const std::string& NewText) = 0;
-
-		//----------------------------------------------------------
-		// Fonction appelée en cas d'erreur
-		//----------------------------------------------------------
-		virtual void Error(const std::string& Message) = 0;
-	};
+	//----------------------------------------------------------
+	// Fonction appelï¿½e en cas d'erreur
+	//----------------------------------------------------------
+	virtual void Error(const std::string& Message) = 0;
+};
 
 } // namespace Console
-
 
 #endif // LOOK_H

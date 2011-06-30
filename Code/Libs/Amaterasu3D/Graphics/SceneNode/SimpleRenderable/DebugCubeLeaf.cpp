@@ -28,40 +28,20 @@
 #include <Enum.h>
 #include <Logger/Logger.h>
 
-GLfloat DebugCubeLeaf::CubeArray[24] = {
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f
-};
+GLfloat DebugCubeLeaf::CubeArray[24] =
+{ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f };
 
-GLfloat DebugCubeLeaf::CubeArrayColor[24] = {
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f
-};
+GLfloat DebugCubeLeaf::CubeArrayColor[24] =
+{ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f };
 
-GLuint DebugCubeLeaf::IndiceArray[36] = {
-		0,1,2,2,1,3,
-		4,5,6,6,5,7,
-		3,1,5,5,1,7,
-		0,2,6,6,2,4,
-		6,7,0,0,7,1,
-		2,3,4,4,3,5
-};
-
+GLuint DebugCubeLeaf::IndiceArray[36] =
+{ 0, 1, 2, 2, 1, 3, 4, 5, 6, 6, 5, 7, 3, 1, 5, 5, 1, 7, 0, 2, 6, 6, 2, 4, 6, 7,
+		0, 0, 7, 1, 2, 3, 4, 4, 3, 5 };
 
 DebugCubeLeaf::DebugCubeLeaf(const std::string& name, ISceneNode* parent) :
-	ISimpleRenderableSceneNode(name, parent)
+		ISimpleRenderableSceneNode(name, parent)
 {
 	m_RenderObject.SetIndiceBuffer(IndiceArray, 36);
 	RenderableObject::RenderableBuffer buffer;
@@ -69,9 +49,9 @@ DebugCubeLeaf::DebugCubeLeaf(const std::string& name, ISceneNode* parent) :
 	buffer.dimension = 3;
 	buffer.size = 24;
 	buffer.owner = false;
-	m_RenderObject.AddBuffer(buffer,VERTEX_ATTRIBUT);
+	m_RenderObject.AddBuffer(buffer, VERTEX_ATTRIBUT);
 	buffer.buffer = CubeArrayColor;
-	m_RenderObject.AddBuffer(buffer,COLOR_ATTRIBUT);
+	m_RenderObject.AddBuffer(buffer, COLOR_ATTRIBUT);
 	m_RenderObject.CompileBuffers();
 }
 

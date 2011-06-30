@@ -25,8 +25,9 @@
 
 #include <Graphics/MatrixManagement.h>
 
-ISimpleRenderableSceneNode::ISimpleRenderableSceneNode(const std::string& name, ISceneNode* parent) :
-IRenderableSceneNode(name, parent)
+ISimpleRenderableSceneNode::ISimpleRenderableSceneNode(const std::string& name,
+		ISceneNode* parent) :
+		IRenderableSceneNode(name, parent)
 {
 }
 

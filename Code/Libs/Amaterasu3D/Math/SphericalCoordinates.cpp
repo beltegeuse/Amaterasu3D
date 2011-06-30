@@ -28,66 +28,76 @@ namespace Math
 
 double SphericalCoordinates::Angle(double x, double y)
 {
-	if(x==0.0f)
+	if (x == 0.0f)
 	{
-		if(y>0.0f) return M_PI_2 ;
-		return -M_PI_2 ;
+		if (y > 0.0f)
+			return M_PI_2;
+		return -M_PI_2;
 	}
-	double res = atan(y/x) ;
-	if(x<0.0)
+	double res = atan(y / x);
+	if (x < 0.0)
 	{
-		return res+M_PI;
+		return res + M_PI;
 	}
-	return res ;
+	return res;
 }
 
 /** \brief Changement du vecteur repr�sent� en coordonn�es sph�riques */
 void SphericalCoordinates::Set(Math::TVector3F const & v)
 {
-	m_module = v.Length() ;
-	m_phy = acos(v.z/m_module) ;
-	m_theta = Angle(v.x, v.y) ;
+	m_module = v.Length();
+	m_phy = acos(v.z / m_module);
+	m_theta = Angle(v.x, v.y);
 }
 
 /** \brief R�cup�ration du vecteur � partir des coordonn�es sph�riques */
 Math::TVector3F SphericalCoordinates::Get() const
 {
-	return Math::TVector3F(m_module*sin(m_phy)*cos(m_theta),
-		m_module*sin(m_phy)*sin(m_theta),
-		m_module*cos(m_phy)) ;
+	return Math::TVector3F(m_module * sin(m_phy) * cos(m_theta),
+			m_module * sin(m_phy) * sin(m_theta), m_module * cos(m_phy));
 }
 
 /** \brief Construction des coordonn�es sph�riques sur la base d'un vecteur 3D */
 SphericalCoordinates::SphericalCoordinates(Math::TVector3F const & v)
 {
-	Set(v) ;
+	Set(v);
 }
 
 /** \brief Renvoie l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
 double SphericalCoordinates::GetTheta() const
 {
-	return m_theta ;
+	return m_theta;
 }
 
 /** \brief Changement de l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
 void SphericalCoordinates::SetTheta(double v)
-{ m_theta = v ; }
-
+{
+	m_theta = v;
+}
 
 /** \brief Renvoie l'angle entre le vecteur et le plan (x,y) */
 double SphericalCoordinates::GetPhy() const
-{ return m_phy ; }
+{
+	return m_phy;
+}
 
 /** \brief Changement de l'angle entre le vecteur et le plan (x,y) */
 void SphericalCoordinates::SetPhy(double v)
-{ m_phy = v ; }
+{
+	m_phy = v;
+}
 
 /** \brief Renvoie le module */
 double SphericalCoordinates::GetModule() const
-{ return m_module ; }
+{
+	return m_module;
+}
 
 /** \brief Changement du module */
 void SphericalCoordinates::SetModule(double v)
-{ m_module = v ; }
+{
+	m_module = v;
+}
 
-};
+}
+;

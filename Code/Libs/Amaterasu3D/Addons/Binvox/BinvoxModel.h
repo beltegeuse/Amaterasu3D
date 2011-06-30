@@ -15,7 +15,8 @@
 #include <Math/Vector2.h>
 #include <Math/Vector3.h>
 
-class BinvoxModel {
+class BinvoxModel
+{
 private:
 	///// Attributes
 	// * Grid dimension
@@ -51,7 +52,7 @@ private:
 	void LoadVoxels(std::ifstream *input);
 	float GetData(int x, int y, int z)
 	{
-		return m_Data[x * m_Width*m_Height + z * m_Width + y];
+		return m_Data[x * m_Width * m_Height + z * m_Width + y];
 	}
 };
 

@@ -25,10 +25,9 @@
 #include "CameraAbstract.h"
 #include <Graphics/MatrixManagement.h>
 
-CameraAbstract::CameraAbstract(const Math::TVector3F& pos, const Math::TVector3F& target, const Math::TVector3F& up) :
-	m_Position(pos),
-	m_Target(target),
-	m_Up(up)
+CameraAbstract::CameraAbstract(const Math::TVector3F& pos,
+		const Math::TVector3F& target, const Math::TVector3F& up) :
+		m_Position(pos), m_Target(target), m_Up(up)
 {
 }
 

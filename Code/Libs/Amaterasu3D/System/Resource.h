@@ -26,20 +26,19 @@
 #define RESOURCE_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <string>
-
 
 ////////////////////////////////////////////////////////////
 /// Classe de base pour les ressources
 ////////////////////////////////////////////////////////////
 class IResource
 {
-public :
+public:
 
 	//----------------------------------------------------------
-	// Constructeur par défaut
+	// Constructeur par dï¿½faut
 	//----------------------------------------------------------
 	IResource();
 
@@ -49,21 +48,21 @@ public :
 	virtual ~IResource() = 0;
 
 	//----------------------------------------------------------
-	// Renvoie le nom associé à la ressource
+	// Renvoie le nom associï¿½ ï¿½ la ressource
 	//----------------------------------------------------------
 	const std::string& GetName() const;
 
 	//----------------------------------------------------------
-	// Ajoute une référence sur la ressource
+	// Ajoute une rï¿½fï¿½rence sur la ressource
 	//----------------------------------------------------------
 	void AddRef();
 
 	//----------------------------------------------------------
-	// Retire une référence sur la ressource
+	// Retire une rï¿½fï¿½rence sur la ressource
 	//----------------------------------------------------------
 	int Release();
 
-private :
+private:
 
 	//----------------------------------------------------------
 	// Amis
@@ -77,12 +76,10 @@ private :
 	void operator =(IResource&);
 
 	//----------------------------------------------------------
-	// Données membres
+	// Donnï¿½es membres
 	//----------------------------------------------------------
-	std::string m_Name;     ///< Nom associé à la ressource
-	int         m_RefCount; ///< Compteur de références
+	std::string m_Name; ///< Nom associï¿½ ï¿½ la ressource
+	int m_RefCount; ///< Compteur de rï¿½fï¿½rences
 };
-
-
 
 #endif // RESOURCE_H

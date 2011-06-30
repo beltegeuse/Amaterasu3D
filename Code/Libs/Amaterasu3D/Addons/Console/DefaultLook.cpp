@@ -22,7 +22,6 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 //==========================================================
 // En-t�tes
 //==========================================================
@@ -38,38 +37,39 @@
 ////////////////////////////////////////////////////////////
 // Donn�es statiques
 ////////////////////////////////////////////////////////////
-const std::string DefaultLook::s_Fonts[] =  {"arial"};
-
+const std::string DefaultLook::s_Fonts[] =
+{ "arial" };
 
 ////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
 ///
 ////////////////////////////////////////////////////////////
 DefaultLook::DefaultLook() :
-m_State      (STOPPED),
-m_CurrentFont(0),
-m_Rectangle(0),
-m_ShowText(false)
+		m_State(STOPPED), m_CurrentFont(0), m_Rectangle(0), m_ShowText(false)
 {
 
 	m_BackgroundTexture = Texture::LoadFromFile("ConsoleBG.tga");
 
-    // Position initiale : invisible
-    m_Transfo.SetScaling(0, 0, 0);
+	// Position initiale : invisible
+	m_Transfo.SetScaling(0, 0, 0);
 
-    // Cr�ation de la premi�re ligne
-    AddLine(); // FIXME
+	// Cr�ation de la premi�re ligne
+	AddLine(); // FIXME
 
-    // Enregistrement des commandes sp�ciales console
-    CConsole::Instance().RegisterCommand("clear", Console::Bind(&std::list<CGraphicString>::clear, m_Lines));
-    CConsole::Instance().RegisterCommand("font",  Console::Bind(&DefaultLook::NextFont, *this));
+	// Enregistrement des commandes sp�ciales console
+	CConsole::Instance().RegisterCommand("clear",
+			Console::Bind(&std::list<CGraphicString>::clear, m_Lines));
+	CConsole::Instance().RegisterCommand("font",
+			Console::Bind(&DefaultLook::NextFont, *this));
 
-    m_Height = 1.0 - (210.0 / CSettingsManager::Instance().GetSizeRenderingWindow().y)*2;
+	m_Height = 1.0
+			- (210.0 / CSettingsManager::Instance().GetSizeRenderingWindow().y)
+					* 2;
 }
 
 DefaultLook::~DefaultLook()
 {
-	if(m_Rectangle != 0)
+	if (m_Rectangle != 0)
 	{
 		delete m_Rectangle;
 	}
@@ -81,38 +81,37 @@ DefaultLook::~DefaultLook()
 ////////////////////////////////////////////////////////////
 void DefaultLook::Update(double delta)
 {
-    static float Scale = 0.0f;
+	static float Scale = 0.0f;
 
-    // Mise � jour de la position de la console selon son �tat courant
-    // et mise � jour de celui-ci
-    if (m_State == SHOWING)
-    {
-        m_Transfo.SetScaling(Scale, Scale, 1);
-        Scale += delta*4.0;
+	// Mise � jour de la position de la console selon son �tat courant
+	// et mise � jour de celui-ci
+	if (m_State == SHOWING)
+	{
+		m_Transfo.SetScaling(Scale, Scale, 1);
+		Scale += delta * 4.0;
 
-        if (Scale > 1.0f)
-        {
-            m_Transfo.SetScaling(1, 1, 1);
-            m_State = STOPPED;
-            Scale   = 1.0f;
-            m_ShowText = true;
-        }
-    }
-    else if (m_State == HIDDING)
-    {
-    	m_ShowText = false;
-        m_Transfo.SetScaling(Scale, Scale, 1);
-        Scale -= delta*4.0;
+		if (Scale > 1.0f)
+		{
+			m_Transfo.SetScaling(1, 1, 1);
+			m_State = STOPPED;
+			Scale = 1.0f;
+			m_ShowText = true;
+		}
+	}
+	else if (m_State == HIDDING)
+	{
+		m_ShowText = false;
+		m_Transfo.SetScaling(Scale, Scale, 1);
+		Scale -= delta * 4.0;
 
-        if (Scale < 0.01f)
-        {
-            m_Transfo.SetScaling(0, 0, 0);
-            m_State = STOPPED;
-            Scale   = 0.0f;
-        }
-    }
+		if (Scale < 0.01f)
+		{
+			m_Transfo.SetScaling(0, 0, 0);
+			m_State = STOPPED;
+			Scale = 0.0f;
+		}
+	}
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Fonction appel�e lors de l'affichage de la console
@@ -121,32 +120,36 @@ void DefaultLook::Update(double delta)
 void DefaultLook::Draw()
 {
 	// On initialise au premier appel
-	if(m_Rectangle == 0)
+	if (m_Rectangle == 0)
 	{
 
-		m_Rectangle = new Rectangle2D(Math::TVector2I(0,0),
-		              Math::TVector2I(CSettingsManager::Instance().GetSizeRenderingWindow().x,210.0));
-		m_Rectangle->GetObject().AddTextureMap(DIFFUSE_TEXTURE, m_BackgroundTexture);
+		m_Rectangle = new Rectangle2D(
+				Math::TVector2I(0, 0),
+				Math::TVector2I(
+						CSettingsManager::Instance().GetSizeRenderingWindow().x,
+						210.0));
+		m_Rectangle->GetObject().AddTextureMap(DIFFUSE_TEXTURE,
+				m_BackgroundTexture);
 		m_2DShader = CShaderManager::Instance().LoadShader("2DDraw.shader");
 	}
 
 	m_2DShader->Begin();
-    // Envoi de la matrice de transformation de la console
+	// Envoi de la matrice de transformation de la console
 	CMatrixManager::Instance().PushMatrix(m_Transfo);
 	m_Rectangle->Render();
 
 	m_2DShader->End(); ///FIXME: Normally add for texts
 
-    if(m_ShowText)
-    {
+	if (m_ShowText)
+	{
 		// Affichage des lignes de texte
-		for (std::list<CGraphicString>::iterator i = m_Lines.begin(); i != m_Lines.end(); ++i)
+		for (std::list<CGraphicString>::iterator i = m_Lines.begin();
+				i != m_Lines.end(); ++i)
 			i->Draw();
-    }
+	}
 
-    CMatrixManager::Instance().PopMatrix();
+	CMatrixManager::Instance().PopMatrix();
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Fonction appel�e lors de l'activation / d�sactivation de la console
@@ -156,9 +159,8 @@ void DefaultLook::Draw()
 ////////////////////////////////////////////////////////////
 void DefaultLook::Show(bool Visible)
 {
-    m_State = Visible ? SHOWING : HIDDING;
+	m_State = Visible ? SHOWING : HIDDING;
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Fonction appel�e apr�s l'appel � une commande
@@ -168,11 +170,10 @@ void DefaultLook::Show(bool Visible)
 ////////////////////////////////////////////////////////////
 void DefaultLook::CommandCalled(const std::string& Result)
 {
-    if (!Result.empty())
-        AddLine(Result, CColor(150, 200, 150));
-    AddLine();
+	if (!Result.empty())
+		AddLine(Result, CColor(150, 200, 150));
+	AddLine();
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Fonction appel�e � chaque changement de la ligne courante
@@ -182,9 +183,8 @@ void DefaultLook::CommandCalled(const std::string& Result)
 ////////////////////////////////////////////////////////////
 void DefaultLook::TextChanged(const std::string& NewText)
 {
-    m_Lines.front().Text = "> " + NewText;
+	m_Lines.front().Text = "> " + NewText;
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Fonction appel�e en cas d'erreur
@@ -194,15 +194,14 @@ void DefaultLook::TextChanged(const std::string& NewText)
 ////////////////////////////////////////////////////////////
 void DefaultLook::Error(const std::string& Message)
 {
-    // D�composition du message en lignes
-    std::string Line;
-    std::istringstream iss(Message);
-    while (std::getline(iss, Line))
-        AddLine(Line, CColor(200, 150, 150));
+	// D�composition du message en lignes
+	std::string Line;
+	std::istringstream iss(Message);
+	while (std::getline(iss, Line))
+		AddLine(Line, CColor(200, 150, 150));
 
-    AddLine();
+	AddLine();
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Ajoute une ligne
@@ -213,22 +212,25 @@ void DefaultLook::Error(const std::string& Message)
 ////////////////////////////////////////////////////////////
 void DefaultLook::AddLine(const std::string& Line, const CColor& Color)
 {
-    // On supprime la derni�re ligne si n�cessaire
-    if (m_Lines.size() == 10)
-        m_Lines.pop_back();
+	// On supprime la derni�re ligne si n�cessaire
+	if (m_Lines.size() == 10)
+		m_Lines.pop_back();
 
-    // On d�cale les autres
-    for (std::list<CGraphicString>::iterator i = m_Lines.begin(); i != m_Lines.end(); ++i)
-    {
-        i->Position.y -= 20;
-        i->Color.Set(i->Color.GetRed(), i->Color.GetGreen(), i->Color.GetBlue(), i->Color.GetAlpha() - 20);
-    }
+	// On d�cale les autres
+	for (std::list<CGraphicString>::iterator i = m_Lines.begin();
+			i != m_Lines.end(); ++i)
+			{
+		i->Position.y -= 20;
+		i->Color.Set(i->Color.GetRed(), i->Color.GetGreen(), i->Color.GetBlue(),
+				i->Color.GetAlpha() - 20);
+	}
 
-    // Et on cr�e la nouvelle
-    //TODO : Add Color
-    m_Lines.push_front(CGraphicString(Math::TVector2F(10, 190), Line, s_Fonts[m_CurrentFont], 20));
+	// Et on cr�e la nouvelle
+	//TODO : Add Color
+	m_Lines.push_front(
+			CGraphicString(Math::TVector2F(10, 190), Line,
+					s_Fonts[m_CurrentFont], 20));
 }
-
 
 ////////////////////////////////////////////////////////////
 /// S�lectionne la police suivante
@@ -238,7 +240,7 @@ void DefaultLook::AddLine(const std::string& Line, const CColor& Color)
 ////////////////////////////////////////////////////////////
 std::string DefaultLook::NextFont()
 {
-    m_CurrentFont = (m_CurrentFont + 1) % (sizeof(s_Fonts) / sizeof(*s_Fonts));
+	m_CurrentFont = (m_CurrentFont + 1) % (sizeof(s_Fonts) / sizeof(*s_Fonts));
 
-    return "Nouvelle police : \"" + s_Fonts[m_CurrentFont] + "\"";
+	return "Nouvelle police : \"" + s_Fonts[m_CurrentFont] + "\"";
 }

@@ -33,7 +33,7 @@
 #include <map>
 #include <string>
 
-class AssimpLoader : public ILoader<IMeshSceneNode>
+class AssimpLoader: public ILoader<IMeshSceneNode>
 {
 private:
 	// Attributs
@@ -45,8 +45,10 @@ public:
 	virtual ~AssimpLoader();
 	virtual IMeshSceneNode* LoadFromFile(const std::string& Filename);
 private:
-	void GetMaterialPropreties(RenderableObject* assimpMesh, const struct aiMaterial *mtl);
-	void BuildGroup(IMeshSceneNode* group, const aiScene* scene, aiNode* nd, const Math::CMatrix4& matrix);
+	void GetMaterialPropreties(RenderableObject* assimpMesh,
+			const struct aiMaterial *mtl);
+	void BuildGroup(IMeshSceneNode* group, const aiScene* scene, aiNode* nd,
+			const Math::CMatrix4& matrix);
 	TTexturePtr LoadTexture(const CFile& name);
 };
 

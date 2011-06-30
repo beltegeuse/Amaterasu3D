@@ -28,7 +28,7 @@
 #include <Graphics/Lighting/LightingPassAbstract.h>
 #include <Graphics/Shaders/Shader.h>
 
-class DeferredLighting : public LightingPassAbstract
+class DeferredLighting: public LightingPassAbstract
 {
 private:
 	// Attributs

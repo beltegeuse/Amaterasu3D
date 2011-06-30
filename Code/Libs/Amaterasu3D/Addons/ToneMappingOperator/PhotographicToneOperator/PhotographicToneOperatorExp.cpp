@@ -30,5 +30,6 @@ PhotographicToneOperatorExp::PhotographicToneOperatorExp()
 	m_AdaptationLum = new AdaptationLuminanceSimpleExp();
 }
 
-PhotographicToneOperatorExp::~PhotographicToneOperatorExp() {
+PhotographicToneOperatorExp::~PhotographicToneOperatorExp()
+{
 }

@@ -14,10 +14,9 @@ Logger::~Logger()
 {
 }
 
-
 void Logger::SetLogger(Logger* logger)
 {
-	if(_instance != NULL)
+	if (_instance != NULL)
 	{
 		delete _instance;
 		_instance = NULL;
@@ -27,20 +26,20 @@ void Logger::SetLogger(Logger* logger)
 
 Logger& Logger::Log()
 {
-	if(_instance == NULL)
+	if (_instance == NULL)
 	{
-		 throw CLoggerException("Undefined Logger ! Please Use the following fonction : SetLogger(Logger* logger).");
+		throw CLoggerException(
+				"Undefined Logger ! Please Use the following fonction : SetLogger(Logger* logger).");
 	}
 	return *(_instance);
 }
 
 void Logger::Kill()
 {
-	if(_instance != NULL)
+	if (_instance != NULL)
 	{
 		delete _instance;
 		_instance = NULL;
 	}
 }
-
 

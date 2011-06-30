@@ -26,7 +26,7 @@
 #define RESOURCEMANAGER_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <System/Resource.h>
 #include <Singleton.h>
@@ -34,18 +34,18 @@
 #include <string>
 
 ////////////////////////////////////////////////////////////
-/// Gestionnaire des ressources associées à un fichier
+/// Gestionnaire des ressources associï¿½es ï¿½ un fichier
 ////////////////////////////////////////////////////////////
-class CResourceManager : public CSingleton<CResourceManager>
+class CResourceManager: public CSingleton<CResourceManager>
 {
-	MAKE_SINGLETON(CResourceManager)
+MAKE_SINGLETON(CResourceManager)
 
-public :
+public:
 
 	//----------------------------------------------------------
-	// Récupère une ressource
+	// Rï¿½cupï¿½re une ressource
 	//----------------------------------------------------------
-	template <class T> T* Get(const std::string& Name) const;
+	template<class T> T* Get(const std::string& Name) const;
 
 	//----------------------------------------------------------
 	// Ajoute une ressource
@@ -57,10 +57,10 @@ public :
 	//----------------------------------------------------------
 	void Remove(const std::string& Name);
 
-private :
+private:
 
 	//----------------------------------------------------------
-	// Constructeur par défaut
+	// Constructeur par dï¿½faut
 	//----------------------------------------------------------
 	CResourceManager();
 
@@ -75,14 +75,11 @@ private :
 	typedef std::map<std::string, IResource*> TResourcesMap;
 
 	//----------------------------------------------------------
-	// Données membres
+	// Donnï¿½es membres
 	//----------------------------------------------------------
-	TResourcesMap m_Resources; ///< Table contenant les ressources associées à leur nom de fichier
+	TResourcesMap m_Resources; ///< Table contenant les ressources associï¿½es ï¿½ leur nom de fichier
 };
 
 #include "ResourceManager.inl"
-
-
-
 
 #endif // RESOURCEMANAGER_H

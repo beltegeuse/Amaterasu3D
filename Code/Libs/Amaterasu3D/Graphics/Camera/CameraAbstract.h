@@ -35,7 +35,10 @@
 /// This class describe an Abstract camera.
 /// Use this class to create camera easily.
 ///////////////////////////////////////////////////
-class CameraAbstract : public MouseMotionListener, public MouseListener, public KeyListener, public FrameListener
+class CameraAbstract: public MouseMotionListener,
+		public MouseListener,
+		public KeyListener,
+		public FrameListener
 {
 protected:
 	/*
@@ -50,7 +53,8 @@ public:
 	/*
 	 * Constructors & Destructors
 	 */
-	CameraAbstract(const Math::TVector3F& pos, const Math::TVector3F& target, const Math::TVector3F& up = Math::TVector3F(0,0,1));
+	CameraAbstract(const Math::TVector3F& pos, const Math::TVector3F& target,
+			const Math::TVector3F& up = Math::TVector3F(0, 0, 1));
 	virtual ~CameraAbstract();
 
 	/*
@@ -81,9 +85,10 @@ public:
 	virtual void FrameEnded() = 0;
 };
 
-inline std::ostream& operator<< (std::ostream& out, const CameraAbstract& cam)
+inline std::ostream& operator<<(std::ostream& out, const CameraAbstract& cam)
 {
-	out << "Position : " << cam.GetPosition() << " | Target : " << cam.GetTarget();
+	out << "Position : " << cam.GetPosition() << " | Target : "
+			<< cam.GetTarget();
 	return out;
 }
 

@@ -28,7 +28,7 @@
 ////////////////////////////////////////////////////////////
 /// Structure d'une typelist (liste de types)
 ////////////////////////////////////////////////////////////
-template <class T1, class T2>
+template<class T1, class T2>
 struct TypeList
 {
 	typedef T1 Head;
@@ -38,10 +38,12 @@ struct TypeList
 ////////////////////////////////////////////////////////////
 /// Marqueur de fin de liste
 ////////////////////////////////////////////////////////////
-struct NullType {};
+struct NullType
+{
+};
 
 ////////////////////////////////////////////////////////////
-// Macros servant à construire des typelists
+// Macros servant ï¿½ construire des typelists
 ////////////////////////////////////////////////////////////
 #define TYPELIST_1(t1)                                 TypeList<t1, NullType>
 #define TYPELIST_2(t1, t2)                             TypeList<t1, TYPELIST_1(t2) >
@@ -53,44 +55,40 @@ struct NullType {};
 #define TYPELIST_8(t1, t2, t3, t4, t5, t6, t7, t8)     TypeList<t1, TYPELIST_7(t2, t3, t4, t5, t6, t7, t8) >
 #define TYPELIST_9(t1, t2, t3, t4, t5, t6, t7, t8, t9) TypeList<t1, TYPELIST_8(t2, t3, t4, t5, t6, t7, t8, t9) >
 
+////////////////////////////////////////////////////////////
+// Quelques opï¿½rations utiles sur les typelists
+////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-// Quelques opérations utiles sur les typelists
+/// Recherche le N-iï¿½me ï¿½lï¿½ment d'une typelist
 ////////////////////////////////////////////////////////////
+template<std::size_t N, class List> struct NthElement;
 
 ////////////////////////////////////////////////////////////
-/// Recherche le N-ième élément d'une typelist
+/// Dï¿½termine de la taille d'une typelist
 ////////////////////////////////////////////////////////////
-template <std::size_t N, class List> struct NthElement;
+template<class List> struct Size;
 
 ////////////////////////////////////////////////////////////
-/// Détermine de la taille d'une typelist
+/// Recherche la position d'un ï¿½lï¿½ment dans une typelist
 ////////////////////////////////////////////////////////////
-template <class List> struct Size;
+template<class ToFind, class List> struct Find;
 
 ////////////////////////////////////////////////////////////
-/// Recherche la position d'un élément dans une typelist
+/// Ajoute un ï¿½lï¿½ment ï¿½ la fin d'une typelist
 ////////////////////////////////////////////////////////////
-template <class ToFind, class List> struct Find;
+template<class T, class List> struct PushBack;
 
 ////////////////////////////////////////////////////////////
-/// Ajoute un élément à la fin d'une typelist
+/// Ajoute d'un ï¿½lï¿½ment au dï¿½but d'une typelist
 ////////////////////////////////////////////////////////////
-template <class T, class List> struct PushBack;
+template<class T, class List> struct PushFront;
 
 ////////////////////////////////////////////////////////////
-/// Ajoute d'un élément au début d'une typelist
+/// Concatï¿½ne 2 typelists
 ////////////////////////////////////////////////////////////
-template <class T, class List> struct PushFront;
-
-////////////////////////////////////////////////////////////
-/// Concatène 2 typelists
-////////////////////////////////////////////////////////////
-template <class List1, class List2> struct Concat;
+template<class List1, class List2> struct Concat;
 
 #include "Typelist.inl"
-
-
-
 
 #endif // TYPELIST_H

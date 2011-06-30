@@ -34,13 +34,11 @@
 SINGLETON_IMPL(CSettingsManager)
 
 CSettingsManager::CSettingsManager() :
-	VerticalSync(false),
-	m_NearClipping(1.0),
-	m_FarClipping(1000.0),
-	m_FOV(70)
+		VerticalSync(false), m_NearClipping(1.0), m_FarClipping(1000.0), m_FOV(
+				70)
 {
 	// The default values
-	m_SizeRenderingWindow = Math::TVector2I(800,600);
+	m_SizeRenderingWindow = Math::TVector2I(800, 600);
 }
 
 CSettingsManager::~CSettingsManager()
@@ -52,19 +50,20 @@ CSettingsManager::~CSettingsManager()
 void CSettingsManager::LoadFile(const std::string& path)
 {
 	//XXX: Proteger les appels TinyXML avec le Helper
-	TiXmlDocument doc( path.c_str() );
-	if(!doc.LoadFile())
+	TiXmlDocument doc(path.c_str());
+	if (!doc.LoadFile())
 	{
-		Logger::Log() << "[ERROR] TinyXML error : " <<  doc.ErrorDesc() << "\n";
+		Logger::Log() << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
 		throw CLoadingFailed(path, "unable to load xml with TinyXML");
 	}
 
 	// Get the root
 	TiXmlHandle hdl(&doc);
 	TiXmlElement *rootConfig = hdl.FirstChild("Config").Element();
-	if(!rootConfig)
+	if (!rootConfig)
 	{
-		throw CLoadingFailed(path, "unable to find Config node in the XML file");
+		throw CLoadingFailed(path,
+				"unable to find Config node in the XML file");
 	}
 
 	/////////////////
@@ -72,16 +71,17 @@ void CSettingsManager::LoadFile(const std::string& path)
 	/////////////////
 	// * Logger
 	TiXmlElement* nodeLogger = rootConfig->FirstChildElement("Logger");
-	if(nodeLogger)
+	if (nodeLogger)
 	{
 		std::string loggerType = std::string(nodeLogger->Attribute("type"));
-		if(loggerType == "File")
+		if (loggerType == "File")
 		{
 			std::string fileLog = std::string(nodeLogger->Attribute("file"));
 			Logger::SetLogger(new LoggerFile(fileLog));
-			Logger::Log() << "[INFO] SettingsManager : Log to a file : " << fileLog << "\n";
+			Logger::Log() << "[INFO] SettingsManager : Log to a file : "
+					<< fileLog << "\n";
 		}
-		else if(loggerType == "Debug")
+		else if (loggerType == "Debug")
 		{
 			Logger::SetLogger(new LoggerDebug);
 		}
@@ -92,28 +92,30 @@ void CSettingsManager::LoadFile(const std::string& path)
 	}
 	// * Resolution
 	TiXmlElement* nodeResolution = rootConfig->FirstChildElement("Resolution");
-	if(nodeResolution)
+	if (nodeResolution)
 	{
-		int x,y;
-		nodeResolution->Attribute("x",&x);
-		nodeResolution->Attribute("y",&y);
-		Logger::Log() << "[INFO] SettingsManager : Resolution = " << x << "x" << y << "\n";
-		SetSizeRenderingWindow(Math::TVector2I(x,y));
+		int x, y;
+		nodeResolution->Attribute("x", &x);
+		nodeResolution->Attribute("y", &y);
+		Logger::Log() << "[INFO] SettingsManager : Resolution = " << x << "x"
+				<< y << "\n";
+		SetSizeRenderingWindow(Math::TVector2I(x, y));
 	}
 	// * Data
 	TiXmlElement* nodeData = rootConfig->FirstChildElement("Data");
-	if(nodeData)
+	if (nodeData)
 	{
 		std::string rootDataDir = std::string(nodeData->Attribute("rootDir"));
-		Logger::Log() << "[INFO] SettingsManager : Root data dir : " << rootDataDir << "\n";
+		Logger::Log() << "[INFO] SettingsManager : Root data dir : "
+				<< rootDataDir << "\n";
 		CMediaManager::Instance().AddSearchPathAndChilds(rootDataDir);
 	}
 	// * Projection
 	TiXmlElement* nodeProjection = rootConfig->FirstChildElement("Projection");
-	if(nodeProjection)
+	if (nodeProjection)
 	{
 		float fov, near, far;
-		TinyXMLGetAttributeValue(nodeProjection, "fov",&fov);
+		TinyXMLGetAttributeValue(nodeProjection, "fov", &fov);
 		TinyXMLGetAttributeValue(nodeProjection, "near", &near);
 		TinyXMLGetAttributeValue(nodeProjection, "far", &far);
 		Logger::Log() << "[INFO] SettingsManager : Projection Settings : \n";
@@ -166,6 +168,7 @@ float CSettingsManager::GetFOV() const
 void CSettingsManager::UpdateProjectionMatrix()
 {
 	CMatrixManager::Instance().SetProjectionMatrix(
-			Math::CMatrix4::CreatePerspectiveFOV(m_FOV, m_SizeRenderingWindow.x/(float)m_SizeRenderingWindow.y,
-				m_NearClipping, m_FarClipping));
+			Math::CMatrix4::CreatePerspectiveFOV(m_FOV,
+					m_SizeRenderingWindow.x / (float) m_SizeRenderingWindow.y,
+					m_NearClipping, m_FarClipping));
 }

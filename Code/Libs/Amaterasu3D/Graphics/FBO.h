@@ -43,7 +43,7 @@ typedef CSmartPtr<Shader, CResourceCOM> TShaderPtr;
  * \class FBOBufferParam
  * \brief based class for all FBO buffers parameters
  */
-class FBOBufferParam : public Texture2DParams
+class FBOBufferParam: public Texture2DParams
 {
 public:
 	GLenum ExternalFormat;
@@ -51,23 +51,21 @@ public:
 	GLenum Precision;
 	bool GenerateMipMapping;
 	FBOBufferParam() :
-		ExternalFormat(GL_RGBA),
-		InternalFormat(GL_RGBA),
-		Precision(GL_FLOAT),
-		GenerateMipMapping(false)
+			ExternalFormat(GL_RGBA), InternalFormat(GL_RGBA), Precision(
+					GL_FLOAT), GenerateMipMapping(false)
 	{
 		MinFiltering = GL_NEAREST;
 		MaxFiltering = GL_NEAREST;
 		//SWrap = GL_CLAMP_TO_EDGE ;
 		//TWrap = GL_CLAMP_TO_EDGE ;
-		SWrap = GL_CLAMP ;
-		TWrap = GL_CLAMP ;
+		SWrap = GL_CLAMP;
+		TWrap = GL_CLAMP;
 	}
 
 	//TODO: Add these possibility to the mother class ???
 	virtual void applyPostParam()
 	{
-		if(GenerateMipMapping)
+		if (GenerateMipMapping)
 			glGenerateMipmap(GL_TEXTURE_2D);
 	}
 
@@ -81,12 +79,12 @@ public:
  * \class FBOTextureBufferParam
  * \brief Describe texture parameters for the Depth buffer
  */
-class FBOTextureBufferParam : public FBOBufferParam
+class FBOTextureBufferParam: public FBOBufferParam
 {
 public:
 	int Attachment;
 	FBOTextureBufferParam(int attachment = 0) :
-		Attachment(attachment)
+			Attachment(attachment)
 	{
 	}
 };
@@ -95,14 +93,14 @@ public:
  * \class FBODepthBufferParam
  * \brief Describe texture attributs for Colored buffers
  */
-class FBODepthBufferParam : public FBOBufferParam
+class FBODepthBufferParam: public FBOBufferParam
 {
 public:
 	FBODepthBufferParam()
 	{
 		ExternalFormat = GL_DEPTH_COMPONENT;
 		InternalFormat = GL_DEPTH_COMPONENT24;
-		Precision =  GL_FLOAT;
+		Precision = GL_FLOAT;
 	}
 
 	virtual void applyParam()
@@ -143,9 +141,9 @@ public:
 	 * Constructors & Destructors
 	 */
 	FBO(const Math::TVector2I& size,
-	    std::map<std::string, FBOTextureBufferParam>& buffers,
-	    FBODepthType type,
-	    FBODepthBufferParam& paramDepth);
+			std::map<std::string, FBOTextureBufferParam>& buffers,
+			FBODepthType type,
+			FBODepthBufferParam& paramDepth);
 	virtual ~FBO();
 
 	/*

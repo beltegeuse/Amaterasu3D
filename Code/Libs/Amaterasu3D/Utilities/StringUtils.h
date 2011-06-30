@@ -26,7 +26,7 @@
 #define STRINGUTILS_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <algorithm>
 #include <cctype>
@@ -35,101 +35,97 @@
 #include <string>
 #include <vector>
 
+//----------------------------------------------------------------
+// Dï¿½coupe une chaine de caractï¿½res
+//----------------------------------------------------------------
+void Split(const std::string& String, std::vector<std::string>& Tokens,
+		const std::string& Delim = " \t\n");
 
 //----------------------------------------------------------------
-// Découpe une chaine de caractères
-//----------------------------------------------------------------
-void Split(const std::string& String, std::vector<std::string>& Tokens, const std::string& Delim = " \t\n");
-
-//----------------------------------------------------------------
-// Renvoie le contenu d'un fichier sous forme de chaîne
+// Renvoie le contenu d'un fichier sous forme de chaï¿½ne
 //----------------------------------------------------------------
 std::string ReadFile(const std::string& Filename);
 
 //----------------------------------------------------------------
-// Renvoie le code de hachage d'une chaîne de caractères
+// Renvoie le code de hachage d'une chaï¿½ne de caractï¿½res
 //----------------------------------------------------------------
 unsigned long StringHash(const std::string& String);
 
 //----------------------------------------------------------------
-// Convertit une chaîne de caractères en minuscule
+// Convertit une chaï¿½ne de caractï¿½res en minuscule
 //----------------------------------------------------------------
 std::string ToLower(const std::string& Text);
 
 //----------------------------------------------------------------
-// Convertit une chaîne de caractères en majuscules
+// Convertit une chaï¿½ne de caractï¿½res en majuscules
 //----------------------------------------------------------------
 std::string ToUpper(const std::string& Text);
 
-
 ////////////////////////////////////////////////////////////
-/// Template servant à construire les classes singleton
+/// Template servant ï¿½ construire les classes singleton
 ////////////////////////////////////////////////////////////
 class CStringBuilder
 {
-public :
+public:
 
 	//----------------------------------------------------------------
-	// Constructeur par défaut
+	// Constructeur par dï¿½faut
 	//----------------------------------------------------------------
 	CStringBuilder();
 
 	//----------------------------------------------------------------
-	// Construit l'injecteur avec une première valeur
+	// Construit l'injecteur avec une premiï¿½re valeur
 	//----------------------------------------------------------------
-	template <typename T> CStringBuilder(const T& Value);
+	template<typename T> CStringBuilder(const T& Value);
 
 	//----------------------------------------------------------------
-	// Injecte une valeur dans la chaîne
+	// Injecte une valeur dans la chaï¿½ne
 	//----------------------------------------------------------------
-	template <typename T> CStringBuilder& operator ()(const T& Value);
+	template<typename T> CStringBuilder& operator ()(const T& Value);
 
 	//----------------------------------------------------------------
-	// Opérateur de conversion implicite en string
+	// Opï¿½rateur de conversion implicite en string
 	//----------------------------------------------------------------
 	operator std::string();
 
-private :
+private:
 
 	//----------------------------------------------------------------
-	// Données membres
+	// Donnï¿½es membres
 	//----------------------------------------------------------------
-	std::ostringstream m_OutStream; ///< Flux-chaîne utilisé pourl'injection des valeurs
+	std::ostringstream m_OutStream; ///< Flux-chaï¿½ne utilisï¿½ pourl'injection des valeurs
 };
 
-
 ////////////////////////////////////////////////////////////
-/// Template servant à construire les classes singleton
+/// Template servant ï¿½ construire les classes singleton
 ////////////////////////////////////////////////////////////
 class CStringExtractor
 {
-public :
+public:
 
 	//----------------------------------------------------------------
-	// Construit l'extracteur à partir d'une chaîne
+	// Construit l'extracteur ï¿½ partir d'une chaï¿½ne
 	//----------------------------------------------------------------
 	CStringExtractor(const std::string& Text);
 
 	//----------------------------------------------------------------
 	// Extrait une valeur de type T
 	//----------------------------------------------------------------
-	template <typename T> CStringExtractor& operator ()(T& Value);
+	template<typename T> CStringExtractor& operator ()(T& Value);
 
 	//----------------------------------------------------------------
-	// Vérifie qu'il n'y a plus rien à extraire
+	// Vï¿½rifie qu'il n'y a plus rien ï¿½ extraire
 	//----------------------------------------------------------------
 	void ThrowIfEOF();
 
-private :
+private:
 
 	//----------------------------------------------------------------
-	// Données membres
+	// Donnï¿½es membres
 	//----------------------------------------------------------------
-	std::istringstream m_InStream; ///< Flux-chaîne utilisé pour l'extraction des valeurs
+	std::istringstream m_InStream; ///< Flux-chaï¿½ne utilisï¿½ pour l'extraction des valeurs
 };
 
 #include "StringUtils.inl"
-
-
 
 #endif // STRINGUTILS_H

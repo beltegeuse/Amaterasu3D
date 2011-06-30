@@ -30,7 +30,6 @@
 //==========================================================
 #include <iostream>
 
-
 struct Color
 {
 	float R;
@@ -39,7 +38,7 @@ struct Color
 	float A;
 
 	Color(float r = 1.0, float g = 1.0, float b = 1.0, float a = 1.0) :
-		R(r), G(g), B(b), A(a)
+			R(r), G(g), B(b), A(a)
 	{
 	}
 };
@@ -49,7 +48,7 @@ struct Color
 ////////////////////////////////////////////////////////////
 class CColor
 {
-public :
+public:
 
 	//----------------------------------------------------------------
 	// Constructeur par d�faut
@@ -59,7 +58,8 @@ public :
 	//----------------------------------------------------------------
 	// Constructeur � partir de 4 composantes
 	//----------------------------------------------------------------
-	CColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0xFF);
+	CColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a =
+			0xFF);
 
 	//----------------------------------------------------------------
 	// Renvoie la couleur en nuance de gris
@@ -109,7 +109,8 @@ public :
 	//----------------------------------------------------------------
 	// Nouvelle couleur sous forme de 4 unsigned char [0..255]
 	//----------------------------------------------------------------
-	void Set(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0xFF);
+	void Set(unsigned char r, unsigned char g, unsigned char b,
+			unsigned char a = 0xFF);
 
 	//----------------------------------------------------------------
 	// Convertit en 4 floats
@@ -181,9 +182,9 @@ public :
 	//----------------------------------------------------------------
 	static const CColor White; ///< Couleur predefine : blanc
 	static const CColor Black; ///< Couleur predefine : noir
-	static const CColor Red;   ///< Couleur predefine : rouge
+	static const CColor Red; ///< Couleur predefine : rouge
 	static const CColor Green; ///< Couleur predefine : vert
-	static const CColor Blue;  ///< Couleur predefine : bleu
+	static const CColor Blue; ///< Couleur predefine : bleu
 
 	//----------------------------------------------------------------
 	// Surcharges des Operators pour les flux
@@ -191,7 +192,7 @@ public :
 	friend std::istream& operator >>(std::istream& Stream, CColor& Color);
 	friend std::ostream& operator <<(std::ostream& Stream, const CColor& Color);
 
-private :
+private:
 
 	//----------------------------------------------------------------
 	// Nouvelle couleur sous forme de 4 int [0..255] - sert � clamper
@@ -204,7 +205,5 @@ private :
 	//----------------------------------------------------------------
 	unsigned long m_Color; ///< Couleur sous forme ARGB 32 bits
 };
-
-
 
 #endif // COLOR_H

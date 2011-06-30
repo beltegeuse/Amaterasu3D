@@ -38,11 +38,11 @@
 ////////////////////////////////////////////////////////////
 /// Gestion de la console
 ////////////////////////////////////////////////////////////
-class CConsole : public CSingleton<CConsole>, public FrameListener
+class CConsole: public CSingleton<CConsole>, public FrameListener
 {
-	MAKE_SINGLETON(CConsole)
+MAKE_SINGLETON(CConsole)
 
-public :
+public:
 
 	//----------------------------------------------------------
 	// Constructeur par d�faut
@@ -57,7 +57,8 @@ public :
 	//----------------------------------------------------------
 	// Enregistre une nouvelle commande
 	//----------------------------------------------------------
-	void RegisterCommand(const std::string& Name, const Console::CFunctor& Function);
+	void RegisterCommand(const std::string& Name,
+			const Console::CFunctor& Function);
 
 	//----------------------------------------------------------
 	// Envoie un nouveau caract�re � la console
@@ -68,7 +69,9 @@ public :
 	// Met � jour la console
 	//----------------------------------------------------------
 	virtual void FrameStarted(double delta);
-	virtual void FrameEnded() {} ///< Doesn't need
+	virtual void FrameEnded()
+	{
+	} ///< Doesn't need
 
 	//----------------------------------------------------------
 	// Affiche la console
@@ -80,7 +83,7 @@ public :
 	//----------------------------------------------------------
 	void Enable(bool Enabled);
 	bool IsEnable() const;
-private :
+private:
 
 	//----------------------------------------------------------
 	// Donne la liste des commandes enregistr�es
@@ -100,12 +103,10 @@ private :
 	//----------------------------------------------------------
 	// Donn�es membres
 	//----------------------------------------------------------
-	TCommandTable             m_Commands; ///< Table des commandes enregistr�es
-	std::string               m_Current;  ///< Ligne courante
-	CSmartPtr<Console::ILook> m_Look;     ///< Pointeur sur la classe g�rant l'apparence de la console
-	bool                      m_Enabled;  ///< Indique si la console est active ou non
+	TCommandTable m_Commands; ///< Table des commandes enregistr�es
+	std::string m_Current; ///< Ligne courante
+	CSmartPtr<Console::ILook> m_Look; ///< Pointeur sur la classe g�rant l'apparence de la console
+	bool m_Enabled; ///< Indique si la console est active ou non
 };
-
-
 
 #endif // CONSOLE_H

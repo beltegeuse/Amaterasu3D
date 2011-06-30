@@ -22,13 +22,11 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 //==========================================================
 // En-tetes
 //==========================================================
 #include "Exceptions.h"
 #include <sstream>
-
 
 //namespace Yes
 //{
@@ -40,21 +38,19 @@
 ///
 ////////////////////////////////////////////////////////////
 CException::CException(const std::string& Message) :
-m_Message(Message)
+		m_Message(Message)
 {
 
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Destructeur
 ///
 ////////////////////////////////////////////////////////////
-CException::~CException() throw()
+CException::~CException() throw ()
 {
 
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie le message associï¿½ ï¿½ l'exception
@@ -62,11 +58,10 @@ CException::~CException() throw()
 /// \return Pointeur sur le message
 ///
 ////////////////////////////////////////////////////////////
-const char* CException::what() const throw()
+const char* CException::what() const throw ()
 {
-    return m_Message.c_str();
+	return m_Message.c_str();
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Constructeur
@@ -76,8 +71,9 @@ const char* CException::what() const throw()
 /// \param Message : Message d'erreur
 ///
 ////////////////////////////////////////////////////////////
-CAssertException::CAssertException(const std::string& File, int Line, const std::string& Message) :
-CException("")
+CAssertException::CAssertException(const std::string& File, int Line,
+		const std::string& Message) :
+		CException("")
 {
 	std::ostringstream oss;
 	oss << File << " (" << Line << ") : " << Message << std::endl;
@@ -91,29 +87,31 @@ CException("")
 // [in] Message : Message d'erreur
 //
 ////////////////////////////////////////////////////////////
-CLoadingFailed::CLoadingFailed(const std::string& File, const std::string& Message)
+CLoadingFailed::CLoadingFailed(const std::string& File,
+		const std::string& Message)
 {
-    // Formatage du message d'erreur
-    std::ostringstream oss;
-    oss << "Erreur dans le chargement de " << File << std::endl << std::endl << Message;
+	// Formatage du message d'erreur
+	std::ostringstream oss;
+	oss << "Erreur dans le chargement de " << File << std::endl << std::endl
+			<< Message;
 
-    m_Message = oss.str();
+	m_Message = oss.str();
 }
 
 /////////////////////////////////////////////////////////////
 /// Constructeur
 ///
-/// \param Error : Message décrivant l'erreur
+/// \param Error : Message dï¿½crivant l'erreur
 ///
 ////////////////////////////////////////////////////////////
 CBadConversion::CBadConversion(const std::string& Error) :
-CException(Error)
+		CException(Error)
 {
 
 }
 
 // Execption
 CLoggerException::CLoggerException(const std::string& Message) :
-	CException("[Logger] : " + Message)
+		CException("[Logger] : " + Message)
 {
 }

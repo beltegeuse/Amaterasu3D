@@ -54,12 +54,12 @@
 
 class FBO;
 
-struct CShaderException : public CException
+struct CShaderException: public CException
 {
 	CShaderException(const std::string& message);
 };
 
-class Shader : public IResource
+class Shader: public IResource
 {
 private:
 	// Attributes
@@ -73,10 +73,10 @@ private:
 //	typedef std::map<std::string, GLint> CachedIDMap;
 //	CachedIDMap m_CachedID;
 	// All binding attributs
-	typedef std::map<ShaderAttributType,std::string> MapAttributs;
-	typedef std::map<int,std::string> MapTexture;
-	typedef std::map<MatrixType,std::string> MapMatrix;
-	typedef std::map<MaterialType,std::string> MapMaterials;
+	typedef std::map<ShaderAttributType, std::string> MapAttributs;
+	typedef std::map<int, std::string> MapTexture;
+	typedef std::map<MatrixType, std::string> MapMatrix;
+	typedef std::map<MaterialType, std::string> MapMaterials;
 	MapAttributs m_attributs_bind;
 	MapTexture m_textures_bind;
 	MapMatrix m_matrix_bind;
@@ -85,7 +85,8 @@ public:
 	/*
 	 * Constructors & Destructors
 	 */
-	Shader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader = 0);
+	Shader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader,
+			ShaderUnit * GeometryShader = 0);
 	virtual ~Shader();
 
 	/*
@@ -96,7 +97,8 @@ public:
 	void End();
 	GLuint GetProgramObject();
 	// To setup the geometry shader
-	void SetGeometryShaderParameters(GLenum inputMode, GLenum outputMode, int output = -1); ///< -1 mean max
+	void SetGeometryShaderParameters(GLenum inputMode, GLenum outputMode,
+			int output = -1); ///< -1 mean max
 	int MaxOutputVertices();
 	///////////////////////
 	// Uniforms Setters
@@ -109,12 +111,16 @@ public:
 	void SetUniform1ui(const GLcharARB* varname, GLuint v0);
 	void SetUniform1uiv(const GLcharARB* varname, int nbValues, GLuint *tab);
 	// **** 2 Dimension Settings
-	void SetUniformVector(const GLcharARB* varname, const Math::TVector2F& vector);
+	void SetUniformVector(const GLcharARB* varname,
+			const Math::TVector2F& vector);
 	// **** 3 Dimension Settings
-	void SetUniformVector(const GLcharARB* varname, const Math::TVector3F& vector);
-	void SetUniformVectorArray(const GLcharARB* varname, int nbValues, Math::TVector3F *tab);
+	void SetUniformVector(const GLcharARB* varname,
+			const Math::TVector3F& vector);
+	void SetUniformVectorArray(const GLcharARB* varname, int nbValues,
+			Math::TVector3F *tab);
 	// **** 4 Dimension Settings
-	void SetUniformVector(const GLcharARB* varname, const Math::TVector4F& vector);
+	void SetUniformVector(const GLcharARB* varname,
+			const Math::TVector4F& vector);
 	void SetUniformColor(const GLcharARB* varname, Color& color);
 	// **** 3x3 Matrice Settings
 	// **** 4x4 Matrice Settings
@@ -166,9 +172,9 @@ typedef CSmartPtr<Shader, CResourceCOM> TShaderPtr;
 /// Shader Manager
 //////////////////////////////////
 
-class CShaderManager : public CSingleton<CShaderManager>
+class CShaderManager: public CSingleton<CShaderManager>
 {
-	MAKE_SINGLETON(CShaderManager)
+MAKE_SINGLETON(CShaderManager)
 	// Implements Singleton
 	CShaderManager();
 	virtual ~CShaderManager();
@@ -176,17 +182,21 @@ class CShaderManager : public CSingleton<CShaderManager>
 	friend class ShadersLoader;
 	// Only the MediaManager can call this methods
 	// Regular GLSL (Vertex+Fragment Shader)
-	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile, ShaderType type, const ShaderCompilerConfig& config);    //!< load vertex/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param fragmentFile Fragment Shader File.
-	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile, const char* geometryFile, ShaderType type, const ShaderCompilerConfig& config);
-	Shader* CreateShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader, ShaderUnit * GeometryShader = 0, ShaderType type = BASIC_SHADER);
+	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile,
+			ShaderType type, const ShaderCompilerConfig& config); //!< load vertex/fragment shader from file. If you specify 0 for one of the shaders, the fixed function pipeline is used for that part. \param vertexFile Vertex Shader File. \param fragmentFile Fragment Shader File.
+	Shader* loadfromFile(const char* vertexFile, const char* fragmentFile,
+			const char* geometryFile, ShaderType type,
+			const ShaderCompilerConfig& config);
+	Shader* CreateShader(ShaderUnit * VertexShader, ShaderUnit * FragmentShader,
+			ShaderUnit * GeometryShader = 0, ShaderType type = BASIC_SHADER);
 public:
 
 	// Only this methods for load shader
 	TShaderPtr LoadShader(const std::string& filename);
 
-	void      SetInputPrimitiveType(int nInputPrimitiveType);    //!< Set the input primitive type for the geometry shader \param nInputPrimitiveType Input Primitive Type, for example GL_TRIANGLES
-	void      SetOutputPrimitiveType(int nOutputPrimitiveType);  //!< Set the output primitive type for the geometry shader \param nOutputPrimitiveType Output Primitive Type, for example GL_TRIANGLE_STRIP
-	void      SetVerticesOut(int nVerticesOut);                  //!< Set the maximal number of vertices the geometry shader can output \param nVerticesOut Maximal number of output vertices. It is possible to output less vertices!
+	void SetInputPrimitiveType(int nInputPrimitiveType); //!< Set the input primitive type for the geometry shader \param nInputPrimitiveType Input Primitive Type, for example GL_TRIANGLES
+	void SetOutputPrimitiveType(int nOutputPrimitiveType); //!< Set the output primitive type for the geometry shader \param nOutputPrimitiveType Output Primitive Type, for example GL_TRIANGLE_STRIP
+	void SetVerticesOut(int nVerticesOut); //!< Set the maximal number of vertices the geometry shader can output \param nVerticesOut Maximal number of output vertices. It is possible to output less vertices!
 
 	//FIXME: Look how to connect to the ressource manager
 	bool free(Shader* o); //!< Remove the shader and free the memory occupied by this shader.
@@ -202,13 +212,13 @@ private:
 	/*
 	 * Attributes
 	 */
-	std::vector<Shader*>  m_shader_stack;
+	std::vector<Shader*> m_shader_stack;
 	int m_max_stack;
 
-	std::vector<Shader*>  _shaderObjectList;
-	int                     _nInputPrimitiveType;
-	int                     _nOutputPrimitiveType;
-	int                     _nVerticesOut;
+	std::vector<Shader*> _shaderObjectList;
+	int _nInputPrimitiveType;
+	int _nOutputPrimitiveType;
+	int _nVerticesOut;
 };
 
 //***********************
@@ -219,25 +229,31 @@ private:
 
 inline void ShaderHelperUniformImagePlane(Shader* shader)
 {
-	shader->SetUniform1f("NearClipping",CSettingsManager::Instance().GetNearClipping());
+	shader->SetUniform1f("NearClipping",
+			CSettingsManager::Instance().GetNearClipping());
 	Math::TVector2F UnprojectInfo;
-	Math::CMatrix4 ProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
+	Math::CMatrix4 ProjectionMatrix = CMatrixManager::Instance().GetMatrix(
+			PROJECTION_MATRIX);
 	UnprojectInfo.x = 1.0f / ProjectionMatrix.a11;
 	UnprojectInfo.y = -1.0f / ProjectionMatrix.a22;
 	shader->SetUniformVector("UnprojectInfo", UnprojectInfo);
-	shader->SetUniformMatrix4fv("InverseViewMatrix", CMatrixManager::Instance().GetMatrix(VIEW_MATRIX).Inverse());
+	shader->SetUniformMatrix4fv("InverseViewMatrix",
+			CMatrixManager::Instance().GetMatrix(VIEW_MATRIX).Inverse());
 }
 
 inline void ShaderHelperUniformPositionFromView(Shader* shader)
 {
-	shader->SetUniform1f("FarClipping",CSettingsManager::Instance().GetFarClipping());
+	shader->SetUniform1f("FarClipping",
+			CSettingsManager::Instance().GetFarClipping());
 	ShaderHelperUniformImagePlane(shader);
 }
 
-inline void ShaderHelperUniformPosition(Shader* shader, const Math::CMatrix4& projectionMatrix, const Math::CMatrix4& viewMatrix, float nearValue, float farValue)
+inline void ShaderHelperUniformPosition(Shader* shader,
+		const Math::CMatrix4& projectionMatrix,
+		const Math::CMatrix4& viewMatrix, float nearValue, float farValue)
 {
-	shader->SetUniform1f("FarClipping",farValue);
-	shader->SetUniform1f("NearClipping",nearValue);
+	shader->SetUniform1f("FarClipping", farValue);
+	shader->SetUniform1f("NearClipping", nearValue);
 	Math::TVector2F UnprojectInfo;
 	UnprojectInfo.x = 1.0f / projectionMatrix.a11;
 	UnprojectInfo.y = -1.0f / projectionMatrix.a22;
@@ -261,10 +277,11 @@ GLint Shader::GetUniformLocation(const GLchar* name)
 //	if(it != m_CachedID.end())
 //		return it->second;
 	//FIXME: Faire du caching pour accelerer les appels
-	GLint loc = glGetUniformLocation(m_ProgramID,name);
-	if(loc == -1)
+	GLint loc = glGetUniformLocation(m_ProgramID, name);
+	if (loc == -1)
 	{
-		Logger::Log() << "Error: can't find uniform variable \"" << name << "\"\n";
+		Logger::Log() << "Error: can't find uniform variable \"" << name
+				<< "\"\n";
 	}
 //	else
 //	{

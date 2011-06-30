@@ -28,7 +28,7 @@
 #include <Graphics/SceneNode/IRenderableSceneNode.h>
 #include <Graphics/RenderableObject.h>
 
-class ISimpleRenderableSceneNode : public IRenderableSceneNode
+class ISimpleRenderableSceneNode: public IRenderableSceneNode
 {
 protected:
 	/*

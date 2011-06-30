@@ -35,23 +35,19 @@
 ////////////////////////////////////////////////////////////
 SINGLETON_IMPL(CConsole)
 
-
 ////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
 ///
 ////////////////////////////////////////////////////////////
 CConsole::CConsole() :
-m_Current(""),
-m_Look   (NULL),
-m_Enabled(false)
+		m_Current(""), m_Look(NULL), m_Enabled(false)
 {
-    RegisterCommand("?", Console::Bind(&CConsole::GetCommands, *this));
+	RegisterCommand("?", Console::Bind(&CConsole::GetCommands, *this));
 }
 
 CConsole::~CConsole()
 {
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Change l'apparence de la console
@@ -61,9 +57,9 @@ CConsole::~CConsole()
 ////////////////////////////////////////////////////////////
 void CConsole::ChangeLook(Console::ILook* NewLook)
 {
-    Assert(NewLook != NULL);
+	Assert(NewLook != NULL);
 
-    m_Look = NewLook;
+	m_Look = NewLook;
 }
 
 ////////////////////////////////////////////////////////////
@@ -73,11 +69,11 @@ void CConsole::ChangeLook(Console::ILook* NewLook)
 /// \param Function : Foncteur contenant la fonction associ�e
 ///
 ////////////////////////////////////////////////////////////
-void CConsole::RegisterCommand(const std::string& Name, const Console::CFunctor& Function)
+void CConsole::RegisterCommand(const std::string& Name,
+		const Console::CFunctor& Function)
 {
-    m_Commands[Name] = Function;
+	m_Commands[Name] = Function;
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Envoie un nouveau caract�re � la console
@@ -87,39 +83,38 @@ void CConsole::RegisterCommand(const std::string& Name, const Console::CFunctor&
 ////////////////////////////////////////////////////////////
 void CConsole::SendChar(char Character)
 {
-    // Si la console n'est pas active on ne traite pas le caract�re
-    if (!m_Enabled)
-        return;
+	// Si la console n'est pas active on ne traite pas le caract�re
+	if (!m_Enabled)
+		return;
 
-    // Traitement du caract�re
-    switch (Character)
-    {
-        // Saut de ligne : on traite la commande et on efface la ligne
-        case '\n' :
-        case '\r' :
-            if (!m_Current.empty())
-            {
-                ProcessCurrent();
-                m_Current.clear();
-            }
-            break;
+	// Traitement du caract�re
+	switch (Character)
+	{
+	// Saut de ligne : on traite la commande et on efface la ligne
+	case '\n':
+	case '\r':
+		if (!m_Current.empty())
+		{
+			ProcessCurrent();
+			m_Current.clear();
+		}
+		break;
 
-        // Backspace : on efface le dernier caract�re
-        case '\b' :
-            if (!m_Current.empty())
-                m_Current.erase(m_Current.size() - 1);
-            break;
+		// Backspace : on efface le dernier caract�re
+	case '\b':
+		if (!m_Current.empty())
+			m_Current.erase(m_Current.size() - 1);
+		break;
 
-        // Tout le reste : on ajoute le caract�re � la ligne courante
-        default :
-            m_Current += Character;
-            break;
-    }
+		// Tout le reste : on ajoute le caract�re � la ligne courante
+	default:
+		m_Current += Character;
+		break;
+	}
 
-    // On notifie au "look" que le texte courant vient de changer
-    m_Look->TextChanged(m_Current);
+	// On notifie au "look" que le texte courant vient de changer
+	m_Look->TextChanged(m_Current);
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Met � jour la console
@@ -127,9 +122,8 @@ void CConsole::SendChar(char Character)
 ////////////////////////////////////////////////////////////
 void CConsole::FrameStarted(double delta)
 {
-    m_Look->Update(delta);
+	m_Look->Update(delta);
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Affiche la console
@@ -137,9 +131,8 @@ void CConsole::FrameStarted(double delta)
 ////////////////////////////////////////////////////////////
 void CConsole::Draw() const
 {
-    m_Look->Draw();
+	m_Look->Draw();
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Active ou d�sactive la console
@@ -149,15 +142,14 @@ void CConsole::Draw() const
 ////////////////////////////////////////////////////////////
 void CConsole::Enable(bool Enabled)
 {
-    m_Enabled = Enabled;
-    m_Look->Show(Enabled);
+	m_Enabled = Enabled;
+	m_Look->Show(Enabled);
 }
 
 bool CConsole::IsEnable() const
 {
 	return m_Enabled;
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Donne la liste des commandes enregistr�es
@@ -167,13 +159,13 @@ bool CConsole::IsEnable() const
 ////////////////////////////////////////////////////////////
 std::string CConsole::GetCommands() const
 {
-    std::string List;
-    for (TCommandTable::const_iterator i = m_Commands.begin(); i != m_Commands.end(); ++i)
-        List += i->first + " ";
+	std::string List;
+	for (TCommandTable::const_iterator i = m_Commands.begin();
+			i != m_Commands.end(); ++i)
+		List += i->first + " ";
 
-    return List;
+	return List;
 }
-
 
 ////////////////////////////////////////////////////////////
 /// Traite la ligne courante et appelle la fonction correspondante
@@ -181,34 +173,33 @@ std::string CConsole::GetCommands() const
 ////////////////////////////////////////////////////////////
 void CConsole::ProcessCurrent()
 {
-    // On r�cup�re la commande
-    std::string Command;
-    std::istringstream iss(m_Current);
-    iss >> Command;
+	// On r�cup�re la commande
+	std::string Command;
+	std::istringstream iss(m_Current);
+	iss >> Command;
 
-    // On recherche la commande dans la table des commandes
-    TCommandTable::iterator It = m_Commands.find(Command);
+	// On recherche la commande dans la table des commandes
+	TCommandTable::iterator It = m_Commands.find(Command);
 
-    // Si elle s'y trouve on appelle la fonction correspondante, sinon on g�n�re une erreur
-    if (It != m_Commands.end())
-    {
-        // R�cup�ration des param�tres
-        std::string Params;
-        std::getline(iss, Params);
+	// Si elle s'y trouve on appelle la fonction correspondante, sinon on g�n�re une erreur
+	if (It != m_Commands.end())
+	{
+		// R�cup�ration des param�tres
+		std::string Params;
+		std::getline(iss, Params);
 
-        // Appel du foncteur correspondant � la commande -
-        // s'il y a une erreur on la rattrape et on l'affiche dans la console
-        try
-        {
-            m_Look->CommandCalled(It->second(Params));
-        }
-        catch (std::exception& E)
-        {
-            m_Look->Error(E.what());
-        }
-    }
-    else
-    {
-        m_Look->Error("Commande \"" + Command + "\" inconnue");
-    }
+		// Appel du foncteur correspondant � la commande -
+		// s'il y a une erreur on la rattrape et on l'affiche dans la console
+		try
+		{
+			m_Look->CommandCalled(It->second(Params));
+		} catch (std::exception& E)
+		{
+			m_Look->Error(E.what());
+		}
+	}
+	else
+	{
+		m_Look->Error("Commande \"" + Command + "\" inconnue");
+	}
 }

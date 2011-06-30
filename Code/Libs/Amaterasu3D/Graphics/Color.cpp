@@ -22,7 +22,6 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 //==========================================================
 // En-t�tes
 //==========================================================
@@ -37,7 +36,6 @@ const CColor CColor::Red(255, 0, 0);
 const CColor CColor::Green(0, 255, 0);
 const CColor CColor::Blue(0, 0, 255);
 
-
 /////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
 ///
@@ -45,11 +43,10 @@ const CColor CColor::Blue(0, 0, 255);
 ///
 ////////////////////////////////////////////////////////////
 CColor::CColor(unsigned long Color) :
-m_Color(Color)
+		m_Color(Color)
 {
 
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Constructeur � partir de composantes 
@@ -60,11 +57,11 @@ m_Color(Color)
 /// \param a : Canal alpha
 ///
 ////////////////////////////////////////////////////////////
-CColor::CColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+CColor::CColor(unsigned char r, unsigned char g, unsigned char b,
+		unsigned char a)
 {
-    Set(r, g, b, a);
+	Set(r, g, b, a);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Met � jour la couleur � partir de 4 composantes flottantes
@@ -77,14 +74,12 @@ CColor::CColor(unsigned char r, unsigned char g, unsigned char b, unsigned char 
 ////////////////////////////////////////////////////////////
 void CColor::SetFloats(float r, float g, float b, float a)
 {
-    int R = static_cast<int>(r * 255.0f);
-    int G = static_cast<int>(g * 255.0f);
-    int B = static_cast<int>(b * 255.0f);
-    int A = static_cast<int>(a * 255.0f);
+	int R = static_cast<int>(r * 255.0f);int G = static_cast<int>(g * 255.0f);
+	int B = static_cast<int>(b * 255.0f);
+	int A = static_cast<int>(a * 255.0f);
 
 	SetInt(R, G, B, A);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Met � jour la couleur � partir de 4 composantes
@@ -95,11 +90,11 @@ void CColor::SetFloats(float r, float g, float b, float a)
 /// \param a : Canal alpha
 ///
 ////////////////////////////////////////////////////////////
-void CColor::Set(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+void CColor::Set(unsigned char r, unsigned char g, unsigned char b,
+		unsigned char a)
 {
-    m_Color = (a << 24) | (r << 16) | (g << 8) | (b << 0);
+	m_Color = (a << 24) | (r << 16) | (g << 8) | (b << 0);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Met � jour la couleur � partir de 4 composantes
@@ -121,7 +116,6 @@ void CColor::SetInt(int r, int g, int b, int a)
 	Set(R, G, B, A);
 }
 
-
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur == pour comparer deux couleurs
 ///
@@ -132,9 +126,8 @@ void CColor::SetInt(int r, int g, int b, int a)
 ////////////////////////////////////////////////////////////
 bool CColor::operator ==(const CColor& c) const
 {
-    return m_Color == c.m_Color;
+	return m_Color == c.m_Color;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur != pour comparer deux couleurs
@@ -146,9 +139,8 @@ bool CColor::operator ==(const CColor& c) const
 ////////////////////////////////////////////////////////////
 bool CColor::operator!=(const CColor& c) const
 {
-    return !(*this == c);
+	return !(*this == c);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur +=
@@ -160,16 +152,15 @@ bool CColor::operator!=(const CColor& c) const
 ////////////////////////////////////////////////////////////
 const CColor& CColor::operator +=(const CColor& c)
 {
-	int R = GetRed()   + c.GetRed();
+	int R = GetRed() + c.GetRed();
 	int G = GetGreen() + c.GetGreen();
-	int B = GetBlue()  + c.GetBlue();
+	int B = GetBlue() + c.GetBlue();
 	int A = GetAlpha() + c.GetAlpha();
 
-    SetInt(R, G, B, A);
+	SetInt(R, G, B, A);
 
 	return *this;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur -=
@@ -181,16 +172,15 @@ const CColor& CColor::operator +=(const CColor& c)
 ////////////////////////////////////////////////////////////
 const CColor& CColor::operator -=(const CColor& c)
 {
-	int R = GetRed()   - c.GetRed();
+	int R = GetRed() - c.GetRed();
 	int G = GetGreen() - c.GetGreen();
-	int B = GetBlue()  - c.GetBlue();
+	int B = GetBlue() - c.GetBlue();
 	int A = GetAlpha() - c.GetAlpha();
 
-    SetInt(R, G, B, A);
+	SetInt(R, G, B, A);
 
-    return *this;
+	return *this;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur +
@@ -202,17 +192,16 @@ const CColor& CColor::operator -=(const CColor& c)
 ////////////////////////////////////////////////////////////
 CColor CColor::operator +(const CColor& c) const
 {
-	int R = GetRed()   + c.GetRed();
+	int R = GetRed() + c.GetRed();
 	int G = GetGreen() + c.GetGreen();
-	int B = GetBlue()  + c.GetBlue();
+	int B = GetBlue() + c.GetBlue();
 	int A = GetAlpha() + c.GetAlpha();
 
-    CColor Ret;
-    Ret.SetInt(R, G, B, A);
+	CColor Ret;
+	Ret.SetInt(R, G, B, A);
 
 	return Ret;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur -
@@ -224,17 +213,16 @@ CColor CColor::operator +(const CColor& c) const
 ////////////////////////////////////////////////////////////
 CColor CColor::operator -(const CColor& c) const
 {
-	int R = GetRed()   - c.GetRed();
+	int R = GetRed() - c.GetRed();
 	int G = GetGreen() - c.GetGreen();
-	int B = GetBlue()  - c.GetBlue();
+	int B = GetBlue() - c.GetBlue();
 	int A = GetAlpha() - c.GetAlpha();
 
-    CColor Ret;
-    Ret.SetInt(R, G, B, A);
+	CColor Ret;
+	Ret.SetInt(R, G, B, A);
 
 	return Ret;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur *
@@ -246,8 +234,7 @@ CColor CColor::operator -(const CColor& c) const
 ////////////////////////////////////////////////////////////
 CColor CColor::operator *(float v) const
 {
-	int R = static_cast<int>(GetRed()   * v);
-	int G = static_cast<int>(GetGreen() * v);
+	int R = static_cast<int>(GetRed() * v);int G = static_cast<int>(GetGreen() * v);
 	int B = static_cast<int>(GetBlue()  * v);
 	int A = static_cast<int>(GetAlpha() * v);
 
@@ -256,7 +243,6 @@ CColor CColor::operator *(float v) const
 
 	return Ret;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur *=
@@ -268,16 +254,14 @@ CColor CColor::operator *(float v) const
 ////////////////////////////////////////////////////////////
 const CColor& CColor::operator *=(float v)
 {
-	int R = static_cast<int>(GetRed()   * v);
-	int G = static_cast<int>(GetGreen() * v);
-	int B = static_cast<int>(GetBlue()  * v);
+	int R = static_cast<int>(GetRed() * v);int G = static_cast<int>(GetGreen() * v);
+	int B = static_cast<int>(GetBlue() * v);
 	int A = static_cast<int>(GetAlpha() * v);
 
 	SetInt(R, G, B, A);
 
-    return *this;
+	return *this;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur /
@@ -292,7 +276,6 @@ CColor CColor::operator /(float v) const
 	return *this * (1.0f / v);
 }
 
-
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur /=
 ///
@@ -303,9 +286,8 @@ CColor CColor::operator /(float v) const
 ////////////////////////////////////////////////////////////
 const CColor& CColor::operator /=(float v)
 {
-    return *this *= (1.0f / v);
+	return *this *= (1.0f / v);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Ajoute deux couleurs
@@ -317,9 +299,8 @@ const CColor& CColor::operator /=(float v)
 ////////////////////////////////////////////////////////////
 CColor CColor::Add(const CColor& c) const
 {
-    return *this + c;
+	return *this + c;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Module deux couleurs
@@ -331,14 +312,12 @@ CColor CColor::Add(const CColor& c) const
 ////////////////////////////////////////////////////////////
 CColor CColor::Modulate(const CColor& c) const
 {
-    unsigned char R = static_cast<unsigned char>(GetRed()   * c.GetRed()   / 255);
-    unsigned char G = static_cast<unsigned char>(GetGreen() * c.GetGreen() / 255);
-    unsigned char B = static_cast<unsigned char>(GetBlue()  * c.GetBlue()  / 255);
-    unsigned char A = static_cast<unsigned char>(GetAlpha() * c.GetAlpha() / 255);
+	unsigned char R = static_cast<unsigned char>(GetRed() * c.GetRed() / 255);unsigned char G = static_cast<unsigned char>(GetGreen() * c.GetGreen() / 255);
+	unsigned char B = static_cast<unsigned char>(GetBlue() * c.GetBlue() / 255);
+	unsigned char A = static_cast<unsigned char>(GetAlpha() * c.GetAlpha() / 255);
 
-    return CColor(R, G, B, A);
+	return CColor(R, G, B, A);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// R�cup�re le canal alpha
@@ -348,9 +327,8 @@ CColor CColor::Modulate(const CColor& c) const
 ////////////////////////////////////////////////////////////
 unsigned char CColor::GetAlpha() const
 {
-    return static_cast<unsigned char>((m_Color & 0xFF000000) >> 24);
+	return static_cast<unsigned char>((m_Color & 0xFF000000) >> 24);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// R�cup�re le canal rouge
@@ -360,9 +338,8 @@ unsigned char CColor::GetAlpha() const
 ////////////////////////////////////////////////////////////
 unsigned char CColor::GetRed() const
 {
-    return static_cast<unsigned char>((m_Color & 0x00FF0000) >> 16);
+	return static_cast<unsigned char>((m_Color & 0x00FF0000) >> 16);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// R�cup�re le canal vert
@@ -372,9 +349,8 @@ unsigned char CColor::GetRed() const
 ////////////////////////////////////////////////////////////
 unsigned char CColor::GetGreen() const
 {
-    return static_cast<unsigned char>((m_Color & 0x0000FF00) >> 8);
+	return static_cast<unsigned char>((m_Color & 0x0000FF00) >> 8);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// R�cup�re le canal bleu
@@ -384,9 +360,8 @@ unsigned char CColor::GetGreen() const
 ////////////////////////////////////////////////////////////
 unsigned char CColor::GetBlue() const
 {
-    return static_cast<unsigned char>((m_Color & 0x000000FF) >> 0);
+	return static_cast<unsigned char>((m_Color & 0x000000FF) >> 0);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Convertit en 4 floats RGBA
@@ -396,12 +371,11 @@ unsigned char CColor::GetBlue() const
 ////////////////////////////////////////////////////////////
 void CColor::ToFloat(float Dest[]) const
 {
-    Dest[0] = GetRed()   / 255.0f;
-    Dest[1] = GetGreen() / 255.0f;
-    Dest[2] = GetBlue()  / 255.0f;
-    Dest[3] = GetAlpha() / 255.0f;
+	Dest[0] = GetRed() / 255.0f;
+	Dest[1] = GetGreen() / 255.0f;
+	Dest[2] = GetBlue() / 255.0f;
+	Dest[3] = GetAlpha() / 255.0f;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie la couleur en nuance de gris
@@ -411,9 +385,9 @@ void CColor::ToFloat(float Dest[]) const
 ////////////////////////////////////////////////////////////
 unsigned char CColor::ToGrey() const
 {
-    return static_cast<unsigned char>(GetRed() * 0.30 + GetGreen() * 0.59 + GetBlue() * 0.11);
+	return static_cast<unsigned char>(GetRed() * 0.30 + GetGreen() * 0.59
+			+ GetBlue() * 0.11);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie la couleur dans le format ARGB
@@ -423,9 +397,9 @@ unsigned char CColor::ToGrey() const
 ////////////////////////////////////////////////////////////
 unsigned long CColor::ToARGB() const
 {
-    return (GetAlpha() << 24) | (GetRed() << 16) | (GetGreen() << 8) | (GetBlue() << 0);
+	return (GetAlpha() << 24) | (GetRed() << 16) | (GetGreen() << 8)
+			| (GetBlue() << 0);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie la couleur dans le format ABGR
@@ -435,9 +409,9 @@ unsigned long CColor::ToARGB() const
 ////////////////////////////////////////////////////////////
 unsigned long CColor::ToABGR() const
 {
-    return (GetAlpha() << 24) | (GetBlue() << 16) | (GetGreen() << 8) | (GetRed() << 0);
+	return (GetAlpha() << 24) | (GetBlue() << 16) | (GetGreen() << 8)
+			| (GetRed() << 0);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Renvoie la couleur dans le format RGBA
@@ -447,9 +421,9 @@ unsigned long CColor::ToABGR() const
 ////////////////////////////////////////////////////////////
 unsigned long CColor::ToRGBA() const
 {
-    return (GetRed() << 24) | (GetGreen() << 16) | (GetBlue() << 8) | (GetAlpha() << 0);
+	return (GetRed() << 24) | (GetGreen() << 16) | (GetBlue() << 8)
+			| (GetAlpha() << 0);
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur >> entre un flux et une couleur
@@ -462,13 +436,12 @@ unsigned long CColor::ToRGBA() const
 ////////////////////////////////////////////////////////////
 std::istream& operator >>(std::istream& Stream, CColor& Color)
 {
-    int R, G, B, A;
-    Stream >> R >> G >> B >> A;
-    Color.SetInt(R, G, B, A);
+	int R, G, B, A;
+	Stream >> R >> G >> B >> A;
+	Color.SetInt(R, G, B, A);
 
-    return Stream;
+	return Stream;
 }
-
 
 /////////////////////////////////////////////////////////////
 /// Surcharge de l'op�rateur << entre un flux et une couleur
@@ -481,8 +454,8 @@ std::istream& operator >>(std::istream& Stream, CColor& Color)
 ////////////////////////////////////////////////////////////
 std::ostream& operator <<(std::ostream& Stream, const CColor& Color)
 {
-    return Stream << static_cast<int>(Color.GetRed())   << " "
-                  << static_cast<int>(Color.GetGreen()) << " "
-                  << static_cast<int>(Color.GetBlue())  << " "
-                  << static_cast<int>(Color.GetAlpha());
+	return Stream << static_cast<int>(Color.GetRed()) << " "
+			<< static_cast<int>(Color.GetGreen()) << " "
+			<< static_cast<int>(Color.GetBlue()) << " "
+			<< static_cast<int>(Color.GetAlpha());
 }

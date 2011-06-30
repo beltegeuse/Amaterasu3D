@@ -30,7 +30,8 @@
 // Amaterasu includes
 #include <Debug/Exceptions.h>
 
-PerformancePanel::PerformancePanel() : m_Text(0), m_InStepCounting(false)
+PerformancePanel::PerformancePanel() :
+		m_Text(0), m_InStepCounting(false)
 {
 }
 
@@ -50,7 +51,7 @@ void PerformancePanel::BeginPerformanceCounter()
 void PerformancePanel::EndPerformanceCounter()
 {
 	Assert(!m_InStepCounting);
-	m_Totaltime = (std::clock()-m_TimeStartPerformance);
+	m_Totaltime = (std::clock() - m_TimeStartPerformance);
 }
 
 void PerformancePanel::BeginStep(const std::string& stepName)
@@ -76,41 +77,41 @@ void PerformancePanel::EndStep()
 	m_InStepCounting = false;
 
 	// Compute the time
-	m_Steps.back().Time = (std::clock()-m_TimeStartSteps);
+	m_Steps.back().Time = (std::clock() - m_TimeStartSteps);
 }
 
 void PerformancePanel::Draw()
 {
-	if(m_Text == 0)
+	if (m_Text == 0)
 		m_Text = new CGraphicString;
 
 	m_Text->Text = "Steps : ";
-	m_Text->Position = Math::TVector2F(0,0);
+	m_Text->Position = Math::TVector2F(0, 0);
 	m_Text->Draw();
 
 	float cumulatedTime = 0.0;
-	for(unsigned int i = 0; i < m_Steps.size(); i++)
+	for (unsigned int i = 0; i < m_Steps.size(); i++)
 	{
 		std::stringstream ss;
 		cumulatedTime += m_Steps[i].Time;
 		ss << " * " << m_Steps[i].Name << " : " << m_Steps[i].Time << " ms";
 		m_Text->Text = ss.str();
-		m_Text->Position = Math::TVector2F(10,18*(i+1));
+		m_Text->Position = Math::TVector2F(10, 18 * (i + 1));
 		m_Text->Draw();
 	}
 
 	{
 		std::stringstream ss;
-		ss << "Other : " << m_Totaltime-cumulatedTime << " ms";
+		ss << "Other : " << m_Totaltime - cumulatedTime << " ms";
 		m_Text->Text = ss.str();
-		m_Text->Position = Math::TVector2F(0,18*(m_Steps.size()+1));
+		m_Text->Position = Math::TVector2F(0, 18 * (m_Steps.size() + 1));
 		m_Text->Draw();
 	}
 	{
 		std::stringstream ss;
 		ss << "Total time : " << m_Totaltime << " ms";
 		m_Text->Text = ss.str();
-		m_Text->Position = Math::TVector2F(0,18*(m_Steps.size()+2));
+		m_Text->Position = Math::TVector2F(0, 18 * (m_Steps.size() + 2));
 		m_Text->Draw();
 	}
 }

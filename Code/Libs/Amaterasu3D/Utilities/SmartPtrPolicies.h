@@ -28,23 +28,23 @@
 #include <algorithm>
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
-
 
 ////////////////////////////////////////////////////////////
 /// Police de pointeur intelligent :
-/// comptage de référence externe
+/// comptage de rï¿½fï¿½rence externe
 ////////////////////////////////////////////////////////////
-template <class T>
+template<class T>
 class CRefCount
 {
-public :
+public:
 
 	//----------------------------------------------------------
-	// Constructeur par défaut
+	// Constructeur par dï¿½faut
 	//----------------------------------------------------------
-	CRefCount() : m_Counter(new int(1))
+	CRefCount() :
+			m_Counter(new int(1))
 	{
 	}
 
@@ -58,7 +58,7 @@ public :
 	}
 
 	//----------------------------------------------------------
-	// Gère la libération de la ressource
+	// Gï¿½re la libï¿½ration de la ressource
 	//----------------------------------------------------------
 	void Release(T* Ptr)
 	{
@@ -77,19 +77,19 @@ public :
 		std::swap(RefCount.m_Counter, m_Counter);
 	}
 
-private :
+private:
 
-	int* m_Counter; ///< Pointeur sur le compteur de référence
+	int* m_Counter; ///< Pointeur sur le compteur de rï¿½fï¿½rence
 };
 
 ////////////////////////////////////////////////////////////
 /// Police de pointeur intelligent :
-/// objets COM et ressources du moteur - comptage de référence intrusif
+/// objets COM et ressources du moteur - comptage de rï¿½fï¿½rence intrusif
 ////////////////////////////////////////////////////////////
-template <class T>
+template<class T>
 class CResourceCOM
 {
-public :
+public:
 
 	//----------------------------------------------------------
 	// Clone la ressource
@@ -102,7 +102,7 @@ public :
 	}
 
 	//----------------------------------------------------------
-	// Gère la libération de la ressource
+	// Gï¿½re la libï¿½ration de la ressource
 	//----------------------------------------------------------
 	static void Release(T* Ptr)
 	{
@@ -111,13 +111,11 @@ public :
 	}
 
 	//----------------------------------------------------------
-	// Echange deux instances - aucune donnée membre : ne fait rien
+	// Echange deux instances - aucune donnï¿½e membre : ne fait rien
 	//----------------------------------------------------------
 	static void Swap(CResourceCOM&)
 	{
 	}
 };
-
-
 
 #endif // SMARTPTRPOLICIES_H

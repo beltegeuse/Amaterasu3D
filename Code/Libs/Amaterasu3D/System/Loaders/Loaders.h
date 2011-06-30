@@ -7,5 +7,4 @@ public:
 	static void RegisterAllLoaders();
 };
 
-
 #endif /* LOADERS_H_ */

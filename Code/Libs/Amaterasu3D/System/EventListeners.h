@@ -30,11 +30,13 @@
 class EventListener
 {
 public:
-	virtual ~EventListener() {}
+	virtual ~EventListener()
+	{
+	}
 };
 
 //XXX: Give the button
-class MouseListener : public EventListener
+class MouseListener: public EventListener
 {
 public:
 	MouseListener();
@@ -44,7 +46,7 @@ public:
 	virtual void MouseReleased() = 0;
 };
 
-class KeyListener : public EventListener
+class KeyListener: public EventListener
 {
 public:
 	KeyListener();
@@ -54,7 +56,7 @@ public:
 	virtual void KeyReleased(SDL_Keycode& key) = 0;
 };
 
-class MouseMotionListener : public EventListener
+class MouseMotionListener: public EventListener
 {
 public:
 	MouseMotionListener();
@@ -64,14 +66,16 @@ public:
 };
 
 //XXX Heritage en diament.
-class InputListener : public MouseListener, public KeyListener, public MouseMotionListener
+class InputListener: public MouseListener,
+		public KeyListener,
+		public MouseMotionListener
 {
 public:
 	InputListener();
 	virtual ~InputListener();
 };
 
-class FrameListener : public EventListener
+class FrameListener: public EventListener
 {
 public:
 	FrameListener();

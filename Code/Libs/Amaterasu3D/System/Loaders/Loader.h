@@ -26,7 +26,7 @@
 #define LOADER_H
 
 //==========================================================
-// En-têtes
+// En-tï¿½tes
 //==========================================================
 #include <Debug/Exceptions.h>
 #include <string>
@@ -34,22 +34,26 @@
 ////////////////////////////////////////////////////////////
 // Classe de base pour les importateurs / exportateurs de medias
 ////////////////////////////////////////////////////////////
-template <class T>
+template<class T>
 class ILoader
 {
-public :
+public:
 
 	//----------------------------------------------------------
 	// Destructeur
 	//----------------------------------------------------------
-	virtual ~ILoader() {}
+	virtual ~ILoader()
+	{
+	}
 
 	//----------------------------------------------------------
-	// Charge un T à partir d'un fichier
+	// Charge un T ï¿½ partir d'un fichier
 	//----------------------------------------------------------
 	virtual T* LoadFromFile(const std::string& Filename)
 	{
-		throw CLoadingFailed(Filename, "Le loader enregistré pour ce format ne prend pas en charge l'importation");
+		throw CLoadingFailed(
+				Filename,
+				"Le loader enregistrï¿½ pour ce format ne prend pas en charge l'importation");
 	}
 
 	//----------------------------------------------------------
@@ -57,16 +61,19 @@ public :
 	//----------------------------------------------------------
 	virtual void SaveToFile(const T* Object, const std::string& Filename)
 	{
-		throw CLoadingFailed(Filename, "Le loader enregistré pour ce format ne prend pas en charge l'exportation");
+		throw CLoadingFailed(
+				Filename,
+				"Le loader enregistrï¿½ pour ce format ne prend pas en charge l'exportation");
 	}
 
-protected :
+protected:
 
 	//----------------------------------------------------------
-	// Constructeur - protégé : rend la classe abstraite
+	// Constructeur - protï¿½gï¿½ : rend la classe abstraite
 	//----------------------------------------------------------
-	ILoader() {}
+	ILoader()
+	{
+	}
 };
-
 
 #endif // LOADER_H

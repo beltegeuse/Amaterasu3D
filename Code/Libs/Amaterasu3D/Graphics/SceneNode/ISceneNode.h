@@ -34,7 +34,8 @@
 #include <vector>
 #include <string>
 
-class ISceneNode {
+class ISceneNode
+{
 protected:
 	/*
 	 * Typedef
@@ -63,7 +64,6 @@ protected:
 	Math::TVector3F m_Position;
 	Math::CQuaternion m_Orientation;
 	Math::TVector3F m_Scale;
-
 
 public:
 	ISceneNode(const std::string& name, ISceneNode* parent);

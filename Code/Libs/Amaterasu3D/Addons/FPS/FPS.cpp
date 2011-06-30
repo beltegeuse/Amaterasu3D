@@ -27,8 +27,7 @@
 #include <Logger/Logger.h>
 
 FPS::FPS() :
-	m_TimeElasped(0.0),
-	m_FPS(0)
+		m_TimeElasped(0.0), m_FPS(0)
 {
 }
 
@@ -45,7 +44,7 @@ void FPS::FrameStarted(double delta)
 void FPS::FrameEnded()
 {
 	m_FPS++;
-	if(m_TimeElasped > 1.0)
+	if (m_TimeElasped > 1.0)
 	{
 		Logger::Log() << "[INFO] FPS : " << m_FPS << "\n";
 		// Reinitialize all variables
