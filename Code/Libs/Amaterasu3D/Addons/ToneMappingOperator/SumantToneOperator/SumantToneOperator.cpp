@@ -72,11 +72,11 @@ void SumantToneOperator::Compress(Texture* HDRBuffer)
 	// Calcul des sigma
 	// * For rods
 	float j = 1.0 / (500000*Arod + 1.0);
-	float sigRod = (2.5874*Arod) / (19000*j*j*Arod + 0.2615*std::pow(1-j*j, 4)*std::pow(Arod, 1.0 / 6.0));
+	float sigRod = (2.5874*Arod) / (19000*j*j*Arod + 0.2615*std::pow(1-j*j, 4)*std::pow(Arod, 1.f / 6.f));
 	// * For cones
 	float k = 1.0 / (5*Acone + 1.0);
 	float k4 = k*k*k*k;
-	float sigCone = (12.9223*Acone) / (k4*Acone + 0.171*std::pow(1.0 - k4, 2)*std::pow(Acone, 1.0 / 3.0));
+	float sigCone = (12.9223*Acone) / (k4*Acone + 0.171*std::pow(1.0 - k4, 2)*std::pow(Acone, 1.f / 3.f));
 
 	Logger::Log() << "[DEBUG] Info operator Sumant : \n";
 	Logger::Log() << "    * Grod : " << Grod << "\n";

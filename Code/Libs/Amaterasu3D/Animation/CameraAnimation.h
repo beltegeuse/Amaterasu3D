@@ -60,6 +60,7 @@ struct CameraAnimationControlPoint
 std::ostream& operator <<(std::ostream& Stream, const CameraAnimationControlPoint& p)
 {
 	Stream << "[ Position : " << p.Position << " | Direction : " << p.Direction << " ]";
+	return Stream;
 }
 
 class CameraAnimation
