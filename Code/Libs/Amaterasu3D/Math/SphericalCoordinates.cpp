@@ -1,7 +1,7 @@
 //==========================================================
 // Amaterasu3D - perceptual 3D engine
 //
-// Copyright (C) 2004-2005 Adrien Gruson
+// Copyright (C) 2010-2011 Adrien Gruson
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@ double SphericalCoordinates::Angle(double x, double y)
 	return res ;
 }
 
-/** \brief Changement du vecteur représenté en coordonnées sphériques */
+/** \brief Changement du vecteur reprï¿½sentï¿½ en coordonnï¿½es sphï¿½riques */
 void SphericalCoordinates::Set(Math::TVector3F const & v)
 {
 	m_module = v.Length() ;
@@ -49,7 +49,7 @@ void SphericalCoordinates::Set(Math::TVector3F const & v)
 	m_theta = Angle(v.x, v.y) ;
 }
 
-/** \brief Récupération du vecteur à partir des coordonnées sphériques */
+/** \brief Rï¿½cupï¿½ration du vecteur ï¿½ partir des coordonnï¿½es sphï¿½riques */
 Math::TVector3F SphericalCoordinates::Get() const
 {
 	return Math::TVector3F(m_module*sin(m_phy)*cos(m_theta),
@@ -57,19 +57,19 @@ Math::TVector3F SphericalCoordinates::Get() const
 		m_module*cos(m_phy)) ;
 }
 
-/** \brief Construction des coordonnées sphériques sur la base d'un vecteur 3D */
+/** \brief Construction des coordonnï¿½es sphï¿½riques sur la base d'un vecteur 3D */
 SphericalCoordinates::SphericalCoordinates(Math::TVector3F const & v)
 {
 	Set(v) ;
 }
 
-/** \brief Renvoie l'angle entre le vecteur projeté sur le plan x,y et l'axe X */
+/** \brief Renvoie l'angle entre le vecteur projetï¿½ sur le plan x,y et l'axe X */
 double SphericalCoordinates::GetTheta() const
 {
 	return m_theta ;
 }
 
-/** \brief Changement de l'angle entre le vecteur projeté sur le plan x,y et l'axe X */
+/** \brief Changement de l'angle entre le vecteur projetï¿½ sur le plan x,y et l'axe X */
 void SphericalCoordinates::SetTheta(double v)
 { m_theta = v ; }
 
