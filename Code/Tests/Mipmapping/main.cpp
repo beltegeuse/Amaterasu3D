@@ -19,7 +19,7 @@
 #include <Math/Vector3.h>
 #include <Math/Interpolators/CatmullRomInterpolator.h>
 #include <Animation/CameraAnimation.h>
-#include <Addons/ToneMappingOperator/ManualMipmapping.h>
+#include <Graphics/Shaders/Tools/ManualMipmapping.h>
 
 using namespace ama3D;
 

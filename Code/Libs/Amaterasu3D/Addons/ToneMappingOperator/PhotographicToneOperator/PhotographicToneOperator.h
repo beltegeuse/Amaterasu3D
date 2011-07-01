@@ -25,10 +25,10 @@
 #ifndef PHOTOGRAPHICTONEOPERATOR_H_
 #define PHOTOGRAPHICTONEOPERATOR_H_
 
-#include <Addons/ToneMappingOperator/ManualMipmapping.h>
 #include <Addons/ToneMappingOperator/AbsrtactToneOperator.h>
 #include <Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.h>
 #include <Graphics/Shaders/Shader.h>
+#include <Graphics/Shaders/Tools/ManualMipmapping.h>
 
 namespace ama3D
 {

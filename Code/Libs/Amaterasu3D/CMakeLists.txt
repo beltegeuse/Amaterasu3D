@@ -21,7 +21,6 @@ SET(LIB_AMATERASU3D_SRCS
 	Addons/Binvox/BinvoxModel.cpp
 	Addons/LPV/LPV.cpp
 	Addons/ToneMappingOperator/AbsrtactToneOperator.cpp
-	Addons/ToneMappingOperator/ManualMipmapping.cpp
 	Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.cpp
 	Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperatorExp.cpp
 	Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.cpp
@@ -65,7 +64,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Graphics/Shaders/ShaderUnit.cpp
 	Graphics/Shaders/GBufferShader.cpp
 	Graphics/Shaders/Compiler/ShaderCompiler.cpp
-	
+	Graphics/Shaders/Tools/ManualMipmapping.cpp
 	### Core Graphics
 	Graphics/MatrixManagement.cpp
 	Graphics/Color.cpp

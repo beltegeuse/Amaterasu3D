@@ -25,7 +25,7 @@
 #ifndef ADAPTATIONLUMINANCESIMPLE_H_
 #define ADAPTATIONLUMINANCESIMPLE_H_
 
-#include <Addons/ToneMappingOperator/ManualMipmapping.h>
+#include <Graphics/Shaders/Tools/ManualMipmapping.h>
 
 namespace ama3D
 {

@@ -29,7 +29,7 @@
 #include <Addons/ToneMappingOperator/AbsrtactToneOperator.h>
 #include <Addons/ToneMappingOperator/SumantToneOperator/BleachingFilter.h>
 #include <Addons/ToneMappingOperator/SumantToneOperator/ExpFilter.h>
-#include <Addons/ToneMappingOperator/ManualMipmapping.h>
+#include <Graphics/Shaders/Tools/ManualMipmapping.h>
 
 namespace ama3D
 {
