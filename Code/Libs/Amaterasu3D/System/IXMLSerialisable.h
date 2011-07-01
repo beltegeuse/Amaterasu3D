@@ -35,8 +35,18 @@ public:
 	{
 	}
 
-	virtual void WriteXML(TiXmlElement * element) const;
-	virtual void void ReadXML(TiXmlElement * element);
+	/*
+	 * Virtual methods
+	 */
+
+	/**
+	 * \param element Element where push all informations
+	 */
+	virtual void WriteXML(TiXmlElement * element) const = 0;
+	/**
+	 * \param element Element contains informations
+	 */
+	virtual void void ReadXML(TiXmlElement * element) = 0;
 };
 
 #endif /* IXMLSERIALISABLE_H_ */
