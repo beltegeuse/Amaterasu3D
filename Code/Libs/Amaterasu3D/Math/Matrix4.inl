@@ -28,7 +28,7 @@
 #endif
 
 /////////////////////////////////////////////////////////////
-/// Constructeur par défaut
+/// Constructeur par dï¿½faut
 ///
 /// \param m11 - m44 : Composantes de la matrice
 ///
@@ -56,7 +56,7 @@ inline void CMatrix4::LoadFromOpenGL(int matrixType)
 }
 
 /////////////////////////////////////////////////////////////
-/// Met la matrice à l'identité
+/// Met la matrice ï¿½ l'identitï¿½
 ///
 ////////////////////////////////////////////////////////////
 inline void CMatrix4::Identity()
@@ -69,9 +69,9 @@ inline void CMatrix4::Identity()
 
 
 /////////////////////////////////////////////////////////////
-/// Calcule le déterminant de la matrice
+/// Calcule le dï¿½terminant de la matrice
 ///
-/// \return Valeur du déterminant
+/// \return Valeur du dï¿½terminant
 ///
 ////////////////////////////////////////////////////////////
 inline float CMatrix4::Determinant() const
@@ -88,7 +88,7 @@ inline float CMatrix4::Determinant() const
 /////////////////////////////////////////////////////////////
 /// Transpose la matrice
 ///
-/// \return Matrice transposée
+/// \return Matrice transposï¿½e
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 CMatrix4::Transpose() const
@@ -101,7 +101,7 @@ inline CMatrix4 CMatrix4::Transpose() const
 
 
 /////////////////////////////////////////////////////////////
-/// Inverse la matrice si son déterminant est non nul
+/// Inverse la matrice si son dï¿½terminant est non nul
 ///
 /// \return Matrice inverse
 ///
@@ -156,7 +156,7 @@ inline void CMatrix4::SetTranslation(float x, float y, float z)
 
 
 /////////////////////////////////////////////////////////////
-/// Construit une matrice de mise à l'échelle
+/// Construit une matrice de mise ï¿½ l'ï¿½chelle
 ///
 /// \param x : Facteur de redimensionnement sur l'axe X
 /// \param y : Facteur de redimensionnement sur l'axe Y
@@ -294,14 +294,19 @@ inline TVector3F CMatrix4::GetTranslation() const
     return TVector3F(a14, a24, a34);
 }
 
+inline TVector3F CMatrix4::GetScale() const
+{
+	return TVector3F(TVector3F(a11,a12,a13).Length(), TVector3F(a21,a22,a23).Length(), TVector3F(a31,a32,a33).Length());
+}
+
 
 /////////////////////////////////////////////////////////////
-/// Transforme un vecteur à 3 composantes
+/// Transforme un vecteur ï¿½ 3 composantes
 ///
-/// \param v : Vecteur à transformer
+/// \param v : Vecteur ï¿½ transformer
 /// \param w : Composante w
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline TVector3F CMatrix4::Transform(const TVector3F& v, float w) const
@@ -313,11 +318,11 @@ inline TVector3F CMatrix4::Transform(const TVector3F& v, float w) const
 
 
 /////////////////////////////////////////////////////////////
-/// Transforme un vecteur à 4 composantes
+/// Transforme un vecteur ï¿½ 4 composantes
 ///
-/// \param v : Vecteur à transformer
+/// \param v : Vecteur ï¿½ transformer
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline TVector4F CMatrix4::Transform(const TVector4F& v) const
@@ -330,7 +335,7 @@ inline TVector4F CMatrix4::Transform(const TVector4F& v) const
 
 
 /////////////////////////////////////////////////////////////
-/// Construit une matrice ortho non centrée
+/// Construit une matrice ortho non centrï¿½e
 ///
 /// \param Left :   Gauche
 /// \param Top :    Haut
@@ -352,8 +357,8 @@ inline void CMatrix4::OrthoOffCenter(float Left, float Top, float Right, float B
 ///
 /// \param Fov :   Champ de vision en degree
 /// \param Ratio : Ratio largeur / hauteur
-/// \param Near :  Valeur du plan rapproché
-/// \param Far :   Valeur du plan éloigné
+/// \param Near :  Valeur du plan rapprochï¿½
+/// \param Far :   Valeur du plan ï¿½loignï¿½
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 CMatrix4::CreatePerspectiveFOV(float Fov, float Ratio, float Near, float Far)
@@ -388,14 +393,14 @@ inline CMatrix4 CMatrix4::CreatePerspectiveProjection(const Math::TVector2F& LB,
 /////////////////////////////////////////////////////////////
 /// Construit une matrice de vue
 ///
-/// \param From : Position de la caméra
-/// \param To :   Cible de la caméra
-/// \param Up :   Vecteur up ((0, 1, 0) par défaut)
+/// \param From : Position de la camï¿½ra
+/// \param To :   Cible de la camï¿½ra
+/// \param Up :   Vecteur up ((0, 1, 0) par dï¿½faut)
 ///
 ////////////////////////////////////////////////////////////
 inline void CMatrix4::LookAt(const TVector3F& From, const TVector3F& To, const TVector3F& Up)
 {
-    // TODO : gérer le cas où (To - From) et Up sont colinéaires
+    // TODO : gï¿½rer le cas oï¿½ (To - From) et Up sont colinï¿½aires
 
     TVector3F ZAxis = To - From;
     ZAxis.Normalize();
@@ -421,9 +426,9 @@ inline Math::CMatrix3 CMatrix4::ExtractSubMatrix() const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur + unaire
+/// Opï¿½rateur + unaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 CMatrix4::operator +() const
@@ -433,9 +438,9 @@ inline CMatrix4 CMatrix4::operator +() const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur - unaire
+/// Opï¿½rateur - unaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 CMatrix4::operator -() const
@@ -448,11 +453,11 @@ inline CMatrix4 CMatrix4::operator -() const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur + binaire
+/// Opï¿½rateur + binaire
 ///
-/// \param m : Matrice à additionner
+/// \param m : Matrice ï¿½ additionner
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 CMatrix4::operator +(const CMatrix4& m) const
@@ -465,11 +470,11 @@ inline CMatrix4 CMatrix4::operator +(const CMatrix4& m) const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur - binaire
+/// Opï¿½rateur - binaire
 ///
-/// \param m : Matrice à soustraire
+/// \param m : Matrice ï¿½ soustraire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 CMatrix4::operator -(const CMatrix4& m) const
@@ -482,11 +487,11 @@ inline CMatrix4 CMatrix4::operator -(const CMatrix4& m) const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur +=
+/// Opï¿½rateur +=
 ///
-/// \param m : Matrice à additionner
+/// \param m : Matrice ï¿½ additionner
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline const CMatrix4& CMatrix4::operator +=(const CMatrix4& m)
@@ -501,11 +506,11 @@ inline const CMatrix4& CMatrix4::operator +=(const CMatrix4& m)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur -=
+/// Opï¿½rateur -=
 ///
-/// \param m : Matrice à soustraire
+/// \param m : Matrice ï¿½ soustraire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline const CMatrix4& CMatrix4::operator -=(const CMatrix4& m)
@@ -520,11 +525,11 @@ inline const CMatrix4& CMatrix4::operator -=(const CMatrix4& m)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur *
+/// Opï¿½rateur *
 ///
-/// \param m : Matrice à multiplier
+/// \param m : Matrice ï¿½ multiplier
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 CMatrix4::operator *(const CMatrix4& m) const
@@ -552,11 +557,11 @@ inline CMatrix4 CMatrix4::operator *(const CMatrix4& m) const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur *=
+/// Opï¿½rateur *=
 ///
-/// \param m : Matrice à multiplier
+/// \param m : Matrice ï¿½ multiplier
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline const CMatrix4& CMatrix4::operator *=(const CMatrix4& m)
@@ -568,11 +573,11 @@ inline const CMatrix4& CMatrix4::operator *=(const CMatrix4& m)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur *= avec un scalaire
+/// Opï¿½rateur *= avec un scalaire
 ///
 /// \param t : Scalaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline const CMatrix4& CMatrix4::operator *=(float t)
@@ -587,11 +592,11 @@ inline const CMatrix4& CMatrix4::operator *=(float t)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur /= avec un scalaire
+/// Opï¿½rateur /= avec un scalaire
 ///
 /// \param t : Scalaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline const CMatrix4& CMatrix4::operator /=(float t)
@@ -606,9 +611,9 @@ inline const CMatrix4& CMatrix4::operator /=(float t)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur de comparaison ==
+/// Opï¿½rateur de comparaison ==
 ///
-/// \param m : Matrice à comparer
+/// \param m : Matrice ï¿½ comparer
 ///
 /// \return True si les deux matrices sont identiques
 ///
@@ -627,11 +632,11 @@ inline bool CMatrix4::operator ==(const CMatrix4& m) const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur de comparaison !=
+/// Opï¿½rateur de comparaison !=
 ///
-/// \param m : Matrice à comparer
+/// \param m : Matrice ï¿½ comparer
 ///
-/// \return True si les deux matrices sont différentes
+/// \return True si les deux matrices sont diffï¿½rentes
 ///
 ////////////////////////////////////////////////////////////
 inline bool CMatrix4::operator !=(const CMatrix4& m) const
@@ -641,12 +646,12 @@ inline bool CMatrix4::operator !=(const CMatrix4& m) const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur d'accès indexé aux éléments
+/// Opï¿½rateur d'accï¿½s indexï¿½ aux ï¿½lï¿½ments
 ///
-/// \param i : Ligne de la composante à récupérer
-/// \param j : Colonne de la composante à récupérer
+/// \param i : Ligne de la composante ï¿½ rï¿½cupï¿½rer
+/// \param j : Colonne de la composante ï¿½ rï¿½cupï¿½rer
 ///
-/// \return Référence sur la composante (i, j) de la matrice
+/// \return Rï¿½fï¿½rence sur la composante (i, j) de la matrice
 ///
 ////////////////////////////////////////////////////////////
 inline float& CMatrix4::operator ()(std::size_t i, std::size_t j)
@@ -656,12 +661,12 @@ inline float& CMatrix4::operator ()(std::size_t i, std::size_t j)
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur d'accès indexé aux éléments - constant
+/// Opï¿½rateur d'accï¿½s indexï¿½ aux ï¿½lï¿½ments - constant
 ///
-/// \param i : Ligne de la composante à récupérer
-/// \param j : Colonne de la composante à récupérer
+/// \param i : Ligne de la composante ï¿½ rï¿½cupï¿½rer
+/// \param j : Colonne de la composante ï¿½ rï¿½cupï¿½rer
 ///
-/// \return Référence sur la composante (i, j) de la matrice
+/// \return Rï¿½fï¿½rence sur la composante (i, j) de la matrice
 ///
 ////////////////////////////////////////////////////////////
 inline const float& CMatrix4::operator ()(std::size_t i, std::size_t j) const
@@ -671,7 +676,7 @@ inline const float& CMatrix4::operator ()(std::size_t i, std::size_t j) const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur de cast en const float*
+/// Opï¿½rateur de cast en const float*
 ///
 /// \return Pointeur constant sur les composantes du vecteur
 ///
@@ -683,7 +688,7 @@ inline CMatrix4::operator const float*() const
 
 
 /////////////////////////////////////////////////////////////
-/// Opérateur de cast en float*
+/// Opï¿½rateur de cast en float*
 ///
 /// \return Pointeur sur les composantes du vecteur
 ///
@@ -695,12 +700,12 @@ inline CMatrix4::operator float*()
 
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'opérateur * entre une matrice et un scalaire
+/// Surcharge de l'opï¿½rateur * entre une matrice et un scalaire
 ///
 /// \param m : Matrice
 /// \param t : Scalaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 operator *(const CMatrix4& m, float t)
@@ -713,12 +718,12 @@ inline CMatrix4 operator *(const CMatrix4& m, float t)
 
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'opérateur * entre un scalaire et une matrice
+/// Surcharge de l'opï¿½rateur * entre un scalaire et une matrice
 ///
 /// \param t : Scalaire
 /// \param m : Matrice
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 operator *(float t, const CMatrix4& m)
@@ -728,12 +733,12 @@ inline CMatrix4 operator *(float t, const CMatrix4& m)
 
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'opérateur / entre une matrice et un scalaire
+/// Surcharge de l'opï¿½rateur / entre une matrice et un scalaire
 ///
 /// \param m : Matrice
 /// \param t : Scalaire
 ///
-/// \return Résultat de l'opération
+/// \return Rï¿½sultat de l'opï¿½ration
 ///
 ////////////////////////////////////////////////////////////
 inline CMatrix4 operator /(const CMatrix4& m, float t)
@@ -746,12 +751,12 @@ inline CMatrix4 operator /(const CMatrix4& m, float t)
 
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'opérateur >> entre un flux et une matrice
+/// Surcharge de l'opï¿½rateur >> entre un flux et une matrice
 ///
-/// \param  Stream : Flux d'entrée
+/// \param  Stream : Flux d'entrï¿½e
 /// \param Mat :    Matrice
 ///
-/// \return Référence sur le flux d'entrée
+/// \return Rï¿½fï¿½rence sur le flux d'entrï¿½e
 ///
 ////////////////////////////////////////////////////////////
 inline std::istream& operator >>(std::istream& Stream, CMatrix4& Mat)
@@ -766,12 +771,12 @@ inline std::istream& operator >>(std::istream& Stream, CMatrix4& Mat)
 
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'opérateur << entre un flux et une matrice
+/// Surcharge de l'opï¿½rateur << entre un flux et une matrice
 ///
 /// \param Stream : Flux de sortie
 /// \param Mat :    Matrice
 ///
-/// \return Référence sur le flux de sortie
+/// \return Rï¿½fï¿½rence sur le flux de sortie
 ///
 ////////////////////////////////////////////////////////////
 inline std::ostream& operator <<(std::ostream& Stream, const CMatrix4& Mat)

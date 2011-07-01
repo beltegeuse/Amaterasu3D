@@ -24,14 +24,14 @@
 
 #include "ISceneNode.h"
 #include <Logger/Logger.h>
+#include <Graphics/SceneManager.h>
 
 namespace ama3D
 {
 
 ISceneNode::ISceneNode(const std::string& name, ISceneNode* parent) :
-		m_Name(name), m_Parent(parent), m_NeedUpdate(false), m_NeedTransformationLocalUpdate(
-				false), m_Position(Math::TVector3F(0, 0, 0)), m_Scale(
-				Math::TVector3F(1, 1, 1))
+		m_Name(name), m_Parent(parent), m_NeedUpdate(false), m_Position(Math::TVector3F(0, 0, 0)),
+		m_Scale(Math::TVector3F(1, 1, 1))
 {
 	if (m_Parent)
 		m_Parent->AddChild(this);
@@ -125,22 +125,23 @@ Math::CQuaternion ISceneNode::GetOrientation() const
 void ISceneNode::SetPosition(Math::TVector3F position)
 {
 	m_Position = position;
-	NeedTransformationLocaleUpdate();
+	NeedUpdate();
 }
 void ISceneNode::SetOrientation(Math::CQuaternion orientation)
 {
 	m_Orientation = orientation;
-	NeedTransformationLocaleUpdate();
+	NeedUpdate();
 }
 void ISceneNode::SetScale(Math::TVector3F scale)
 {
 	m_Scale = scale;
-	NeedTransformationLocaleUpdate();
+	NeedUpdate();
 }
 void ISceneNode::LoadLocalTransformMatrix(const Math::CMatrix4& matrix)
 {
 	m_CachedLocalTransformationMatrix = matrix;
-	// FIXME: Update all parameters
+	UpdateAttributes();
+	NeedUpdate();
 }
 // -- Others
 void ISceneNode::Move(Math::TVector3F offsetPosition)
@@ -156,78 +157,64 @@ void ISceneNode::Scale(Math::TVector3F offsetScale)
 	SetScale(GetScale() + offsetScale);
 }
 // Cache system
-void ISceneNode::NeedTransformationLocaleUpdate()
-{
-	if (!m_NeedTransformationLocalUpdate)
-	{
-		m_NeedTransformationLocalUpdate = true;
-		NeedUpdate();
-	}
-}
 void ISceneNode::NeedUpdate()
 {
 	if (!m_NeedUpdate)
 	{
-		Logger::Log() << "[DEBUG] ISceneNode::NeedUpdate() \n";
 		m_NeedUpdate = true;
-		if (m_Parent)
-			m_Parent->NeedUpdate();
+		CSceneManager::Instance().NeedUpdateNextRender(this);
 	}
 }
+
 /*
- * Render methods
+ * Update methods
  */
 void ISceneNode::UpdateTransformations()
 {
-	//Logger::Log() << "[DEBUG] ISceneNode::UpdateTransformations() \n";
 	// Matrix cache update
 	if (m_NeedUpdate)
 	{
 		m_NeedUpdate = false;
 
 		Logger::Log() << "[DEBUG] NeedUpdate : " << this << "\n";
-		// If need update local transformation matrix
-		if (m_NeedTransformationLocalUpdate)
-		{
-			Logger::Log() << "[DEBUG] NeedLocalUpdate : " << this << "\n";
-			Math::CMatrix4 positionMatrix, scaleMatrix;
-			positionMatrix.SetTranslation(m_Position.x, m_Position.y,
-					m_Position.z);
-			scaleMatrix.SetScaling(m_Scale.x, m_Scale.y, m_Scale.z);
-			m_CachedLocalTransformationMatrix = scaleMatrix
-					* m_Orientation.ToMatrix() * positionMatrix;
-			m_NeedTransformationLocalUpdate = false;
-		}
-
-		// Update world transformation matrix
-		if (m_Parent)
-		{
-			m_CachedWorldTransformationMatrix =
-					m_CachedLocalTransformationMatrix
-							* m_Parent->GetWorldTransformation();
-		}
-		else
-		{
-			m_CachedWorldTransformationMatrix =
-					m_CachedLocalTransformationMatrix;
-		}
-
-		// Propagate Update
-		for (SceneNodeList::iterator it = m_Children.begin();
-				it != m_Children.end(); it++)
-			it->second->UpdateTransformations();
+		Math::CMatrix4 positionMatrix, scaleMatrix;
+		positionMatrix.SetTranslation(m_Position.x, m_Position.y,
+				m_Position.z);
+		scaleMatrix.SetScaling(m_Scale.x, m_Scale.y, m_Scale.z);
+		m_CachedLocalTransformationMatrix = scaleMatrix
+				* m_Orientation.ToMatrix() * positionMatrix;
 	}
+
+	if (m_Parent)
+	{
+		m_CachedWorldTransformationMatrix =
+				m_CachedLocalTransformationMatrix
+						* m_Parent->GetWorldTransformation();
+	}
+	else
+	{
+		m_CachedWorldTransformationMatrix =
+				m_CachedLocalTransformationMatrix;
+	}
+
+	// Propagate Update
+	for (SceneNodeList::iterator it = m_Children.begin();
+			it != m_Children.end(); it++)
+		it->second->UpdateTransformations();
 }
 
 void ISceneNode::SetParent(ISceneNode* node)
 {
 	m_Parent = node;
-	// TODO: Miss call in changes
-	if (IsNeedUpdate())
-	{
-		m_NeedUpdate = false; // < Force to renotify
-		NeedUpdate(); // < Notify to parent
-	}
+	NeedUpdate(); // < To update childs
 }
+
+void ISceneNode::UpdateAttributes()
+{
+	m_Position = m_CachedLocalTransformationMatrix.GetTranslation();
+	m_Orientation.FromMatrix(m_CachedLocalTransformationMatrix);
+	m_Scale = m_CachedLocalTransformationMatrix.GetScale();
 }
+
+} // Namespace Ama3D
 

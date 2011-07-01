@@ -81,6 +81,7 @@ public:
 	// Renvoie la translation contenue dans la matrice
 	//----------------------------------------------------------
 	TVector3F GetTranslation() const;
+	TVector3F GetScale() const;
 
 	//----------------------------------------------------------
 	// Transforme un vecteur

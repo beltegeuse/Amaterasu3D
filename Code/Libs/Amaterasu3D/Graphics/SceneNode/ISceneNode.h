@@ -59,7 +59,6 @@ protected:
 	// Geometrical attributes
 	// * Cache matrix management
 	bool m_NeedUpdate;
-	bool m_NeedTransformationLocalUpdate;
 	Math::CMatrix4 m_CachedWorldTransformationMatrix;
 	Math::CMatrix4 m_CachedLocalTransformationMatrix;
 	// * Geometry information
@@ -85,6 +84,7 @@ public:
 
 	// Transformation management
 	bool IsNeedUpdate() const;
+
 	// * Getters
 	// -- Transformation
 	const Math::CMatrix4 GetLocalTransformation() const;
@@ -112,9 +112,9 @@ public:
 
 protected:
 	//! Info : Can be call by parent or Transformation setters
-	void NeedTransformationLocaleUpdate(); // < For matrix locale cache only
-	void NeedUpdate(); // < For know you or parents need Transformation update
+	void NeedUpdate(); // < For matrix locale cache only
 	void SetParent(ISceneNode* node);
+	void UpdateAttributes(); // < Update attributes form the matrix
 };
 }
 

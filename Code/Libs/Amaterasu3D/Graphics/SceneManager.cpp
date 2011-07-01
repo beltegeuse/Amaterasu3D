@@ -75,7 +75,10 @@ void CSceneManager::AddScenegraphRoot(ISceneNode* node)
 void CSceneManager::RenderAll()
 {
 	// Update Transformation Cache
-	m_Root->UpdateTransformations();
+	for(std::vector<ISceneNode*>::iterator it = m_NodeNeedsUpdate.begin();
+		m_NodeNeedsUpdate.end() != it; ++it)
+		(*it)->UpdateTransformations();
+	m_NodeNeedsUpdate.clear();
 
 	// Render all Mesh
 	for (RenderableList::iterator it = m_Meshs.begin(); it != m_Meshs.end();
@@ -83,6 +86,11 @@ void CSceneManager::RenderAll()
 			{
 		(*it)->Render();
 	}
+}
+
+void CSceneManager::NeedUpdateNextRender(ISceneNode* node)
+{
+	m_NodeNeedsUpdate.push_back(node);
 }
 
 }

@@ -60,13 +60,23 @@ protected:
 	/*
 	 * Attributes
 	 */
-	// Scenegraph knows
-	LightList m_Lights;
-	CameraList m_Cameras;
-	RenderableList m_Meshs;
+	//////////////////////////
+	// Scenegraph structures
+	//////////////////////////
+	ISceneNode * m_Root; 	// < Root of the scenegraph
+	// Differents datas from methods
+	LightList m_Lights; // < Light in the scene
+	CameraList m_Cameras; // < Camera in scenegraph
 
-	// Root of the scenegraph
-	ISceneNode * m_Root;
+	//////////////////////////
+	// Draw structures
+	//////////////////////////
+	RenderableList m_Meshs; // < Buffers to draw
+
+	//////////////////////////
+	// Update structure
+	//////////////////////////
+	std::vector<ISceneNode*> m_NodeNeedsUpdate;
 
 public:
 	/*
@@ -91,6 +101,9 @@ public:
 	// Render all in scenegraph
 	void RenderAll();
 
+protected:
+	friend class ISceneNode;
+	void NeedUpdateNextRender(ISceneNode* node);
 };
 
 }
