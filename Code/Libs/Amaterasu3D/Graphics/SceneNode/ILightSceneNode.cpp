@@ -26,12 +26,62 @@
 namespace ama3D
 {
 ILightSceneNode::ILightSceneNode(const std::string& name, ISceneNode* parent) :
-		ISceneNode(name, parent)
+		ISceneNode(name, parent),
+		m_LightType(ILightSceneNode::SPOT_LIGHT),
+		m_Color(1,1,1,1),
+		m_LightIntensity(1.f),
+		m_LightRaduis(100.f),
+		m_LightCutOff(90.f)
 {
 }
 
 ILightSceneNode::~ILightSceneNode()
 {
-	// TODO Auto-generated destructor stub
 }
+
+///////////////////
+// Light proprity
+///////////////////
+void ILightSceneNode::SetColor(const Color& color)
+{
+	m_Color = color;
+}
+void ILightSceneNode::SetIntensity(float intensity)
+{
+	m_LightIntensity = intensity;
+}
+void ILightSceneNode::SetRaduis(float raduis)
+{
+	m_LightRaduis = raduis;
+}
+void ILightSceneNode::SetCutoff(float cutoff)
+{
+	m_LightCutOff = cutoff;
+}
+void ILightSceneNode::SetLightType(ILightSceneNode::LIGHT_TYPE type)
+{
+	m_LightType = type;
+}
+
+const Color& ILightSceneNode::GetColor() const
+{
+	return m_Color;
+}
+float ILightSceneNode::GetIntensity() const
+{
+	return m_LightIntensity;
+}
+float ILightSceneNode::GetRaduis() const
+{
+	return m_LightRaduis;
+}
+float ILightSceneNode::GetCutoff() const
+{
+	return m_LightCutOff;
+}
+ILightSceneNode::LIGHT_TYPE ILightSceneNode::GetLightType() const
+{
+	return m_LightType;
+}
+
 }

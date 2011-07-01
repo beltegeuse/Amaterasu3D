@@ -26,14 +26,55 @@
 #define ILIGHTSCENENODE_H_
 
 #include <Graphics/SceneNode/ISceneNode.h>
+#include <Math/Vector3.h>
+#include <Graphics/Color.h>
 
 namespace ama3D
 {
 class ILightSceneNode: public ISceneNode
 {
 public:
+	/*
+	 * Public enum
+	 */
+	enum LIGHT_TYPE
+	{
+		SPOT_LIGHT,
+		SUN_LIGHT,
+		POINT_LIGHT
+	};
+protected:
+	/*
+	 * Attributes
+	 */
+	LIGHT_TYPE m_LightType;
+	Color m_Color;
+	float m_LightIntensity;
+	float m_LightRaduis;
+	float m_LightCutOff;
+public:
+	/*
+	 * Constructor & Destructors
+	 */
 	ILightSceneNode(const std::string& name, ISceneNode* parent);
 	virtual ~ILightSceneNode();
+
+	/*============
+	 * Light propriety
+	 *============= */
+	// Setters
+	void SetColor(const Color& color);
+	void SetIntensity(float intensity);
+	void SetRaduis(float raduis);
+	void SetCutoff(float cutoff);
+	void SetLightType(LIGHT_TYPE type);
+	// Getters
+	const Color& GetColor() const;
+	float GetIntensity() const;
+	float GetRaduis() const;
+	float GetCutoff() const;
+	LIGHT_TYPE GetLightType() const;
+
 };
 }
 #endif /* ILIGHTSCENENODE_H_ */
