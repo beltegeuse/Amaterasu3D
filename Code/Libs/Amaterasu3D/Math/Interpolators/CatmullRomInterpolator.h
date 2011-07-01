@@ -10,6 +10,8 @@
 
 #include <vector>
 
+namespace ama3D
+{
 template<class T> class CatmullRomInterpolator
 {
 protected:
@@ -69,5 +71,6 @@ public:
 				m_Points[id + 2], m_Points[id + 3], t - id);
 	}
 };
+}
 
 #endif /* CATMULLROMINTERPOLATOR_H_ */

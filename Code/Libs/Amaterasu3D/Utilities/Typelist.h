@@ -25,6 +25,8 @@
 #ifndef TYPELIST_H
 #define TYPELIST_H
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 /// Structure d'une typelist (liste de types)
 ////////////////////////////////////////////////////////////
@@ -90,5 +92,6 @@ template<class T, class List> struct PushFront;
 template<class List1, class List2> struct Concat;
 
 #include "Typelist.inl"
+}
 
 #endif // TYPELIST_H

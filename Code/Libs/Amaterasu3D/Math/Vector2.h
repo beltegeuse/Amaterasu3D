@@ -32,6 +32,8 @@
 #include <limits>
 #include <iostream>
 
+namespace ama3D
+{
 namespace Math
 {
 ////////////////////////////////////////////////////////////
@@ -138,5 +140,6 @@ typedef CVector2<float> TVector2F;
 #include "Vector2.inl"
 
 } // namespace Math
+}
 
 #endif // VECTOR2_H

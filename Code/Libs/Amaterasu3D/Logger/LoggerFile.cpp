@@ -1,7 +1,8 @@
 #include <Logger/LoggerFile.h>
 
 #include <iostream>
-
+namespace ama3D
+{
 LoggerFile::LoggerFile(const std::string& Filename) :
 		_File(Filename.c_str())
 {
@@ -22,4 +23,5 @@ LoggerFile::~LoggerFile()
 void LoggerFile::Write(const std::string& Message)
 {
 	_File << Message;
+}
 }

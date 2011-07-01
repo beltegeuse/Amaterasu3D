@@ -31,6 +31,8 @@
 #include <exception>
 #include <string>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 /// Classe de base pour les exceptions
 ////////////////////////////////////////////////////////////
@@ -98,5 +100,6 @@ struct CLoggerException: public CException
 {
 	CLoggerException(const std::string& Message);
 };
+}
 
 #endif // EXCEPTION_H

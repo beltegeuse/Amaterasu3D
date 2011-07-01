@@ -30,6 +30,8 @@
 //==========================================================
 #include <Utilities/Typelist.h>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 /// Hi�rarchie "�parpill�e"
 ////////////////////////////////////////////////////////////
@@ -70,5 +72,7 @@ class CLinearHierarchy<TypeList<T, NullType> , Handler, Root> : public Handler<
 		T, Root>
 {
 };
+
+}
 
 #endif // GENHIERARCHIES_H

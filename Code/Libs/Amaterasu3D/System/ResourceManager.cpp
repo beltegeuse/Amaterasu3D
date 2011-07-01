@@ -29,10 +29,12 @@
 #include <Logger/Logger.h>
 #include <Debug/Exceptions.h>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 // Impl�mentation des m�thodes du singleton
 ////////////////////////////////////////////////////////////
-SINGLETON_IMPL(CResourceManager)
+SINGLETON_IMPL(ama3D::CResourceManager)
 
 /////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
@@ -99,4 +101,6 @@ void CResourceManager::Remove(const std::string& Name)
 
 	// Retrait de la ressource de la liste
 	m_Resources.erase(It);
+}
+
 }

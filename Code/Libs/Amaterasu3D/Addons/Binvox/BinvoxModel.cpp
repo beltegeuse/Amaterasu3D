@@ -17,7 +17,8 @@
 #include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
 
 #include <vector>
-
+namespace ama3D
+{
 BinvoxModel::BinvoxModel(const std::string& file) :
 		m_Depth(0), m_Height(0), m_Width(0), m_Tx(0), m_Ty(0), m_Tz(0), m_Scale(
 				1), m_Data(0)
@@ -257,4 +258,5 @@ void BinvoxModel::LoadFile(const std::string& file)
 
 	input->close();
 	delete input;
+}
 }

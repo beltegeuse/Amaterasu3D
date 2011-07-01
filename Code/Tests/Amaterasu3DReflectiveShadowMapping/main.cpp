@@ -18,6 +18,9 @@
 #include <Addons/FPS/FPS.h>
 #include <Graphics/Shaders/Shader.h>
 
+using namespace ama3D;
+
+
 class ApplicationReflective : public Application
 {
 protected:

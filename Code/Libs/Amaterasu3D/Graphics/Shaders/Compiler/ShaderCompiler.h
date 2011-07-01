@@ -33,6 +33,8 @@
 // Amaterasu3D Includes
 #include <Debug/Exceptions.h>
 
+namespace ama3D
+{
 ////////////////////////////////////////
 /// Exception class For ShaderCompiler
 ////////////////////////////////////////
@@ -110,5 +112,6 @@ private:
 	void ResolveDefinesRules();
 	const std::string LoadFile(const std::string& path); //XXX Doublon code with ShaderUnits
 };
+}
 
 #endif /* SHADERCOMPILER_H_ */

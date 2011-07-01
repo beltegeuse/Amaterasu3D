@@ -44,7 +44,8 @@
 //*********************************************************
 //*********************************************************
 //*********************************************************
-
+namespace ama3D
+{
 ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type,
 		const ShaderCompilerConfig& config)
 {
@@ -144,4 +145,5 @@ const std::string ShaderUnit::LoadFile(const std::string& path)
 	file.close();
 	// retrun the buffer
 	return buffer.str();
+}
 }

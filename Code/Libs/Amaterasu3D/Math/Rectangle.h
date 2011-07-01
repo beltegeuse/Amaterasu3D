@@ -31,6 +31,8 @@
 #include <Math/Vector2.h>
 #include <iostream>
 
+namespace ama3D
+{
 // TODO : mettre ailleurs !
 ////////////////////////////////////////////////////////////
 /// Types d'intersections
@@ -133,5 +135,5 @@ std::istream& operator >>(std::ostream& Stream, CRectangle& Rect);
 std::ostream& operator <<(std::ostream& Stream, const CRectangle& Rect);
 
 } // namespace Yes
-
+}
 #endif // RECTANGLE_H

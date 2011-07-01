@@ -29,6 +29,8 @@
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Texture.h>
 
+namespace ama3D
+{
 class ManualMipmapping
 {
 private:
@@ -73,5 +75,6 @@ private:
 			int size);
 	void DrawQuad();
 };
+}
 
 #endif /* MANUALMIPMAPPING_H_ */

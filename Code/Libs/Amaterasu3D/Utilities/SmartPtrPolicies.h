@@ -24,12 +24,14 @@
 
 #ifndef SMARTPTRPOLICIES_H
 #define SMARTPTRPOLICIES_H
-
-#include <algorithm>
-
 //==========================================================
 // En-t�tes
 //==========================================================
+
+#include <algorithm>
+
+namespace ama3D
+{
 
 ////////////////////////////////////////////////////////////
 /// Police de pointeur intelligent :
@@ -117,5 +119,5 @@ public:
 	{
 	}
 };
-
+}
 #endif // SMARTPTRPOLICIES_H

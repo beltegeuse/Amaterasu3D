@@ -15,6 +15,8 @@
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
 
+using namespace ama3D;
+
 class ApplicationDeferred : public Application
 {
 protected:

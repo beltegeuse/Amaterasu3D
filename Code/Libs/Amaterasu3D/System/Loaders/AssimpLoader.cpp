@@ -33,6 +33,8 @@
 #include <Graphics/Texture.h>
 #include <Utilities/File.h>
 
+namespace ama3D
+{
 AssimpLoader::AssimpLoader()
 {
 	// Log initialisation
@@ -355,4 +357,5 @@ TTexturePtr AssimpLoader::LoadTexture(const CFile& file)
 		texturePtr = Texture::LoadFromFile("unknowTexture.tga");
 	}
 	return texturePtr;
+}
 }

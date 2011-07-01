@@ -30,6 +30,8 @@
 // Amaterasu includes
 #include <Debug/Exceptions.h>
 
+namespace ama3D
+{
 PerformancePanel::PerformancePanel() :
 		m_Text(0), m_InStepCounting(false)
 {
@@ -114,4 +116,5 @@ void PerformancePanel::Draw()
 		m_Text->Position = Math::TVector2F(0, 18 * (m_Steps.size() + 2));
 		m_Text->Draw();
 	}
+}
 }

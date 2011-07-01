@@ -29,6 +29,8 @@
 #include <Graphics/SceneNode/ISceneNode.h>
 #include <Math/Matrix4.h>
 
+namespace ama3D
+{
 class ICameraSceneNode: public ISceneNode
 {
 private:
@@ -75,5 +77,6 @@ public:
 private:
 	void NeedProjectionUpdate();
 };
+}
 
 #endif /* ICAMERASCENENODE_H_ */

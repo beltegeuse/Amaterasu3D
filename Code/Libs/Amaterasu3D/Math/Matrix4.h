@@ -11,7 +11,8 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <cmath>
-
+namespace ama3D
+{
 namespace Math
 {
 ////////////////////////////////////////////////////////////
@@ -184,5 +185,5 @@ std::ostream& operator <<(std::ostream& Stream, const CMatrix4& Mat);
 #include "Matrix4.inl"
 
 } // namespace Math
-
+}
 #endif // MATRIX4_H

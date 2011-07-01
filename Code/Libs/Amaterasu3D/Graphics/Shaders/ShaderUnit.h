@@ -33,6 +33,8 @@
 #include <Enum.h>
 #include <Graphics/Shaders/Compiler/ShaderCompiler.h>
 
+namespace ama3D
+{
 class ShaderUnit
 {
 private:
@@ -54,5 +56,6 @@ public:
 
 	unsigned int GetID();
 };
+}
 
 #endif /* SHADERUNIT_H_ */

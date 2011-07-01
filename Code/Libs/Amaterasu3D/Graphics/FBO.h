@@ -31,6 +31,8 @@
 #include <map>
 #include <string>
 
+namespace ama3D
+{
 // To solve mutual inclusion
 class Shader;
 typedef CSmartPtr<Shader, CResourceCOM> TShaderPtr;
@@ -50,6 +52,7 @@ public:
 	GLenum InternalFormat;
 	GLenum Precision;
 	bool GenerateMipMapping;
+
 	FBOBufferParam() :
 			ExternalFormat(GL_RGBA), InternalFormat(GL_RGBA), Precision(
 					GL_FLOAT), GenerateMipMapping(false)
@@ -60,6 +63,10 @@ public:
 		//TWrap = GL_CLAMP_TO_EDGE ;
 		SWrap = GL_CLAMP;
 		TWrap = GL_CLAMP;
+	}
+
+	virtual ~FBOBufferParam()
+	{
 	}
 
 	//TODO: Add these possibility to the mother class ???
@@ -85,6 +92,10 @@ public:
 	int Attachment;
 	FBOTextureBufferParam(int attachment = 0) :
 			Attachment(attachment)
+	{
+	}
+
+	virtual ~FBOTextureBufferParam()
 	{
 	}
 };
@@ -163,6 +174,7 @@ public:
 	FBO* Copy();
 	//! Specify new size of FBO
 	void SetSize(const Math::TVector2I& size);
+	//! Get the size of buffers
 	Math::TVector2I GetSize() const
 	{
 		return m_SizeBuffers;
@@ -175,5 +187,6 @@ private:
 	int GetMaxColorAttachement();
 	void CheckFBOStatus();
 };
+}
 
 #endif /* FBO_H_ */

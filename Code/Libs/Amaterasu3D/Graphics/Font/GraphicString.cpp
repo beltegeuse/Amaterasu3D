@@ -29,8 +29,8 @@
 
 #include <Graphics/Font/FontManager.h>
 
-//namespace Yes
-//{
+namespace ama3D
+{
 
 /////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
@@ -70,3 +70,4 @@ void CGraphicString::SetString(std::string text)
 	Text = text;
 }
 
+}

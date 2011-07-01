@@ -26,7 +26,8 @@
 #include <Graphics/SceneManager.h>
 #include <System/SettingsManager.h>
 #include <math.h>
-
+namespace ama3D
+{
 DeferredLighting::DeferredLighting() :
 		m_debug_mode(false)
 {
@@ -220,4 +221,5 @@ void DeferredLighting::SetDebugMode(bool v)
 	m_spot_light_shader->Begin();
 	m_spot_light_shader->SetUniform1i("DebugMode", m_debug_mode);
 	m_spot_light_shader->End();
+}
 }

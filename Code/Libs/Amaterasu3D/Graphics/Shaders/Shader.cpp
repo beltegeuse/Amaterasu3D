@@ -33,7 +33,8 @@
 #include <Graphics/Shaders/GBufferShader.h>
 #include <System/ResourceManager.h>
 #include <System/MediaManager.h>
-
+namespace ama3D
+{
 SINGLETON_IMPL(CShaderManager)
 
 ///////////////////
@@ -528,4 +529,5 @@ Shader* CShaderManager::currentShader()
 bool CShaderManager::activedShader()
 {
 	return m_shader_stack.size() != 0;
+}
 }

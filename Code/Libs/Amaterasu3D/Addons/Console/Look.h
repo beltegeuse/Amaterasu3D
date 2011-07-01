@@ -30,6 +30,8 @@
 //==========================================================
 #include <string>
 
+namespace ama3D
+{
 namespace Console
 {
 ////////////////////////////////////////////////////////////
@@ -78,5 +80,6 @@ public:
 };
 
 } // namespace Console
+}
 
 #endif // LOOK_H

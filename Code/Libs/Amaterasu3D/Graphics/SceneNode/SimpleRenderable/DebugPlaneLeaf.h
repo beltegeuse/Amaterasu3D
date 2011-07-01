@@ -28,6 +28,8 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
+namespace ama3D
+{
 class DebugPlaneLeaf: public ISimpleRenderableSceneNode
 {
 private:
@@ -40,5 +42,6 @@ public:
 
 	virtual void Draw();
 };
+}
 
 #endif /* DEBUGPLANELEAF_H_ */

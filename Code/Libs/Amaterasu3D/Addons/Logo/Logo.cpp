@@ -26,6 +26,8 @@
 
 #include <System/SettingsManager.h>
 
+namespace ama3D
+{
 Logo::Logo() :
 		m_Rectangle(0)
 {
@@ -54,4 +56,5 @@ void Logo::Draw()
 	m_Rectangle->Render();
 	m_2DShader->End();
 	glDisable(GL_BLEND);
+}
 }

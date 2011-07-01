@@ -31,6 +31,9 @@
 
 #include <Logger/Logger.h>
 
+namespace ama3D
+{
+
 /////////////////////////////////////////////////////////////
 /// Constructeur � partir d'un std::string
 ///
@@ -124,3 +127,4 @@ std::string CFile::Extension() const
 		return "";
 }
 
+}

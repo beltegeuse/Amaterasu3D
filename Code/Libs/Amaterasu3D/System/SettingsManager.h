@@ -27,6 +27,8 @@
 #include <Singleton.h>
 #include <Math/Vector2.h>
 
+namespace ama3D
+{
 /////////////////////////////////////////////
 // SettingsManager : Class which handle usefull
 // information for all the renderer
@@ -69,5 +71,5 @@ private:
 	void UpdateProjectionMatrix();
 
 };
-
+}
 #endif /* SETTINGSMANAGER_H_ */

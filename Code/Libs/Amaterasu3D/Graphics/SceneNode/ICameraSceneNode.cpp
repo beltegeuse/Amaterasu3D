@@ -24,6 +24,8 @@
 
 #include "ICameraSceneNode.h"
 
+namespace ama3D
+{
 ICameraSceneNode::ICameraSceneNode(const std::string& name, ISceneNode* parent) :
 		ISceneNode(name, parent)
 {
@@ -90,4 +92,5 @@ void ICameraSceneNode::NeedProjectionUpdate()
 		m_NeedUpdateProjectionMatrix = true;
 		NeedUpdate();
 	}
+}
 }

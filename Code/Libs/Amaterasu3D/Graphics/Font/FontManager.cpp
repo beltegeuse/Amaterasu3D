@@ -29,6 +29,8 @@
 
 #include <Debug/Exceptions.h>
 
+namespace ama3D
+{
 SINGLETON_IMPL(CFontManager)
 
 // ==== Quelques fonctions inlines
@@ -435,4 +437,5 @@ void CFontManager::rat_texture_font_render_text_notform(rat_texture_font *font,
 	}
 	glPopMatrix();
 	glPopAttrib();
+}
 }

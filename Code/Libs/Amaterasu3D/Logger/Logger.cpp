@@ -3,6 +3,8 @@
 #include <Logger/Logger.h>
 #include <Logger/LoggerDebug.h>
 
+namespace ama3D
+{
 // By default Logger => STDOUT
 Logger* Logger::_instance = new LoggerDebug;
 
@@ -42,4 +44,4 @@ void Logger::Kill()
 		_instance = NULL;
 	}
 }
-
+}

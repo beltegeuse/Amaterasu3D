@@ -30,6 +30,8 @@
 //==========================================================
 #include <string>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 /// Classe de base pour les ressources
 ////////////////////////////////////////////////////////////
@@ -82,4 +84,5 @@ private:
 	int m_RefCount; ///< Compteur de r�f�rences
 };
 
+}
 #endif // RESOURCE_H

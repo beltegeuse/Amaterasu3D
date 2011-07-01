@@ -28,6 +28,8 @@
 #include <Graphics/SceneNode/IRenderableSceneNode.h>
 #include <Graphics/RenderableObject.h>
 
+namespace ama3D
+{
 class ISimpleRenderableSceneNode: public IRenderableSceneNode
 {
 protected:
@@ -42,5 +44,6 @@ public:
 	RenderableObject& GetObject();
 	virtual void Render();
 };
+}
 
 #endif /* ISIMPLERENDERABLESCENENODE_H_ */

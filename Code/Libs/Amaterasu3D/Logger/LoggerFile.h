@@ -9,7 +9,8 @@
 
 #include <iostream>
 #include <fstream>
-
+namespace ama3D
+{
 class LoggerFile: public Logger
 {
 private:
@@ -23,5 +24,5 @@ public:
 	LoggerFile(const std::string& Filename = "Output.log");
 	virtual ~LoggerFile();
 };
-
+}
 #endif /* LOGGERFILE_H_ */

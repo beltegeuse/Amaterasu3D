@@ -29,6 +29,8 @@
 #include <Singleton.h>
 #include <sigc++/signal.h>
 
+namespace ama3D
+{
 class CMatrixManager: public CSingleton<CMatrixManager>
 {
 MAKE_SINGLETON(CMatrixManager)
@@ -87,5 +89,6 @@ public:
 	//** to subscribe to the signal
 	sigc::signal<void, MatrixType>& GetSignalEvent();
 };
+}
 
 #endif /* MATRIXMANAGEMENT_H_ */

@@ -23,6 +23,8 @@
 //==========================================================
 #pragma once
 
+namespace ama3D
+{
 namespace Math
 {
 class CMatrix3
@@ -44,4 +46,5 @@ std::istream& operator >>(std::istream& Stream, CMatrix3& Mat);
 std::ostream& operator <<(std::ostream& Stream, const CMatrix3& Mat);
 
 #include "Matrix3.inl"
+}
 }

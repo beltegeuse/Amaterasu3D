@@ -33,6 +33,8 @@
 // Amaterasu includes
 #include <Graphics/Font/GraphicString.h>
 
+namespace ama3D
+{
 class PerformancePanel
 {
 private:
@@ -71,5 +73,6 @@ public:
 	// Others methods
 	void Draw(); ///< To draw the panel
 };
+}
 
 #endif /* PERFORMANCEPANEL_H_ */

@@ -25,6 +25,8 @@
 #include "IMeshSceneNode.h"
 #include <System/MediaManager.h>
 
+namespace ama3D
+{
 IMeshSceneNode::IMeshSceneNode(const std::string& name, ISceneNode* parent) :
 		IRenderableSceneNode(name, parent), m_scene(0)
 {
@@ -85,4 +87,5 @@ void IMeshSceneNode::Render()
 		it->first->Draw();
 		mm.PopMatrix();
 	}
+}
 }

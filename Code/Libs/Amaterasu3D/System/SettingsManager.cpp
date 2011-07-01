@@ -31,6 +31,8 @@
 #include <Logger/LoggerDebug.h>
 #include <TinyXMLHelper.h>
 
+namespace ama3D
+{
 SINGLETON_IMPL(CSettingsManager)
 
 CSettingsManager::CSettingsManager() :
@@ -171,4 +173,5 @@ void CSettingsManager::UpdateProjectionMatrix()
 			Math::CMatrix4::CreatePerspectiveFOV(m_FOV,
 					m_SizeRenderingWindow.x / (float) m_SizeRenderingWindow.y,
 					m_NearClipping, m_FarClipping));
+}
 }

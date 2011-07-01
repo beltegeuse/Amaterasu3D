@@ -27,6 +27,8 @@
 #include <Graphics/Camera/CameraAbstract.h>
 #include <Math/Vector3.h>
 
+namespace ama3D
+{
 class CameraFPS: public CameraAbstract
 {
 private:
@@ -84,5 +86,6 @@ public:
 private:
 	void ComputeAngles();
 };
+}
 
 #endif /* CAMERAFLY_H_ */

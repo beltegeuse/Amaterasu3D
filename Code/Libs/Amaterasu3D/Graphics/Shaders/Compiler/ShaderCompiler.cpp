@@ -37,6 +37,8 @@
 #include <Logger/Logger.h>
 #include <System/MediaManager.h>
 
+namespace ama3D
+{
 ////////////////////////////////////////
 /// Exception class For ShaderCompiler
 ////////////////////////////////////////
@@ -230,4 +232,5 @@ const std::string ShaderCompiler::GetCode() const
 		res << (*it) << "\n";
 	}
 	return res.str();
+}
 }

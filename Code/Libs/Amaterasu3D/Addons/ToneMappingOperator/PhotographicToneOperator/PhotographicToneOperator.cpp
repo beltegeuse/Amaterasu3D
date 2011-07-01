@@ -24,6 +24,8 @@
 
 #include "PhotographicToneOperator.h"
 
+namespace ama3D
+{
 PhotographicToneOperator::PhotographicToneOperator() :
 		AbsrtactToneOperator(), m_ManualMipmapping(128), m_AdaptationLum(0)
 {
@@ -66,4 +68,5 @@ void PhotographicToneOperator::Compress(Texture* HDRBuffer)
 void PhotographicToneOperator::DrawDebug()
 {
 	m_PhotoShader->GetFBO()->DrawDebug();
+}
 }

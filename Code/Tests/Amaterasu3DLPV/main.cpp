@@ -25,6 +25,8 @@
 #include <Addons/ToneMappingOperator/SumantToneOperator/SumantToneOperator.h>
 #include <Addons/ToneMappingOperator/DurandToneOperator/DurandToneOperator.h>
 
+using namespace ama3D;
+
 class ApplicationLPV : public Application
 {
 protected:

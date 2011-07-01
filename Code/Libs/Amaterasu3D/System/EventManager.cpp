@@ -24,7 +24,9 @@
 
 #include "EventManager.h"
 
-SINGLETON_IMPL(CEventManager)
+namespace ama3D
+{
+SINGLETON_IMPL(ama3D::CEventManager)
 
 void CEventManager::OnEvent(SDL_Event& event)
 {
@@ -49,4 +51,5 @@ void CEventManager::OnEndRender()
 			{
 		it->second->OnEndRender();
 	}
+}
 }

@@ -2,6 +2,9 @@
 #include <GL/glew.h>
 #include <Logger/Logger.h>
 
+namespace ama3D
+{
+
 GraphicsDevice::GraphicsDevice()
 {
 }
@@ -58,5 +61,7 @@ void GraphicsDevice::CheckSystem()
 
 	Logger::Log() << "====== GraphicsDevice::CheckSystem (End) ======= \n";
 	Logger::Log() << "\n";
+}
+
 }
 

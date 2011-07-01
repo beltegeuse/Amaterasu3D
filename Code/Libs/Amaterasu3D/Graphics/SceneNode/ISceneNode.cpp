@@ -24,6 +24,10 @@
 
 #include "ISceneNode.h"
 #include <Logger/Logger.h>
+
+namespace ama3D
+{
+
 ISceneNode::ISceneNode(const std::string& name, ISceneNode* parent) :
 		m_Name(name), m_Parent(parent), m_NeedUpdate(false), m_NeedTransformationLocalUpdate(
 				false), m_Position(Math::TVector3F(0, 0, 0)), m_Scale(
@@ -224,5 +228,6 @@ void ISceneNode::SetParent(ISceneNode* node)
 		m_NeedUpdate = false; // < Force to renotify
 		NeedUpdate(); // < Notify to parent
 	}
+}
 }
 

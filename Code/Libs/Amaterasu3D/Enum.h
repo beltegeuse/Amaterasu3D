@@ -24,6 +24,8 @@
 #pragma once
 #include <GL/glew.h>
 #include <GL/gl.h>
+namespace ama3D
+{
 
 enum ShaderUnitType
 {
@@ -74,3 +76,5 @@ enum FBODepthType
 {
 	FBODEPTH_NONE, FBODEPTH_TEXTURE, FBODEPTH_RENDERTARGET
 };
+
+}

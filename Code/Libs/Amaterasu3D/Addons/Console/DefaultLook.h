@@ -36,6 +36,8 @@
 #include <list>
 #include <Graphics/Texture.h>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 /// Classe d�finissant un look personnalis� pour la console
 ////////////////////////////////////////////////////////////
@@ -113,5 +115,6 @@ private:
 	bool m_ShowText;
 	float m_Height;
 };
+}
 
 #endif // MYCONSOLE_H

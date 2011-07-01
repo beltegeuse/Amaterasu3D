@@ -27,6 +27,8 @@
 
 #include <Graphics/FBO.h>
 
+namespace ama3D
+{
 class AbsrtactToneOperator
 {
 public:
@@ -40,5 +42,6 @@ public:
 	virtual void Compress(Texture* HDRBuffer) = 0;
 	virtual void DrawDebug() = 0;
 };
+}
 
 #endif /* ABSRTACTTONEOPERATOR_H_ */

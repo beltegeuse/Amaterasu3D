@@ -27,11 +27,13 @@
 
 #include <Graphics/SceneNode/ISceneNode.h>
 
+namespace ama3D
+{
 class ILightSceneNode: public ISceneNode
 {
 public:
 	ILightSceneNode(const std::string& name, ISceneNode* parent);
 	virtual ~ILightSceneNode();
 };
-
+}
 #endif /* ILIGHTSCENENODE_H_ */

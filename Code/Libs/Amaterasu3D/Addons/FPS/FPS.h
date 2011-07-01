@@ -27,6 +27,8 @@
 
 #include <System/EventListeners.h>
 
+namespace ama3D
+{
 /////////////////////////////////
 // Classe to show performances
 /////////////////////////////////
@@ -51,5 +53,6 @@ public:
 	virtual void FrameStarted(double delta);
 	virtual void FrameEnded();
 };
+}
 
 #endif /* FPS_H_ */

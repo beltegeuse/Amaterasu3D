@@ -33,6 +33,8 @@
 #include <Debug/Exceptions.h>
 #include <Utilities/GenHierarchies.h>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 /// Methods to add listeners manager
 ////////////////////////////////////////////////////////////
@@ -197,9 +199,9 @@ class CWindowListenerManager: public CNoFrameListenerManager<MouseMotionListener
 ////////////////////////////////
 // Class manage all Events
 ////////////////////////////////
-class CEventManager: public CSingleton<CEventManager>
+class CEventManager: public CSingleton<ama3D::CEventManager>
 {
-MAKE_SINGLETON(CEventManager)
+MAKE_SINGLETON(ama3D::CEventManager)
 private:
 	typedef std::map<std::string, CListenerManagerAbstract*> TListenerManagerMap;
 	TListenerManagerMap m_Managers;
@@ -238,5 +240,7 @@ public:
 				listener);
 	}
 };
+
+}
 
 #endif /* EVENTMANAGER_H_ */

@@ -27,6 +27,8 @@
 #include <Logger/Logger.h>
 #include <Utilities/Util.h>
 
+namespace ama3D
+{
 ManualMipmapping::ManualMipmapping(int initialeSize) :
 		m_InitialSize(initialeSize)
 {
@@ -157,4 +159,5 @@ void ManualMipmapping::DrawQuad()
 	glTexCoord2f(1.0, 0.0);
 	glVertex2f(1.0, -1.0);
 	glEnd();
+}
 }

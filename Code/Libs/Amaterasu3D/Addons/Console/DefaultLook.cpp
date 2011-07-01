@@ -34,6 +34,8 @@
 #include <System/SettingsManager.h>
 #include <Graphics/MatrixManagement.h>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 // Donn�es statiques
 ////////////////////////////////////////////////////////////
@@ -243,4 +245,5 @@ std::string DefaultLook::NextFont()
 	m_CurrentFont = (m_CurrentFont + 1) % (sizeof(s_Fonts) / sizeof(*s_Fonts));
 
 	return "Nouvelle police : \"" + s_Fonts[m_CurrentFont] + "\"";
+}
 }

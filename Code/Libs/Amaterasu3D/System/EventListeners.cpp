@@ -25,6 +25,8 @@
 #include <System/EventListeners.h>
 #include <System/EventManager.h>
 
+namespace ama3D
+{
 MouseListener::MouseListener()
 {
 	CEventManager::Instance().AddListener("MouseListener", this);
@@ -77,4 +79,4 @@ InputListener::InputListener()
 InputListener::~InputListener()
 {
 }
-
+}

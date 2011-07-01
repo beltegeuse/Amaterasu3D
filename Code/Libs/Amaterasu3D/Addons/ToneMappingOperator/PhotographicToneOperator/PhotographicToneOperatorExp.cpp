@@ -24,6 +24,8 @@
 
 #include "PhotographicToneOperatorExp.h"
 #include <Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimpleExp.h>
+namespace ama3D
+{
 PhotographicToneOperatorExp::PhotographicToneOperatorExp()
 {
 	delete m_AdaptationLum;
@@ -32,4 +34,5 @@ PhotographicToneOperatorExp::PhotographicToneOperatorExp()
 
 PhotographicToneOperatorExp::~PhotographicToneOperatorExp()
 {
+}
 }

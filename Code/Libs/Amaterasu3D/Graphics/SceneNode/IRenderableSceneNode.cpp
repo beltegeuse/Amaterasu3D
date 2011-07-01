@@ -24,6 +24,8 @@
 
 #include "IRenderableSceneNode.h"
 
+namespace ama3D
+{
 IRenderableSceneNode::IRenderableSceneNode(const std::string& name,
 		ISceneNode* parent) :
 		ISceneNode(name, parent)
@@ -32,5 +34,6 @@ IRenderableSceneNode::IRenderableSceneNode(const std::string& name,
 
 IRenderableSceneNode::~IRenderableSceneNode()
 {
-	// TODO Auto-generated destructor stub
+}
+
 }

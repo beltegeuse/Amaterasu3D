@@ -27,6 +27,9 @@
 
 #include <Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.h>
 #include <System/EventListeners.h>
+
+namespace ama3D
+{
 class AdaptationLuminanceSimpleExp: public AdaptationLuminanceSimple,
 		public FrameListener
 {
@@ -44,5 +47,6 @@ public:
 	{
 	}
 };
+}
 
 #endif /* ADAPTATIONLUMINANCESIMPLEEXP_H_ */

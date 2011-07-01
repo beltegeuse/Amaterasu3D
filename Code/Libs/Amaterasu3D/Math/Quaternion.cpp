@@ -1,5 +1,6 @@
 #include <Math/Quaternion.h>
-
+namespace ama3D
+{
 namespace Math
 {
 //============ Interpolation
@@ -62,4 +63,5 @@ CQuaternion CQuaternion::squad(const CQuaternion &q1, const CQuaternion &q2,
 	return slerpNoInvert(c, d, 2 * t * (1 - t));
 }
 
+}
 }

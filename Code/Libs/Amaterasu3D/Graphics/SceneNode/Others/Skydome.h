@@ -33,6 +33,8 @@
 #include <Graphics/SceneNode/IRenderableSceneNode.h>
 #include <System/EventListeners.h>
 
+namespace ama3D
+{
 class Skydome: public IRenderableSceneNode, public FrameListener
 {
 private:
@@ -50,5 +52,6 @@ public:
 	{
 	}
 };
+}
 
 #endif /* SKYDOME_H_ */

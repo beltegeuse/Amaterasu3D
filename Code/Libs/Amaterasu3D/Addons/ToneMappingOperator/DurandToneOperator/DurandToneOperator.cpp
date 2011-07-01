@@ -24,6 +24,8 @@
 
 #include "DurandToneOperator.h"
 
+namespace ama3D
+{
 DurandToneOperator::DurandToneOperator()
 {
 	m_BilateralShader = CShaderManager::Instance().LoadShader(
@@ -96,4 +98,5 @@ void DurandToneOperator::Compress(Texture* HDRBuffer)
 void DurandToneOperator::DrawDebug()
 {
 	m_DurandShader->GetFBO()->DrawDebug();
+}
 }

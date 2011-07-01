@@ -26,7 +26,8 @@
 // En-tetes
 //==========================================================
 #include <Math/Rectangle.h>
-
+namespace ama3D
+{
 namespace Math
 {
 
@@ -246,3 +247,4 @@ std::ostream& operator <<(std::ostream& Stream, const CRectangle& Rect)
 }
 
 } // namespace Yes
+}

@@ -15,6 +15,8 @@
 #include <Math/Vector2.h>
 #include <Math/Vector3.h>
 
+namespace ama3D
+{
 class BinvoxModel
 {
 private:
@@ -55,5 +57,6 @@ private:
 		return m_Data[x * m_Width * m_Height + z * m_Width + y];
 	}
 };
+}
 
 #endif /* BINVOXMODEL_H_ */

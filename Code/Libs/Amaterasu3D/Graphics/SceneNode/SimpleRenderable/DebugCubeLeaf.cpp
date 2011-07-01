@@ -28,6 +28,8 @@
 #include <Enum.h>
 #include <Logger/Logger.h>
 
+namespace ama3D
+{
 GLfloat DebugCubeLeaf::CubeArray[24] =
 { 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
 		1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f };
@@ -57,4 +59,5 @@ DebugCubeLeaf::DebugCubeLeaf(const std::string& name, ISceneNode* parent) :
 
 DebugCubeLeaf::~DebugCubeLeaf()
 {
+}
 }

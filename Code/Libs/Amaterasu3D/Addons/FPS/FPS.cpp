@@ -26,6 +26,8 @@
 
 #include <Logger/Logger.h>
 
+namespace ama3D
+{
 FPS::FPS() :
 		m_TimeElasped(0.0), m_FPS(0)
 {
@@ -51,4 +53,5 @@ void FPS::FrameEnded()
 		m_FPS = 0;
 		m_TimeElasped -= 1.0;
 	}
+}
 }

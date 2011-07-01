@@ -21,22 +21,21 @@
 //
 // E-mail : laurent.gom@gmail.com
 //==========================================================
-#include <Debug/Exceptions.h>
 
 /////////////////////////////////////////////////////////////
-/// Découpe une chaine de caractères
+/// Dï¿½coupe une chaine de caractï¿½res
 ///
-/// \param String : Chaîne à décomposer
-/// \param Tokens : Tableau contenant les tokens récupérés
-/// \param Delim :  Délimiteurs
+/// \param String : Chaï¿½ne ï¿½ dï¿½composer
+/// \param Tokens : Tableau contenant les tokens rï¿½cupï¿½rï¿½s
+/// \param Delim :  Dï¿½limiteurs
 ///
 ////////////////////////////////////////////////////////////
 inline void Split(const std::string& String, std::vector<std::string>& Tokens, const std::string& Delim)
 {
-    // Effacement du vector dans lequel on va mettre les résultats
+    // Effacement du vector dans lequel on va mettre les rï¿½sultats
     Tokens.clear();
 
-    // Parcours de la chaîne et extraction des tokens un à un
+    // Parcours de la chaï¿½ne et extraction des tokens un ï¿½ un
     for (std::string::size_type p1 = 0, p2 = 0; p1 != std::string::npos; )
     {
         p1 = String.find_first_not_of(Delim, p1);
@@ -51,9 +50,9 @@ inline void Split(const std::string& String, std::vector<std::string>& Tokens, c
 
 
 ////////////////////////////////////////////////////////////
-/// Renvoie le contenu d'un fichier sous forme de chaîne
+/// Renvoie le contenu d'un fichier sous forme de chaï¿½ne
 ///
-/// \param Filename : Nom du fichier à lire
+/// \param Filename : Nom du fichier ï¿½ lire
 ///
 /// \return Contenu du fichier
 ///
@@ -63,9 +62,9 @@ inline std::string ReadFile(const std::string& Filename)
     // Ouverture du fichier
     std::ifstream File(Filename.c_str());
     if (!File)
-        throw CLoadingFailed(Filename, "Impossible d'accéder au fichier en lecture");
+        throw CLoadingFailed(Filename, "Impossible d'accï¿½der au fichier en lecture");
 
-    // Récupération du contenu
+    // Rï¿½cupï¿½ration du contenu
     std::ostringstream oss;
     oss << File.rdbuf();
 
@@ -74,11 +73,11 @@ inline std::string ReadFile(const std::string& Filename)
 
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le code de hachage d'une chaîne de caractères
+/// Renvoie le code de hachage d'une chaï¿½ne de caractï¿½res
 ///
-/// \param String : Chaîne de caractères
+/// \param String : Chaï¿½ne de caractï¿½res
 ///
-/// \return Code de hachage correspondant à la chaîne
+/// \return Code de hachage correspondant ï¿½ la chaï¿½ne
 ///
 ////////////////////////////////////////////////////////////
 inline unsigned long StringHash(const std::string& String)
@@ -92,18 +91,18 @@ inline unsigned long StringHash(const std::string& String)
 
 
 /////////////////////////////////////////////////////////////
-/// Convertit une chaîne de caractères en minuscule
+/// Convertit une chaï¿½ne de caractï¿½res en minuscule
 ///
-/// \param Text : Chaîne d'entrée
+/// \param Text : Chaï¿½ne d'entrï¿½e
 ///
-/// \return Chaîne convertie
+/// \return Chaï¿½ne convertie
 ///
 ////////////////////////////////////////////////////////////
 inline std::string ToLower(const std::string& Text)
 {
     std::string Ret(Text.size(), ' ');
 
-    // Le cast est nécessaire pour faire fonctionner ce code sous gcc
+    // Le cast est nï¿½cessaire pour faire fonctionner ce code sous gcc
     std::transform(Text.begin(), Text.end(), Ret.begin(), static_cast<int (*)(int)>(std::tolower));
 
     return Ret;
@@ -111,18 +110,18 @@ inline std::string ToLower(const std::string& Text)
 
 
 /////////////////////////////////////////////////////////////
-/// Convertit une chaîne de caractères en majuscules
+/// Convertit une chaï¿½ne de caractï¿½res en majuscules
 ///
-/// \param Text : Chaîne d'entrée
+/// \param Text : Chaï¿½ne d'entrï¿½e
 ///
-/// \return Chaîne convertie
+/// \return Chaï¿½ne convertie
 ///
 ////////////////////////////////////////////////////////////
 inline std::string ToUpper(const std::string& Text)
 {
     std::string Ret(Text.size(), ' ');
 
-    // Le cast est nécessaire pour faire fonctionner ce code sous gcc
+    // Le cast est nï¿½cessaire pour faire fonctionner ce code sous gcc
     std::transform(Text.begin(), Text.end(), Ret.begin(), static_cast<int (*)(int)>(std::toupper));
 
     return Ret;
@@ -130,7 +129,7 @@ inline std::string ToUpper(const std::string& Text)
 
 
 ////////////////////////////////////////////////////////////
-/// Constructeur par défaut
+/// Constructeur par dï¿½faut
 ///
 ////////////////////////////////////////////////////////////
 inline CStringBuilder::CStringBuilder()
@@ -140,9 +139,9 @@ inline CStringBuilder::CStringBuilder()
 
 
 ////////////////////////////////////////////////////////////
-/// Construit l'injecteur avec une première valeur
+/// Construit l'injecteur avec une premiï¿½re valeur
 ///
-/// \param Value : Valeur à injecter
+/// \param Value : Valeur ï¿½ injecter
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
@@ -153,11 +152,11 @@ inline CStringBuilder::CStringBuilder(const T& Value)
 
 
 ////////////////////////////////////////////////////////////
-/// Injecte une valeur dans la chaîne
+/// Injecte une valeur dans la chaï¿½ne
 ///
-/// \param Value : Valeur à injecter
+/// \param Value : Valeur ï¿½ injecter
 ///
-/// \return Référence sur l'instance de l'injecteur
+/// \return Rï¿½fï¿½rence sur l'instance de l'injecteur
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
@@ -170,9 +169,9 @@ inline CStringBuilder& CStringBuilder::operator ()(const T& Value)
 
 
 ////////////////////////////////////////////////////////////
-/// Opérateur de conversion implicite en string
+/// Opï¿½rateur de conversion implicite en string
 ///
-/// \return Chaîne de caractère construite avec les valeurs injectées
+/// \return Chaï¿½ne de caractï¿½re construite avec les valeurs injectï¿½es
 ///
 ////////////////////////////////////////////////////////////
 inline CStringBuilder::operator std::string()
@@ -182,9 +181,9 @@ inline CStringBuilder::operator std::string()
 
 
 ////////////////////////////////////////////////////////////
-/// Construit l'extracteur à partir d'une chaîne
+/// Construit l'extracteur ï¿½ partir d'une chaï¿½ne
 ///
-/// \param Text : Texte à convertir
+/// \param Text : Texte ï¿½ convertir
 ///
 ////////////////////////////////////////////////////////////
 inline CStringExtractor::CStringExtractor(const std::string& Text) :
@@ -197,9 +196,9 @@ m_InStream(Text)
 ////////////////////////////////////////////////////////////
 /// Extrait une valeur de type T
 ///
-/// \param Value : Valeur à extraire
+/// \param Value : Valeur ï¿½ extraire
 ///
-/// \return Référence sur l'extracteur
+/// \return Rï¿½fï¿½rence sur l'extracteur
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
@@ -208,7 +207,7 @@ inline CStringExtractor& CStringExtractor::operator ()(T& Value)
     if (!(m_InStream >> Value))
     {
         if (m_InStream.eof())
-            throw CBadConversion(CStringBuilder("Tentative d'extraire à partir d'une chaîne vide"));
+            throw CBadConversion(CStringBuilder("Tentative d'extraire ï¿½ partir d'une chaï¿½ne vide"));
         else
             throw CBadConversion(CStringBuilder("Impossible de convertir"));
     }
@@ -218,12 +217,12 @@ inline CStringExtractor& CStringExtractor::operator ()(T& Value)
 
 
 ////////////////////////////////////////////////////////////
-/// Vérifie qu'il n'y a plus rien à extraire
+/// Vï¿½rifie qu'il n'y a plus rien ï¿½ extraire
 ///
 ////////////////////////////////////////////////////////////
 inline void CStringExtractor::ThrowIfEOF()
 {
     std::string Left;
     if (std::getline(m_InStream, Left))
-        throw CBadConversion("Chaîne trop longue, \"" + Left + "\" n'a pas été extrait");
+        throw CBadConversion("Chaï¿½ne trop longue, \"" + Left + "\" n'a pas ï¿½tï¿½ extrait");
 }

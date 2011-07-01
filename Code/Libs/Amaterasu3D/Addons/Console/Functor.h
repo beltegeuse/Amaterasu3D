@@ -33,6 +33,8 @@
 #include <Debug/Exceptions.h>
 #include <string>
 
+namespace ama3D
+{
 namespace Console
 {
 ////////////////////////////////////////////////////////////
@@ -83,5 +85,6 @@ private:
 #include "Functor.inl"
 
 } // namespace Console
+}
 
 #endif // FUNCTOR_H

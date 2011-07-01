@@ -23,6 +23,8 @@
 //==========================================================
 
 #include "RenderableObject.h"
+namespace ama3D
+{
 
 RenderableObject::RenderableObject() :
 		m_indices_buffers(NULL), m_indices(NULL), m_is_compiled(false), m_IsInstance(
@@ -310,4 +312,5 @@ void RenderableObject::SetInstance(RenderableObject& model) const
 	model.m_IsInstance = true;
 	model.m_is_compiled = true;
 	model.m_indices_buffers = m_indices_buffers;
+}
 }

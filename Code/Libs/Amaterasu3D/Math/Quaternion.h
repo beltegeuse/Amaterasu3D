@@ -30,7 +30,8 @@
 //==========================================================
 #include <Math/Matrix4.h>
 #include <Math/SphericalCoordinates.h>
-
+namespace ama3D
+{
 namespace Math
 {
 ////////////////////////////////////////////////////////////
@@ -153,5 +154,6 @@ inline std::ostream& operator <<(std::ostream& Stream,
 #include "Quaternion.inl"
 
 } // namespace Math
+}
 
 #endif // QUATERNION_H

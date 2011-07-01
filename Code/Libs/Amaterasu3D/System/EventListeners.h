@@ -27,6 +27,8 @@
 
 #include <SDL/SDL.h>
 
+namespace ama3D
+{
 class EventListener
 {
 public:
@@ -92,5 +94,6 @@ class WindowListener: public EventListener
 	WindowListener();
 	virtual ~WindowListener();
 };
+}
 
 #endif /* EVENTLISTENERS_H_ */

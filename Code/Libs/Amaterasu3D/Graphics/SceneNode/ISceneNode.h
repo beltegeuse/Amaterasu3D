@@ -34,6 +34,8 @@
 #include <vector>
 #include <string>
 
+namespace ama3D
+{
 class ISceneNode
 {
 protected:
@@ -114,5 +116,6 @@ protected:
 	void NeedUpdate(); // < For know you or parents need Transformation update
 	void SetParent(ISceneNode* node);
 };
+}
 
 #endif /* ISCENENODE_H_ */

@@ -30,6 +30,8 @@
 #include <Graphics/Shaders/Shader.h>
 #include <Logger/Logger.h>
 
+namespace ama3D
+{
 GLfloat DebugPlaneLeaf::PlaneArray[24] =
 { 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f,
 		1.0f, 1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, };
@@ -104,4 +106,5 @@ void DebugPlaneLeaf::Draw()
 		GLCheck(glDisableVertexAttribArray ( VERTEX_ATTRIBUT ));
 	if (colorSupport)
 		GLCheck(glDisableVertexAttribArray ( COLOR_ATTRIBUT ));
+}
 }

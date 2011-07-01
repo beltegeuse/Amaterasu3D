@@ -14,6 +14,8 @@
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
 
+using namespace ama3D;
+
 class ApplicationGeom : public Application
 {
 protected:

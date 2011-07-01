@@ -16,6 +16,8 @@
 #include <Addons/LPV/LPV.h>
 #include <Graphics/Lighting/LightShaders.h>
 
+using namespace ama3D;
+
 struct FBOCube
 {
 	FBO* Fbo;

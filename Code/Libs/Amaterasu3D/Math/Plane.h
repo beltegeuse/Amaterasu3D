@@ -30,7 +30,8 @@
 //==========================================================
 #include <Math/Vector3.h>
 #include <Math/Vector4.h>
-
+namespace ama3D
+{
 namespace Math
 {
 ////////////////////////////////////////////////////////////
@@ -92,6 +93,7 @@ std::ostream& operator <<(std::ostream& Stream, const CPlane& Plane);
 
 #include "Plane.inl"
 
+}
 }
 
 #endif // PLANE_H

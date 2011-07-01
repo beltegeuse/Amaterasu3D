@@ -38,6 +38,8 @@
 #include <map>
 #include <string>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 /// Chaine de caractere graphique (affichable a l ecran)
 ////////////////////////////////////////////////////////////
@@ -70,5 +72,6 @@ public:
 	rat_texture_font* texture;
 	int Size;
 };
+}
 
 #endif // GRAPHICSTRING_H

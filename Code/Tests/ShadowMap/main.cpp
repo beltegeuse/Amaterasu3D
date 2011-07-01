@@ -38,6 +38,8 @@
 #include <Addons/FPS/FPS.h>
 #include <Addons/Logo/Logo.h>
 
+using namespace ama3D;
+
 class ApplicationShadow : public Application
 {
 protected:

@@ -35,6 +35,8 @@
 #include <Math/Vector3.h>
 #include <Math/Matrix4.h>
 
+namespace ama3D
+{
 class LPV
 {
 public:
@@ -143,5 +145,6 @@ private:
 			int CellSize);
 
 };
+}
 
 #endif /* LPV_H_ */

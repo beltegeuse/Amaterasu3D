@@ -37,6 +37,9 @@
 #include <System/EventManager.h>
 #include <System/GraphicsDevice.h>
 
+namespace ama3D
+{
+
 /////////////////////////////////
 /// Derivate this class to create an application
 /////////////////////////////////
@@ -105,5 +108,7 @@ private:
 	double m_TimeElapse;
 	bool m_IsRunning; ///< If the application is on
 };
+
+}
 
 #endif /* APPLICATION_H_ */

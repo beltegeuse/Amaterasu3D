@@ -38,7 +38,8 @@
 ///////////// LPV Class
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
-
+namespace ama3D
+{
 LPV::LPV(int nbCells, int sizeCells, int propagationSteps, int nbLevels) :
 		m_NbCellDim(nbCells), m_CellSize(NULL), m_NbPropagationStep(
 				propagationSteps), m_NbCascadedLevels(nbLevels)
@@ -540,6 +541,7 @@ void LPV::DrawGrid(int level)
 	matGrid.SetTranslation(gridPos.x, gridPos.y, gridPos.z);
 	m_GridModels[level]->LoadLocalTransformMatrix(matGrid);
 	m_GridModels[level]->Render();
+}
 }
 
 /////////////////////////////

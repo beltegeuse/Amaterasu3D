@@ -23,7 +23,8 @@
 //==========================================================
 
 #include "GBufferShader.h"
-
+namespace ama3D
+{
 GBufferShader::GBufferShader(ShaderUnit * VertexShader,
 		ShaderUnit * FragmentShader, ShaderUnit * GeometryShader) :
 		Shader(VertexShader, FragmentShader, GeometryShader), m_use_texCoord(
@@ -109,4 +110,5 @@ bool GBufferShader::IsTextureAvailable(TextureType type)
 		m_use_texSpecular = true;
 	// Return the good value
 	return res;
+}
 }

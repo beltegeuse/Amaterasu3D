@@ -34,6 +34,8 @@
 ////////////////////////////////////////////////////////////
 // Classe de base pour les importateurs / exportateurs de medias
 ////////////////////////////////////////////////////////////
+namespace ama3D
+{
 template<class T>
 class ILoader
 {
@@ -53,7 +55,7 @@ public:
 	{
 		throw CLoadingFailed(
 				Filename,
-				"Le loader enregistr� pour ce format ne prend pas en charge l'importation");
+				"Le loader enregistre pour ce format ne prend pas en charge l'importation");
 	}
 
 	//----------------------------------------------------------
@@ -63,7 +65,7 @@ public:
 	{
 		throw CLoadingFailed(
 				Filename,
-				"Le loader enregistr� pour ce format ne prend pas en charge l'exportation");
+				"Le loader enregistre pour ce format ne prend pas en charge l'exportation");
 	}
 
 protected:
@@ -75,5 +77,6 @@ protected:
 	{
 	}
 };
+}
 
 #endif // LOADER_H

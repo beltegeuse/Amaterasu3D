@@ -20,6 +20,8 @@
 #include <Math/Interpolators/CatmullRomInterpolator.h>
 #include <Animation/CameraAnimation.h>
 
+using namespace ama3D;
+
 class ApplicationCamera : public Application
 {
 protected:

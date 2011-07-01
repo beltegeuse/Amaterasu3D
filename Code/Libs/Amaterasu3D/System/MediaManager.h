@@ -45,6 +45,8 @@
 #include <set>
 #include <string>
 
+namespace ama3D
+{
 //==========================================================
 // Liste des m�dias pris en charge
 //==========================================================
@@ -63,10 +65,10 @@ typedef TYPELIST_3(Shader, IMeshSceneNode, Texture) MediaList;
 ////////////////////////////////////////////////////////////
 /// Gestionnaire de m�dias - "empilement" de CMediaHolder pour chaque m�dia
 ////////////////////////////////////////////////////////////
-class CMediaManager : public CSingleton<CMediaManager>, public CScatteredHierarchy<MediaList, CMediaHolder>
+class CMediaManager : public CSingleton<ama3D::CMediaManager>, public CScatteredHierarchy<MediaList, CMediaHolder>
 {
 private:
-	MAKE_SINGLETON(CMediaManager)
+	MAKE_SINGLETON(ama3D::CMediaManager)
 
 public :
 
@@ -124,5 +126,6 @@ private :
 };
 
 #include "MediaManager.inl"
+}
 
 #endif // MEDIAMANAGER_H

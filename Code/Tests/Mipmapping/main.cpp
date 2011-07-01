@@ -21,6 +21,8 @@
 #include <Animation/CameraAnimation.h>
 #include <Addons/ToneMappingOperator/ManualMipmapping.h>
 
+using namespace ama3D;
+
 class ApplicationMipMapping : public Application
 {
 protected:

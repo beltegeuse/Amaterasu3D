@@ -31,6 +31,8 @@
 
 // Other includes
 #include <GL/gl.h>
+namespace ama3D
+{
 
 class RenderableObject
 {
@@ -89,5 +91,7 @@ public:
 
 	void SetDrawMode(GLenum mode);
 };
+
+}
 
 #endif /* DRAWABLEOBJECTS_H_ */

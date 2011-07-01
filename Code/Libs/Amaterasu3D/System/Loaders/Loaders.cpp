@@ -4,6 +4,8 @@
 #include <System/Loaders/AssimpLoader.h>
 #include <System/Loaders/ImagesLoader.h>
 
+namespace ama3D
+{
 void Loaders::RegisterAllLoaders()
 {
 	//FIXME: Ajouter le chargeur d image
@@ -14,4 +16,5 @@ void Loaders::RegisterAllLoaders()
 	CMediaManager::Instance().RegisterLoader<IMeshSceneNode>(
 			new AssimpLoader,
 			"x, obj, dae, blend, 3ds, ase, ply, dxf, lwo, lxo, stl, ac, ms3d, cob, scn, mdl, mdl2, mdl3, pk3, md5");
+}
 }

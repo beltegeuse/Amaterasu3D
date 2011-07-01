@@ -27,6 +27,8 @@
 
 #include <Addons/ToneMappingOperator/AbsrtactToneOperator.h>
 
+namespace ama3D
+{
 class DurandToneOperator: public AbsrtactToneOperator
 {
 protected:
@@ -43,5 +45,6 @@ public:
 	virtual void Compress(Texture* HDRBuffer);
 	virtual void DrawDebug();
 };
+}
 
 #endif /* DURANDTONEOPERATOR_H_ */

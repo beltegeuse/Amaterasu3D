@@ -33,10 +33,12 @@
 #include <map>
 #include <string>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 /// Gestionnaire des ressources associ�es � un fichier
 ////////////////////////////////////////////////////////////
-class CResourceManager: public CSingleton<CResourceManager>
+class CResourceManager: public CSingleton<ama3D::CResourceManager>
 {
 MAKE_SINGLETON(CResourceManager)
 
@@ -81,5 +83,6 @@ private:
 };
 
 #include "ResourceManager.inl"
+}
 
 #endif // RESOURCEMANAGER_H

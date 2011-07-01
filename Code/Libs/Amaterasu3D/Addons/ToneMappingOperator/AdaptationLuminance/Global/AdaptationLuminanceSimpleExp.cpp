@@ -24,6 +24,8 @@
 
 #include "AdaptationLuminanceSimpleExp.h"
 
+namespace ama3D
+{
 AdaptationLuminanceSimpleExp::AdaptationLuminanceSimpleExp(float To) :
 		m_OldLumianceValue(1.0), m_T0(To)
 {
@@ -45,4 +47,5 @@ void AdaptationLuminanceSimpleExp::UpdateLuminance(ManualMipmapping* mipmapping)
 	float alpha = m_Delta / (m_T0 + m_Delta);
 	m_LuminanceValue = (1.0 - alpha) * m_OldLumianceValue
 			+ alpha * m_LuminanceValue;
+}
 }

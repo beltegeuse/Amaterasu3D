@@ -25,6 +25,8 @@
 #ifndef EXPFILTER_H_
 #define EXPFILTER_H_
 
+namespace ama3D
+{
 class ExpFilter
 {
 private:
@@ -51,5 +53,6 @@ public:
 		return m_Output;
 	}
 };
+}
 
 #endif /* EXPFILTER_H_ */

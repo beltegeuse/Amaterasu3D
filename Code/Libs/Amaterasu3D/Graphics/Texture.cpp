@@ -31,6 +31,8 @@
 #include <System/MediaManager.h>
 #include <System/ResourceManager.h>
 
+namespace ama3D
+{
 //Constructeur
 Texture::Texture(bool create, GLuint id, GLenum textureMode) :
 		m_TextureMode(textureMode)
@@ -96,4 +98,5 @@ TTexturePtr Texture::LoadFromFile(const std::string& filename)
 		CResourceManager::Instance().Add(filename, Resource);
 	}
 	return Resource;
+}
 }

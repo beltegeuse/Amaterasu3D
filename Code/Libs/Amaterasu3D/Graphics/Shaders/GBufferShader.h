@@ -27,6 +27,8 @@
 
 #include <Graphics/Shaders/Shader.h>
 
+namespace ama3D
+{
 class GBufferShader: public Shader
 {
 private:
@@ -46,5 +48,6 @@ public:
 	virtual bool IsAttributAvailable(ShaderAttributType type);
 	virtual bool IsTextureAvailable(TextureType type);
 };
+}
 
 #endif /* GBUFFERSHADERS_H_ */

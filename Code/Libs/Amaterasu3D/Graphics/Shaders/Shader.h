@@ -47,11 +47,14 @@
 #include <Graphics/FBO.h>
 #include <Graphics/Color.h>
 #include <Utilities/SmartPtr.h>
+#include <System/SettingsManager.h>
+#include <Graphics/MatrixManagement.h>
 
 /*
  * \brief class which describe one shader
  */
-
+namespace ama3D
+{
 class FBO;
 
 struct CShaderException: public CException
@@ -288,6 +291,7 @@ GLint Shader::GetUniformLocation(const GLchar* name)
 //		m_CachedID[std::string(name)] = loc;
 //	}
 	return loc;
+}
 }
 
 #endif /* SHADER_H_ */

@@ -27,6 +27,8 @@
 
 #include <SDL/SDL.h>
 
+namespace ama3D
+{
 /* Classe Input (de fvitman du SDZ) */
 class Input
 {
@@ -115,6 +117,7 @@ void Input::Update()
 			break;
 		}
 	}
+}
 }
 
 #endif /* INPUT_H_ */

@@ -25,11 +25,14 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+
 //==========================================================
 // En-t�tes
 //==========================================================
 #include <iostream>
 
+namespace ama3D
+{
 struct Color
 {
 	float R;
@@ -205,5 +208,6 @@ private:
 	//----------------------------------------------------------------
 	unsigned long m_Color; ///< Couleur sous forme ARGB 32 bits
 };
+}
 
 #endif // COLOR_H

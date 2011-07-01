@@ -28,8 +28,8 @@
 #include "Exceptions.h"
 #include <sstream>
 
-//namespace Yes
-//{
+namespace ama3D
+{
 
 /////////////////////////////////////////////////////////////
 /// Constructeur
@@ -115,3 +115,6 @@ CLoggerException::CLoggerException(const std::string& Message) :
 		CException("[Logger] : " + Message)
 {
 }
+
+}
+

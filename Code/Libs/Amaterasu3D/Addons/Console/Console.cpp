@@ -30,10 +30,12 @@
 #include <sstream>
 #include <Addons/Console/DefaultLook.h>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 // Impl�mentation des m�thodes du singleton
 ////////////////////////////////////////////////////////////
-SINGLETON_IMPL(CConsole)
+SINGLETON_IMPL(ama3D::CConsole)
 
 ////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
@@ -202,4 +204,5 @@ void CConsole::ProcessCurrent()
 	{
 		m_Look->Error("Commande \"" + Command + "\" inconnue");
 	}
+}
 }

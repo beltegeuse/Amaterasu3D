@@ -31,6 +31,8 @@
 #include <assimp.h>
 #include <map>
 
+namespace ama3D
+{
 class IMeshSceneNode: public IRenderableSceneNode //, public IResource
 {
 private:
@@ -60,5 +62,6 @@ public:
 };
 
 //typedef CSmartPtr<IMeshSceneNode, CResourceCOM> IMeshPtr;
+}
 
 #endif /* IMESHSCENENODE_H_ */

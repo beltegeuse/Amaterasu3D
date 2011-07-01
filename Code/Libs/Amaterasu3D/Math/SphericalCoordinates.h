@@ -27,6 +27,8 @@
 #include <Math/Vector3.h>
 #include <math.h>
 
+namespace ama3D
+{
 namespace Math
 {
 /** \brief Classe gerant une representation en coordonnees spheriques d'un vecteur
@@ -69,6 +71,7 @@ public:
 	/** \brief Changement du module */
 	void SetModule(double v);
 };
+}
 }
 
 #endif /*SPHERICALCOORDINATES_H_*/

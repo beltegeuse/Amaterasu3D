@@ -27,6 +27,8 @@
 //==========================================================
 #include "Color.h"
 
+namespace ama3D
+{
 /////////////////////////////////////////////////////////////
 // Donn�es membres statiques
 /////////////////////////////////////////////////////////////
@@ -458,4 +460,5 @@ std::ostream& operator <<(std::ostream& Stream, const CColor& Color)
 			<< static_cast<int>(Color.GetGreen()) << " "
 			<< static_cast<int>(Color.GetBlue()) << " "
 			<< static_cast<int>(Color.GetAlpha());
+}
 }

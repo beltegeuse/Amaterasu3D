@@ -28,6 +28,8 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
+namespace ama3D
+{
 class DebugCubeLeaf: public ISimpleRenderableSceneNode
 {
 private:
@@ -39,5 +41,6 @@ public:
 	DebugCubeLeaf(const std::string& name, ISceneNode* parent);
 	virtual ~DebugCubeLeaf();
 };
+}
 
 #endif /* DEBUGCUBELEAF_H_ */

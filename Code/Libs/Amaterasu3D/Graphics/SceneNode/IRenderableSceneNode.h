@@ -27,6 +27,8 @@
 
 #include <Graphics/SceneNode/ISceneNode.h>
 
+namespace ama3D
+{
 class IRenderableSceneNode: public ISceneNode
 {
 public:
@@ -35,5 +37,6 @@ public:
 
 	virtual void Render() = 0;
 };
+}
 
 #endif /* IRENDERABLESCENENODE_H_ */

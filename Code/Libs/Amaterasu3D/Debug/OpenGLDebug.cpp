@@ -3,6 +3,8 @@
 #include <GL/glu.h>
 #include <iostream>
 
+namespace ama3D
+{
 int CheckGLError(std::string file, int line)
 {
 	GLenum glErr;
@@ -25,5 +27,6 @@ int CheckGLError(std::string file, int line)
 		glErr = glGetError();
 	}
 	return retCode;
+}
 }
 

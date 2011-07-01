@@ -27,7 +27,8 @@
 //==========================================================
 #include <System/Resource.h>
 #include <System/ResourceManager.h>
-
+namespace ama3D
+{
 /////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
 ///
@@ -84,4 +85,6 @@ int IResource::Release()
 		delete this;
 
 	return RefCount;
+}
+
 }

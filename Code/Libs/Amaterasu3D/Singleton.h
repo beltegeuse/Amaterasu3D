@@ -26,12 +26,14 @@
 #define SINGLETON_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <cstdlib>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
-/// Template servant � construire les classes singleton
+/// Template servant a construire les classes singleton
 ////////////////////////////////////////////////////////////
 template<class T>
 class CSingleton
@@ -111,5 +113,6 @@ private:
 			return CSingleton<Class>::Instance(); \
 		} \
 
+}
 
 #endif // SINGLETON_H

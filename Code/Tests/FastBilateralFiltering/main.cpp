@@ -39,6 +39,9 @@
 #include <Addons/Logo/Logo.h>
 
 #include <Utilities/Util.h>
+
+using namespace ama3D;
+
 class FastBilateralFiltering
 {
 private:

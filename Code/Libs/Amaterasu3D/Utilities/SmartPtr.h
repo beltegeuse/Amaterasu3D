@@ -32,6 +32,9 @@
 #include <Utilities/SmartPtrPolicies.h>
 #include <Debug/Exceptions.h>
 
+namespace ama3D
+{
+
 ////////////////////////////////////////////////////////////
 // D�clarations anticip�es
 ////////////////////////////////////////////////////////////
@@ -107,5 +110,7 @@ private:
 };
 
 #include "SmartPtr.inl"
+
+}
 
 #endif // SMARTPTR_H

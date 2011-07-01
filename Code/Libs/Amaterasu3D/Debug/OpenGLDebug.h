@@ -14,7 +14,9 @@
 #define CHECK_GL_ERROR()
 #endif
 
+namespace ama3D
+{
 // Gestion des erreurs OpengL
 int CheckGLError(std::string file, int line);
-
+}
 #endif /* OPENGLDEBUG_H_ */

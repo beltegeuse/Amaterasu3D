@@ -32,7 +32,7 @@
 #include <Debug/Exceptions.h>
 
 // Declaration of TinyXML error
-struct CTinyXMLException: public CException
+struct CTinyXMLException: public ama3D::CException
 {
 	CTinyXMLException(const std::string& Message) :
 			CException("[TinyXML] " + Message)
@@ -81,5 +81,5 @@ inline GLenum OpenGLEnumFromString(const std::string& name)
 	else if (name == "TriangleAdjacency")
 		return GL_TRIANGLES_ADJACENCY_EXT;
 	else
-		throw CException("Unknow conversion in GLenum : " + name);
+		throw ama3D::CException("Unknow conversion in GLenum : " + name);
 }

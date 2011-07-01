@@ -28,6 +28,9 @@
 #include <Graphics/Texture.h>
 #include <Graphics/SceneNode/SimpleRenderable/Rectangle2D.h>
 #include <Graphics/Shaders/Shader.h>
+
+namespace ama3D
+{
 class Logo
 {
 private:
@@ -45,5 +48,6 @@ public:
 
 	virtual void Draw();
 };
+}
 
 #endif /* LOGO_H_ */

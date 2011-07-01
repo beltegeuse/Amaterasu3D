@@ -25,8 +25,14 @@
 #ifndef IXMLSERIALISABLE_H_
 #define IXMLSERIALISABLE_H_
 
+// Other includes
 #include <tinyxml.h>
+
+// Amaterasu3D includes
 #include <TinyXMLHelper.h>
+
+namespace ama3D
+{
 
 class IXMLSerialisable
 {
@@ -48,5 +54,7 @@ public:
 	 */
 	virtual void void ReadXML(TiXmlElement * element) = 0;
 };
+
+}
 
 #endif /* IXMLSERIALISABLE_H_ */

@@ -25,6 +25,8 @@
 #ifndef BLEACHINGFILTER_H_
 #define BLEACHINGFILTER_H_
 
+namespace ama3D
+{
 class BleachingFilter
 {
 protected:
@@ -57,5 +59,6 @@ public:
 		return m_Output;
 	}
 };
+}
 
 #endif /* BLEACHINGFILTER_H_ */

@@ -34,6 +34,8 @@
 #include <tinyxml.h>
 #include <TinyXMLHelper.h>
 
+namespace ama3D
+{
 namespace Math
 {
 ////////////////////////////////////////////////////////////
@@ -141,5 +143,6 @@ typedef CVector3<float> TVector3F;
 #include "Vector3.inl"
 
 } // namespace Math
+}
 
 #endif // VECTOR3_H

@@ -28,6 +28,9 @@
 #include <Addons/Console/DefaultLook.h>
 
 #include <SDLUtilities.h>
+namespace ama3D
+{
+
 
 Application* Application::s_Application = NULL;
 
@@ -199,3 +202,4 @@ void Application::Exit()
 	m_IsRunning = false;
 }
 
+}

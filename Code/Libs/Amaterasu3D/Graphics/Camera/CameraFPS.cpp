@@ -24,6 +24,8 @@
 #include "CameraFPS.h"
 #include <iostream>
 
+namespace ama3D
+{
 CameraFPS::CameraFPS(const Math::TVector3F& pos, const Math::TVector3F& target,
 		const Math::TVector3F& up) :
 		CameraAbstract(pos, target, up), m_angleX(0.0), m_angleY(0.0), m_mouse_click(
@@ -149,4 +151,5 @@ void CameraFPS::ComputeAngles()
 //	std::cout << "up " << m_forward << std::endl;
 
 	m_Target = m_Position + m_forward;
+}
 }

@@ -34,6 +34,8 @@
 
 #include <cmath>
 
+namespace ama3D
+{
 //TODO: Generaliser
 class LightShaders: public SpotLight
 {
@@ -125,5 +127,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* LIGHTSHADERS_H_ */

@@ -28,6 +28,8 @@
 #include <Graphics/Lighting/LightingPassAbstract.h>
 #include <Graphics/Shaders/Shader.h>
 
+namespace ama3D
+{
 class DeferredLighting: public LightingPassAbstract
 {
 private:
@@ -49,5 +51,6 @@ protected:
 	void PointLightPass();
 	void SpotLightPass();
 };
+}
 
 #endif /* DEFERREDLIGHTING_H_ */

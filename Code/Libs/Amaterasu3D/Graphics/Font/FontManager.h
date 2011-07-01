@@ -36,6 +36,8 @@
 
 #include <map>
 
+namespace ama3D
+{
 struct rat_texture_font
 {
 	float pt, *wids, *hoss;
@@ -139,6 +141,6 @@ private:
 	float m_profondeur;
 };
 
-//} // namespace Yes
+}
 
 #endif // FONTMANAGER_H

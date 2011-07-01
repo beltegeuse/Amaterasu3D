@@ -28,6 +28,8 @@
 #include <Graphics/Color.h>
 
 //XXX Add heritage structure
+namespace ama3D
+{
 
 struct PointLight
 {
@@ -56,5 +58,6 @@ struct SunLight
 	float LightIntensity;
 	float LightRaduis;
 };
+}
 
 #endif /* LIGHTINGSTRUCTURES_H_ */

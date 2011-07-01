@@ -11,7 +11,8 @@
 #include <tinyxml.h>
 #include <TinyXMLHelper.h>
 #include <Logger/Logger.h>
-
+namespace ama3D
+{
 struct CameraAnimationControlPoint
 {
 	/*
@@ -271,5 +272,6 @@ public:
 	}
 
 };
+}
 
 #endif /* CAMERAANIMATION_H_ */

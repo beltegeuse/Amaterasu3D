@@ -29,6 +29,8 @@
 #include <System/Resource.h>
 #include <Utilities/SmartPtr.h>
 
+namespace ama3D
+{
 class TextureParams
 {
 public:
@@ -128,5 +130,7 @@ public:
 };
 
 typedef CSmartPtr<Texture, CResourceCOM> TTexturePtr;
+
+}
 
 #endif

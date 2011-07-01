@@ -27,6 +27,9 @@
 #include <System/MediaManager.h>
 #include <TinyXMLHelper.h>
 #include <System/SettingsManager.h>
+
+namespace ama3D
+{
 ShadersLoader::ShadersLoader()
 {
 }
@@ -495,4 +498,5 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	// * Warning : Need to relink after
 	shader->UpdateAll();
 	return shader;
+}
 }

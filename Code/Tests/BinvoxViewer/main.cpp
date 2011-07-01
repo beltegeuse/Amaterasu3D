@@ -15,6 +15,8 @@
 #include <Addons/FPS/FPS.h>
 #include <Addons/Binvox/BinvoxModel.h>
 
+using namespace ama3D;
+
 class BinvoxViewer : public Application
 {
 protected:

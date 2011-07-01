@@ -28,6 +28,8 @@
 #include <FreeImage.h>
 #include <Logger/Logger.h>
 
+namespace ama3D
+{
 ImagesLoader::ImagesLoader()
 {
 }
@@ -89,4 +91,5 @@ Texture* ImagesLoader::LoadImageFromFile(const std::string& Filename)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	delete[] textura;
 	return texture;
+}
 }

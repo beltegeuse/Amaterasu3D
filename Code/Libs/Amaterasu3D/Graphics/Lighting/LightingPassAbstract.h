@@ -29,7 +29,8 @@
 #include <Graphics/Lighting/LightingStructures.h>
 
 #include <vector>
-
+namespace ama3D
+{
 class LightingPassAbstract
 {
 protected:
@@ -54,5 +55,5 @@ public:
 	// need FBO of the scene
 	virtual void ComputeIllumination() = 0;
 };
-
+}
 #endif /* LIGHTINGPASSABSTRACT_H_ */

@@ -31,6 +31,8 @@
 #include <Addons/ToneMappingOperator/SumantToneOperator/ExpFilter.h>
 #include <Addons/ToneMappingOperator/ManualMipmapping.h>
 
+namespace ama3D
+{
 class SumantToneOperator: public FrameListener, public AbsrtactToneOperator
 {
 protected:
@@ -71,5 +73,6 @@ public:
 	{
 	}
 };
+}
 
 #endif /* SUMANTTONEOPERATOR_H_ */

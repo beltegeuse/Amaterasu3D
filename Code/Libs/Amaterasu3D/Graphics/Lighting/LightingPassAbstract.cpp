@@ -23,6 +23,8 @@
 //==========================================================
 #include "LightingPassAbstract.h"
 
+namespace ama3D
+{
 LightingPassAbstract::LightingPassAbstract()
 {
 }
@@ -44,4 +46,5 @@ void LightingPassAbstract::AddPointLight(const PointLight& light)
 void LightingPassAbstract::AddSpotLight(const SpotLight& light)
 {
 	m_spots_lights.push_back(light);
+}
 }

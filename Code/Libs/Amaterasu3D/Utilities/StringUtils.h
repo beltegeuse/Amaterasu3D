@@ -35,6 +35,8 @@
 #include <string>
 #include <vector>
 
+namespace ama3D
+{
 //----------------------------------------------------------------
 // D�coupe une chaine de caract�res
 //----------------------------------------------------------------
@@ -128,4 +130,5 @@ private:
 
 #include "StringUtils.inl"
 
+}
 #endif // STRINGUTILS_H

@@ -28,11 +28,12 @@
 #include <System/MediaManager.h>
 #include <boost/filesystem.hpp>
 #include <System/Loaders/Loaders.h>
-
+namespace ama3D
+{
 //////////////////////////////////////////////////////////////
 //// Impl�mentation des m�thodes du singleton
 //////////////////////////////////////////////////////////////
-SINGLETON_IMPL(CMediaManager)
+SINGLETON_IMPL(ama3D::CMediaManager)
 
 /////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
@@ -118,4 +119,5 @@ CFile CMediaManager::FindMedia(const CFile& Filename) const
 	// Si le fichier est introuvable, on lance une exception
 	throw CLoadingFailed(Filename.Fullname(),
 			"Fichier introuvable dans les repertoires de recherche");
+}
 }

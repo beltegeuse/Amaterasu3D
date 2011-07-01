@@ -24,6 +24,9 @@
 #include "MatrixManagement.h"
 #include <Debug/Exceptions.h>
 #include <System/SettingsManager.h>
+
+namespace ama3D
+{
 SINGLETON_IMPL(CMatrixManager)
 
 CMatrixManager::CMatrixManager(int maxMatrix) :
@@ -150,5 +153,6 @@ void CMatrixManager::SetModeMatrix(MatrixMode mode)
 sigc::signal<void, MatrixType>& CMatrixManager::GetSignalEvent()
 {
 	return m_signal_event;
+}
 }
 

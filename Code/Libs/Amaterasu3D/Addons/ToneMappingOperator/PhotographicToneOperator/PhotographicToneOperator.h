@@ -30,6 +30,8 @@
 #include <Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.h>
 #include <Graphics/Shaders/Shader.h>
 
+namespace ama3D
+{
 class PhotographicToneOperator: public AbsrtactToneOperator
 {
 protected:
@@ -44,5 +46,6 @@ public:
 	virtual void Compress(Texture* HDRBuffer);
 	virtual void DrawDebug();
 };
+}
 
 #endif /* PHOTOGRAPHICTONEOPERATOR_H_ */

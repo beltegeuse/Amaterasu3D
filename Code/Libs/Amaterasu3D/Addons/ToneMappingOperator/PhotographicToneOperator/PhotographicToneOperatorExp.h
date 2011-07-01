@@ -26,12 +26,14 @@
 #define PHOTOGRAPHICTONEOPERATOREXP_H_
 
 #include <Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.h>
-
+namespace ama3D
+{
 class PhotographicToneOperatorExp: public PhotographicToneOperator
 {
 public:
 	PhotographicToneOperatorExp();
 	virtual ~PhotographicToneOperatorExp();
 };
+}
 
 #endif /* PHOTOGRAPHICTONEOPERATOREXP_H_ */

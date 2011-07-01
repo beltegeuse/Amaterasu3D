@@ -6,7 +6,8 @@
  */
 
 #include <Logger/Logger.h>
-
+namespace ama3D
+{
 class LoggerDebug: public Logger
 {
 private:
@@ -16,5 +17,6 @@ public:
 	LoggerDebug();
 	virtual ~LoggerDebug();
 };
+}
 
 #endif /* LOGGERDEBUG_H_ */

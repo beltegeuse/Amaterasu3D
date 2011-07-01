@@ -31,6 +31,8 @@
 
 #include <System/EventListeners.h>
 
+namespace ama3D
+{
 ///////////////////////////////////////////////////
 /// This class describe an Abstract camera.
 /// Use this class to create camera easily.
@@ -90,6 +92,7 @@ inline std::ostream& operator<<(std::ostream& out, const CameraAbstract& cam)
 	out << "Position : " << cam.GetPosition() << " | Target : "
 			<< cam.GetTarget();
 	return out;
+}
 }
 
 #endif /* CAMERAABSTRACT_H_ */

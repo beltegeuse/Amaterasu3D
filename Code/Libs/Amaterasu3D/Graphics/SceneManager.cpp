@@ -26,6 +26,8 @@
 #include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
 #include <Graphics/SceneNode/SimpleRenderable/DebugPlaneLeaf.h>
 
+namespace ama3D
+{
 SINGLETON_IMPL(CSceneManager)
 
 CSceneManager::CSceneManager() :
@@ -81,4 +83,6 @@ void CSceneManager::RenderAll()
 			{
 		(*it)->Render();
 	}
+}
+
 }

@@ -30,6 +30,8 @@
 #include <Enum.h>
 #include <tinyxml.h>
 
+namespace ama3D
+{
 class ShadersLoader: public ILoader<Shader>
 {
 public:
@@ -44,5 +46,6 @@ private:
 	void LoadShaderFBO(Shader* shader, TiXmlElement *root);
 	void LoadMaterials(Shader* shader, TiXmlElement *root);
 };
+}
 
 #endif /* SHADERLOADER_H_ */

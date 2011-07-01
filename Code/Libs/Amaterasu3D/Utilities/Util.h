@@ -25,11 +25,14 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+
 //==========================================================
-// En-t�tes
+// Headers
 //==========================================================
 #include <vector>
 
+namespace ama3D
+{
 /////////////////////////////////////////////////////////////
 /// Foncteur servant � faire le m�nage dans les collections
 /// de pointeurs
@@ -67,6 +70,8 @@ inline unsigned int NearestPowerOfTwo(unsigned int Value)
 	unsigned int Retval = 1 << PowerOfTwo;
 
 	return Retval == Value ? Retval : Retval << 1;
+}
+
 }
 
 #endif // UTIL_H

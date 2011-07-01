@@ -35,12 +35,14 @@
 
 #include <System/EventListeners.h>
 
+namespace ama3D
+{
 ////////////////////////////////////////////////////////////
 /// Gestion de la console
 ////////////////////////////////////////////////////////////
-class CConsole: public CSingleton<CConsole>, public FrameListener
+class CConsole: public CSingleton<ama3D::CConsole>, public FrameListener
 {
-MAKE_SINGLETON(CConsole)
+MAKE_SINGLETON(ama3D::CConsole)
 
 public:
 
@@ -108,5 +110,5 @@ private:
 	CSmartPtr<Console::ILook> m_Look; ///< Pointeur sur la classe g�rant l'apparence de la console
 	bool m_Enabled; ///< Indique si la console est active ou non
 };
-
+}
 #endif // CONSOLE_H

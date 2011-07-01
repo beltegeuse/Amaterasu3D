@@ -22,7 +22,8 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 #include <Math/SphericalCoordinates.h>
-
+namespace ama3D
+{
 namespace Math
 {
 
@@ -100,4 +101,4 @@ void SphericalCoordinates::SetModule(double v)
 }
 
 }
-;
+}

@@ -24,6 +24,8 @@
 
 #include "Skydome.h"
 
+namespace ama3D
+{
 Skydome::Skydome() :
 		IRenderableSceneNode("Skydome", 0), m_Time(0.0)
 {
@@ -65,4 +67,5 @@ void Skydome::Render()
 	m_SkyShader->End();
 	m_TextureCloud->desactivateMultiTex(CUSTOM_TEXTURE + 0);
 	CMatrixManager::Instance().PopMatrix();
+}
 }

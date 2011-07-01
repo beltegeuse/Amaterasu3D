@@ -23,11 +23,13 @@
 //==========================================================
 
 #include "AbsrtactToneOperator.h"
-
+namespace ama3D
+{
 AbsrtactToneOperator::AbsrtactToneOperator()
 {
 }
 
 AbsrtactToneOperator::~AbsrtactToneOperator()
 {
+}
 }

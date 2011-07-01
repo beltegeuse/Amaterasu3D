@@ -27,6 +27,8 @@
 #include <System/Loaders/Loader.h>
 #include <Graphics/Texture.h>
 
+namespace ama3D
+{
 class ImagesLoader: public ILoader<Texture>
 {
 public:
@@ -37,5 +39,6 @@ private:
 	Texture* LoadHDRImageFromFile(const std::string& Filename);
 	Texture* LoadImageFromFile(const std::string& Filename);
 };
+}
 
 #endif /* IMAGELOADER_H_ */

@@ -24,6 +24,8 @@
 
 #include "AdaptationLuminanceSimple.h"
 
+namespace ama3D
+{
 AdaptationLuminanceSimple::AdaptationLuminanceSimple() :
 		m_LuminanceValue(1.0)
 {
@@ -50,4 +52,5 @@ void AdaptationLuminanceSimple::UpdateLuminance(ManualMipmapping* mipmapping)
 float AdaptationLuminanceSimple::GetAdaptationLuminance() const
 {
 	return m_LuminanceValue;
+}
 }

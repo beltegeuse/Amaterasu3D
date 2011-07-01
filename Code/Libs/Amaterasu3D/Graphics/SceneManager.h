@@ -39,6 +39,8 @@
 #include <vector>
 #include <list>
 
+namespace ama3D
+{
 enum SimpleMesh
 {
 	MESH_CUBE, MESH_PLANE
@@ -90,5 +92,7 @@ public:
 	void RenderAll();
 
 };
+
+}
 
 #endif /* SCENEMANAGER_H_ */

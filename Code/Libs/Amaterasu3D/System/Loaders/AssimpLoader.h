@@ -33,6 +33,8 @@
 #include <map>
 #include <string>
 
+namespace ama3D
+{
 class AssimpLoader: public ILoader<IMeshSceneNode>
 {
 private:
@@ -51,5 +53,6 @@ private:
 			const Math::CMatrix4& matrix);
 	TTexturePtr LoadTexture(const CFile& name);
 };
+}
 
 #endif /* ASSIMPLOADER_H_ */

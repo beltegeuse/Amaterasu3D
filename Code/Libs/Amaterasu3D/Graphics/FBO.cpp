@@ -26,6 +26,8 @@
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
 
+namespace ama3D
+{
 FBO::FBO(const Math::TVector2I& size,
 		std::map<std::string, FBOTextureBufferParam>& buffers,
 		FBODepthType type,
@@ -389,4 +391,5 @@ GLuint FBO::GetDepthID()
 FBO* FBO::Copy()
 {
 	return new FBO(m_SizeBuffers, m_BuffersParams, m_DepthType, m_DepthParams);
+}
 }

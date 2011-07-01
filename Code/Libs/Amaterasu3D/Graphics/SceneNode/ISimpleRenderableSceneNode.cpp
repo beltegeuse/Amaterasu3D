@@ -25,6 +25,8 @@
 
 #include <Graphics/MatrixManagement.h>
 
+namespace ama3D
+{
 ISimpleRenderableSceneNode::ISimpleRenderableSceneNode(const std::string& name,
 		ISceneNode* parent) :
 		IRenderableSceneNode(name, parent)
@@ -45,4 +47,5 @@ void ISimpleRenderableSceneNode::Render()
 RenderableObject& ISimpleRenderableSceneNode::GetObject()
 {
 	return m_RenderObject;
+}
 }

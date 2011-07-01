@@ -23,7 +23,8 @@
 //==========================================================
 
 #include "ILightSceneNode.h"
-
+namespace ama3D
+{
 ILightSceneNode::ILightSceneNode(const std::string& name, ISceneNode* parent) :
 		ISceneNode(name, parent)
 {
@@ -32,4 +33,5 @@ ILightSceneNode::ILightSceneNode(const std::string& name, ISceneNode* parent) :
 ILightSceneNode::~ILightSceneNode()
 {
 	// TODO Auto-generated destructor stub
+}
 }

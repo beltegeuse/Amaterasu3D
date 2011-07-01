@@ -27,6 +27,8 @@
 
 #include <Addons/ToneMappingOperator/ManualMipmapping.h>
 
+namespace ama3D
+{
 class AdaptationLuminanceSimple
 {
 protected:
@@ -38,5 +40,6 @@ public:
 	virtual void UpdateLuminance(ManualMipmapping* mipmapping);
 	float GetAdaptationLuminance() const;
 };
+}
 
 #endif /* ADAPTATIONLUMINANCESIMPLE_H_ */

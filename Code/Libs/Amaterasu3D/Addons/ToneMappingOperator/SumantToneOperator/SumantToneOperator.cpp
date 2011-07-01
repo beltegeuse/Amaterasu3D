@@ -24,6 +24,8 @@
 
 #include "SumantToneOperator.h"
 
+namespace ama3D
+{
 SumantToneOperator::SumantToneOperator() :
 		m_ManualMipmapping(128), m_RodBlenching(16.0, 400), m_ConeBlenching(
 				220000000, 110), // 220 000 000 = 2.2*10^8
@@ -127,4 +129,5 @@ void SumantToneOperator::Compress(Texture* HDRBuffer)
 void SumantToneOperator::DrawDebug()
 {
 	m_ToneOperator->GetFBO()->DrawDebug();
+}
 }

@@ -3,6 +3,8 @@
 
 #include <Debug/Exceptions.h>
 
+namespace ama3D
+{
 struct GraphicsDeviceException: public CException
 {
 	GraphicsDeviceException(const std::string& reason) :
@@ -25,5 +27,7 @@ public:
 	 */
 	void CheckSystem();
 };
+
+}
 
 #endif /* GRAPHICSDEVICE_H_ */

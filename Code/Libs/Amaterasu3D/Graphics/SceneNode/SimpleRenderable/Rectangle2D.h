@@ -28,6 +28,8 @@
 #include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
 #include <Math/Vector2.h>
 
+namespace ama3D
+{
 class Rectangle2D: public ISimpleRenderableSceneNode
 {
 public:
@@ -38,5 +40,6 @@ public:
 			bool generateUVCoord = true, float offset = 0);
 	virtual ~Rectangle2D();
 };
+}
 
 #endif /* RECTANGLE2D_H_ */
