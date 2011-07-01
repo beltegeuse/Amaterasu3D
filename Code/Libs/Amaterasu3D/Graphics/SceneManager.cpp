@@ -40,6 +40,24 @@ CSceneManager::~CSceneManager()
 	delete m_Root;
 }
 
+ISceneNode* CSceneManager::CreateSceneNode(const std::string& name,ISceneNode* parent)
+{
+	return new ISceneNode(name, parent);
+}
+
+ILightSceneNode* CSceneManager::CreateLightNode(const std::string& name, ISceneNode* parent)
+{
+	ILightSceneNode* light = new ILightSceneNode(name, parent);
+	Assert(m_Lights.find(name) == m_Lights.end()); // Absente de la liste
+	m_Lights[name] = light;
+	return light;
+}
+
+ICameraSceneNode* CSceneManager::CreateCameraNode(const std::string& name, ISceneNode* parent)
+{
+	return new ICameraSceneNode(name, parent);
+}
+
 IMeshSceneNode* CSceneManager::LoadMesh(const std::string& file,
 		ISceneNode* parent)
 {

@@ -88,18 +88,26 @@ public:
 	/*
 	 * Public methods
 	 */
+	///////////////////////
 	// Creators
-	ISceneNode* CreateSceneNode(ISceneNode* parent = 0);
-	ILightSceneNode* CreateLightNode(ISceneNode* parent = 0);
-	ICameraSceneNode* CreateCameraNode(ISceneNode* parent = 0);
+	///////////////////////
+	ISceneNode* CreateSceneNode(const std::string& name, ISceneNode* parent = 0);
+	ILightSceneNode* CreateLightNode(const std::string& name, ISceneNode* parent = 0);
+	ICameraSceneNode* CreateCameraNode(const std::string& name, ISceneNode* parent = 0);
 	ISimpleRenderableSceneNode* CreateSimpleMesh(const SimpleMesh& type,
 			const std::string& name, ISceneNode* node);
 	IMeshSceneNode* LoadMesh(const std::string& file, ISceneNode* parent = 0);
+
+	///////////////////////
+	// Get informations
+	///////////////////////
+	//ILightSceneNode* GetLight()
 
 	// Add Root
 	void AddScenegraphRoot(ISceneNode* node);
 	// Render all in scenegraph
 	void RenderAll();
+
 
 protected:
 	friend class ISceneNode;
