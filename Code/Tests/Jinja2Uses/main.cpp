@@ -1,5 +1,6 @@
 #include <Python.h>
 #include <iostream>
+#include <map>
 
 const std::string CODE_TEMPLATE = ""
 		"__kernel void test({{test2}}) {"
@@ -7,9 +8,55 @@ const std::string CODE_TEMPLATE = ""
 		"}";
 
 const std::string CODE_JINJA = "\n"
-		"from jinja2 import Template\n"
-		"tpl = Template(code)\n"
+		"tpl = jinja2.Template(code)\n"
 		"res = tpl.render(args)";
+
+class PythonObject
+{
+private:
+	PyObject* m_Object;
+public:
+	PythonObject(PyObject* obj) :
+		m_Object(obj)
+	{}
+	virtual ~PythonObject() { Py_XDECREF(m_Object); }
+	inline PyObject* GetPythonObject() { return m_Object; }
+};
+
+class PythonStringObject : public PythonObject
+{
+public:
+	PythonStringObject(const std::string& s = "") :
+		PythonObject(PyString_FromString(s.c_str()))
+	{}
+
+	virtual std::string Repr() { return std::string(PyString_AsString(GetPythonObject())); }
+};
+
+class PythonArgs
+{
+private:
+	std::map< std::string, PythonObject*> m_Args;
+
+public:
+	PythonArgs() {}
+	virtual ~PythonArgs() {}
+
+	void AddArgument(const std::string& name, PythonObject* obj)
+	{
+		//TODO: Check collision
+		m_Args[name] = obj;
+	}
+
+	void Release()
+	{
+		for(std::map<std::string, PythonObject*>::iterator it = m_Args.begin();
+			it != m_Args.end(); ++it)
+		{
+			delete it->second;
+		}
+	}
+};
 
 class PythonInterpreter
 {
@@ -30,6 +77,10 @@ public:
 
 		m_MainModule = PyImport_ImportModule("__main__");
 		m_MainDict = PyModule_GetDict(m_MainModule);
+
+		Import("sys");
+		PyRun_SimpleString("print '  * Python Version : '+str(sys.version)");
+
 	}
 
 	virtual ~PythonInterpreter()
@@ -40,7 +91,8 @@ public:
 
 	void Import(const std::string& module)
 	{
-		//PyObject*
+		PyObject *pLoadingModule = PyImport_ImportModule(module.c_str());
+		PyDict_SetItemString(m_MainDict, module.c_str(), pLoadingModule);
 	}
 
 	/*
@@ -71,6 +123,7 @@ public:
 int main()
 {
 	PythonInterpreter python;
+	python.Import("jinja2");
 	python.Execute(CODE_JINJA);
 	return 0;
 }
