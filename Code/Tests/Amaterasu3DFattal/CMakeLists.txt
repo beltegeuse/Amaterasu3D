@@ -1,0 +1,23 @@
+SET(Fattal_SRCS
+	main.cpp
+)
+
+
+INCLUDE_DIRECTORIES(
+	${CMAKE_CURRENT_SOURCE_DIR}
+	../../Libs/Amaterasu3D
+)
+
+ADD_EXECUTABLE(Fattal ${Fattal_SRCS})
+
+target_link_libraries(
+  Fattal
+  Amaterasu3D
+)
+
+SET_TARGET_PROPERTIES(Fattal PROPERTIES
+  INSTALL_RPATH ${PROJECT_BUILD_PATH}
+  INSTALL_RPATH_USE_LINK_PATH true
+)
+
+install(TARGETS Fattal RUNTIME DESTINATION ${PROJECT_BUILD_PATH})

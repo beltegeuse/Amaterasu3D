@@ -4,20 +4,8 @@ import jinja2
 from OpenGL.arrays import vbo
 
 KERNEL_CODE = """
-struct Sphere
+__kernel void sendrays(__global {{ colortype }} * colors, __global {{ colortype }}* B)
 {
-    float3 position;
-    float raySize;
-    float3 color;
-};
-
-__kernel void sendrays(__constant struct Sphere* spheres, int numSpheres)
-{
-    for(int i = 0; i < numSpheres; i++)
-    {
-        // Nothings
-    }
-    return;
 }
 """
 
