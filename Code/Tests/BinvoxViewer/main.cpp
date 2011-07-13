@@ -60,7 +60,7 @@ public:
 
 		// A voir
 		//RootSceneGraph.AddChild(m_BinVox->CreateDebugPointModel());
-		//RootSceneGraph.AddChild(m_BinVox->CreateCoordinateCubeModel()); // < FIXME
+		SceneManager.AddScenegraphRoot(m_BinVox->CreateCoordinateCubeModel()); // < FIXME
 	}
 
 	virtual void OnUpdate(double delta)

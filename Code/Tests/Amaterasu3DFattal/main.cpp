@@ -64,7 +64,7 @@ public:
 		m_VolumeTexture = m_BinVox->Create2DTexture();
 
 		// A voir
-		//SceneManager.AddScenegraphRoot(m_BinVox->CreateDebugPointModel()); // < FIXME
+		SceneManager.AddScenegraphRoot(m_BinVox->CreateDebugPointModel()); // < FIXME
 		SceneManager.AddScenegraphRoot(m_BinVox->CreateCoordinateCubeModel());
 	}
 
