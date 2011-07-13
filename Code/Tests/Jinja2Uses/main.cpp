@@ -1,18 +1,19 @@
 #include <Python.h>
 #include <iostream>
 #include <map>
+#include <set>
 #include <Debug/Exceptions.h>
 const std::string CODE_JINJA = "\n"
 		"filename = os.path.split(args['fullpath'])[-1]\n"
 		"dirpath = os.path.join(os.path.split(args['fullpath'])[:-1])[0]\n"
 		"print '[SCRIPT] Filename : '+filename\n"
 		"print '[SCRIPT] Dir path : '+dirpath\n"
-		"loader = jinja2.FileSystemLoader(['../Donnees/Shaders/HelpersCode', dirpath])\n"
+		"loader = jinja2.FileSystemLoader(['.', '../Donnees/Shaders/HelpersCode', dirpath])\n"
 		"environment = jinja2.Environment(loader=loader)\n"
 		"tpl = environment.get_template(filename)\n"
 		"res = tpl.render()\n";
 
-class PythonArgs
+class PythonMap
 {
 private:
 	/*
@@ -25,8 +26,8 @@ public:
 	/*
 	 * Constructors & Destructors
 	 */
-	PythonArgs() {m_Dict = PyDict_New();}
-	virtual ~PythonArgs() { Release(); }
+	PythonMap() {m_Dict = PyDict_New();}
+	virtual ~PythonMap() { Release(); }
 
 	PyObject* GetObject() { return m_Dict; }
 	/*
@@ -64,6 +65,46 @@ private:
 		{
 			Py_XDECREF(it->second);
 		}
+	}
+};
+
+class PythonResult
+{
+private:
+	/*
+	 * Attributes
+	 */
+	std::set<std::string> m_Variables;
+	std::map<std::string,std::string> m_Res;
+public:
+	PythonResult() {}
+	virtual ~PythonResult() {}
+
+	void AddVariable(const std::string& v)
+	{
+		m_Variables.insert(v);
+	}
+
+	void ClearVariables()
+	{
+		m_Variables.clear();
+	}
+
+	void Update(PyObject* dict)
+	{
+		m_Res.clear();
+		for(std::set<std::string>::iterator it = m_Variables.begin(); it != m_Variables.end(); ++it)
+		{
+			PyObject* pRes = PyMapping_GetItemString(dict, const_cast < char* >(it->c_str()));
+			m_Res[*it] = std::string(PyString_AsString(pRes));
+			Py_XDECREF(pRes);
+		}
+	}
+
+	const std::string& operator[](const std::string& key)
+	{
+		//FIXME Add exceptions
+		return m_Res[key];
 	}
 };
 
@@ -107,29 +148,41 @@ public:
 	/*
 	 * Public methods
 	 */
-	void Execute(const std::string& code, PythonArgs& args)
+	void Execute(const std::string& code, PythonMap& args, PythonResult& res)
 	{
 		std::cout << "[INFO] Execute : " << std::endl;
 		std::cout << code << std::endl;
 
 		PyDict_SetItemString(m_MainDict, "args", args.GetObject());
 		PyRun_SimpleString(code.c_str());
-
-		PyObject* pRes = PyMapping_GetItemString(m_MainDict, "res");
-		std::cout << "[INFO] Result : " << std::endl;
-		std::cout << PyString_AsString(pRes) << std::endl;
-		Py_XDECREF(pRes);
+		res.Update(m_MainDict);
 	}
 };
 
+void Test(PythonInterpreter& python, const std::string& fullpath)
+{
+	// Call
+	PythonMap args;
+	args.AddArgument("fullpath", fullpath);
+	PythonResult res;
+	res.AddVariable("res");
+	python.Execute(CODE_JINJA, args, res);
+
+	// Print the result
+	std::cout << "[INFO] Result : " << std::endl;
+	std::cout << res["res"] << std::endl;
+}
+
 int main()
 {
+	// Initialisation de l'interpreteur
 	PythonInterpreter python;
 	python.Import("jinja2");
 	python.Import("os");
-	PythonArgs args;
-	args.AddArgument("fullpath", "../Donnees/Templates/test.txt");
-	python.Execute(CODE_JINJA, args);
+
+	Test(python, "../Donnees/Templates/test.txt");
+	Test(python, "../Donnees/Templates/test2.txt");
+
 	return 0;
 }
 

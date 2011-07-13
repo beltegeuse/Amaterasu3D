@@ -1,0 +1,5 @@
+{% include 'test.txt' %}
+
+Multiples includes :)
+
+{% include 'hierachies/test3.txt' %}
