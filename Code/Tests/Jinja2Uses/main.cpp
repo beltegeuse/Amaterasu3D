@@ -1,6 +1,10 @@
+
+// STD Includes
 #include <iostream>
 #include <map>
 #include <set>
+
+// Ama3D includes
 #include <Debug/Exceptions.h>
 #include <System/PythonInterpreter.h>
 
@@ -44,4 +48,6 @@ int main()
 
 	return 0;
 }
+
+
 

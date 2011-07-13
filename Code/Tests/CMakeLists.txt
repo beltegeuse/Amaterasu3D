@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(Amaterasu3D)
 ADD_SUBDIRECTORY(NeheLesson1)
 ELSE()
 ADD_SUBDIRECTORY(OpenCLRay)
+ADD_SUBDIRECTORY(Jinja2Uses)
 ENDIF()
 
 INCLUDE_DIRECTORIES(
@@ -12,7 +13,6 @@ INCLUDE_DIRECTORIES(
 	/usr/local/lib/sigc++-2.0/include
 	/usr/local/include/assimp
 	../Libs/TinyXML
-	../../Libs/Amaterasu3D
 	${PYTHON_INCLUDE_DIRS}
 )
 
@@ -34,4 +34,3 @@ ADD_SUBDIRECTORY(ShadowMap)
 ADD_SUBDIRECTORY(Mipmapping)
 ADD_SUBDIRECTORY(FastBilateralFiltering)
 ADD_SUBDIRECTORY(Amaterasu3DFattal)
-ADD_SUBDIRECTORY(Jinja2Uses)

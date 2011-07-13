@@ -4,6 +4,7 @@ SET(Jinja2_SRCS
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
+	../../Libs/Amaterasu3D
 )
 
 ADD_EXECUTABLE(Jinja2 ${Jinja2_SRCS})
