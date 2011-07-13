@@ -11,7 +11,7 @@ const std::string CODE_JINJA = "\n"
 		"loader = jinja2.FileSystemLoader(['.', '../Donnees/Shaders/HelpersCode', dirpath])\n"
 		"environment = jinja2.Environment(loader=loader)\n"
 		"tpl = environment.get_template(filename)\n"
-		"res = tpl.render()\n";
+		"res = tpl.render(args['template'])\n";
 
 class PythonMap
 {
@@ -46,6 +46,11 @@ public:
 	void AddArgument(const std::string& name, double v)
 	{
 		AddArgument(name, PyFloat_FromDouble(v));
+	}
+
+	void AddArgument(const std::string& name, PythonMap& map)
+	{
+		AddArgument(name, map.GetObject());
 	}
 
 private:
@@ -153,6 +158,7 @@ public:
 		std::cout << "[INFO] Execute : " << std::endl;
 		std::cout << code << std::endl;
 
+		//TODO: Gerer le nettoye du dictionnaire
 		PyDict_SetItemString(m_MainDict, "args", args.GetObject());
 		PyRun_SimpleString(code.c_str());
 		res.Update(m_MainDict);
@@ -162,8 +168,12 @@ public:
 void Test(PythonInterpreter& python, const std::string& fullpath)
 {
 	// Call
+	PythonMap templat;
+	templat.AddArgument("toto", "add :)");
+
 	PythonMap args;
 	args.AddArgument("fullpath", fullpath);
+	args.AddArgument("template", templat);
 	PythonResult res;
 	res.AddVariable("res");
 	python.Execute(CODE_JINJA, args, res);
