@@ -12,6 +12,8 @@ INCLUDE_DIRECTORIES(
 	/usr/local/lib/sigc++-2.0/include
 	/usr/local/include/assimp
 	../Libs/TinyXML
+	../../Libs/Amaterasu3D
+	${PYTHON_INCLUDE_DIRS}
 )
 
 # Unsupported :

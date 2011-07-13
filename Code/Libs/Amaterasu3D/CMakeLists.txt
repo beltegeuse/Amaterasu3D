@@ -84,6 +84,7 @@ SET(LIB_AMATERASU3D_SRCS
 	System/MediaManager.cpp
 	System/ResourceManager.cpp
 	System/Resource.cpp
+	System/PythonInterpreter.cpp
 	System/Loaders/Loaders.cpp
 	System/Loaders/ShadersLoader.cpp
 	System/Loaders/AssimpLoader.cpp
@@ -109,6 +110,7 @@ SET(LIB_AMATERASU3D_HEADERS
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${FREETYPE_INCLUDE_DIRS}
+	${PYTHON_INCLUDE_DIRS}
     /usr/local/include/sigc++-2.0
 	/usr/local/lib/sigc++-2.0/include
 	/usr/local/include/assimp
@@ -130,6 +132,7 @@ target_link_libraries(
   tinyxml
   sigc-2.0 
   assimp
+  ${PYTHON_LIBRARIES}
   #TODO: Boost is until used?
   ${Boost_LIBRARIES}
 )
