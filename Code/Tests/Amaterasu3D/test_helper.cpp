@@ -1,6 +1,6 @@
 #include <test_helper.h>
 
-bool nullFuncException(const CException& e)
+bool nullFuncException(const ama3D::CException& e)
 {
 	return true;
 }

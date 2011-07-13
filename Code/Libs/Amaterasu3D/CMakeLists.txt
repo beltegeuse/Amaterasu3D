@@ -1,6 +1,6 @@
 
 IF(CMAKE_BUILD_TYPE MATCHES debug)
-	ADD_DEFINITIONS("-Wall -W -D_DEBUG -pg") #Pour afficher les warning lors de la compilation
+	ADD_DEFINITIONS("-Wall -W -D_DEBUG") #Pour afficher les warning lors de la compilation
     
     #IF(LINUX)
     	#ADD_DEFINITIONS("-pg")
