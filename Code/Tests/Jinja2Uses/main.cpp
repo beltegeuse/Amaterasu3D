@@ -2,14 +2,16 @@
 #include <iostream>
 #include <map>
 
-const std::string CODE_TEMPLATE = ""
-		"__kernel void test({{test2}}) {"
-		"	return ;"
-		"}";
-
 const std::string CODE_JINJA = "\n"
-		"tpl = jinja2.Template(code)\n"
-		"res = tpl.render(args)";
+		"fullpath = '../Donnees/Templates/test.txt'\n"
+		"filename = os.path.split(fullpath)[-1]\n"
+		"dirpath = os.path.join(os.path.split(fullpath)[:-1])[0]\n"
+		"print '[SCRIPT] Filename : '+filename\n"
+		"print '[SCRIPT] Dir path : '+dirpath\n"
+		"loader = jinja2.FileSystemLoader(['../Donnees/Shaders/HelpersCode', dirpath])\n"
+		"environment = jinja2.Environment(loader=loader)\n"
+		"tpl = environment.get_template(filename)\n"
+		"res = tpl.render()\n";
 
 class PythonObject
 {
@@ -103,12 +105,12 @@ public:
 		std::cout << "[INFO] Execute : " << std::endl;
 		std::cout << code << std::endl;
 
-		PyObject* pCode = PyString_FromString(CODE_TEMPLATE.c_str());
-		PyDict_SetItemString(m_MainDict, "code", pCode);
+		PyObject* pCode = PyString_FromString("../Donnees/Templates/test.txt");
+		PyDict_SetItemString(m_MainDict, "fullpath", pCode);
 
-		PyObject* pArgs = PyDict_New();
-		PyDict_SetItemString(pArgs, "test2", PyString_FromString("toto"));
-		PyDict_SetItemString(m_MainDict, "args", pArgs);
+//		PyObject* pArgs = PyDict_New();
+//		PyDict_SetItemString(pArgs, "test2", PyString_FromString("toto"));
+//		PyDict_SetItemString(m_MainDict, "args", pArgs);
 
 		PyRun_SimpleString(code.c_str());
 		Py_XDECREF(pCode);
@@ -124,6 +126,7 @@ int main()
 {
 	PythonInterpreter python;
 	python.Import("jinja2");
+	python.Import("os");
 	python.Execute(CODE_JINJA);
 	return 0;
 }
