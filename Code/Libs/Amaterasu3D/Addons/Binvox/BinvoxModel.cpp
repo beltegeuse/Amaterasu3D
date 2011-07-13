@@ -49,7 +49,7 @@ void BinvoxModel::LoadHeader(std::ifstream *input)
 	///////////////////////////
 	int version;
 	*input >> version;
-	Logger::Log() << "[INFO] reading binvox version " << version << "\n";
+	Logger::Log() << "[INFO] [Binvox] reading binvox version " << version << "\n";
 
 	bool done = false;
 	while (input->good() && !done)
@@ -134,7 +134,7 @@ void BinvoxModel::LoadVoxels(std::ifstream *input)
 
 	} // while
 
-	Logger::Log() << "[INFO] Read " << nr_voxels << " voxels\n";
+	Logger::Log() << "[INFO] [Binvox] Read " << nr_voxels << " voxels\n";
 }
 
 ISimpleRenderableSceneNode* BinvoxModel::CreateDebugPointModel()
@@ -154,8 +154,10 @@ ISimpleRenderableSceneNode* BinvoxModel::CreateDebugPointModel()
 	* colorBuffer = new float[3 * voxels.size()];unsigned
 	int* indiceBuffer = new unsigned int[voxels.size()];
 
+	Logger::Log() << "[INFO] [BinVox] Create Debug point buffer " << voxels.size() << "\n";
 for(	int i = 0; i < voxels.size(); i++)
 	{
+		//Logger::Log() << voxels[i] << "\n";
 		vertexBuffer[3*i] = voxels[i].x;
 		vertexBuffer[3*i+1] = voxels[i].y;
 		vertexBuffer[3*i+2] = voxels[i].z;
@@ -181,7 +183,7 @@ for(	int i = 0; i < voxels.size(); i++)
 	buffer.buffer = colorBuffer;
 	model->GetObject().AddBuffer(buffer, COLOR_ATTRIBUT);
 	model->GetObject().CompileBuffers();
-	//model->AddMaterial(DIFFUSE_MATERIAL,color);
+	//model->GetObject().AddMaterial(DIFFUSE_MATERIAL,color);
 
 	return model;
 }

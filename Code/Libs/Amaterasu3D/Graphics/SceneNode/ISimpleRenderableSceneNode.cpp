@@ -24,6 +24,7 @@
 #include "ISimpleRenderableSceneNode.h"
 
 #include <Graphics/MatrixManagement.h>
+#include <iostream>
 
 namespace ama3D
 {
@@ -39,6 +40,7 @@ ISimpleRenderableSceneNode::~ISimpleRenderableSceneNode()
 
 void ISimpleRenderableSceneNode::Render()
 {
+	//std::cout << GetWorldTransformation() << std::endl;
 	CMatrixManager::Instance().PushMatrix(GetWorldTransformation());
 	m_RenderObject.Draw();
 	CMatrixManager::Instance().PopMatrix();

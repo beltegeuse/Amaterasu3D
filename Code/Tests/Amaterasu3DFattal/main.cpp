@@ -24,6 +24,8 @@ protected:
 	FPS m_FPS;
 	TShaderPtr m_CubeShader;
 	TShaderPtr m_volumeRenderingShader;
+	TShaderPtr m_BasicShader;
+	TShaderPtr m_gbuffer_shader;
 	TTexturePtr m_VolumeTexture;
 	FBO * m_FrontFBO;
 	FBO * m_BackFBO;
@@ -47,6 +49,8 @@ public:
 		// Shaders
 		m_CubeShader = ShaderManager.LoadShader("CubePass.shader");
 		m_volumeRenderingShader = ShaderManager.LoadShader("VolumeRendering.shader");
+		m_BasicShader = ShaderManager.LoadShader("NoColorBasicShader.shader");
+		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		// FBO
 		m_BackFBO = m_CubeShader->GetFBO()->Copy();
 		m_FrontFBO = m_CubeShader->GetFBO();
@@ -59,8 +63,8 @@ public:
 		m_VolumeTexture = m_BinVox->Create2DTexture();
 
 		// A voir
-		//RootSceneGraph.AddChild(m_BinVox->CreateDebugPointModel());
-		//RootSceneGraph.AddChild(m_BinVox->CreateCoordinateCubeModel()); // < FIXME
+		SceneManager.AddScenegraphRoot(m_BinVox->CreateDebugPointModel());
+		//SceneManager.AddScenegraphRoot(m_BinVox->CreateCoordinateCubeModel()); // < FIXME
 	}
 
 	virtual void OnUpdate(double delta)
@@ -85,46 +89,49 @@ public:
 	{
 		MatrixManager.SetModeMatrix(MATRIX_3D);
 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		m_CubeShader->SetFBO(m_FrontFBO, false);
-		m_CubeShader->Begin();
+		//std::cout << m_Camera->GetTarget() - m_Camera->GetPosition() << std::endl;
+//		glEnable(GL_CULL_FACE);
+//		glCullFace(GL_BACK);
+		//m_CubeShader->SetFBO(m_FrontFBO, false);
+		m_gbuffer_shader->Begin();
 		m_Camera->GetView();
 		SceneManager.RenderAll();
-		m_CubeShader->End();
+		m_gbuffer_shader->End();
+		m_gbuffer_shader->GetFBO()->DrawDebug();
+		//m_CubeShader->GetFBO()->DrawDebug();
 
 //		m_CubeShader->GetFBO()->DrawDebug();
 
-		glCullFace(GL_FRONT);
-		m_CubeShader->SetFBO(m_BackFBO, false);
-		m_CubeShader->Begin();
-		m_Camera->GetView();
-		SceneManager.RenderAll();
-		m_CubeShader->End();
-		glDisable(GL_CULL_FACE);
-
-		Math::TVector2I repeatTex = m_BinVox->TextureRepeat();
-		Math::TVector2I sizeTex = m_BinVox->TextureSize();
-
-		m_volumeRenderingShader->Begin();
-		m_FrontFBO->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
-		m_BackFBO->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+1);
-		m_VolumeTexture->activateMultiTex(CUSTOM_TEXTURE+2);
-		m_volumeRenderingShader->SetUniformVector("GridDimension", m_BinVox->GridSize());
-		m_volumeRenderingShader->SetUniformVector("GridTextureSize", Math::TVector4F(sizeTex.x, sizeTex.y, repeatTex.x, repeatTex.y));
-		m_volumeRenderingShader->SetUniform1i("GridInterpolation", m_Trilinear);
-		ShaderHelperUniformImagePlane(m_volumeRenderingShader);
-		glBegin(GL_QUADS);
-			glTexCoord2f(0.0, 0.0);
-			glVertex2f(-1.0, -1.0);
-			glTexCoord2f(0.0, 1.0);
-			glVertex2f(-1.0, 1.0);
-			glTexCoord2f(1.0, 1.0);
-			glVertex2f(1.0, 1.0);
-			glTexCoord2f(1.0, 0.0);
-			glVertex2f(1.0, -1.0);
-		glEnd();
-		m_volumeRenderingShader->End();
+//		glCullFace(GL_FRONT);
+//		m_CubeShader->SetFBO(m_BackFBO, false);
+//		m_CubeShader->Begin();
+//		m_Camera->GetView();
+//		SceneManager.RenderAll();
+//		m_CubeShader->End();
+//		glDisable(GL_CULL_FACE);
+//
+//		Math::TVector2I repeatTex = m_BinVox->TextureRepeat();
+//		Math::TVector2I sizeTex = m_BinVox->TextureSize();
+//
+//		m_volumeRenderingShader->Begin();
+//		m_FrontFBO->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
+//		m_BackFBO->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+1);
+//		m_VolumeTexture->activateMultiTex(CUSTOM_TEXTURE+2);
+//		m_volumeRenderingShader->SetUniformVector("GridDimension", m_BinVox->GridSize());
+//		m_volumeRenderingShader->SetUniformVector("GridTextureSize", Math::TVector4F(sizeTex.x, sizeTex.y, repeatTex.x, repeatTex.y));
+//		m_volumeRenderingShader->SetUniform1i("GridInterpolation", m_Trilinear);
+//		ShaderHelperUniformImagePlane(m_volumeRenderingShader);
+//		glBegin(GL_QUADS);
+//			glTexCoord2f(0.0, 0.0);
+//			glVertex2f(-1.0, -1.0);
+//			glTexCoord2f(0.0, 1.0);
+//			glVertex2f(-1.0, 1.0);
+//			glTexCoord2f(1.0, 1.0);
+//			glVertex2f(1.0, 1.0);
+//			glTexCoord2f(1.0, 0.0);
+//			glVertex2f(1.0, -1.0);
+//		glEnd();
+//		m_volumeRenderingShader->End();
 
 		MatrixManager.SetModeMatrix(MATRIX_2D);
 
