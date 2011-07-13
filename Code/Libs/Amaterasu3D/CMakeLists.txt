@@ -89,7 +89,7 @@ SET(LIB_AMATERASU3D_SRCS
 	System/Loaders/ShadersLoader.cpp
 	System/Loaders/AssimpLoader.cpp
 	System/Loaders/ImagesLoader.cpp
-	
+	System/Python/Jinja2Template.cpp
 	#
 	# Other Section
 	#
