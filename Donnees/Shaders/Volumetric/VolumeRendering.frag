@@ -42,26 +42,10 @@ vec4 TrilinearInterpolation(sampler2D s, vec3 Position)
 	vec3 IndexedPosition = floor(Position);
 	vec3 Offset = Position - IndexedPosition;
 
-	vec4 v1i1 = texture(s, Sample3DTexCoord2D(IndexedPosition));
-	vec4 v2i1 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(0,0,1)));
-	vec4 i1 = v1i1*(1-Offset.z)+v2i1*Offset.z;
+	vec4 v1i1 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(Offset.xy,0)));
+	vec4 v2i1 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(Offset.xy,1)));
 
-	vec4 v1i2 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(0,1,0)));
-	vec4 v2i2 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(0,1,1)));
-	vec4 i2 = v1i2*(1-Offset.z)+v2i2*Offset.z;
-
-	vec4 v1j1 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(1,0,0)));
-	vec4 v2j1 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(1,0,1)));
-	vec4 j1 = v1j1*(1-Offset.z)+v2j1*Offset.z;
-
-	vec4 v1j2 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(1,1,0)));
-	vec4 v2j2 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(1,1,1)));
-	vec4 j2 = v1j2*(1-Offset.z)+v2j2*Offset.z;
-
-	vec4 w1 = i1*(1 - Offset.y) + i2 * Offset.y;
-	vec4 w2 = j1*(1 - Offset.y) + j2 * Offset.y;
-
-	return w1*(1 - Offset.x) + w2 * Offset.x;
+	return v1i1*(1-Offset.z)+v2i1*Offset.z;
 }
 
 float GetVolumeData(vec3 Position)

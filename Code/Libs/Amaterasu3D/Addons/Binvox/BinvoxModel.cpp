@@ -15,6 +15,8 @@
 #include <Math/Vector3.h>
 #include <Utilities/Util.h>
 #include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
+#include <Graphics/SceneManager.h>
+
 
 #include <vector>
 namespace ama3D
@@ -240,13 +242,11 @@ Math::TVector3F BinvoxModel::GridSize() const
 	return Math::TVector3F(m_Width, m_Height, m_Depth);
 }
 
-DebugCubeLeaf* BinvoxModel::CreateCoordinateCubeModel()
+ISimpleRenderableSceneNode* BinvoxModel::CreateCoordinateCubeModel()
 {
-	DebugCubeLeaf* cube = new DebugCubeLeaf("CubeVoxbin", 0);
+	ISimpleRenderableSceneNode* cube = CSceneManager::Instance().CreateSimpleMesh(MESH_CUBE, "cube1", 0);
 	// Need translation because [-1,1]
-	Math::CMatrix4 scaleMat;
-	scaleMat.SetScaling(m_Width, m_Height, m_Depth);
-	cube->LoadLocalTransformMatrix(scaleMat);
+	cube->SetScale(Math::TVector3F(m_Width, m_Height, m_Depth));
 	return cube;
 }
 

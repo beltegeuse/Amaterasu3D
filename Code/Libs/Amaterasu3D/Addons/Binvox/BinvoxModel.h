@@ -43,7 +43,7 @@ public:
 	TTexturePtr Create2DTexture();
 	/// Model methods
 	ISimpleRenderableSceneNode* CreateDebugPointModel();
-	DebugCubeLeaf* CreateCoordinateCubeModel();
+	ISimpleRenderableSceneNode* CreateCoordinateCubeModel();
 
 private:
 	/**
