@@ -7,6 +7,7 @@ FIND_PACKAGE(PythonLibs)
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${PYTHON_INCLUDE_DIRS}
+	../../Libs/Amaterasu3D
 )
 
 ADD_EXECUTABLE(Jinja2 ${Jinja2_SRCS})
@@ -14,6 +15,7 @@ ADD_EXECUTABLE(Jinja2 ${Jinja2_SRCS})
 target_link_libraries(
   Jinja2
   ${PYTHON_LIBRARIES}
+  Amaterasu3D
 )
 
 SET_TARGET_PROPERTIES(Jinja2 PROPERTIES

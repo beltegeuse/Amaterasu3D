@@ -1,11 +1,10 @@
 #include <Python.h>
 #include <iostream>
 #include <map>
-
+#include <Debug/Exceptions.h>
 const std::string CODE_JINJA = "\n"
-		"fullpath = '../Donnees/Templates/test.txt'\n"
-		"filename = os.path.split(fullpath)[-1]\n"
-		"dirpath = os.path.join(os.path.split(fullpath)[:-1])[0]\n"
+		"filename = os.path.split(args['fullpath'])[-1]\n"
+		"dirpath = os.path.join(os.path.split(args['fullpath'])[:-1])[0]\n"
 		"print '[SCRIPT] Filename : '+filename\n"
 		"print '[SCRIPT] Dir path : '+dirpath\n"
 		"loader = jinja2.FileSystemLoader(['../Donnees/Shaders/HelpersCode', dirpath])\n"
@@ -13,49 +12,57 @@ const std::string CODE_JINJA = "\n"
 		"tpl = environment.get_template(filename)\n"
 		"res = tpl.render()\n";
 
-class PythonObject
-{
-private:
-	PyObject* m_Object;
-public:
-	PythonObject(PyObject* obj) :
-		m_Object(obj)
-	{}
-	virtual ~PythonObject() { Py_XDECREF(m_Object); }
-	inline PyObject* GetPythonObject() { return m_Object; }
-};
-
-class PythonStringObject : public PythonObject
-{
-public:
-	PythonStringObject(const std::string& s = "") :
-		PythonObject(PyString_FromString(s.c_str()))
-	{}
-
-	virtual std::string Repr() { return std::string(PyString_AsString(GetPythonObject())); }
-};
-
 class PythonArgs
 {
 private:
-	std::map< std::string, PythonObject*> m_Args;
-
+	/*
+	 * Attributes
+	 */
+	std::map< std::string, PyObject*> m_Args;
+	bool m_Build;
+	PyObject* m_Dict;
 public:
-	PythonArgs() {}
-	virtual ~PythonArgs() {}
+	/*
+	 * Constructors & Destructors
+	 */
+	PythonArgs() {m_Dict = PyDict_New();}
+	virtual ~PythonArgs() { Release(); }
 
-	void AddArgument(const std::string& name, PythonObject* obj)
+	PyObject* GetObject() { return m_Dict; }
+	/*
+	 * Add methodes
+	 */
+	void AddArgument(const std::string& name, const std::string& v)
 	{
-		//TODO: Check collision
+		AddArgument(name,PyString_FromString(v.c_str()));
+	}
+
+	void AddArgument(const std::string& name, long v)
+	{
+		AddArgument(name, PyInt_FromLong(v));
+	}
+
+	void AddArgument(const std::string& name, double v)
+	{
+		AddArgument(name, PyFloat_FromDouble(v));
+	}
+
+private:
+	void AddArgument(const std::string& name, PyObject* obj)
+	{
+		if(m_Args.find(name) != m_Args.end())
+			throw ama3D::CException("Key "+name+" already in the set!");
 		m_Args[name] = obj;
+		PyDict_SetItemString(m_Dict, name.c_str(), obj);
 	}
 
 	void Release()
 	{
-		for(std::map<std::string, PythonObject*>::iterator it = m_Args.begin();
+		Py_XDECREF(m_Dict);
+		for(std::map<std::string, PyObject*>::iterator it = m_Args.begin();
 			it != m_Args.end(); ++it)
 		{
-			delete it->second;
+			Py_XDECREF(it->second);
 		}
 	}
 };
@@ -100,20 +107,13 @@ public:
 	/*
 	 * Public methods
 	 */
-	void Execute(const std::string& code)
+	void Execute(const std::string& code, PythonArgs& args)
 	{
 		std::cout << "[INFO] Execute : " << std::endl;
 		std::cout << code << std::endl;
 
-		PyObject* pCode = PyString_FromString("../Donnees/Templates/test.txt");
-		PyDict_SetItemString(m_MainDict, "fullpath", pCode);
-
-//		PyObject* pArgs = PyDict_New();
-//		PyDict_SetItemString(pArgs, "test2", PyString_FromString("toto"));
-//		PyDict_SetItemString(m_MainDict, "args", pArgs);
-
+		PyDict_SetItemString(m_MainDict, "args", args.GetObject());
 		PyRun_SimpleString(code.c_str());
-		Py_XDECREF(pCode);
 
 		PyObject* pRes = PyMapping_GetItemString(m_MainDict, "res");
 		std::cout << "[INFO] Result : " << std::endl;
@@ -127,7 +127,9 @@ int main()
 	PythonInterpreter python;
 	python.Import("jinja2");
 	python.Import("os");
-	python.Execute(CODE_JINJA);
+	PythonArgs args;
+	args.AddArgument("fullpath", "../Donnees/Templates/test.txt");
+	python.Execute(CODE_JINJA, args);
 	return 0;
 }
 

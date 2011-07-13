@@ -1,6 +1,6 @@
 {% include 'MathHelper.shadercode' %}
 
-__kernel void test({{ toto}})
+__kernel void test({{ toto }})
 {
 	return 0;
 }
