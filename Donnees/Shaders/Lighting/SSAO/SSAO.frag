@@ -15,7 +15,7 @@ uniform float NearClipping;
 uniform vec2 UnprojectInfo;
 uniform mat4 InverseViewMatrix;
 
-#include <GetPosition.shadercode>
+{% include 'GetPosition.shadercode' %}
 
 // Entree
 smooth in vec2 outTexCoord;
@@ -56,12 +56,11 @@ void main()
 	float AOFactor = 0.0;
 	float Raduis = SampleRaduis / Depth;
 
-	int NbIteration = 10;
-	for(int i = 0; i < NbIteration; i++)
-	{
-		vec2 offset = vectors[i]*jitterMatrix* Raduis;
+	vec2 offset;
+	{% for i in range(10) %}
+		offset = vectors[{{i}}]*jitterMatrix* Raduis;
 		AOFactor += calcAO(outTexCoord, offset, Position, Normal);
-	}
+	{% endfor %}
 
 	AOFactor = 1.0 - clamp(AOFactor*0.1,0.0,1.0);
 	AmbiantOcculsion = vec4(AOFactor,AOFactor,AOFactor,1.0);

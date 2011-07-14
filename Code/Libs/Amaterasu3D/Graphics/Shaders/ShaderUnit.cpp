@@ -74,6 +74,7 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type,
 	for(ShaderCompilerConfig::DefineMap::const_iterator it = config.GetDefines().begin(); it != config.GetDefines().end(); ++it)
 		jinja2.AddArgument(it->first, it->second);
 	jinja2.Generate();
+	Logger::Log() << jinja2.GetCode() << "\n";
 	const std::string source = jinja2.GetCode();
 	// Use GLSL To compile the current shader code
 	const char * bufferPtr = source.c_str();

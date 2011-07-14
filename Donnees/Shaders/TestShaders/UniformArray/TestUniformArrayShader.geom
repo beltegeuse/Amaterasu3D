@@ -3,7 +3,7 @@
 
 flat in float factor[gl_VerticesIn];
 
-uniform float values[NB];
+uniform float values[{{NB}}];
 
 void main(void)
 {
@@ -29,7 +29,7 @@ void main(void)
 	}
 	EndPrimitive();
 	//New piece of geometry!  We just swizzle the x and y terms
-	for(int j = 0; j < NB; j++)
+	for(int j = 0; j < {{NB}}; j++)
 	{
 		for(i=0; i< gl_VerticesIn; i++){
 			gl_Position = gl_PositionIn[i];
