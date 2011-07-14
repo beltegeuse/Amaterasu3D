@@ -109,13 +109,13 @@ SET(LIB_AMATERASU3D_HEADERS
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${FREETYPE_INCLUDE_DIRS}
-	${PYTHON_INCLUDE_DIRS}
     /usr/local/include/sigc++-2.0
 	/usr/local/lib/sigc++-2.0/include
-	/usr/local/include/assimp
 	../C3/Source
 	../TinyXML
+	../Assimp/include
+	${FREETYPE_INCLUDE_DIRS}
+	${PYTHON_INCLUDE_DIRS}
 )
 
 SET(AMATERASU3D_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
@@ -124,18 +124,19 @@ ADD_LIBRARY(Amaterasu3D SHARED ${LIB_AMATERASU3D_SRCS})
 
 target_link_libraries(
   Amaterasu3D
+  # External dependencies
   ${FREETYPE_LIBRARY}
   ${FREEIMAGE_LIBRARY}
   ${ZLIB_LIBRARY}
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARY}
-  tinyxml
-  sigc-2.0 
-  assimp
-  ${PYTHON_LIBRARIES}
-  C3
-  #TODO: Boost is until used?
   ${Boost_LIBRARIES}
+  ${PYTHON_LIBRARIES}
+  sigc-2.0
+  # Internal dependencies
+  tinyxml
+  assimp
+  C3
 )
 
 install(TARGETS Amaterasu3D 
