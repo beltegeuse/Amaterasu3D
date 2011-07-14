@@ -53,9 +53,7 @@ Application::Application() :
 Application::~Application()
 {
 	// Kill SDL Window
-	SDL_GL_DeleteContext(m_SDLOpenGLContext);
-	SDL_DestroyWindow(m_SDLFenetre);
-	SDL_Quit();
+	m_Window.Close();
 
 	// Delete the Scene
 	CSceneManager::Destroy();
@@ -83,30 +81,28 @@ void Application::CreateSDLWindow()
 	// **************************************
 	// ********* SDL initialisation *********
 	// **************************************
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		Logger::Log() << "[ERROR] On the SDL initialisation : "
-				<< SDL_GetError() << "\n";
-		throw CException("Can't initialize SDL Context.");
-	}
+//	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+//	{
+//		Logger::Log() << "[ERROR] On the SDL initialisation : "
+//				<< SDL_GetError() << "\n";
+//		throw CException("Can't initialize SDL Context.");
+//	}
 	// OpenGL Version ....
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	// OpenGL Buffer instructions
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	C3::OpenGLContextSettings settings;
+	settings.MajorVersion = 3;
+	settings.MinorVersion = 1;
+	settings.StentilBits = 8;
+	settings.DepthBits = 24;
 	//SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	// Creation of the SDL Window
-	m_SDLFenetre = SDL_CreateWindow("Amaterasu3D", SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, SettingsManager.GetSizeRenderingWindow().x,
-			SettingsManager.GetSizeRenderingWindow().y,
-			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-	m_SDLOpenGLContext = SDL_GL_CreateContext(m_SDLFenetre);
+	C3::WindowMode settingsWin(
+			SettingsManager.GetSizeRenderingWindow().x,
+			SettingsManager.GetSizeRenderingWindow().y,false);
+	m_Window.Create(settingsWin,"Amaterasu3D", settings);
+
 	// Sync between double buffer and the screen
-	if (SettingsManager.VerticalSync)
-		SDL_GL_SetSwapInterval(1);
-	else
-		SDL_GL_SetSwapInterval(0);
+	if(SettingsManager.VerticalSync)
+		m_Window.SetFrameLimit(60);
 }
 
 void Application::InitializeOpenGL()
@@ -118,44 +114,43 @@ void Application::InitializeOpenGL()
 
 }
 
-void Application::Event(SDL_Event& event)
+void Application::Event(C3::Event& event)
 {
-	if (event.window.event == SDL_WINDOWEVENT_CLOSE)
+	if (event.Type == C3::Event::Closed)
 	{
 		Exit();
 	}
-	if (event.type == SDL_KEYDOWN)
+	else if (event.Type  == C3::Event::KeyPressed)
 	{
-		switch (event.key.keysym.sym)
+		switch (event.Key.Code)
 		{
-		case SDLK_F12:
+		case C3::Key::F12:
 			Console.Enable(!Console.IsEnable());
 			break;
 		default:
 			break;
 		}
-
+	}
+	else if(event.Type == C3::Event::TextEntered)
+	{
 		if (Console.IsEnable())
 		{
 			char c;
-			if (GetSDLChar(event, &c))
-				Console.SendChar(c);
+			Console.SendChar(event.Text.Character);
 		}
 	}
 }
 
 void Application::MainLoop()
 {
-	SDL_Event event; ///< To get event from SDL
-	m_TimeElapse = SDL_GetTicks(); // Get the time from SDL
+	C3::Event event; ///< To get event from SDL
 	while (m_IsRunning)
 	{
 		// Compute the delta time
-		double delta = (SDL_GetTicks() - m_TimeElapse) / 1000.0;
-		m_TimeElapse += delta * 1000.0;
+		double delta = m_Window.GetFrameTime();
 
 		// Manage all events
-		while (SDL_PollEvent(&event))
+		while (m_Window.PoolEvent(event))
 		{
 			Event(event);
 			OnEvent(event); ///< To call child method
@@ -172,7 +167,7 @@ void Application::MainLoop()
 		OnRender();
 
 		EventManager.OnEndRender();
-		SDL_GL_SwapWindow(m_SDLFenetre);
+		m_Window.Display();
 	}
 }
 

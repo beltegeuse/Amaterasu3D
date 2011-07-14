@@ -25,7 +25,7 @@
 #ifndef EVENTLISTENERS_H_
 #define EVENTLISTENERS_H_
 
-#include <SDL/SDL.h>
+#include <C3/Events.h>
 
 namespace ama3D
 {
@@ -54,8 +54,8 @@ public:
 	KeyListener();
 	virtual ~KeyListener();
 
-	virtual void KeyPressed(SDL_Keycode& key) = 0;
-	virtual void KeyReleased(SDL_Keycode& key) = 0;
+	virtual void KeyPressed(C3::Key::Code& key) = 0;
+	virtual void KeyReleased(C3::Key::Code& key) = 0;
 };
 
 class MouseMotionListener: public EventListener

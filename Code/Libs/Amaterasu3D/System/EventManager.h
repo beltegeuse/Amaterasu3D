@@ -47,7 +47,7 @@ public:
 	/*
 	 * Pure virtual functions
 	 */
-	virtual void OnEvent(SDL_Event& event) = 0;
+	virtual void OnEvent(C3::Event& event) = 0;
 	virtual void OnUpdate(double delta) = 0;
 	virtual void OnEndRender() = 0;
 };
@@ -92,7 +92,7 @@ public:
 class CFrameListenerManager: public CListenerManager<FrameListener>
 {
 public:
-	virtual void OnEvent(SDL_Event& event)
+	virtual void OnEvent(C3::Event& event)
 	{
 	}
 	virtual void OnUpdate(double delta)
@@ -128,21 +128,21 @@ public:
 class CMouseListenerManager: public CNoFrameListenerManager<MouseListener>
 {
 public:
-	virtual void OnEvent(SDL_Event& event)
+	virtual void OnEvent(C3::Event& event)
 	{
-		if (event.type == SDL_MOUSEBUTTONDOWN)
+		if (event.Type == C3::Event::MouseButtonPressed)
 		{
 			for (TListenerVector::iterator it = m_Listeners.begin();
 					it != m_Listeners.end(); it++)
-					{
+			{
 				(*it)->MousePressed();
 			}
 		}
-		else if (event.type == SDL_MOUSEBUTTONUP)
+		else if (event.Type == C3::Event::MouseButtonReleased)
 		{
 			for (TListenerVector::iterator it = m_Listeners.begin();
 					it != m_Listeners.end(); it++)
-					{
+			{
 				(*it)->MouseReleased();
 			}
 		}
@@ -152,22 +152,22 @@ public:
 class CKeyListenerManager: public CNoFrameListenerManager<KeyListener>
 {
 public:
-	virtual void OnEvent(SDL_Event& event)
+	virtual void OnEvent(C3::Event& event)
 	{
-		if (event.type == SDL_KEYDOWN)
+		if (event.Type == C3::Event::KeyPressed)
 		{
 			for (TListenerVector::iterator it = m_Listeners.begin();
 					it != m_Listeners.end(); it++)
 					{
-				(*it)->KeyPressed(event.key.keysym.sym);
+				(*it)->KeyPressed(event.Key.Code);
 			}
 		}
-		else if (event.type == SDL_KEYUP)
+		else if (event.Type == C3::Event::KeyReleased)
 		{
 			for (TListenerVector::iterator it = m_Listeners.begin();
 					it != m_Listeners.end(); it++)
 					{
-				(*it)->KeyReleased(event.key.keysym.sym);
+				(*it)->KeyReleased(event.Key.Code);
 			}
 		}
 	}
@@ -177,14 +177,14 @@ class CMouseMotionListenerManager: public CNoFrameListenerManager<
 		MouseMotionListener>
 {
 public:
-	virtual void OnEvent(SDL_Event& event)
+	virtual void OnEvent(C3::Event& event)
 	{
-		if (event.type == SDL_MOUSEMOTION)
+		if (event.Type== C3::Event::MouseMoved)
 		{
 			for (TListenerVector::iterator it = m_Listeners.begin();
 					it != m_Listeners.end(); it++)
 					{
-				(*it)->MouseMoved(event.motion.xrel, event.motion.yrel);
+				(*it)->MouseMoved(event.MouseMove.X, event.MouseMove.Y);
 			}
 		}
 	}
@@ -224,7 +224,7 @@ public:
 	/*
 	 * Methodes de mise a jour
 	 */
-	void OnEvent(SDL_Event& event);
+	void OnEvent(C3::Event& event);
 	void OnUpdate(double delta);
 	void OnEndRender();
 

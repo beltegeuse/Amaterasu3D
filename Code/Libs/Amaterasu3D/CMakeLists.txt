@@ -114,6 +114,7 @@ INCLUDE_DIRECTORIES(
     /usr/local/include/sigc++-2.0
 	/usr/local/lib/sigc++-2.0/include
 	/usr/local/include/assimp
+	../C3/Source
 	../TinyXML
 )
 
@@ -126,13 +127,13 @@ target_link_libraries(
   ${FREETYPE_LIBRARY}
   ${FREEIMAGE_LIBRARY}
   ${ZLIB_LIBRARY}
-  ${SDL_LIBRARY}
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARY}
   tinyxml
   sigc-2.0 
   assimp
   ${PYTHON_LIBRARIES}
+  C3
   #TODO: Boost is until used?
   ${Boost_LIBRARIES}
 )

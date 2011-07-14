@@ -28,7 +28,7 @@ namespace ama3D
 {
 SINGLETON_IMPL(ama3D::CEventManager)
 
-void CEventManager::OnEvent(SDL_Event& event)
+void CEventManager::OnEvent(C3::Event& event)
 {
 	for (TListenerManagerMap::iterator it = m_Managers.begin();
 			it != m_Managers.end(); ++it)

@@ -25,7 +25,6 @@
 #ifndef APPLICATION_H_
 #define APPLICATION_H_
 
-#include <SDL/SDL.h>
 #include <System/MediaManager.h>
 #include <System/ResourceManager.h>
 #include <System/SettingsManager.h>
@@ -36,6 +35,8 @@
 #include <Graphics/SceneManager.h>
 #include <System/EventManager.h>
 #include <System/GraphicsDevice.h>
+
+#include <C3/Window.h>
 
 namespace ama3D
 {
@@ -78,14 +79,14 @@ private:
 	void InitializeOpenGL();
 	//! Main render loop
 	void MainLoop();
-	//! To manage SDL events
-	void Event(SDL_Event& events);
+	//! To manage C3 events
+	void Event(C3::Event& events);
 	/*
 	 * Virtual functions
 	 */
 	//! Update all scene objects
 	virtual void OnUpdate(double deltaTime) = 0;
-	virtual void OnEvent(SDL_Event& events) = 0;
+	virtual void OnEvent(C3::Event& events) = 0;
 	//! Make all initializations
 	virtual void OnInitialize() = 0;
 	//! Draw the scene
@@ -100,8 +101,7 @@ private:
 	 * Privates Attributes
 	 */
 	/// SDL Attributes
-	SDL_WindowID m_SDLFenetre;
-	SDL_GLContext m_SDLOpenGLContext;
+	C3::Window m_Window;
 	// Graphic Device
 	GraphicsDevice m_GraphicsDevice;
 	/// To know how much time between to pass

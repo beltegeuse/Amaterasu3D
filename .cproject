@@ -32,6 +32,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Amaterasu3D/Code/Libs/TinyXML}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/include/python2.7"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Program Files (x86)\Python27\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Amaterasu3D/Code/Libs/C3/Source}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1486388983" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
