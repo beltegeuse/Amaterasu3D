@@ -55,20 +55,20 @@ void CameraFPS::MouseReleased()
 	m_mouse_click = false;
 }
 
-void CameraFPS::KeyPressed(SDL_Keycode& key)
+void CameraFPS::KeyPressed(C3::Key::Code& key)
 {
 	switch (key)
 	{
-	case SDLK_a:
+	case C3::Key::A:
 		m_left_press = true;
 		break;
-	case SDLK_d:
+	case C3::Key::D:
 		m_right_press = true;
 		break;
-	case SDLK_w:
+	case C3::Key::W:
 		m_up_press = true;
 		break;
-	case SDLK_s:
+	case C3::Key::S:
 		m_down_press = true;
 		break;
 	default:
@@ -76,20 +76,20 @@ void CameraFPS::KeyPressed(SDL_Keycode& key)
 	}
 }
 
-void CameraFPS::KeyReleased(SDL_Keycode& key)
+void CameraFPS::KeyReleased(C3::Key::Code& key)
 {
 	switch (key)
 	{
-	case SDLK_a:
+	case C3::Key::A:
 		m_left_press = false;
 		break;
-	case SDLK_d:
+	case C3::Key::D:
 		m_right_press = false;
 		break;
-	case SDLK_w:
+	case C3::Key::W:
 		m_up_press = false;
 		break;
-	case SDLK_s:
+	case C3::Key::S:
 		m_down_press = false;
 		break;
 	default:

@@ -104,8 +104,6 @@ private:
 	C3::Window m_Window;
 	// Graphic Device
 	GraphicsDevice m_GraphicsDevice;
-	/// To know how much time between to pass
-	double m_TimeElapse;
 	bool m_IsRunning; ///< If the application is on
 };
 

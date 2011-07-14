@@ -43,10 +43,10 @@ public:
 	virtual void MouseReleased()
 	{
 	}
-	virtual void KeyPressed(SDL_Keycode& key)
+	virtual void KeyPressed(C3::Key::Code& key)
 	{
 	}
-	virtual void KeyReleased(SDL_Keycode& key)
+	virtual void KeyReleased(C3::Key::Code& key)
 	{
 	}
 	virtual void MouseMoved(int x, int y)

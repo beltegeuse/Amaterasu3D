@@ -42,7 +42,7 @@ Application::Application() :
 				CShaderManager::Instance()), MatrixManager(
 				CMatrixManager::Instance()), EventManager(
 				CEventManager::Instance()), SceneManager(
-				CSceneManager::Instance()), m_TimeElapse(0.0), m_IsRunning(true)
+				CSceneManager::Instance()), m_IsRunning(true)
 {
 	s_Application = this;
 
@@ -101,8 +101,8 @@ void Application::CreateSDLWindow()
 	m_Window.Create(settingsWin,"Amaterasu3D", settings);
 
 	// Sync between double buffer and the screen
-	if(SettingsManager.VerticalSync)
-		m_Window.SetFrameLimit(60);
+	//if(SettingsManager.VerticalSync) //<FIXME
+	//	m_Window.SetFrameLimit(60);
 }
 
 void Application::InitializeOpenGL()
@@ -147,8 +147,8 @@ void Application::MainLoop()
 	while (m_IsRunning)
 	{
 		// Compute the delta time
-		double delta = m_Window.GetFrameTime();
-
+		double delta = m_Window.GetFrameTime() / 1000.f;
+		//std::cout << delta << std::endl;
 		// Manage all events
 		while (m_Window.PoolEvent(event))
 		{

@@ -26,7 +26,6 @@
 
 #include <Math/Vector3.h>
 #include <Math/Matrix4.h>
-#include <SDL/SDL_events.h>
 #include <iostream>
 
 #include <System/EventListeners.h>
@@ -80,8 +79,8 @@ public:
 	 */
 	virtual void MousePressed() = 0;
 	virtual void MouseReleased() = 0;
-	virtual void KeyPressed(SDL_Keycode& key) = 0;
-	virtual void KeyReleased(SDL_Keycode& key) = 0;
+	virtual void KeyPressed(C3::Key::Code& key) = 0;
+	virtual void KeyReleased(C3::Key::Code& key) = 0;
 	virtual void MouseMoved(int x, int y) = 0;
 	virtual void FrameStarted(double delta) = 0;
 	virtual void FrameEnded() = 0;
