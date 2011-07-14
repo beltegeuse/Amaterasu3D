@@ -176,7 +176,12 @@ public:
 class CMouseMotionListenerManager: public CNoFrameListenerManager<
 		MouseMotionListener>
 {
+private:
+	int X, Y;
 public:
+	CMouseMotionListenerManager() : X(0), Y(0)
+	{}
+
 	virtual void OnEvent(C3::Event& event)
 	{
 		if (event.Type== C3::Event::MouseMoved)
@@ -184,8 +189,11 @@ public:
 			for (TListenerVector::iterator it = m_Listeners.begin();
 					it != m_Listeners.end(); it++)
 					{
-				(*it)->MouseMoved(event.MouseMove.X, event.MouseMove.Y);
+				(*it)->MouseMoved(event.MouseMove.X-X, event.MouseMove.Y-Y);
 			}
+			//FIXME: Compute better delta
+			X = event.MouseMove.X;
+			Y = event.MouseMove.Y;
 		}
 	}
 };
