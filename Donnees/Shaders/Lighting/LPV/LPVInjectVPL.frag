@@ -15,7 +15,7 @@ out vec4 GridRed;
 out vec4 GridGreen;
 out vec4 GridBlue;
 
-#include <LPVSH.shadercode>
+{% include 'HelpersCode/LPVSH.shadercode' %}
 
 #define Pi 3.1415926f
 

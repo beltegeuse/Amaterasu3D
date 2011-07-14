@@ -14,9 +14,9 @@ uniform sampler2D DiffuseBuffer;
 
 // Parametres
 // NB_CASCADE is an define...
-uniform vec3 LPVPosition[NB_CASCADE]; // position of the grid
+uniform vec3 LPVPosition[{{NB_CASCADE}}]; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
-uniform float LPVCellSize[NB_CASCADE]; // dim &
+uniform float LPVCellSize[{{NB_CASCADE}}]; // dim &
 uniform int LPVNbCell;// number cell in one dim
 //uniform bool EnableTrilinearInterpolation;
 
@@ -33,13 +33,13 @@ smooth in vec2 outTexCoord;
 out vec4 Color;
 
 // Include compute position from the depth
-#include <GetPosition.shadercode>
+{% include 'GetPosition.shadercode' %}
 // Include for SH coefficents
-#include <LPVSH.shadercode>
+{% include 'HelpersCode/LPVSH.shadercode' %}
 // Include to compute the position
-#include <LPVPosition.shadercode>
+{% include 'HelpersCode/LPVPosition.shadercode' %}
 // Include for the trilinear filtering
-#include <LPVTrilinear.shadercode>
+{% include 'HelpersCode/LPVTrilinear.shadercode' %}
 
 void main()
 {	

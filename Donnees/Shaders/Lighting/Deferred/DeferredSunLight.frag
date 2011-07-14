@@ -28,7 +28,7 @@ uniform float NearClipping;
 uniform vec2 UnprojectInfo;
 uniform mat4 InverseViewMatrix;
 
-#include <GetPosition.shadercode>
+{% include 'GetPosition.shadercode' %}
 
 // To enable / disable the debug mode
 uniform bool DebugMode;

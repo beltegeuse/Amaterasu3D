@@ -29,8 +29,8 @@ out vec4 GridRed;
 // 0.4234413544f / 4Pi;
 //#define sideFaceSubtendedSolidAngle 0.03369559
 
-#include <LPVPosition.shadercode>
-#include <LPVSH.shadercode>
+{% include 'HelpersCode/LPVPosition.shadercode' %}
+{% include 'HelpersCode/LPVSH.shadercode' %}
 
 // Solid Angles
 #define directFaceSubtendedSolidAngle 0.12753712
@@ -134,7 +134,7 @@ void main(){
 	////////////////
 	// Compute the cascade
 	///////////////
-	int cascadeID = int(floor(outTexCoord.y * NB_CASCADE));
+	int cascadeID = int(floor(outTexCoord.y * {{NB_CASCADE}}));
 	
 	//TODO: Deduire le niveau avec les coordonnes de textures
 	//Z+

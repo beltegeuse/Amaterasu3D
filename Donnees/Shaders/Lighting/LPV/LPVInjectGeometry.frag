@@ -10,7 +10,7 @@ smooth in float SurfelArea;
 // Sortie
 out vec4 Grid;
 
-#include <LPVSH.shadercode>
+{% include 'HelpersCode/LPVSH.shadercode' %}
 
 void main()
 {	

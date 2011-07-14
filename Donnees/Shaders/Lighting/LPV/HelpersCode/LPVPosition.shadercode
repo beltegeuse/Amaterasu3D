@@ -7,6 +7,9 @@
 uniform mat4 LPVMatrice; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
 uniform vec4 LPVCellSize; // xyz dim & w number cell in one dim
+ 
+AND DEFINE
+ * NB_CASCADE
  */
  
  /*void ComputeGridCoord(inout vec3 position)
@@ -61,11 +64,11 @@ vec2 Convert3Dto2DRaw(in vec3 pos){
 
 vec2 Convert3DTo2DTexcoord(in vec3 pos, in int level)
 {
-	return (Convert3Dto2DRaw(pos)+vec2(0,level*(LPVSize.y/NB_CASCADE))) / LPVSize.xy;
+	return (Convert3Dto2DRaw(pos)+vec2(0,level*(LPVSize.y/{{NB_CASCADE}}))) / LPVSize.xy;
 }
 
 vec3 Convert2DTexcoordTo3D(in vec2 TexCoords, in int level){
-  vec2 ImageCoord = TexCoords*LPVSize.xy-vec2(0,level*(LPVSize.y/NB_CASCADE));
+  vec2 ImageCoord = TexCoords*LPVSize.xy-vec2(0,level*(LPVSize.y/{{NB_CASCADE}}));
   float row = floor(ImageCoord.y / LPVNbCell);
   float col = floor(ImageCoord.x / LPVNbCell);
   vec3 GridPosition;

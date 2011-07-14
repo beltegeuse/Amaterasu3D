@@ -3,18 +3,18 @@
 
 layout(points) in;
 
-layout(points, max_vertices = NB_CASCADE) out;
+layout(points, max_vertices = {{NB_CASCADE}}) out;
 
 // grids Parametres
 // NB_CASCADE is an define...
-uniform vec3 LPVPosition[NB_CASCADE]; // position of the grid
+uniform vec3 LPVPosition[{{NB_CASCADE}}]; // position of the grid
 uniform vec4 LPVSize; // xy : texture dim & zw : repeat.
-uniform float LPVCellSize[NB_CASCADE]; // dim &
+uniform float LPVCellSize[{{NB_CASCADE}}]; // dim &
 uniform int LPVNbCell;// number cell in one dim
 
 uniform vec3 ObsPosition;
 
-#include <LPVPosition.shadercode>
+{% include 'HelpersCode/LPVPosition.shadercode' %}
 
 smooth in vec3 inNormal[1];
 
@@ -31,7 +31,7 @@ void main()
 	vec3 CellID;
 	vec2 Pos2D;
 	for(i=0; i< gl_VerticesIn; i++){
-		for(j=0; j < NB_CASCADE; j++)
+		for(j=0; j < {{NB_CASCADE}}; j++)
 		{
 			outNormal = inNormal[i];
 			float depth = length(ObsPosition-Position);

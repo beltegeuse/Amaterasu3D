@@ -1,4 +1,11 @@
 
+
+/*
+NEED DEFINE
+	* NB_CASCADE
+
+*/
+
 //vec4 sample3D(in sampler2D s, in vec3 coords){
 //  float CellCount = (LPVCellSize.w-1.0);
 //  vec3 c = clamp(coords,0.0,1.0) * CellCount;
@@ -66,7 +73,7 @@ vec4 ComputeIndirectLighting(in vec3 Position, in vec3 Normal)
 	vec4 CoeffGridGreen;
 	vec4 CoeffGridBlue;
 	vec4 SHEv = SH_evaluate(-Normal);
-	for( i = 0; i < NB_CASCADE; i++)
+	for( i = 0; i < {{NB_CASCADE}}; i++)
 	{
 		// Get Grid Coordinates
 		if(IsNotInGrid(floor((Position.xyz - LPVPosition[i].xyz) / vec3(LPVCellSize[i]))))

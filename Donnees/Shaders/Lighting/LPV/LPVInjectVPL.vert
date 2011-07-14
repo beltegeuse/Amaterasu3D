@@ -15,7 +15,7 @@ uniform float NearClipping;
 uniform vec2 UnprojectInfo;
 uniform mat4 InverseViewMatrix;
 
-#include <GetPosition.shadercode>
+{% include 'GetPosition.shadercode' %}
 
 // Sortie shader
 flat out vec2 inTexCoord;
