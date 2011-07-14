@@ -77,15 +77,16 @@ PythonInterpreter::~PythonInterpreter()
 
 void PythonInterpreter::Import(const std::string& module)
 {
+	//TODO: Make exceptions
 	PyObject *pLoadingModule = PyImport_ImportModule(module.c_str());
 	PyDict_SetItemString(m_MainDict, module.c_str(), pLoadingModule);
 }
 
 void PythonInterpreter::Execute(const std::string& code, PythonMap& args, PythonResult& res)
 {
-		Logger::Log() << "[DEBUG] Execute python script =======\n";
-		Logger::Log() << code;
-		Logger::Log() << "[DEBUG] =============================\n";
+//		Logger::Log() << "[DEBUG] Execute python script =======\n";
+//		Logger::Log() << code;
+//		Logger::Log() << "[DEBUG] =============================\n";
 
 		//TODO: Gerer le nettoye du dictionnaire
 		//TODO: Handle exception

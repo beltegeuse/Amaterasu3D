@@ -47,14 +47,14 @@ struct CShaderCompilerException: public CException
 /// Structure to configure the compiler
 //////////////////////////////////////////
 ////////////// Main Config structure
-class ShaderCompiler;
 class ShaderCompilerConfig
 {
+public:
+	typedef std::map<std::string, std::string> DefineMap;
 private:
 	/*
 	 * Attributes
 	 */
-	typedef std::map<std::string, std::string> DefineMap;
 	DefineMap m_Defines;
 public:
 	ShaderCompilerConfig()
@@ -69,9 +69,7 @@ public:
 		m_Defines[name] = value;
 	}
 
-private:
-	friend class ShaderCompiler;
-	DefineMap GetDefines()
+	const DefineMap& GetDefines() const
 	{
 		return m_Defines;
 	}

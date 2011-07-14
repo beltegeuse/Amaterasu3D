@@ -52,7 +52,7 @@ public:
 	 * Public methods
 	 */
 	void Generate();
-	const std::string& GetResult() const;
+	const std::string& GetCode() const;
 };
 
 } /* namespace ama3D */

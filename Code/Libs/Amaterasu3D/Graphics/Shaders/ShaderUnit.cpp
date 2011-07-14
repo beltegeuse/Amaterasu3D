@@ -35,7 +35,8 @@
 
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
-#include <Graphics/Shaders/Compiler/ShaderCompiler.h>
+//#include <Graphics/Shaders/Compiler/ShaderCompiler.h>
+#include <System/Python/Jinja2Template.h>
 
 //*********************************************************
 //*********************************************************
@@ -69,9 +70,11 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type,
 	else
 		throw CException("Unknow shader type ...");
 	// Use own shader Compiler to add extra stuff to GLSL langage
-	ShaderCompiler compiler(LoadFile(path), config);
-	compiler.Compile();
-	const std::string source = compiler.GetCode();
+	Jinja2Template jinja2(path);
+	for(ShaderCompilerConfig::DefineMap::const_iterator it = config.GetDefines().begin(); it != config.GetDefines().end(); ++it)
+		jinja2.AddArgument(it->first, it->second);
+	jinja2.Generate();
+	const std::string source = jinja2.GetCode();
 	// Use GLSL To compile the current shader code
 	const char * bufferPtr = source.c_str();
 	GLint lenght = source.size();
@@ -80,7 +83,7 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type,
 	Logger::Log() << "  * Building .... \n";
 	glCompileShader(m_ID);
 	// Show all the Complilation log
-	ShowCompilerLog(m_ID, compiler);
+	ShowCompilerLog(m_ID);
 	// Check if it's compiled
 	GLint compiled = 0;
 	glGetObjectParameterivARB(m_ID, GL_COMPILE_STATUS, &compiled);
@@ -92,7 +95,7 @@ ShaderUnit::~ShaderUnit()
 {
 }
 
-void ShaderUnit::ShowCompilerLog(unsigned int id, ShaderCompiler& compiler)
+void ShaderUnit::ShowCompilerLog(unsigned int id)
 {
 	if (id == 0)
 	{
@@ -108,8 +111,8 @@ void ShaderUnit::ShowCompilerLog(unsigned int id, ShaderCompiler& compiler)
 		if (compilerLog != 0)
 		{
 			Logger::Log() << "[LOG] **** Compiler LOG **** \n";
-			//Logger::Log() << compilerLog;
-			compiler.AnalyseCompilerLog(std::string(compilerLog));
+			Logger::Log() << compilerLog;
+			//compiler.AnalyseCompilerLog(std::string(compilerLog));
 			Logger::Log() << "[LOG] **** END **** \n";
 		}
 		else

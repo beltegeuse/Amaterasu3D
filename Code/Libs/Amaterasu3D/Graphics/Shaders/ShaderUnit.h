@@ -46,7 +46,7 @@ private:
 	 * Load Shader File...
 	 */
 	const std::string LoadFile(const std::string& path);
-	void ShowCompilerLog(unsigned int id, ShaderCompiler& compiler);
+	void ShowCompilerLog(unsigned int id);
 public:
 	// Constructeurs
 	ShaderUnit(const std::string& path, const ShaderUnitType& type,

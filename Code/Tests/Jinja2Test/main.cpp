@@ -17,7 +17,7 @@ void Test(const std::string& fullpath)
 
 	// Print the result
 	std::cout << "[INFO] Result : " << std::endl;
-	std::cout << jinja2.GetResult() << std::endl;
+	std::cout << jinja2.GetCode() << std::endl;
 }
 
 int main()

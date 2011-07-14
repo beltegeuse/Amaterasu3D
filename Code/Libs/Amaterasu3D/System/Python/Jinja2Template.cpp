@@ -61,7 +61,7 @@ void Jinja2Template::Generate()
 	m_Result = res["res"];
 }
 
-const std::string& Jinja2Template::GetResult() const
+const std::string& Jinja2Template::GetCode() const
 {
 	return m_Result;
 }
