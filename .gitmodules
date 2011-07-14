@@ -1,0 +1,3 @@
+[submodule "Code/Libs/C3"]
+	path = Code/Libs/C3
+	url = git://github.com/beltegeuse/Cool-Context-Creator.git
