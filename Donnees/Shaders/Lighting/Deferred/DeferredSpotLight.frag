@@ -28,7 +28,7 @@ uniform float NearClipping;
 uniform vec2 UnprojectInfo;
 uniform mat4 InverseViewMatrix;
 
-#include <GetPosition.shadercode>
+{% include 'GetPosition.shadercode' %}
 
 // To enable / disable the debug mode
 uniform bool DebugMode;
@@ -76,7 +76,7 @@ void main()
 						   0.5, 0.5, 0.5, 1.0);
 	vec4 ShadowCoord = biasMatrix*LightProjectionMatrix * LightViewMatrix * vec4(position,1.0);
 	vec4 shadowCoordinateWdivide = ShadowCoord / ShadowCoord.w ;
-	// Used to lower moiré pattern and self-shadowing
+	// Used to lower moire pattern and self-shadowing
 	shadowCoordinateWdivide.z -= 0.001;
 
 	float ClosedLightDistance = texture(ShadowBuffer, shadowCoordinateWdivide.st).r;
