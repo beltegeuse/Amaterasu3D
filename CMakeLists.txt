@@ -27,7 +27,7 @@ set(BOOST_ROOT C:/MinGW)
 ELSE()
 set(BOOST_ROOT /usr)
 ENDIF()
-set(BOOST_LIBS unit_test_framework filesystem system regex) # LINUX PROBLEM : random
+set(BOOST_LIBS filesystem system regex) # LINUX PROBLEM : random
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 MESSAGE("Boost libraries link is ${Boost_LIBRARIES}")
 
