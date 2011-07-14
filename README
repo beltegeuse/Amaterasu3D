@@ -15,7 +15,6 @@ External dependencies :
  - Zlib
  - Python with jinja2 installed
  - SigCXX2
- - Assimp
  - Boost
  	* filesystem 
  	* system 
@@ -24,3 +23,4 @@ External dependencies :
 Internal dependencies :
  - TinyXML
  - (Cool) Context creator
+ - Assimp
