@@ -1,0 +1,26 @@
+Amaterasu3D - Perceptual engine
+=========================================
+
+Authors
+-------
+Adrien Gruson - main developer (adrien.gruson@gmail.com)
+
+Dependencies
+-------
+External dependencies :
+ - Glew
+ - OpenGL
+ - FreeType
+ - FreeImage
+ - Zlib
+ - Python with jinja2 installed
+ - SigCXX2
+ - Assimp
+ - Boost
+ 	* filesystem 
+ 	* system 
+ 	* regex
+
+Internal dependencies :
+ - TinyXML
+ - (Cool) Context creator
