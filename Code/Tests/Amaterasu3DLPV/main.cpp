@@ -212,7 +212,7 @@ private:
 		////////////////
 		//m_ToneOperator = new PhotographicToneOperator();
 		//m_ToneOperator = new PhotographicToneOperatorExp();
-		//m_ToneOperator = new SumantToneOperator();
+		m_ToneOperator = new SumantToneOperator();
 		//m_ToneOperator = new DurandToneOperator();
 
 		// Load Scene
@@ -521,10 +521,10 @@ private:
 			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 			m_ShowLum->End();
 			//m_ShowLum->GetFBO()->DrawDebug();
-//			m_ToneOperator->Compress(m_LPVLightingAllShader->GetFBO()->GetTexture("Color"));
-//
-//			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//			m_ToneOperator->DrawDebug();
+			m_ToneOperator->Compress(m_LPVLightingAllShader->GetFBO()->GetTexture("Color"));
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			m_ToneOperator->DrawDebug();
 //
 //			WhiteBalancing();
 
