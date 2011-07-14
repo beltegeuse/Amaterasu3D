@@ -140,44 +140,44 @@ private:
 	{
 	}
 
-	virtual void OnEvent(SDL_Event& event){
-		if(event.type == SDL_KEYDOWN)
+	virtual void OnEvent(C3::Event& event){
+		if(event.Type == C3::Event::KeyPressed)
 		{
-			 switch(event.key.keysym.sym)
+			 switch(event.Key.Code)
 			 {
-				 case SDLK_F1:
+				 case C3::Key::F1:
 					 m_Debug = !m_Debug;
 					 break;
-				 case SDLK_F2:
+				 case C3::Key::F2:
 					 m_DebugGBuffer = !m_DebugGBuffer;
 					 break;
-				 case SDLK_F3:
+				 case C3::Key::F3:
 					 m_DebugCompositing = !m_DebugCompositing;
 					 break;
-				 case SDLK_F4:
+				 case C3::Key::F4:
 					 m_DebugInjection = !m_DebugInjection;
 					 break;
-				 case SDLK_F5:
+				 case C3::Key::F5:
 					 m_ShowGrid = !m_ShowGrid;
 					 break;
-				 case SDLK_F6:
+				 case C3::Key::F6:
 					 m_DebugShowDirectOnly = !m_DebugShowDirectOnly;
 					 break;
-				 case SDLK_F7:
+				 case C3::Key::F7:
 					 m_TriInterpolation = !m_TriInterpolation;
 					 break;
-				 case SDLK_F8:
+				 case C3::Key::F8:
 					 m_DoOcclusion = !m_DoOcclusion;
 					 break;
-				 case SDLK_F9:
+				 case C3::Key::F9:
 					 m_ShowAll = !m_ShowAll; break;
-				 case SDLK_q:
+				 case C3::Key::Q:
 					 m_AngleLight = std::max(0.0, m_AngleLight - 0.1); break;
-				 case SDLK_e:
+				 case C3::Key::E:
 					 m_AngleLight = std::min(180.0, m_AngleLight + 0.1); break;
-				 case SDLK_g:
+				 case C3::Key::G:
 					 m_GridShow = (m_GridShow + 1) % m_LPV.GetNumberCascade(); break;
-				 case SDLK_l:
+				 case C3::Key::L:
 					 m_Level = (m_Level + 1) %  m_LPV.GetNumberCascade(); break;
 			 }
 		}

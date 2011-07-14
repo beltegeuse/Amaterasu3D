@@ -215,7 +215,7 @@ public:
 		m_BackTex = Texture::LoadFromFile("nature1.jpg");
 	}
 
-	virtual void OnEvent(SDL_Event& event)
+	virtual void OnEvent(C3::Event& event)
 	{
 
 	}

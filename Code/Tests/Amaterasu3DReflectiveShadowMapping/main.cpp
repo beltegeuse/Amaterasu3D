@@ -125,20 +125,20 @@ public:
 		m_textureRand->desactivateTextureMapping();
 	}
 
-	virtual void OnEvent(SDL_Event& event)
+	virtual void OnEvent(C3::Event& event)
 	{
-		if(event.type == SDL_KEYDOWN)
+		if(event.Type == C3::Event::KeyPressed)
 		{
 			Math::CMatrix4 matrixTransform;
-			 switch(event.key.keysym.sym)
+			 switch(event.Key.Code)
 			 {
-				 case SDLK_F1:
+				 case C3::Key::F1:
 					 m_debug = !m_debug;
 					 break;
-				 case SDLK_F2:
+				 case C3::Key::F2:
 					 m_debugGBuffer = !m_debugGBuffer;
 					 break;
-				 case SDLK_F3:
+				 case C3::Key::F3:
 					 m_debugCompositing = !m_debugCompositing;
 					 break;
 			 }

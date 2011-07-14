@@ -72,13 +72,13 @@ public:
 	{
 	}
 
-	virtual void OnEvent(SDL_Event& event)
+	virtual void OnEvent(C3::Event& event)
 	{
-		if(event.type == SDL_KEYDOWN)
+		if(event.Type == C3::Event::KeyPressed)
 		{
-			 switch(event.key.keysym.sym)
+			 switch(event.Key.Code)
 			 {
-				 case SDLK_F1:
+				 case C3::Key::F1:
 					 m_Trilinear = !m_Trilinear;
 					 break;
 			 }
