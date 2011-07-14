@@ -661,17 +661,17 @@ inline float& CMatrix4::operator ()(std::size_t i, std::size_t j)
 
 
 /////////////////////////////////////////////////////////////
-/// Op�rateur d'acc�s index� aux �l�ments - constant
+/// Operateur d'acces indexe aux elements - constant
 ///
-/// \param i : Ligne de la composante � r�cup�rer
-/// \param j : Colonne de la composante � r�cup�rer
+/// \param i : Ligne de la composante a recuperer
+/// \param j : Colonne de la composante a recuperer
 ///
-/// \return R�f�rence sur la composante (i, j) de la matrice
+/// \return Reference sur la composante (i, j) de la matrice
 ///
 ////////////////////////////////////////////////////////////
 inline const float& CMatrix4::operator ()(std::size_t i, std::size_t j) const
 {
-    return operator ()(i, j);
+    return operator const float*()[i + 4 * j];
 }
 
 
