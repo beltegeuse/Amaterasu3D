@@ -13,7 +13,7 @@ smooth in vec2 outTexCoord;
 // Shader output
 out vec4 ColorBuffer;
 
-#include <ColorimetryHelper.shadercode>
+{% include 'ColorimetryHelper.shadercode' %}
 
 void main()
 {
