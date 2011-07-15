@@ -71,6 +71,14 @@ void RayMarching(vec3 Entree, vec3 Sortie)
 	float Length = length(Direction);
 	Direction = normalize(Direction);
 	
+	// Compute tMax
+	vec2 tMax;
+	//  * X
+	//if(Direction.x < 0)
+	//else if(Direction.x > 0)
+	//else
+	//	tMax.x = 1000000;
+	
 	// Initialisation for the loop
 	vec3 Position = Entree*GridDimension;
 	int NbIteration = int(GridDimension.x*MaxFactor); // FIXME: Normally the biggest dimension

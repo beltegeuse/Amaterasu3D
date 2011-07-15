@@ -24,8 +24,6 @@ protected:
 	FPS m_FPS;
 	TShaderPtr m_CubeShader;
 	TShaderPtr m_volumeRenderingShader;
-	TShaderPtr m_BasicShader;
-	TShaderPtr m_gbuffer_shader;
 	TTexturePtr m_VolumeTexture;
 	FBO * m_FrontFBO;
 	FBO * m_BackFBO;
@@ -50,8 +48,6 @@ public:
 		// Shaders
 		m_CubeShader = ShaderManager.LoadShader("CubePass.shader");
 		m_volumeRenderingShader = ShaderManager.LoadShader("VolumeRendering.shader");
-		m_BasicShader = ShaderManager.LoadShader("BasicShader.shader");
-		m_gbuffer_shader = CShaderManager::Instance().LoadShader("GBuffer.shader");
 		// FBO
 		m_BackFBO = m_CubeShader->GetFBO()->Copy();
 		m_FrontFBO = m_CubeShader->GetFBO();
@@ -64,7 +60,7 @@ public:
 		m_VolumeTexture = m_BinVox->Create2DTexture();
 
 		// A voir
-		SceneManager.AddScenegraphRoot(m_BinVox->CreateDebugPointModel()); // < FIXME
+		//SceneManager.AddScenegraphRoot(m_BinVox->CreateDebugPointModel()); // < FIXME
 		SceneManager.AddScenegraphRoot(m_BinVox->CreateCoordinateCubeModel());
 	}
 
