@@ -88,7 +88,6 @@ void SHDOMFilePropreties::LoadExtinctionFile(FILE *fl)
 	//	Albedo  NumL  Chi1 ...  ChiL
 	//	IX IZ Extinct   or   IX IY IZ Extinct
 	//  . . .
-	DEBUG_TRACE("Extinction Only Format.\n");
 	nPhaseFunctions = 1;
 	phaseCoeffs = (float **)malloc(nPhaseFunctions*sizeof(float *));
 	degreeLegendre = (int *)malloc(nPhaseFunctions*sizeof(int));
@@ -96,7 +95,7 @@ void SHDOMFilePropreties::LoadExtinctionFile(FILE *fl)
 	float *Zlevel_temperatures=(float *)malloc(m_Dimension.z*sizeof(float));// Temperature of the Z levels.
 	for (int k=0; k<m_Dimension.z; k++){
 		fscanf(fl,"%f",Zlevel_temperatures+k);
-		DEBUG_TRACE(Zlevel_temperatures[k]);
+		DEBUG_TRACE(Zlevel_temperatures[k] << " ");
 	}
 	DEBUG_TRACE("\n" );
 
