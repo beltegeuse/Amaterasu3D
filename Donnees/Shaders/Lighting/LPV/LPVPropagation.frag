@@ -53,8 +53,6 @@ vec4 Sample2DOffset3D(in sampler2D s, in vec2 coords, in vec3 offset, in int cas
 
 const float RangeModifier = 1.0;
 
-const vec2 coeffs[4] = vec2[](vec2(1.0,0.0),vec2(-1.0,0.0),vec2(0.0,1.0),vec2(0.0,-1.0));
-
 void propagate(in vec2 pos, in int cascadeID,in mat3 orientation, inout vec4 outputRed, inout vec4 outputGreen, inout vec4 outputBlue)
 {
 	//evaluate main direction
@@ -98,14 +96,12 @@ void propagate(in vec2 pos, in int cascadeID,in mat3 orientation, inout vec4 out
 
 
 	//evaluate side faces
-	int i;
 	vec3 SideDirection, ReproDirection;
 	vec4 SideDirectionSH, SideDirectionHemi;
-	for(i = 0; i < 4; i++)
-	{
-
-		SideDirection = vec3(coeffs[i]*side1,side2) * orientation;
-		ReproDirection = vec3(coeffs[i],0.0) * orientation;
+	{% set coeff=[(1.0,0.0),(-1.0,0.0),(0.0,1.0),(0.0,-1.0)] %}
+	{% for i in range(4) %}
+		SideDirection = vec3(vec2({{coeff[i][0]}}, {{coeff[i][1]}}) *side1,side2) * orientation;
+		ReproDirection = vec3(vec2({{coeff[i][0]}}, {{coeff[i][1]}}),0.0) * orientation;
 		SideDirectionSH = SH_evaluate(SideDirection * RangeModifier);
 		SideDirectionHemi = SH_evaluateCosineLobe_direct(ReproDirection);
 		fluxRed = max(0.0,dot(SideDirectionSH,NeighbourRed));
@@ -119,7 +115,7 @@ void propagate(in vec2 pos, in int cascadeID,in mat3 orientation, inout vec4 out
 		resultRed += SideDirectionHemi * fluxRed * directFaceSubtendedSolidAngle * occlusionFactor;
 		resultGreen += SideDirectionHemi * fluxGreen * directFaceSubtendedSolidAngle * occlusionFactor;
 		resultBlue += SideDirectionHemi * fluxBlue * directFaceSubtendedSolidAngle * occlusionFactor;
-	}
+	{% endfor %}
 
 	outputRed += resultRed;
 	outputGreen += resultGreen;

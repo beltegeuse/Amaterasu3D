@@ -38,10 +38,18 @@ public:
 	{
 	}
 
+	std::string ShowInfoCamera()
+	{
+		std::stringstream ss;
+		ss << "Pos : " << m_Camera->GetPosition() << "\n";
+		ss << "Target : " << m_Camera->GetTarget() - m_Camera->GetPosition();
+		return ss.str();
+	}
+
 	virtual void OnInitialize()
 	{
 		// Camera Setup
-		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_Camera = new CameraFPS(Math::TVector3F(-1.75,-.5,0), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(10.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
@@ -63,6 +71,9 @@ public:
 		sceneModel->GetRenderableObjects().begin()->first->AddTextureMap(DIFFUSE_TEXTURE, Texture::LoadFromFile("bricks2_color.jpg"));
 		sceneModel->SetScale(Math::TVector3F(5.0/3.0,5.0/3.0,5.0/3.0));
 		SceneManager.AddScenegraphRoot(sceneModel);
+
+		// Add command in console
+		Console.RegisterCommand("camera",Console::Bind(&ApplicationSSAO::ShowInfoCamera, *this));
 	}
 
 	virtual void OnUpdate(double delta)

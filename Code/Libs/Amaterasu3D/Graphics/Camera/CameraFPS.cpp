@@ -23,6 +23,7 @@
 //==========================================================
 #include "CameraFPS.h"
 #include <iostream>
+#include <Math/SphericalCoordinates.h>
 
 namespace ama3D
 {
@@ -33,7 +34,10 @@ CameraFPS::CameraFPS(const Math::TVector3F& pos, const Math::TVector3F& target,
 				10.0), m_up_press(false), m_down_press(false), m_left_press(
 				false), m_right_press(false)
 {
-
+//	Math::SphericalCoordinates s(target-pos);
+//	m_angleX = s.GetPhy() * 180.0/M_PI;
+//	m_angleY = s.GetTheta() * 180.0/M_PI;
+//	ComputeAngles();
 }
 
 CameraFPS::~CameraFPS()

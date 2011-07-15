@@ -159,6 +159,18 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 			param.MaxFiltering = GL_LINEAR;
 		}
 
+		bool bilinear = false;
+		frameNode->Attribute("bilinear", &bilinear);
+		if(bilinear)
+		{
+			Logger::Log() << "        * Bilinear enable \n";
+			param.MinFiltering = GL_LINEAR;
+			param.MaxFiltering = GL_LINEAR;
+		}
+
+		if(bilinear && mipmapping)
+			throw CException("Impossible to activate Bilinear & mipmapping on the same texture");
+
 		// Parse the Image format
 		if (typeString == "RGBA")
 		{
