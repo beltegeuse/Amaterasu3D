@@ -49,11 +49,11 @@ int SHDOMFilePropreties::readCellIndices(FILE *fl, int &dataIndex, bool yIgnore)
 	if (m_Dimension.y==1 && yIgnore){
 		iY = 1;
 		fscanf(fl,"%d%d",&iX,&iZ);
-		DEBUG_TRACE(iX << " 1 " << iZ);
+		DEBUG_TRACE("Indice " << iX << " 1 " << iZ);
 	}
 	else{
 		fscanf(fl,"%d%d%d",&iX,&iY,&iZ);
-		DEBUG_TRACE(iX << " " << iY << " " << iZ);
+		DEBUG_TRACE("Indice " << iX << " " << iY << " " << iZ);
 	}
 	iX--; iY--; iZ--;
 	dataIndex = iZ + m_Dimension.z*iY + m_Dimension.z*m_Dimension.x*iX;
@@ -104,11 +104,12 @@ void SHDOMFilePropreties::LoadExtinctionFile(FILE *fl)
 	DEBUG_TRACE(scatteringAlbedo << " ");
 	readPhaseFuncLegendreCoeffs(fl,0);
 
+	DEBUG_TRACE("Read Data \n");
 	for (int n=0; n<nCells; n++){
 		int dataIndex;
 		int iZ=readCellIndices(fl,dataIndex,true);
-		fscanf(fl,"%f",cellExtinctionCoeff+dataIndex);
-		DEBUG_TRACE( cellExtinctionCoeff[dataIndex] << "\n");
+		fscanf(fl,"%f",&cellExtinctionCoeff[dataIndex]);
+		DEBUG_TRACE( " | Data : " << cellExtinctionCoeff[dataIndex] << "\n");
 		cellTemperature[dataIndex] = Zlevel_temperatures[iZ];
 		cellAlbedo[dataIndex] = scatteringAlbedo;
 		cellPhaseFuncIndex[dataIndex] = 0;
@@ -215,14 +216,14 @@ SHDOMFilePropreties::FILETYPE SHDOMFilePropreties::ReadHeader(FILE* fl)
 	fscanf(fl, "%d%d%d",&m_Dimension.x, &m_Dimension.y, &m_Dimension.z);
 	DEBUG_TRACE("Dimension : " << m_Dimension << "\n");
 	int nCells = m_Dimension.x*m_Dimension.y*m_Dimension.z;
-	cellTemperature = (float *)malloc(nCells*sizeof(float));
-	cellExtinctionCoeff = (float *)malloc(nCells*sizeof(float));
-	cellAlbedo = (float *)malloc(nCells*sizeof(float));
-	cellPhaseFuncIndex = (int *)malloc(nCells*sizeof(int));
+	cellTemperature = new float[nCells];
+	cellExtinctionCoeff = new float[nCells];
+	cellAlbedo = new float[nCells];
+	cellPhaseFuncIndex = new int[nCells];
 
 	fscanf(fl, "%f%f", &delX, &delY);
 	DEBUG_TRACE("deltaX=" << delX <<  " deltaY=" << delY << " zLevels:");
-	Zlevels=(float *)malloc(m_Dimension.z*sizeof(float));
+	Zlevels=new float[m_Dimension.z];
 	for (int k=0; k<m_Dimension.z; k++){
 		fscanf(fl,"%f",Zlevels+k);
 		DEBUG_TRACE(Zlevels[k]);
@@ -266,6 +267,7 @@ bool SHDOMFilePropreties::Load(const std::string& fullpath)
     		return false;
 	}
 
+    DEBUG_TRACE("FIN " << fullpath << "\n");
     fclose(fl);
 	return true;
  }

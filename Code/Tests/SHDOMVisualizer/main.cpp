@@ -16,7 +16,7 @@
 #include <Addons/Binvox/SHDOMFilePropreties.h>
 
 const int nFiles = 17;
-const char *filenames[nFiles]={
+std::string filenames[nFiles]={
 "atmos1.prp",
 "gaussol.prp",
 "les2y21_sw1.prp",
@@ -61,10 +61,19 @@ public:
 		m_Camera = new ama3D::CameraFPS(ama3D::Math::TVector3F(30,40,20), ama3D::Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
 		// Load data
+		ama3D::Logger::Log() << "[INFO] File need to Load ... \n";
 		for (int i=0; i<nFiles; i++)
 		{
-			if (!m_Proprieties.Load(MediaManager.FindMedia(filenames[i]).Fullname()))
+			ama3D::Logger::Log() << "   * " << filenames[i] << "\n";
+		}
+
+		for (int i=0; i<nFiles; i++)
+		{
+			ama3D::Logger::Log() << "[Search] " << filenames[i] << " ... \n";
+			ama3D::CFile proprietieFile = MediaManager.FindMedia(filenames[i]);
+			if (!m_Proprieties.Load(proprietieFile.Fullname()))
 				throw ama3D::CException("Unable to parse");
+			ama3D::Logger::Log() << "[FINISH] " << proprietieFile.Fullname() << " ... \n";
 		}
 	}
 
