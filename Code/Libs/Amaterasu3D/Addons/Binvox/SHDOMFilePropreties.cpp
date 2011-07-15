@@ -1,4 +1,4 @@
-#include "prop.h"
+#include "SHDOMFilePropreties.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -8,93 +8,10 @@
 #define DEBUG_TRACE(x) // Nothings :)
 #endif
 
-const int nFiles = 17;
-const char *filenames[nFiles]={
-"atmos1.prp",
-"gaussol.prp",
-"les2y21_sw1.prp",
-"les2y21_sw2.prp",
-"les2y21_sw3.prp",
-"les2y21_sw4.prp",
-"les2y21_sw5.prp",
-"les2y21_sw6.prp",
-"les2y21_sw7.prp",
-"les2y21_sw8.prp",
-"les2y21_sw9.prp",
-"les2y21_sw10.prp",
-"les2y21_sw11.prp",
-"les2y21_sw12.prp",
-"les2y21_sw13.prp",
-"les2y21_sw14.prp",
-"les2y21w16.prp"
-};
-
-void phasefuncFromLegendre( int degree, float *legCoeffs,int nAngles, float *phaseFunc)
+namespace ama3D
 {
-	//input:
-	//	degree: degree of Legendre coefficeints
-	//	legCoeffs: Coefficients array. Contains 0..degree elements.
-	//	nAngles: Discreangles in which you wish to compute the phase function
-	//output:
-	//	phaseFunc: Tabulated anglular values. It must have preallocated spece for nAngles elements.
 
-	float degreeToRad = M_PI/180.0;
-	for (int j = 0; j <  nAngles; j++){
-		float MU = cos(degreeToRad*j*180.0/nAngles);
-		float sum = 0.0;
-		// Use upward recurrence to find Legendre polynomials
-		float PL1 = 1.0, PL2;
-		float PL = 1.0;
-		for (int L = 0; L <= degree; L++){
-		  if (L > 0) PL = (2*L-1)*MU*PL1/L-(L-1)*PL2/L;
-		  sum += legCoeffs[L]*PL;
-		  PL2 = PL1;
-		  PL1 = PL ;
-		}
-		phaseFunc[j] = sum;
-	}
-}
-void visualizeVolumeData(Prop *p)
-{
-	// ... Adrien to take care of this part ...
-	// Data to visualize are in global arrays:
-	//	cellTemperature
-	//	cellExtinctionCoeff
-	//	cellAlbedo
-	//	cellPhaseFuncIndex // Index to the table containing phase function
-	// The size of these arrays are: nX x nY x nZ
-	// Array index is computed as:
-	//		iZ + nZ*iY + nZ*nY*iX;
-	// where
-	//	iX = 0..nX-1
-	//	iY = 0..nY-1
-	//	iZ = 0..nZ-1
-	// Unit of Extinction coefficients are inverse of grid cell length unit.
-
-	// Grid cells are  uniformly spaced along X and Y axes.
-	// The Z axis spacing varies and exact positions are available in array: Zlevels.
-	//	Index to the Zlevels array is iZ= 0..nZ-1
-
-	// Number of phase functions used in the system is in global variable nPhaseFunctions
-	// and Phase funtions are tabulated as Legendre expansion coefficients: phaseCoeffs
-	// Degree of Legendre expansion varies for each phase function and available
-	// in array : degreeLegendre.
-	// To compute phaseFunction from coefficients use the function
-	//	phasefuncFromLegendre(...)
-
-	//// for Example.
-	//
-	//const int nAngles=12;
-	//float phaseFunc[nAngles];
-	//for (int i=0; i<p->nPhaseFunctions; i++){
-	//	phasefuncFromLegendre(p->degreeLegendre[i],p->phaseCoeffs[i],nAngles,phaseFunc);
-	//	printf("[%d] ",i+1);
-	//	for (int j=0; j<nAngles; j++)printf("%f ",phaseFunc[j]);
-	//	printf("\n");
-	//}
-}
-
-Prop::~Prop()
+SHDOMFilePropreties::~SHDOMFilePropreties()
 {
 	// Clean Data
 	// Clean phase function data
@@ -112,7 +29,7 @@ Prop::~Prop()
 	if (cellTemperature) free (cellTemperature);
 }
 
-void Prop::readPhaseFuncLegendreCoeffs(FILE *fl,int i)
+void SHDOMFilePropreties::readPhaseFuncLegendreCoeffs(FILE *fl,int i)
 {
 	fscanf(fl,"%d",degreeLegendre+i);
 	DEBUG_TRACE("[ " << degreeLegendre[i] << "]: ");
@@ -126,7 +43,7 @@ void Prop::readPhaseFuncLegendreCoeffs(FILE *fl,int i)
 	}
 	DEBUG_TRACE("\n");
 }
-int Prop::readCellIndices(FILE *fl, int &dataIndex, bool yIgnore)
+int SHDOMFilePropreties::readCellIndices(FILE *fl, int &dataIndex, bool yIgnore)
 {
 	int iX, iY, iZ;
 	if (m_Dimension.y==1 && yIgnore){
@@ -143,7 +60,7 @@ int Prop::readCellIndices(FILE *fl, int &dataIndex, bool yIgnore)
 	return iZ;
 }
 
-Prop::Prop() :
+SHDOMFilePropreties::SHDOMFilePropreties() :
 	m_Dimension(0,0,0)
 {
 	nPhaseFunctions=0; 
@@ -157,7 +74,7 @@ Prop::Prop() :
 	cellAlbedo=NULL;
 	cellPhaseFuncIndex=NULL;
 }
-bool Prop::parsePropFile(const char *propfilename)
+bool SHDOMFilePropreties::parsePropFile(const char *propfilename)
 {
 	printf("Processing file %s\n",propfilename);
     // SUBROUTINE READ_PROPERTY_SIZE (PROPFILE, NLEG, NPX, NPY, NPZ, 
@@ -308,17 +225,4 @@ bool Prop::parsePropFile(const char *propfilename)
 	fclose(fl);
 	return true;
  }
-
-//int main(int argc,char *argv[])
-//{
-//	Prop *prop;
-//	for (int i=0; i<nFiles; i++)
-//	{
-//		prop=new Prop();
-//		if (prop->parsePropFile(filenames[i])){
-//			visualizeVolumeData(prop);
-//		}
-//		delete prop;
-//	}
-//	return (0);
-//}
+}

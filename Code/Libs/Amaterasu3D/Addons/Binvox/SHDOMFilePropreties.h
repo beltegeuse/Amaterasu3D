@@ -9,7 +9,10 @@
 
 #define max(a,b) ((a>b)?a:b)
 
-class Prop{
+namespace ama3D
+{
+
+class SHDOMFilePropreties{
 protected:
 	/*
 	 * Attributs
@@ -30,8 +33,8 @@ public:
 	/*
 	 * Constructors & Destructors
 	 */
-	Prop();
-	~Prop();
+	SHDOMFilePropreties();
+	~SHDOMFilePropreties();
 
 	// For parsing the file
 	bool parsePropFile(const char *propfilename);
@@ -42,3 +45,5 @@ private:
 	void readPhaseFuncLegendreCoeffs(FILE *fl,int i);
 	int readCellIndices(FILE *fl, int &dataIndex, bool yIgnore=false);
 };
+
+}

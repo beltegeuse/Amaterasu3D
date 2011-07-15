@@ -19,7 +19,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Addons/Logo/Logo.cpp
 	Addons/PerformancePanel/PerformancePanel.cpp
 	Addons/Binvox/BinvoxModel.cpp
-	Addons/Binvox/prop.cpp
+	Addons/Binvox/SHDOMFilePropreties.cpp
 	Addons/LPV/LPV.cpp
 	Addons/ToneMappingOperator/AbsrtactToneOperator.cpp
 	Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.cpp
