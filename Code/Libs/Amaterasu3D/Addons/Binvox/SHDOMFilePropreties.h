@@ -1,5 +1,5 @@
 #include <Math/Vector3.h>
-
+#include <string>
 #include <malloc.h>
 #include <math.h>
 
@@ -14,6 +14,13 @@ namespace ama3D
 
 class SHDOMFilePropreties{
 protected:
+	enum FILETYPE
+	{
+		COMMON_FILE,
+		EXTINCTION_FILE,
+		PHASE_FILE,
+		UNKNOW_FILE
+	};
 	/*
 	 * Attributs
 	 */
@@ -37,13 +44,19 @@ public:
 	~SHDOMFilePropreties();
 
 	// For parsing the file
-	bool parsePropFile(const char *propfilename);
+	bool Load(const std::string& fullpath);
 private:
 	/*
 	 * Private methods
 	 */
 	void readPhaseFuncLegendreCoeffs(FILE *fl,int i);
 	int readCellIndices(FILE *fl, int &dataIndex, bool yIgnore=false);
+
+	// Parser for each files
+	FILETYPE ReadHeader(FILE *fl);
+	void LoadExtinctionFile(FILE *fl);
+	void LoadPhaseFile(FILE* fl);
+	void LoadCommonFile(FILE* fl);
 };
 
 }

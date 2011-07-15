@@ -63,7 +63,7 @@ public:
 		// Load data
 		for (int i=0; i<nFiles; i++)
 		{
-			if (!m_Proprieties.parsePropFile(filenames[i]))
+			if (!m_Proprieties.Load(MediaManager.FindMedia(filenames[i]).Fullname()))
 				throw ama3D::CException("Unable to parse");
 		}
 	}
