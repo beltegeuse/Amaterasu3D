@@ -15,25 +15,25 @@
 #include <Addons/FPS/FPS.h>
 #include <Addons/Binvox/SHDOMFilePropreties.h>
 
-const int nFiles = 17;
+const int nFiles = 1;
 std::string filenames[nFiles]={
-"atmos1.prp",
-"gaussol.prp",
-"les2y21_sw1.prp",
-"les2y21_sw2.prp",
-"les2y21_sw3.prp",
-"les2y21_sw4.prp",
-"les2y21_sw5.prp",
-"les2y21_sw6.prp",
-"les2y21_sw7.prp",
-"les2y21_sw8.prp",
-"les2y21_sw9.prp",
-"les2y21_sw10.prp",
-"les2y21_sw11.prp",
-"les2y21_sw12.prp",
-"les2y21_sw13.prp",
-"les2y21_sw14.prp",
-"les2y21w16.prp"
+//"atmos1.prp",
+"gaussol.prp"//,
+//"les2y21_sw1.prp",
+//"les2y21_sw2.prp",
+//"les2y21_sw3.prp",
+//"les2y21_sw4.prp",
+//"les2y21_sw5.prp",
+//"les2y21_sw6.prp",
+//"les2y21_sw7.prp",
+//"les2y21_sw8.prp",
+//"les2y21_sw9.prp",
+//"les2y21_sw10.prp",
+//"les2y21_sw11.prp",
+//"les2y21_sw12.prp",
+//"les2y21_sw13.prp",
+//"les2y21_sw14.prp",
+//"les2y21w16.prp"
 };
 
 class SHDOMVisualizer : public ama3D::Application
@@ -104,6 +104,8 @@ public:
 		//	iZ = 0..nZ-1
 		// Unit of Extinction coefficients are inverse of grid cell length unit.
 
+		//iX + m_Dimension.x*iY + m_Dimension.x*m_Dimension.y*iZ
+
 		// Grid cells are  uniformly spaced along X and Y axes.
 		// The Z axis spacing varies and exact positions are available in array: Zlevels.
 		//	Index to the Zlevels array is iZ= 0..nZ-1
@@ -136,11 +138,11 @@ public:
 	void phasefuncFromLegendre( int degree, float *legCoeffs,int nAngles, float *phaseFunc)
 	{
 		//input:
-		//	degree: degree of Legendre coefficeints
+		//	degree: degree of Legendre coefficients
 		//	legCoeffs: Coefficients array. Contains 0..degree elements.
-		//	nAngles: Discreangles in which you wish to compute the phase function
+		//	nAngles: Discrete angles in which you wish to compute the phase function
 		//output:
-		//	phaseFunc: Tabulated anglular values. It must have preallocated spece for nAngles elements.
+		//	phaseFunc: Tabulated angular values. It must have preallocated space for nAngles elements.
 
 		float degreeToRad = M_PI/180.0;
 		for (int j = 0; j <  nAngles; j++){

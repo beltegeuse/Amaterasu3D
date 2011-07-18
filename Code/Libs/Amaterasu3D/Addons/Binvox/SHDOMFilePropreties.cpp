@@ -17,15 +17,15 @@ SHDOMFilePropreties::~SHDOMFilePropreties()
 
 void SHDOMFilePropreties::readPhaseFuncLegendreCoeffs(int i)
 {
-	m_file >> degreeLegendre[i];
-	DEBUG_TRACE("[ " << degreeLegendre[i] << "]: ");
-	maxDegreeLegendre = std::max(maxDegreeLegendre,degreeLegendre[i]);
-	phaseCoeffs[i]= new float[(degreeLegendre[i]+1)];
-	phaseCoeffs[i][0] = 1.0f;
-	for (int k=1; k<=degreeLegendre[i]; k++)
+	m_file >> m_DegreeLegendre[i];
+	DEBUG_TRACE("[ " << m_DegreeLegendre[i] << "]: ");
+	m_MaxDegreeLegendre = std::max(m_MaxDegreeLegendre,m_DegreeLegendre[i]);
+	m_PhaseCoeffs[i]= new float[(m_DegreeLegendre[i]+1)];
+	m_PhaseCoeffs[i][0] = 1.0f;
+	for (int k=1; k<=m_DegreeLegendre[i]; k++)
 	{
-		m_file >> phaseCoeffs[i][k];
-		DEBUG_TRACE(phaseCoeffs[i][k] << " ");
+		m_file >> m_PhaseCoeffs[i][k];
+		DEBUG_TRACE(m_PhaseCoeffs[i][k] << " ");
 	}
 	DEBUG_TRACE("\n");
 }
@@ -49,18 +49,15 @@ int SHDOMFilePropreties::readCellIndices(int &dataIndex, bool yIgnore)
 
 SHDOMFilePropreties::SHDOMFilePropreties() :
 	m_Dimension(0,0,0),
+	m_Cells(0),
 	m_Allocated(false)
 {
-	nPhaseFunctions=0; 
-	degreeLegendre=NULL;
-	maxDegreeLegendre=0;
-	phaseCoeffs=NULL; 
+	m_NbPhaseFunctions=0; 
+	m_DegreeLegendre=NULL;
+	m_MaxDegreeLegendre=0;
+	m_PhaseCoeffs=NULL; 
 	delX=delY=0.0f;
 	Zlevels=NULL;
-	cellTemperature=NULL;
-	cellExtinctionCoeff=NULL;
-	cellAlbedo=NULL;
-	cellPhaseFuncIndex=NULL;
 }
 
 void SHDOMFilePropreties::LoadExtinctionFile()
@@ -76,9 +73,9 @@ void SHDOMFilePropreties::LoadExtinctionFile()
 	//	Albedo  NumL  Chi1 ...  ChiL
 	//	IX IZ Extinct   or   IX IY IZ Extinct
 	//  . . .
-	nPhaseFunctions = 1;
-	phaseCoeffs = new float*[nPhaseFunctions];
-	degreeLegendre = new int[nPhaseFunctions];
+	m_NbPhaseFunctions = 1;
+	m_PhaseCoeffs = new float*[m_NbPhaseFunctions];
+	m_DegreeLegendre = new int[m_NbPhaseFunctions];
 
 	float *Zlevel_temperatures=new float[m_Dimension.z];// Temperature of the Z levels.
 	for (int k=0; k<m_Dimension.z; k++){
@@ -97,11 +94,11 @@ void SHDOMFilePropreties::LoadExtinctionFile()
 		int dataIndex;
 		int iZ=readCellIndices(dataIndex,true);
 		DEBUG_TRACE( " | Data index : " << dataIndex);
-		m_file >> cellExtinctionCoeff[dataIndex];
-		DEBUG_TRACE( " | Data : " << cellExtinctionCoeff[dataIndex] << "\n");
-		cellTemperature[dataIndex] = Zlevel_temperatures[iZ];
-		cellAlbedo[dataIndex] = scatteringAlbedo;
-		cellPhaseFuncIndex[dataIndex] = 0;
+		m_file >> m_Cells[dataIndex].extinction;
+		m_Cells[dataIndex].temperature = Zlevel_temperatures[iZ];
+		m_Cells[dataIndex].albedo = scatteringAlbedo;
+		m_Cells[dataIndex].phaseFuncIndex = 0;
+		DEBUG_TRACE( " | " << m_Cells[dataIndex] << "\n");
 	}
 }
 
@@ -118,23 +115,23 @@ void SHDOMFilePropreties::LoadPhaseFile()
 	//	IX IY IZ  Temp Extinct Albedo  Iphase
 	//  . . .
 	DEBUG_TRACE("Tabulated Phase Function Format.\n");
-	m_file >> nPhaseFunctions;
-	DEBUG_TRACE(nPhaseFunctions << "\n");
-	phaseCoeffs = new float*[nPhaseFunctions];
-	degreeLegendre = new int[nPhaseFunctions];
+	m_file >> m_NbPhaseFunctions;
+	DEBUG_TRACE(m_NbPhaseFunctions << "\n");
+	m_PhaseCoeffs = new float*[m_NbPhaseFunctions];
+	m_DegreeLegendre = new int[m_NbPhaseFunctions];
 
-	for (int i=0; i<nPhaseFunctions; i++)
+	for (int i=0; i<m_NbPhaseFunctions; i++)
 		readPhaseFuncLegendreCoeffs(i);
 
 	for (int n=0; n<nCells; n++){
 		int dataIndex;
 		readCellIndices(dataIndex);
-		m_file >> cellTemperature[dataIndex];
-		m_file >> cellExtinctionCoeff[dataIndex];
-		m_file >> cellAlbedo[dataIndex];
-		m_file >> cellPhaseFuncIndex[dataIndex]; //phase function index (1 to NUMPHASE)
-		DEBUG_TRACE(cellTemperature[dataIndex] << " " << cellExtinctionCoeff[dataIndex] << " " << cellAlbedo[dataIndex] << " " << cellPhaseFuncIndex[dataIndex] << "\n");
-		cellPhaseFuncIndex[dataIndex]--;
+		m_file >> m_Cells[dataIndex].temperature;
+		m_file >> m_Cells[dataIndex].extinction;
+		m_file >> m_Cells[dataIndex].albedo;
+		m_file >> m_Cells[dataIndex].phaseFuncIndex; //phase function index (1 to NUMPHASE)
+		m_Cells[dataIndex].phaseFuncIndex--;
+		DEBUG_TRACE(" | " << m_Cells[dataIndex] << "\n");
 	}
 }
 
@@ -206,10 +203,7 @@ SHDOMFilePropreties::FILETYPE SHDOMFilePropreties::ReadHeader()
 	m_file >> m_Dimension.x >> m_Dimension.y >> m_Dimension.z;
 	DEBUG_TRACE("Dimension : " << m_Dimension << "\n");
 	int nCells = m_Dimension.x*m_Dimension.y*m_Dimension.z;
-	cellTemperature = new float[nCells];
-	cellExtinctionCoeff = new float[nCells];
-	cellAlbedo = new float[nCells];
-	cellPhaseFuncIndex = new int[nCells];
+	m_Cells = new SHDOMCell[nCells];
 
 	m_file >> delX >> delY;
 	DEBUG_TRACE("deltaX=" << delX <<  " deltaY=" << delY << " zLevels:");
@@ -270,20 +264,20 @@ void SHDOMFilePropreties::CleanData()
 {
 	// Clean Data
 	// Clean phase function data
-	if (phaseCoeffs)
+	if (m_PhaseCoeffs)
 	{
-		for (int i=0; i<nPhaseFunctions; i++)
+		for (int i=0; i<m_NbPhaseFunctions; i++)
 		{
-			if (phaseCoeffs[i])
-				delete [] phaseCoeffs[i];
+			if (m_PhaseCoeffs[i])
+				delete [] m_PhaseCoeffs[i];
 		}
-		delete [] phaseCoeffs;
-		phaseCoeffs = 0;
+		delete [] m_PhaseCoeffs;
+		m_PhaseCoeffs = 0;
 	}
-	if (degreeLegendre)
+	if (m_DegreeLegendre)
 	{
-		delete[] degreeLegendre;
-		degreeLegendre = 0;
+		delete[] m_DegreeLegendre;
+		m_DegreeLegendre = 0;
 	}
 	// Clean grid related data
 	if (Zlevels)
@@ -292,25 +286,10 @@ void SHDOMFilePropreties::CleanData()
 		Zlevels = 0;
 	}
 
-	if (cellPhaseFuncIndex)
+	if (m_Cells)
 	{
-		delete[] cellPhaseFuncIndex;
-		cellPhaseFuncIndex = 0;
-	}
-	if (cellAlbedo)
-	{
-		delete[] cellAlbedo;
-		cellAlbedo = 0;
-	}
-	if (cellExtinctionCoeff)
-	{
-		delete[] cellExtinctionCoeff;
-		cellExtinctionCoeff = 0;
-	}
-	if (cellTemperature)
-	{
-		delete[] cellTemperature;
-		cellTemperature = 0;
+		delete[] m_Cells;
+		m_Cells = 0;
 	}
 
 	 m_Allocated = false;
