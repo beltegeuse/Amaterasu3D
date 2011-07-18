@@ -43,7 +43,7 @@ int SHDOMFilePropreties::readCellIndices(int &dataIndex, bool yIgnore)
 		DEBUG_TRACE("Indice " << iX << " " << iY << " " << iZ);
 	}
 	iX--; iY--; iZ--;
-	dataIndex = iX + m_Dimension.x*iY + m_Dimension.x*m_Dimension.y*iZ;
+	dataIndex = GetIndexData(iX,iY,iZ);
 	return iZ;
 }
 
@@ -293,6 +293,37 @@ void SHDOMFilePropreties::CleanData()
 	}
 
 	 m_Allocated = false;
+}
+
+bool SHDOMFilePropreties::IsAllocated() const
+{
+	return m_Allocated;
+}
+
+const ama3D::Math::TVector3I& SHDOMFilePropreties::GetDimension() const
+{
+	return m_Dimension;
+}
+
+int SHDOMFilePropreties::GetIndexData(int x, int y, int z) const
+{
+	Assert(x >= 0 && x < m_Dimension.x && y >= 0 && y < m_Dimension.y && z >= 0 && z < m_Dimension.z);
+	return x + m_Dimension.x*y + m_Dimension.x*m_Dimension.y*z;
+}
+
+int SHDOMFilePropreties::GetIndexData(const ama3D::Math::TVector3I& coordinates) const
+{
+	return GetIndexData(coordinates.x,coordinates.y,coordinates.z);
+}
+
+const SHDOMCell& SHDOMFilePropreties::GetData(int x, int y, int z) const
+{
+	return m_Cells[GetIndexData(x,y,z)];
+}
+
+const SHDOMCell& SHDOMFilePropreties::GetData(const ama3D::Math::TVector3I& coordinates) const
+{
+	return m_Cells[GetIndexData(coordinates)];
 }
 
 } // Namespace ama3D
