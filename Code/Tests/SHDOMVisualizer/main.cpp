@@ -71,9 +71,9 @@ public:
 		{
 			ama3D::Logger::Log() << "[Search] " << filenames[i] << " ... \n";
 			ama3D::CFile proprietieFile = MediaManager.FindMedia(filenames[i]);
-			if (!m_Proprieties.Load(proprietieFile.Fullname()))
-				throw ama3D::CException("Unable to parse");
+			m_Proprieties.Load(proprietieFile.Fullname());
 			ama3D::Logger::Log() << "[FINISH] " << proprietieFile.Fullname() << " ... \n";
+			m_Proprieties.CleanData();
 		}
 	}
 

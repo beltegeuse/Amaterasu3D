@@ -1,7 +1,6 @@
 #include "SHDOMFilePropreties.h"
+#include <algorithm>
 
-#include <stdio.h>
-#include <iostream>
 #ifdef _DEBUG
 #define DEBUG_TRACE(x) std::cout << x
 #else
@@ -13,55 +12,44 @@ namespace ama3D
 
 SHDOMFilePropreties::~SHDOMFilePropreties()
 {
-	// Clean Data
-	// Clean phase function data
-	if (phaseCoeffs){
-		for (int i=0; i<nPhaseFunctions; i++)
-			if (phaseCoeffs[i])free(phaseCoeffs[i]);
-		free(phaseCoeffs);
-	}
-	if (degreeLegendre) free(degreeLegendre);
-	// Clean grid related data
-	if (Zlevels)free (Zlevels);
-	if (cellPhaseFuncIndex) free (cellPhaseFuncIndex);
-	if (cellAlbedo) free (cellAlbedo);
-	if (cellExtinctionCoeff) free (cellExtinctionCoeff);
-	if (cellTemperature) free (cellTemperature);
+	CleanData();
 }
 
-void SHDOMFilePropreties::readPhaseFuncLegendreCoeffs(FILE *fl,int i)
+void SHDOMFilePropreties::readPhaseFuncLegendreCoeffs(int i)
 {
-	fscanf(fl,"%d",degreeLegendre+i);
+	m_file >> degreeLegendre[i];
 	DEBUG_TRACE("[ " << degreeLegendre[i] << "]: ");
-	maxDegreeLegendre = max(maxDegreeLegendre,degreeLegendre[i]);
-	phaseCoeffs[i]= (float *)malloc((degreeLegendre[i]+1)*sizeof(float)); 
+	maxDegreeLegendre = std::max(maxDegreeLegendre,degreeLegendre[i]);
+	phaseCoeffs[i]= new float[(degreeLegendre[i]+1)];
 	phaseCoeffs[i][0] = 1.0f;
 	for (int k=1; k<=degreeLegendre[i]; k++)
 	{
-		fscanf(fl,"%f",phaseCoeffs[i]+k);
+		m_file >> phaseCoeffs[i][k];
 		DEBUG_TRACE(phaseCoeffs[i][k] << " ");
 	}
 	DEBUG_TRACE("\n");
 }
-int SHDOMFilePropreties::readCellIndices(FILE *fl, int &dataIndex, bool yIgnore)
+
+int SHDOMFilePropreties::readCellIndices(int &dataIndex, bool yIgnore)
 {
 	int iX, iY, iZ;
 	if (m_Dimension.y==1 && yIgnore){
 		iY = 1;
-		fscanf(fl,"%d%d",&iX,&iZ);
+		m_file >> iX >> iZ;
 		DEBUG_TRACE("Indice " << iX << " 1 " << iZ);
 	}
 	else{
-		fscanf(fl,"%d%d%d",&iX,&iY,&iZ);
+		m_file >> iX >> iY >> iZ;
 		DEBUG_TRACE("Indice " << iX << " " << iY << " " << iZ);
 	}
 	iX--; iY--; iZ--;
-	dataIndex = iZ + m_Dimension.z*iY + m_Dimension.z*m_Dimension.x*iX;
+	dataIndex = iX + m_Dimension.x*iY + m_Dimension.x*m_Dimension.y*iZ;
 	return iZ;
 }
 
 SHDOMFilePropreties::SHDOMFilePropreties() :
-	m_Dimension(0,0,0)
+	m_Dimension(0,0,0),
+	m_Allocated(false)
 {
 	nPhaseFunctions=0; 
 	degreeLegendre=NULL;
@@ -75,7 +63,7 @@ SHDOMFilePropreties::SHDOMFilePropreties() :
 	cellPhaseFuncIndex=NULL;
 }
 
-void SHDOMFilePropreties::LoadExtinctionFile(FILE *fl)
+void SHDOMFilePropreties::LoadExtinctionFile()
 {
 	int nCells = m_Dimension.x*m_Dimension.y*m_Dimension.z;
 	//	Property file type E is for extinction only format
@@ -89,26 +77,27 @@ void SHDOMFilePropreties::LoadExtinctionFile(FILE *fl)
 	//	IX IZ Extinct   or   IX IY IZ Extinct
 	//  . . .
 	nPhaseFunctions = 1;
-	phaseCoeffs = (float **)malloc(nPhaseFunctions*sizeof(float *));
-	degreeLegendre = (int *)malloc(nPhaseFunctions*sizeof(int));
+	phaseCoeffs = new float*[nPhaseFunctions];
+	degreeLegendre = new int[nPhaseFunctions];
 
-	float *Zlevel_temperatures=(float *)malloc(m_Dimension.z*sizeof(float));// Temperature of the Z levels.
+	float *Zlevel_temperatures=new float[m_Dimension.z];// Temperature of the Z levels.
 	for (int k=0; k<m_Dimension.z; k++){
-		fscanf(fl,"%f",Zlevel_temperatures+k);
+		m_file >> Zlevel_temperatures[k];
 		DEBUG_TRACE(Zlevel_temperatures[k] << " ");
 	}
 	DEBUG_TRACE("\n" );
 
 	float scatteringAlbedo;
-	fscanf(fl,"%f",&scatteringAlbedo);
+	m_file >> scatteringAlbedo;
 	DEBUG_TRACE(scatteringAlbedo << " ");
-	readPhaseFuncLegendreCoeffs(fl,0);
+	readPhaseFuncLegendreCoeffs(0);
 
-	DEBUG_TRACE("Read Data \n");
+	DEBUG_TRACE("Read Data (nb cell : " << nCells << ") \n");
 	for (int n=0; n<nCells; n++){
 		int dataIndex;
-		int iZ=readCellIndices(fl,dataIndex,true);
-		fscanf(fl,"%f",&cellExtinctionCoeff[dataIndex]);
+		int iZ=readCellIndices(dataIndex,true);
+		DEBUG_TRACE( " | Data index : " << dataIndex);
+		m_file >> cellExtinctionCoeff[dataIndex];
 		DEBUG_TRACE( " | Data : " << cellExtinctionCoeff[dataIndex] << "\n");
 		cellTemperature[dataIndex] = Zlevel_temperatures[iZ];
 		cellAlbedo[dataIndex] = scatteringAlbedo;
@@ -116,7 +105,7 @@ void SHDOMFilePropreties::LoadExtinctionFile(FILE *fl)
 	}
 }
 
-void SHDOMFilePropreties::LoadPhaseFile(FILE* fl)
+void SHDOMFilePropreties::LoadPhaseFile()
 {
 	int nCells = m_Dimension.x*m_Dimension.y*m_Dimension.z;
 	// Property file type T is for tabulated phase function format
@@ -129,51 +118,52 @@ void SHDOMFilePropreties::LoadPhaseFile(FILE* fl)
 	//	IX IY IZ  Temp Extinct Albedo  Iphase
 	//  . . .
 	DEBUG_TRACE("Tabulated Phase Function Format.\n");
-	fscanf(fl,"%d",&nPhaseFunctions);
+	m_file >> nPhaseFunctions;
 	DEBUG_TRACE(nPhaseFunctions << "\n");
-	phaseCoeffs = (float **)malloc(nPhaseFunctions*sizeof(float *));
-	degreeLegendre = (int *)malloc(nPhaseFunctions*sizeof(int));
+	phaseCoeffs = new float*[nPhaseFunctions];
+	degreeLegendre = new int[nPhaseFunctions];
+
 	for (int i=0; i<nPhaseFunctions; i++)
-		readPhaseFuncLegendreCoeffs(fl,i);
+		readPhaseFuncLegendreCoeffs(i);
 
 	for (int n=0; n<nCells; n++){
 		int dataIndex;
-		readCellIndices(fl,dataIndex);
-		fscanf(fl,"%f",cellTemperature+dataIndex);
-		fscanf(fl,"%f",cellExtinctionCoeff+dataIndex);
-		fscanf(fl,"%f",cellAlbedo+dataIndex);
-		fscanf(fl,"%d",cellPhaseFuncIndex+dataIndex); //phase function index (1 to NUMPHASE)
+		readCellIndices(dataIndex);
+		m_file >> cellTemperature[dataIndex];
+		m_file >> cellExtinctionCoeff[dataIndex];
+		m_file >> cellAlbedo[dataIndex];
+		m_file >> cellPhaseFuncIndex[dataIndex]; //phase function index (1 to NUMPHASE)
 		DEBUG_TRACE(cellTemperature[dataIndex] << " " << cellExtinctionCoeff[dataIndex] << " " << cellAlbedo[dataIndex] << " " << cellPhaseFuncIndex[dataIndex] << "\n");
 		cellPhaseFuncIndex[dataIndex]--;
 	}
 }
 
-void SHDOMFilePropreties::LoadCommonFile(FILE* fl)
-{
-	int nCells = m_Dimension.x*m_Dimension.y*m_Dimension.z;
-	//  Standard property file has everything variable
-	//		Nx  Ny  Nz
-	//		delX  delY  Z1  ...  Zn
-	//		IX IY IZ Temp Extinct Albedo NumL Chi1 . . . ChiL
-	//		. . .
-	DEBUG_TRACE("Standard Format.\n");
-	nPhaseFunctions=nCells;
-	phaseCoeffs = (float **)malloc(nPhaseFunctions*sizeof(float *));
-	degreeLegendre = (int *)malloc(nPhaseFunctions*sizeof(int));
+//void SHDOMFilePropreties::LoadCommonFile()
+//{
+//	int nCells = m_Dimension.x*m_Dimension.y*m_Dimension.z;
+//	//  Standard property file has everything variable
+//	//		Nx  Ny  Nz
+//	//		delX  delY  Z1  ...  Zn
+//	//		IX IY IZ Temp Extinct Albedo NumL Chi1 . . . ChiL
+//	//		. . .
+//	DEBUG_TRACE("Standard Format.\n");
+//	nPhaseFunctions=nCells;
+//	phaseCoeffs = new float*[nPhaseFunctions];
+//	degreeLegendre = new int[nPhaseFunctions];
+//
+//	for (int n=0; n<nCells; n++){
+//		int dataIndex;
+//		readCellIndices(fl,dataIndex);
+//		fscanf(fl,"%f",cellTemperature+dataIndex);
+//		fscanf(fl,"%f",cellExtinctionCoeff+dataIndex);
+//		fscanf(fl,"%f",cellAlbedo+dataIndex);
+//		DEBUG_TRACE(cellTemperature[dataIndex] << " " << cellExtinctionCoeff[dataIndex] << " " << cellAlbedo[dataIndex] << " ");
+//		cellPhaseFuncIndex[dataIndex] = dataIndex;
+//		readPhaseFuncLegendreCoeffs(fl,dataIndex);
+//	}
+//}
 
-	for (int n=0; n<nCells; n++){
-		int dataIndex;
-		readCellIndices(fl,dataIndex);
-		fscanf(fl,"%f",cellTemperature+dataIndex);
-		fscanf(fl,"%f",cellExtinctionCoeff+dataIndex);
-		fscanf(fl,"%f",cellAlbedo+dataIndex);
-		DEBUG_TRACE(cellTemperature[dataIndex] << " " << cellExtinctionCoeff[dataIndex] << " " << cellAlbedo[dataIndex] << " ");
-		cellPhaseFuncIndex[dataIndex] = dataIndex;
-		readPhaseFuncLegendreCoeffs(fl,dataIndex);
-	}
-}
-
-SHDOMFilePropreties::FILETYPE SHDOMFilePropreties::ReadHeader(FILE* fl)
+SHDOMFilePropreties::FILETYPE SHDOMFilePropreties::ReadHeader()
 {
 	FILETYPE type = UNKNOW_FILE;
 	// SUBROUTINE READ_PROPERTY_SIZE (PROPFILE, NLEG, NPX, NPY, NPZ,
@@ -186,7 +176,7 @@ SHDOMFilePropreties::FILETYPE SHDOMFilePropreties::ReadHeader(FILE* fl)
 
 	//          Open the file, figure out the type, and get the grid size
 	char firstLine[256];
-	fgets (firstLine, 256, fl);
+	m_file.getline(firstLine,256);
 	char proptype = firstLine[0];
 	if (proptype == 'E')
 		type = EXTINCTION_FILE;
@@ -195,7 +185,7 @@ SHDOMFilePropreties::FILETYPE SHDOMFilePropreties::ReadHeader(FILE* fl)
 	else
 	{
 		type = COMMON_FILE;
-		rewind (fl);
+		m_file.seekg (0, std::ios::beg);
 	}
 	// Begin List of Data read from the file.
 	//
@@ -213,7 +203,7 @@ SHDOMFilePropreties::FILETYPE SHDOMFilePropreties::ReadHeader(FILE* fl)
 	//
 	// Begin common input
 	//
-	fscanf(fl, "%d%d%d",&m_Dimension.x, &m_Dimension.y, &m_Dimension.z);
+	m_file >> m_Dimension.x >> m_Dimension.y >> m_Dimension.z;
 	DEBUG_TRACE("Dimension : " << m_Dimension << "\n");
 	int nCells = m_Dimension.x*m_Dimension.y*m_Dimension.z;
 	cellTemperature = new float[nCells];
@@ -221,11 +211,11 @@ SHDOMFilePropreties::FILETYPE SHDOMFilePropreties::ReadHeader(FILE* fl)
 	cellAlbedo = new float[nCells];
 	cellPhaseFuncIndex = new int[nCells];
 
-	fscanf(fl, "%f%f", &delX, &delY);
+	m_file >> delX >> delY;
 	DEBUG_TRACE("deltaX=" << delX <<  " deltaY=" << delY << " zLevels:");
 	Zlevels=new float[m_Dimension.z];
 	for (int k=0; k<m_Dimension.z; k++){
-		fscanf(fl,"%f",Zlevels+k);
+		m_file >> Zlevels[k];
 		DEBUG_TRACE(Zlevels[k]);
 	}
 	DEBUG_TRACE("\n");
@@ -234,41 +224,96 @@ SHDOMFilePropreties::FILETYPE SHDOMFilePropreties::ReadHeader(FILE* fl)
 	return type;
 }
 
-bool SHDOMFilePropreties::Load(const std::string& fullpath)
+void SHDOMFilePropreties::Load(const std::string& fullpath)
 {
 	printf("Processing file %s\n",fullpath.c_str());
 
-	FILE *fl = fopen(fullpath.c_str(),"rt");
-	if (fl == NULL)
+	if(m_Allocated)
 	{
-		DEBUG_TRACE("[ERROR] Enable to found file : " << fullpath << "\n");
-		return false;
+		throw CException("Already allocated !");
+	}
+
+	m_file.open(fullpath.c_str(), std::fstream::in);
+	if (!m_file.is_open())
+	{
+		throw CException("Unenable to found file : " + fullpath);
 	}
 	
-	FILETYPE type = ReadHeader(fl);
+	FILETYPE type = ReadHeader();
 
     switch(type)
     {
     	case EXTINCTION_FILE:
     		DEBUG_TRACE("[INFO] Extinction type file :)\n");
-    		LoadExtinctionFile(fl);
+    		LoadExtinctionFile();
     		break;
     	case PHASE_FILE:
     		DEBUG_TRACE("[INFO] Phase type file :)\n");
-    		LoadPhaseFile(fl);
+    		LoadPhaseFile();
     		break;
-    	case COMMON_FILE:
-    		DEBUG_TRACE("[INFO] Common type file :)\n");
-    		LoadCommonFile(fl);
-    		break;
+//    	case COMMON_FILE:
+//    		DEBUG_TRACE("[INFO] Common type file :)\n");
+//    		LoadCommonFile();
+//    		break;
     	default:
-    		DEBUG_TRACE("Unknow file type !");
-    		fclose(fl);
-    		return false;
+    		m_file.close();
+    		throw CException("Unknow file type !");
 	}
 
-    DEBUG_TRACE("FIN " << fullpath << "\n");
-    fclose(fl);
-	return true;
- }
+    m_Allocated = true;
+
+    //DEBUG_TRACE("FIN " << fullpath << "\n");
+    m_file.close();
 }
+
+void SHDOMFilePropreties::CleanData()
+{
+	// Clean Data
+	// Clean phase function data
+	if (phaseCoeffs)
+	{
+		for (int i=0; i<nPhaseFunctions; i++)
+		{
+			if (phaseCoeffs[i])
+				delete [] phaseCoeffs[i];
+		}
+		delete [] phaseCoeffs;
+		phaseCoeffs = 0;
+	}
+	if (degreeLegendre)
+	{
+		delete[] degreeLegendre;
+		degreeLegendre = 0;
+	}
+	// Clean grid related data
+	if (Zlevels)
+	{
+		delete[] Zlevels;
+		Zlevels = 0;
+	}
+
+	if (cellPhaseFuncIndex)
+	{
+		delete[] cellPhaseFuncIndex;
+		cellPhaseFuncIndex = 0;
+	}
+	if (cellAlbedo)
+	{
+		delete[] cellAlbedo;
+		cellAlbedo = 0;
+	}
+	if (cellExtinctionCoeff)
+	{
+		delete[] cellExtinctionCoeff;
+		cellExtinctionCoeff = 0;
+	}
+	if (cellTemperature)
+	{
+		delete[] cellTemperature;
+		cellTemperature = 0;
+	}
+
+	 m_Allocated = false;
+}
+
+} // Namespace ama3D

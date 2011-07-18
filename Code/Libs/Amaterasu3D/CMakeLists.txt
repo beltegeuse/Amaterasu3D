@@ -1,12 +1,11 @@
 
-IF(CMAKE_BUILD_TYPE MATCHES debug)
-	ADD_DEFINITIONS("-Wall -W -D_DEBUG") #Pour afficher les warning lors de la compilation
-    
-    #IF(LINUX)
-    	#ADD_DEFINITIONS("-pg")
-    #ENDIF()
-    
-    #SET(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} " -D_DEBUG -ansi -Wall -Wextra -Wfatal-errors -pedantic -Wmain -Wswitch-default -Wunreachable-code -Winit-self -Wshadow -Wwrite-strings -Wuninitialized") #Pour afficher les warning lors de la compilation
+IF(CMAKE_BUILD_TYPE MATCHES debug)    
+    IF(WIN32)
+    	ADD_DEFINITIONS("-Wall -W -D_DEBUG")
+    ELSE(WIN32)
+    	ADD_DEFINITIONS("-Wall -W -D_DEBUG -pg")
+    ENDIF(WIN32)
+   
 ENDIF(CMAKE_BUILD_TYPE MATCHES debug)
 
 SET(LIB_AMATERASU3D_SRCS

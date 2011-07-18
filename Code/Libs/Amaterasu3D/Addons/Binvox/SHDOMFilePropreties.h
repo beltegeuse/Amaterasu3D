@@ -1,13 +1,6 @@
 #include <Math/Vector3.h>
 #include <string>
-#include <malloc.h>
-#include <math.h>
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-#define max(a,b) ((a>b)?a:b)
+#include <fstream>
 
 namespace ama3D
 {
@@ -35,7 +28,8 @@ protected:
 	float *cellExtinctionCoeff;
 	float *cellAlbedo;
 	int   *cellPhaseFuncIndex;
-
+	bool m_Allocated;
+	std::fstream m_file;
 public:
 	/*
 	 * Constructors & Destructors
@@ -44,19 +38,20 @@ public:
 	~SHDOMFilePropreties();
 
 	// For parsing the file
-	bool Load(const std::string& fullpath);
+	void Load(const std::string& fullpath);
+	void CleanData();
 private:
 	/*
 	 * Private methods
 	 */
-	void readPhaseFuncLegendreCoeffs(FILE *fl,int i);
-	int readCellIndices(FILE *fl, int &dataIndex, bool yIgnore=false);
+	void readPhaseFuncLegendreCoeffs(int i);
+	int readCellIndices(int &dataIndex, bool yIgnore=false);
 
 	// Parser for each files
-	FILETYPE ReadHeader(FILE *fl);
-	void LoadExtinctionFile(FILE *fl);
-	void LoadPhaseFile(FILE* fl);
-	void LoadCommonFile(FILE* fl);
+	FILETYPE ReadHeader();
+	void LoadExtinctionFile();
+	void LoadPhaseFile();
+//	void LoadCommonFile();
 };
 
 }
