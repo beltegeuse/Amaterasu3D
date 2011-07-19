@@ -14,10 +14,11 @@
 #include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
 #include <Math/Vector2.h>
 #include <Math/Vector3.h>
+#include <Addons/Binvox/VolumetricRenderableObject.h>
 
 namespace ama3D
 {
-class BinvoxModel
+class BinvoxModel : public VolumetricRenderableObject
 {
 private:
 	///// Attributes
@@ -32,18 +33,7 @@ public:
 	BinvoxModel(const std::string& file);
 	virtual ~BinvoxModel();
 
-	/*
-	 * Public methods
-	 */
-	/// Grid informations
-	Math::TVector3F GridSize() const;
-	/// Texture methods
-	Math::TVector2I TextureRepeat();
-	Math::TVector2I TextureSize();
-	TTexturePtr Create2DTexture();
-	/// Model methods
-	ISimpleRenderableSceneNode* CreateDebugPointModel();
-	ISimpleRenderableSceneNode* CreateCoordinateCubeModel();
+	virtual void Bind();
 
 private:
 	/**
@@ -56,6 +46,13 @@ private:
 	{
 		return m_Data[x * m_Width * m_Height + z * m_Width + y];
 	}
+
+	/// Grid informations
+	Math::TVector3F GridSize() const;
+	/// Texture methods
+	Math::TVector2I TextureRepeat();
+	Math::TVector2I TextureSize();
+	TTexturePtr Create2DTexture();
 };
 }
 

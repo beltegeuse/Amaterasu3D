@@ -22,16 +22,10 @@ class BinvoxViewer : public Application
 protected:
 	CameraFPS* m_Camera;
 	FPS m_FPS;
-	TShaderPtr m_CubeShader;
-	TShaderPtr m_volumeRenderingShader;
-	TTexturePtr m_VolumeTexture;
-	FBO * m_FrontFBO;
-	FBO * m_BackFBO;
+
 	BinvoxModel* m_BinVox;
-	bool m_Trilinear;
 public:
-	BinvoxViewer() :
-		m_Trilinear(false)
+	BinvoxViewer()
 	{
 	}
 
@@ -44,23 +38,12 @@ public:
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(30,40,20), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
-		// Shaders
-		m_CubeShader = ShaderManager.LoadShader("CubePass.shader");
-		m_volumeRenderingShader = ShaderManager.LoadShader("VolumeRendering.shader");
-		// FBO
-		m_BackFBO = m_CubeShader->GetFBO()->Copy();
-		m_FrontFBO = m_CubeShader->GetFBO();
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
 		SettingsManager.SetProjection(0.1,1000.0,70.0);
 		// Load scene
 		Logger::Log() << "[INFO] Load Armadillo.binvox\n";
 		m_BinVox = new BinvoxModel("Dragon.binvox");
-		m_VolumeTexture = m_BinVox->Create2DTexture();
-
-		// A voir
-		//RootSceneGraph.AddChild(m_BinVox->CreateDebugPointModel());
-		SceneManager.AddScenegraphRoot(m_BinVox->CreateCoordinateCubeModel()); // < FIXME
 	}
 
 	virtual void OnUpdate(double delta)
@@ -69,15 +52,12 @@ public:
 
 	virtual void OnEvent(C3::Event& event)
 	{
-		if(event.Type == C3::Event::KeyPressed)
-		{
-			 switch(event.Key.Code)
-			 {
-				 case C3::Key::F1:
-					 m_Trilinear = !m_Trilinear;
-					 break;
-			 }
-		}
+//		if(event.Type == C3::Event::KeyPressed)
+//		{
+//			 switch(event.Key.Code)
+//			 {
+//			 }
+//		}
 
 	}
 
@@ -85,46 +65,8 @@ public:
 	{
 		MatrixManager.SetModeMatrix(MATRIX_3D);
 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		m_CubeShader->SetFBO(m_FrontFBO, false);
-		m_CubeShader->Begin();
-		m_Camera->GetView();
-		SceneManager.RenderAll();
-		m_CubeShader->End();
-
-//		m_CubeShader->GetFBO()->DrawDebug();
-
-		glCullFace(GL_FRONT);
-		m_CubeShader->SetFBO(m_BackFBO, false);
-		m_CubeShader->Begin();
-		m_Camera->GetView();
-		SceneManager.RenderAll();
-		m_CubeShader->End();
-		glDisable(GL_CULL_FACE);
-
-		Math::TVector2I repeatTex = m_BinVox->TextureRepeat();
-		Math::TVector2I sizeTex = m_BinVox->TextureSize();
-
-		m_volumeRenderingShader->Begin();
-		m_FrontFBO->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
-		m_BackFBO->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+1);
-		m_VolumeTexture->activateMultiTex(CUSTOM_TEXTURE+2);
-		m_volumeRenderingShader->SetUniformVector("GridDimension", m_BinVox->GridSize());
-		m_volumeRenderingShader->SetUniformVector("GridTextureSize", Math::TVector4F(sizeTex.x, sizeTex.y, repeatTex.x, repeatTex.y));
-		m_volumeRenderingShader->SetUniform1i("GridInterpolation", m_Trilinear);
-		ShaderHelperUniformImagePlane(m_volumeRenderingShader);
-		glBegin(GL_QUADS);
-			glTexCoord2f(0.0, 0.0);
-			glVertex2f(-1.0, -1.0);
-			glTexCoord2f(0.0, 1.0);
-			glVertex2f(-1.0, 1.0);
-			glTexCoord2f(1.0, 1.0);
-			glVertex2f(1.0, 1.0);
-			glTexCoord2f(1.0, 0.0);
-			glVertex2f(1.0, -1.0);
-		glEnd();
-		m_volumeRenderingShader->End();
+		m_BinVox->UpdateCubeFBO(m_Camera);
+		m_BinVox->Render();
 
 		MatrixManager.SetModeMatrix(MATRIX_2D);
 
