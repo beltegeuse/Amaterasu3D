@@ -2,7 +2,8 @@
 #include <algorithm>
 
 #ifdef _DEBUG
-#define DEBUG_TRACE(x) std::cout << x
+#include <Logger/Logger.h>
+#define DEBUG_TRACE(x) Logger::Log() << x
 #else
 #define DEBUG_TRACE(x) // Nothings :)
 #endif
@@ -34,13 +35,12 @@ int SHDOMFilePropreties::readCellIndices(int &dataIndex, bool yIgnore)
 	if (m_Dimension.y==1 && yIgnore){
 		iY = 1;
 		m_file >> iX >> iZ;
-		DEBUG_TRACE("Indice " << iX << " 1 " << iZ);
 	}
 	else{
 		m_file >> iX >> iY >> iZ;
-		DEBUG_TRACE("Indice " << iX << " " << iY << " " << iZ);
 	}
 	iX--; iY--; iZ--;
+	DEBUG_TRACE("Indice " << iX << " " << iY << " " << iZ);
 	dataIndex = GetIndexData(iX,iY,iZ);
 	return iZ;
 }
@@ -112,7 +112,7 @@ void SHDOMFilePropreties::LoadPhaseFile()
 	//  . . .
 	DEBUG_TRACE("Tabulated Phase Function Format.\n");
 	m_file >> m_NbPhaseFunctions;
-	DEBUG_TRACE(m_NbPhaseFunctions << "\n");
+	DEBUG_TRACE("Size Functions : " << m_NbPhaseFunctions << "\n");
 	m_Coeffs = new SHDOMPhaseCoeff[m_NbPhaseFunctions];
 
 	for (int i=0; i<m_NbPhaseFunctions; i++)
@@ -257,26 +257,30 @@ void SHDOMFilePropreties::Load(const std::string& fullpath)
 
 void SHDOMFilePropreties::CleanData()
 {
-	// Clean Data
-	// Clean phase function data
-	if (m_Coeffs)
+	if(m_Allocated)
 	{
-		delete[] m_Coeffs;
-	}
-	// Clean grid related data
-	if (Zlevels)
-	{
-		delete[] Zlevels;
-		Zlevels = 0;
-	}
+		// Clean Data
+		// Clean phase function data
+		if (m_Coeffs)
+		{
+			delete[] m_Coeffs;
+			m_Coeffs = 0;
+		}
+		// Clean grid related data
+		if (Zlevels)
+		{
+			delete[] Zlevels;
+			Zlevels = 0;
+		}
 
-	if (m_Cells)
-	{
-		delete[] m_Cells;
-		m_Cells = 0;
-	}
+		if (m_Cells)
+		{
+			delete[] m_Cells;
+			m_Cells = 0;
+		}
 
-	 m_Allocated = false;
+		m_Allocated = false;
+	}
 }
 
 bool SHDOMFilePropreties::IsAllocated() const

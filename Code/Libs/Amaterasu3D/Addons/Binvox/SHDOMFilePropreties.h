@@ -26,9 +26,27 @@ struct SHDOMPhaseCoeff
 	int NbCoeffs;
 	float * Coeffs;
 
+	SHDOMPhaseCoeff() :
+		NbCoeffs(0),
+		Coeffs(0)
+	{
+	}
+
+	SHDOMPhaseCoeff(const SHDOMPhaseCoeff& o)
+	{
+		NbCoeffs = o.NbCoeffs;
+		Coeffs = new float[NbCoeffs];
+		for(int i = 0; i < NbCoeffs; i++)
+			Coeffs[i] = o.Coeffs[i];
+	}
+
+
 	virtual ~SHDOMPhaseCoeff()
 	{
-		delete[] Coeffs;
+		if(Coeffs)
+		{
+			delete[] Coeffs;
+		}
 	}
 
 	//input:
@@ -37,6 +55,9 @@ struct SHDOMPhaseCoeff
 	//	phaseFunc: Tabulated angular values. It must have preallocated space for nAngles elements.
 	void GetPhaseFunction(int nAngles, float *phaseFunc)
 	{
+		if(!Coeffs)
+			throw ama3D::CException("No data !");
+
 		float degreeToRad = M_PI/180.0;
 		for (int j = 0; j <  nAngles; j++){
 			float MU = cos(degreeToRad*j*180.0/nAngles);
