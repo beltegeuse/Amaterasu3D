@@ -17,17 +17,15 @@ SHDOMFilePropreties::~SHDOMFilePropreties()
 
 void SHDOMFilePropreties::readPhaseFuncLegendreCoeffs(int i)
 {
-	m_file >> m_DegreeLegendre[i];
-	DEBUG_TRACE("[ " << m_DegreeLegendre[i] << "]: ");
-	m_MaxDegreeLegendre = std::max(m_MaxDegreeLegendre,m_DegreeLegendre[i]);
-	m_PhaseCoeffs[i]= new float[(m_DegreeLegendre[i]+1)];
-	m_PhaseCoeffs[i][0] = 1.0f;
-	for (int k=1; k<=m_DegreeLegendre[i]; k++)
+	m_file >> m_Coeffs[i].NbCoeffs;
+	m_MaxDegreeLegendre = std::max(m_MaxDegreeLegendre,m_Coeffs[i].NbCoeffs);
+	m_Coeffs[i].Coeffs = new float[(m_Coeffs[i].NbCoeffs+1)];
+	m_Coeffs[i].Coeffs[0] = 1.0f;
+	for (int k=1; k<=m_Coeffs[i].NbCoeffs; k++)
 	{
-		m_file >> m_PhaseCoeffs[i][k];
-		DEBUG_TRACE(m_PhaseCoeffs[i][k] << " ");
+		m_file >> m_Coeffs[i].Coeffs[k];
 	}
-	DEBUG_TRACE("\n");
+	DEBUG_TRACE(m_Coeffs[i] << "\n");
 }
 
 int SHDOMFilePropreties::readCellIndices(int &dataIndex, bool yIgnore)
@@ -48,14 +46,13 @@ int SHDOMFilePropreties::readCellIndices(int &dataIndex, bool yIgnore)
 }
 
 SHDOMFilePropreties::SHDOMFilePropreties() :
+	m_Coeffs(0),
 	m_Dimension(0,0,0),
 	m_Cells(0),
 	m_Allocated(false)
 {
 	m_NbPhaseFunctions=0; 
-	m_DegreeLegendre=NULL;
 	m_MaxDegreeLegendre=0;
-	m_PhaseCoeffs=NULL; 
 	delX=delY=0.0f;
 	Zlevels=NULL;
 }
@@ -74,8 +71,7 @@ void SHDOMFilePropreties::LoadExtinctionFile()
 	//	IX IZ Extinct   or   IX IY IZ Extinct
 	//  . . .
 	m_NbPhaseFunctions = 1;
-	m_PhaseCoeffs = new float*[m_NbPhaseFunctions];
-	m_DegreeLegendre = new int[m_NbPhaseFunctions];
+	m_Coeffs = new SHDOMPhaseCoeff[m_NbPhaseFunctions];
 
 	float *Zlevel_temperatures=new float[m_Dimension.z];// Temperature of the Z levels.
 	for (int k=0; k<m_Dimension.z; k++){
@@ -117,8 +113,7 @@ void SHDOMFilePropreties::LoadPhaseFile()
 	DEBUG_TRACE("Tabulated Phase Function Format.\n");
 	m_file >> m_NbPhaseFunctions;
 	DEBUG_TRACE(m_NbPhaseFunctions << "\n");
-	m_PhaseCoeffs = new float*[m_NbPhaseFunctions];
-	m_DegreeLegendre = new int[m_NbPhaseFunctions];
+	m_Coeffs = new SHDOMPhaseCoeff[m_NbPhaseFunctions];
 
 	for (int i=0; i<m_NbPhaseFunctions; i++)
 		readPhaseFuncLegendreCoeffs(i);
@@ -264,20 +259,9 @@ void SHDOMFilePropreties::CleanData()
 {
 	// Clean Data
 	// Clean phase function data
-	if (m_PhaseCoeffs)
+	if (m_Coeffs)
 	{
-		for (int i=0; i<m_NbPhaseFunctions; i++)
-		{
-			if (m_PhaseCoeffs[i])
-				delete [] m_PhaseCoeffs[i];
-		}
-		delete [] m_PhaseCoeffs;
-		m_PhaseCoeffs = 0;
-	}
-	if (m_DegreeLegendre)
-	{
-		delete[] m_DegreeLegendre;
-		m_DegreeLegendre = 0;
+		delete[] m_Coeffs;
 	}
 	// Clean grid related data
 	if (Zlevels)

@@ -134,32 +134,6 @@ public:
 		Console.Draw();
 
 	}
-
-	void phasefuncFromLegendre( int degree, float *legCoeffs,int nAngles, float *phaseFunc)
-	{
-		//input:
-		//	degree: degree of Legendre coefficients
-		//	legCoeffs: Coefficients array. Contains 0..degree elements.
-		//	nAngles: Discrete angles in which you wish to compute the phase function
-		//output:
-		//	phaseFunc: Tabulated angular values. It must have preallocated space for nAngles elements.
-
-		float degreeToRad = M_PI/180.0;
-		for (int j = 0; j <  nAngles; j++){
-			float MU = cos(degreeToRad*j*180.0/nAngles);
-			float sum = 0.0;
-			// Use upward recurrence to find Legendre polynomials
-			float PL1 = 1.0, PL2;
-			float PL = 1.0;
-			for (int L = 0; L <= degree; L++){
-			  if (L > 0) PL = (2*L-1)*MU*PL1/L-(L-1)*PL2/L;
-			  sum += legCoeffs[L]*PL;
-			  PL2 = PL1;
-			  PL1 = PL ;
-			}
-			phaseFunc[j] = sum;
-		}
-	}
 };
 
 #ifdef WIN32

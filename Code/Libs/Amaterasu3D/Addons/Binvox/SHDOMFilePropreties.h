@@ -5,6 +5,7 @@
 namespace ama3D
 {
 
+// Cell structure
 struct SHDOMCell
 {
 	float temperature;
@@ -19,6 +20,62 @@ std::ostream& operator<< (std::ostream& out, const SHDOMCell c )
 	return out;
 }
 
+// Legendre coeff
+struct SHDOMPhaseCoeff
+{
+	int NbCoeffs;
+	float * Coeffs;
+
+	virtual ~SHDOMPhaseCoeff()
+	{
+		delete[] Coeffs;
+	}
+
+	//input:
+	//	nAngles: Discrete angles in which you wish to compute the phase function
+	//output:
+	//	phaseFunc: Tabulated angular values. It must have preallocated space for nAngles elements.
+	void GetPhaseFunction(int nAngles, float *phaseFunc)
+	{
+		float degreeToRad = M_PI/180.0;
+		for (int j = 0; j <  nAngles; j++){
+			float MU = cos(degreeToRad*j*180.0/nAngles);
+			float sum = 0.0;
+			// Use upward recurrence to find Legendre polynomials
+			float PL1 = 1.0, PL2;
+			float PL = 1.0;
+			for (int L = 0; L <= NbCoeffs; L++){
+			  if (L > 0) PL = (2*L-1)*MU*PL1/L-(L-1)*PL2/L;
+			  sum += Coeffs[L]*PL;
+			  PL2 = PL1;
+			  PL1 = PL ;
+			}
+			phaseFunc[j] = sum;
+		}
+	}
+
+	float * GetPhaseFunction(int nAngles)
+	{
+		float * data = new float[nAngles];
+		GetPhaseFunction(nAngles, data);
+		return data;
+	}
+};
+
+std::ostream& operator<< (std::ostream& out, const SHDOMPhaseCoeff c )
+{
+	out << "[ ";
+	for(int i = 0; i < c.NbCoeffs; i++)
+	{
+		out << c.Coeffs[i];
+		if(i < c.NbCoeffs - 1)
+			out << "; ";
+	}
+	out << " ]";
+	return out;
+}
+
+// File parser
 class SHDOMFilePropreties{
 protected:
 	enum FILETYPE
@@ -32,9 +89,8 @@ protected:
 	 * Attributs
 	 */
 	int m_NbPhaseFunctions; // Number of different phase  functions used in the system.
-	int *m_DegreeLegendre;
 	int m_MaxDegreeLegendre;
-	float **m_PhaseCoeffs; 
+	SHDOMPhaseCoeff* m_Coeffs;
 
 	ama3D::Math::TVector3I m_Dimension;
 	float    delX, delY, *Zlevels;
@@ -52,11 +108,11 @@ public:
 	void Load(const std::string& fullpath);
 	void CleanData();
 
-	// Get data
+	// Global information
 	bool IsAllocated() const;
 	const ama3D::Math::TVector3I& GetDimension() const;
-	int GetIndexData(int x, int y, int z) const;
-	int GetIndexData(const ama3D::Math::TVector3I& coordinates) const;
+
+	// Get data
 	const SHDOMCell& GetData(int x, int y, int z) const;
 	const SHDOMCell& GetData(const ama3D::Math::TVector3I& coordinates) const;
 private:
@@ -65,6 +121,10 @@ private:
 	 */
 	void readPhaseFuncLegendreCoeffs(int i);
 	int readCellIndices(int &dataIndex, bool yIgnore=false);
+
+	// Get index
+	int GetIndexData(int x, int y, int z) const;
+	int GetIndexData(const ama3D::Math::TVector3I& coordinates) const;
 
 	// Parser for each files
 	FILETYPE ReadHeader();
