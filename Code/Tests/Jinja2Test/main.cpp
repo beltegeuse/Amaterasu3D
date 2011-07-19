@@ -24,6 +24,7 @@ int main()
 {
 	Test("../Donnees/Templates/test.txt");
 	Test("../Donnees/Templates/test2.txt");
+	Test("../Donnees/Templates/extends/test_extends_child.txt");
 	return 0;
 }
 

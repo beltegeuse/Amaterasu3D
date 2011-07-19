@@ -1,0 +1,21 @@
+uniform ......;
+\\ Somes definitions
+
+{% extends 'test_extends_base.txt' %}
+{% block return_type %}
+	void
+{% endblock %}
+{% block initialisation %}
+	// Custom initialisation
+{% endblock %}
+{% block loop_code %}
+	// Custom loop code
+{% endblock %}
+{% block return %}
+	return;
+{% endblock %}
+
+void main()
+{
+	// Plop ... etc
+}

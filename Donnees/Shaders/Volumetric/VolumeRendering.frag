@@ -21,6 +21,7 @@ uniform vec2 UnprojectInfo;
 uniform mat4 InverseViewMatrix;
 
 {% include 'GetPosition.shadercode' %}
+{% include 'Trilinear.shadercode' %}
 
 // Entree
 smooth in vec2 outTexCoord;
@@ -30,54 +31,12 @@ out vec4 Color;
 
 #define MaxFactor 2.82842712 // 2*sqrt(2)
 
-vec2 Sample3DTexCoord2D(vec3 Position)
-{
-	float row = floor(Position.z / GridTextureSize.z);
-	float col = Position.z - (row*GridTextureSize.z);
-	return vec2(col * GridDimension.z + Position.x, row * GridDimension.z + Position.y) / GridTextureSize.xy;
-}
-
-vec4 TrilinearInterpolation(sampler2D s, vec3 Position)
-{
-	vec3 IndexedPosition = floor(Position);
-	vec3 Offset = Position - IndexedPosition;
-
-	vec4 v1i1 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(Offset.xy,0)));
-	vec4 v2i1 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(Offset.xy,1)));
-
-	return v1i1*(1-Offset.z)+v2i1*Offset.z;
-}
-
-float GetVolumeData(vec3 Position)
-{
-	return texture(VolumeBuffer, Sample3DTexCoord2D(floor(Position))).a;
-}
-
-float GetVolumeDataTri(vec3 Position)
-{
-	return TrilinearInterpolation(VolumeBuffer, Position).a;
-}
-
-
-bool isOccupency(vec3 Position)
-{
-	return GetVolumeData(Position) > 0.0;
-}
-
 void RayMarching(vec3 Entree, vec3 Sortie)
 {
 	// Get the ray direction
 	vec3 Direction = (Sortie - Entree)*GridDimension;
 	float Length = length(Direction);
 	Direction = normalize(Direction);
-	
-	// Compute tMax
-	vec2 tMax;
-	//  * X
-	//if(Direction.x < 0)
-	//else if(Direction.x > 0)
-	//else
-	//	tMax.x = 1000000;
 	
 	// Initialisation for the loop
 	vec3 Position = Entree*GridDimension;
@@ -86,7 +45,7 @@ void RayMarching(vec3 Entree, vec3 Sortie)
 	// Loop variables
 	int i = 0;
 	float CurrentLenght = 0.0;
-	float Alpha = 0.0;
+	float Res = 0.0;
 	for(; i <= NbIteration; i++)
 	{
 		if(CurrentLenght > Length) break;
@@ -94,19 +53,20 @@ void RayMarching(vec3 Entree, vec3 Sortie)
 		Position += Direction;
 		CurrentLenght += 1.0;
 		
+		// Read data
 		if(GridInterpolation)
-			Alpha += (GetVolumeDataTri(Position)/(GridDimension.x));
+			Res += texture(VolumeBuffer, Sample3DTexCoord2D(floor(Position))).a * 0.02;
 		else
-			Alpha += (GetVolumeData(Position)/(GridDimension.x));
-
-		if(Alpha > 1.0)
-		{
+			Res += TrilinearInterpolation(VolumeBuffer, Position).a * 0.02;
+	
+		// Break conditions
+		if(Res > 1.f)
 			break;
-		}
 	}
 	
-	Color = vec4 (min(vec3(Alpha)*2.0,1.0),1.0);
+	Color = vec4(vec3(Res),1.0);
 }
+
 
 void main()
 {	

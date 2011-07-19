@@ -1,0 +1,26 @@
+/*
+* Need to be determine : 
+*  - GridDimension
+*  - GridTextureSize
+*/
+
+// To know ...
+vec2 Sample3DTexCoord2D(vec3 Position)
+{
+	float row = floor(Position.z / GridTextureSize.z);
+	float col = Position.z - (row*GridTextureSize.z);
+	return vec2(col * GridDimension.z + Position.x, row * GridDimension.z + Position.y) / GridTextureSize.xy;
+}
+
+// trilinear interpolation
+vec4 TrilinearInterpolation(sampler2D s, vec3 Position)
+{
+	vec3 IndexedPosition = floor(Position);
+	vec3 Offset = Position - IndexedPosition;
+
+	vec4 v1i1 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(Offset.xy,0)));
+	vec4 v2i1 = texture(s, Sample3DTexCoord2D(IndexedPosition + vec3(Offset.xy,1)));
+
+	return v1i1*(1-Offset.z)+v2i1*Offset.z;
+}
+

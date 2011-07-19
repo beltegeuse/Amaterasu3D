@@ -1,0 +1,16 @@
+{% block return_type %}{% endblock %} SuperFunction(...)
+{
+	// Somes codes
+	{% block initialisation %}
+	{% endblock %}
+	
+	for(...)
+	{
+		// Loop code
+		{% block loop_code %}
+		{% endblock %}
+	}
+	
+	{% block return %}
+	{% endblock %}
+}
