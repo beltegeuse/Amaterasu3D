@@ -27,9 +27,13 @@ protected:
 	 */
 	ama3D::CameraFPS* m_Camera;
 	ama3D::SHDOMFilePropreties m_Proprieties;
-
+	ama3D::SHDOMRenderableObj* m_Volume;
+	ama3D::SHDOMRenderableObj::RENDERABLE_TYPE m_type;
+	bool m_NeedUpdate;
 public:
-	SHDOMVisualizer()
+	SHDOMVisualizer() :
+		m_NeedUpdate(false),
+		m_Volume(0)
 	{
 	}
 
@@ -37,7 +41,7 @@ public:
 	{
 	}
 
-	void Load(const std::string& file)
+	void Load(const std::string& file, ama3D::SHDOMRenderableObj::RENDERABLE_TYPE type = ama3D::SHDOMRenderableObj::TEMPERATURE)
 	{
 		if(m_Proprieties.IsAllocated())
 			m_Proprieties.CleanData();
@@ -47,6 +51,8 @@ public:
 		ama3D::CFile proprietieFile = MediaManager.FindMedia(file);
 		m_Proprieties.Load(proprietieFile.Fullname());
 		ama3D::Logger::Log() << "[FINISH] " << proprietieFile.Fullname() << " ... \n";
+		m_NeedUpdate = true;
+		m_type = type;
 	}
 
 	virtual void OnInitialize()
@@ -69,6 +75,14 @@ public:
 
 	virtual void OnRender()
 	{
+		if(m_NeedUpdate)
+		{
+			if(m_Volume)
+				delete m_Volume;
+			m_Volume = new ama3D::SHDOMRenderableObj(m_type, &m_Proprieties);
+			m_NeedUpdate = false;
+		}
+
 		MatrixManager.SetModeMatrix(ama3D::MATRIX_3D);
 
 		// ... Adrien to take care of this part ...
@@ -109,6 +123,8 @@ public:
 		//	for (int j=0; j<nAngles; j++)printf("%f ",phaseFunc[j]);
 		//	printf("\n");
 		//}
+
+		m_Volume->Render();
 
 		MatrixManager.SetModeMatrix(ama3D::MATRIX_2D);
 

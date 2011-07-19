@@ -1,8 +1,9 @@
 #include "SHDOMFilePropreties.h"
 #include <algorithm>
+#include <Utilities/Util.h>
 
-#ifdef _DEBUG
 #include <Logger/Logger.h>
+#ifdef _DEBUG
 #define DEBUG_TRACE(x) Logger::Log() << x
 #else
 #define DEBUG_TRACE(x) // Nothings :)
@@ -10,6 +11,79 @@
 
 namespace ama3D
 {
+
+SHDOMRenderableObj::SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties * file) :
+	VolumetricRenderableObject("VolumeRendering.shader")
+{
+	Math::TVector3I dim = file->GetDimension();
+
+	// Compute tex dim
+	Math::TVector2I repeat;
+	int Taille = sqrt(dim.z);
+	repeat.x = NearestPowerOfTwo(Taille);
+	repeat.y = dim.z / repeat.x;
+
+	Math::TVector2I size;
+	size.x = dim.x * repeat.x;
+	size.y = dim.y * repeat.y;
+
+	float* image = new float[dim.x*dim.y*dim.z];
+	float min = 100000.0;
+	float max = -10.0;
+
+	for(int rX = 0; rX < repeat.x; rX++)
+		for(int rY = 0; rY < repeat.y; rY++)
+			for(int i = 0; i < dim.x; i++)
+				for(int j = 0; j < dim.y; j++)
+				{
+					int x = rX*dim.z+i;
+					int y = rY*dim.z+j;
+					switch(type)
+					{
+						case EXTINCTION:
+							image[y*size.x + x] = file->GetData(i,j,rX+rY*repeat.x).extinction;
+							break;
+						case TEMPERATURE:
+							image[y*size.x + x] = file->GetData(i,j,rX+rY*repeat.x).temperature;
+							break;
+						case ALBEDO:
+							image[y*size.x + x] = file->GetData(i,j,rX+rY*repeat.x).albedo;
+							break;
+						default:
+							throw CException("Unknow type");
+					}
+					max = std::max(max, image[y*size.x + x]);
+					min = std::min(min, image[y*size.x + x]);
+					Logger::Log() << "DEBUG : " << image[y*size.x + x] << "\n";
+				}
+	Logger::Log() << "DEBUG : " << min << " - " << max << " ( " << max-min << ")\n";
+	// Mise a l'echelle :
+	float dynamique = max-min;
+	for(int x = 0; x < size.x; x++)
+		for(int y = 0; y < size.y; y++)
+		{
+			image[y*size.x + x] = (image[y*size.x + x]-min)/dynamique;
+			Logger::Log() << image[y*size.x + x]  << "\n";
+		}
+	Texture* tex = new Texture(true);
+	Texture2DParams param;
+	glBindTexture(GL_TEXTURE_2D,tex->getIdTex());
+	param.applyParam();
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, size.x, size.y, 0, GL_ALPHA, GL_FLOAT, image);
+	glBindTexture(GL_TEXTURE_2D,0);
+
+	Initialise(tex, size, repeat, Math::TVector3F(dim.x,dim.y,dim.z));
+}
+
+SHDOMRenderableObj::~SHDOMRenderableObj()
+{
+}
+
+
+
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
 
 SHDOMFilePropreties::~SHDOMFilePropreties()
 {

@@ -1,6 +1,7 @@
 #include <Math/Vector3.h>
 #include <string>
 #include <fstream>
+#include <Addons/Binvox/VolumetricRenderableObject.h>
 
 namespace ama3D
 {
@@ -136,6 +137,7 @@ public:
 	// Get data
 	const SHDOMCell& GetData(int x, int y, int z) const;
 	const SHDOMCell& GetData(const ama3D::Math::TVector3I& coordinates) const;
+
 private:
 	/*
 	 * Private methods
@@ -152,6 +154,20 @@ private:
 	void LoadExtinctionFile();
 	void LoadPhaseFile();
 //	void LoadCommonFile();
+};
+
+class SHDOMRenderableObj : public VolumetricRenderableObject
+{
+public:
+	enum RENDERABLE_TYPE
+	{
+		EXTINCTION,
+		TEMPERATURE,
+		ALBEDO
+	};
+
+	SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties * file);
+	virtual ~SHDOMRenderableObj();
 };
 
 }

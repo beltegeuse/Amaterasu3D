@@ -142,7 +142,7 @@ void BinvoxModel::LoadVoxels(std::ifstream *input)
 void BinvoxModel::Bind()
 {
 	VolumetricRenderableObject::Bind();
-	m_volumeRenderingShader->SetUniform1i("GridInterpolation", true);
+	//m_volumeRenderingShader->SetUniform1i("GridInterpolation", true);
 }
 
 Math::TVector2I BinvoxModel::TextureRepeat()
@@ -166,7 +166,8 @@ Math::TVector2I BinvoxModel::TextureSize()
 TTexturePtr BinvoxModel::Create2DTexture()
 {
 	/// Generate the Array
-	float* image = new float[m_Width * m_Height * m_Depth];Math::TVector2I texSize =TextureSize();
+	float* image = new float[m_Width * m_Height * m_Depth];
+	Math::TVector2I texSize =TextureSize();
 	Math::TVector2I repeat = TextureRepeat();
 
 	for(int rX = 0; rX < repeat.x; rX++)

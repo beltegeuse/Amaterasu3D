@@ -11,7 +11,7 @@ uniform sampler2D VolumeBuffer;
 // Grid information
 uniform vec3 GridDimension;
 uniform vec4 GridTextureSize; //xy texture size && zw Repeat texture part
-uniform bool GridInterpolation;
+//uniform bool GridInterpolation;
 //TODO: Add grid transformationn to know the grid position
 
 // To inverse the projections
@@ -54,10 +54,10 @@ void RayMarching(vec3 Entree, vec3 Sortie)
 		CurrentLenght += 1.0;
 		
 		// Read data
-		if(GridInterpolation)
-			Res += texture(VolumeBuffer, Sample3DTexCoord2D(floor(Position))).a * 0.02;
-		else
-			Res += TrilinearInterpolation(VolumeBuffer, Position).a * 0.02;
+		//if(GridInterpolation)
+		//	Res += texture(VolumeBuffer, Sample3DTexCoord2D(floor(Position))).a * 0.02;
+		//else
+		Res += TrilinearInterpolation(VolumeBuffer, Position).a * 0.02;
 	
 		// Break conditions
 		if(Res > 1.f)
