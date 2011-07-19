@@ -15,26 +15,9 @@
 #include <Addons/FPS/FPS.h>
 #include <Addons/Binvox/SHDOMFilePropreties.h>
 
-const int nFiles = 1;
-std::string filenames[nFiles]={
-//"atmos1.prp",
-"gaussol.prp"//,
-//"les2y21_sw1.prp",
-//"les2y21_sw2.prp",
-//"les2y21_sw3.prp",
-//"les2y21_sw4.prp",
-//"les2y21_sw5.prp",
-//"les2y21_sw6.prp",
-//"les2y21_sw7.prp",
-//"les2y21_sw8.prp",
-//"les2y21_sw9.prp",
-//"les2y21_sw10.prp",
-//"les2y21_sw11.prp",
-//"les2y21_sw12.prp",
-//"les2y21_sw13.prp",
-//"les2y21_sw14.prp",
-//"les2y21w16.prp"
-};
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
+
 
 class SHDOMVisualizer : public ama3D::Application
 {
@@ -54,27 +37,26 @@ public:
 	{
 	}
 
+	void Load(const std::string& file)
+	{
+		if(m_Proprieties.IsAllocated())
+			m_Proprieties.CleanData();
+
+		ama3D::Logger::Log() << "[INFO] File need to Load ... \n";
+		ama3D::Logger::Log() << "[Search] " << file << " ... \n";
+		ama3D::CFile proprietieFile = MediaManager.FindMedia(file);
+		m_Proprieties.Load(proprietieFile.Fullname());
+		ama3D::Logger::Log() << "[FINISH] " << proprietieFile.Fullname() << " ... \n";
+	}
+
 	virtual void OnInitialize()
 	{
 		glPointSize(10.f);
 		// Camera Setup
 		m_Camera = new ama3D::CameraFPS(ama3D::Math::TVector3F(30,40,20), ama3D::Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
-		// Load data
-		ama3D::Logger::Log() << "[INFO] File need to Load ... \n";
-		for (int i=0; i<nFiles; i++)
-		{
-			ama3D::Logger::Log() << "   * " << filenames[i] << "\n";
-		}
+		// Shader loading ...
 
-		for (int i=0; i<nFiles; i++)
-		{
-			ama3D::Logger::Log() << "[Search] " << filenames[i] << " ... \n";
-			ama3D::CFile proprietieFile = MediaManager.FindMedia(filenames[i]);
-			m_Proprieties.Load(proprietieFile.Fullname());
-			ama3D::Logger::Log() << "[FINISH] " << proprietieFile.Fullname() << " ... \n";
-			m_Proprieties.CleanData();
-		}
 	}
 
 	virtual void OnUpdate(double delta)
@@ -136,18 +118,56 @@ public:
 	}
 };
 
+void Usage()
+{
+	std::cout << "SHDOMVisualizer : " << std::endl;
+	std::cout << " -f [file] : file to load" << std::endl;
+}
+
 #ifdef WIN32
 #include <windows.h>
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #else
-int main()
+int main(int argc, char *argv[])
 #endif
 {
-	ama3D::CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	ama3D::CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
-	std::cout << "[INFO] Begin ..." << std::endl;
-	SHDOMVisualizer window;
-	window.Run();
-	std::cout << "[INFO] ... end." << std::endl;
+	try
+	{
+		std::string file;
+
+		po::options_description desc("Program Usage", 1024, 512);
+		desc.add_options()
+		  ("help",     "produce help message")
+		  ("file,f",  po::value<std::string>(&file)->required(),   "set file to parse")
+		;
+
+		po::variables_map vm;
+		po::store(po::parse_command_line(argc, argv, desc), vm);
+
+		if (vm.count("help"))
+		{
+			std::cout << desc << "\n";
+			return false;
+		}
+
+		// There must be an easy way to handle the relationship between the
+		// option "help" and "host"-"port"-"config"
+		po::notify(vm);
+
+		ama3D::CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
+		ama3D::CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
+		std::cout << "[INFO] Begin ..." << std::endl;
+		SHDOMVisualizer window;
+		window.Load(file);
+		window.Run();
+		std::cout << "[INFO] ... end." << std::endl;
+
+	}
+	catch(std::exception& e)
+	{
+		std::cerr << "Error: " << e.what() << "\n";
+		return -1;
+	}
+
 	return 0;
 }
