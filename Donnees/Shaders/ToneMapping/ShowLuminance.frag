@@ -19,32 +19,7 @@ out vec4 Result;
 // Standards value in D65
 const vec3 RGB2Lum = vec3(0.212671,0.71516,0.072169);
 
-vec3 matlabHotColormap256(float lum)
-{
-	float m = 256;
-	float n = 96;
-	vec3 c;
-
-	// Red
-	if(lum <= n)
-       c.x = lum / n;
-	else
-       c.x = 1.0;
-	// Green
-   if(lum <= n)
-       c.y = 0.0;
-   else if(lum <= 2*n)
-		c.y = (lum-n)/n;
-   else
-	   c.y = 1.0;
-   // Blue
-   if(lum <= 2*n)
-	   c.z = 0.0;
-   else
-   	   c.z = (lum-2*n)/(m-2*n);
-
-   return c;
-}
+{% include 'DisplayHelper.shadercode' %}
 
 void main()
 {
