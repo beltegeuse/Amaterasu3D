@@ -148,8 +148,8 @@ class Grid:
         voxID = self.World2Voxels(ray.position)
         voxWorldPos = Vector2D.Mult(voxID, self.cellDimension)
         
+        # tMax initialisation
         tMax = Vector2D()
-        
         if(ray.direction.x < 0):
             tMax.x = (voxWorldPos.x - ray.position.x) / ray.direction.x
         elif(ray.direction.x > 0):

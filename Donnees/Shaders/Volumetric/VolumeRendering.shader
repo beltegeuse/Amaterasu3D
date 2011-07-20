@@ -6,5 +6,5 @@
 		<Texture type="Custom" name="VolumeBuffer" id=2 />
 	</Textures>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
-	<FragmentShader filename="VolumeRendering.frag" />
+	<FragmentShader filename="VolumeRendering2.frag" />
 </Shader>

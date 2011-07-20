@@ -62,9 +62,9 @@ void RayMarching(vec3 Entree, vec3 Sortie)
 		
 		// Read data
 		//if(GridInterpolation)
-		//Res += texture(VolumeBuffer, Sample3DTexCoord2D(floor(Position))).a;
+		Res += texture(VolumeBuffer, Sample3DTexCoord2D(floor(Position))).a;
 		//else
-		Res += TrilinearInterpolation(VolumeBuffer, Position).a;
+		//Res += TrilinearInterpolation(VolumeBuffer, Position).a;
 	
 		// Break conditions
 		if(Res >= 1.f)
