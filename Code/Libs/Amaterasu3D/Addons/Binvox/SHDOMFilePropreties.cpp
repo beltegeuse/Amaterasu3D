@@ -27,9 +27,12 @@ SHDOMRenderableObj::SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties
 	size.x = dim.x * repeat.x;
 	size.y = dim.y * repeat.y;
 
-	float* image = new float[dim.x*dim.y*dim.z];
+	float* image = new float[size.x*size.y];
 	float min = 100000.0;
 	float max = -10.0;
+
+	for(int i = 0; i < size.x*size.y; i++)
+		image[i] = 0;
 
 	for(int rX = 0; rX < repeat.x; rX++)
 		for(int rY = 0; rY < repeat.y; rY++)
@@ -56,15 +59,22 @@ SHDOMRenderableObj::SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties
 					min = std::min(min, image[y*size.x + x]);
 					Logger::Log() << "DEBUG : " << image[y*size.x + x] << "\n";
 				}
+
 	Logger::Log() << "DEBUG : " << min << " - " << max << " ( " << max-min << ")\n";
 	// Mise a l'echelle :
-	float dynamique = max-min;
-	for(int x = 0; x < size.x; x++)
-		for(int y = 0; y < size.y; y++)
-		{
-			image[y*size.x + x] = (image[y*size.x + x]-min)/dynamique;
-			Logger::Log() << image[y*size.x + x]  << "\n";
-		}
+//	float dynamique = max-min;
+//	for(int rX = 0; rX < repeat.x; rX++)
+//		for(int rY = 0; rY < repeat.y; rY++)
+//			for(int i = 0; i < dim.x; i++)
+//				for(int j = 0; j < dim.y; j++)
+//				{
+//					int x = rX*dim.z+i;
+//					int y = rY*dim.z+j;
+//					Logger::Log() << "Original val : " << image[y*size.x + x] << " ";
+//					image[y*size.x + x] = (image[y*size.x + x]-min)/dynamique;
+//					Logger::Log() << "Normalize : " << image[y*size.x + x]  << "\n";
+//				}
+
 	Texture* tex = new Texture(true);
 	Texture2DParams param;
 	glBindTexture(GL_TEXTURE_2D,tex->getIdTex());
