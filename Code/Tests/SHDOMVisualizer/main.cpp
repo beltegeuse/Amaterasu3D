@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	void Load(const std::string& file, ama3D::SHDOMRenderableObj::RENDERABLE_TYPE type = ama3D::SHDOMRenderableObj::TEMPERATURE)
+	void Load(const std::string& file, ama3D::SHDOMRenderableObj::RENDERABLE_TYPE type = ama3D::SHDOMRenderableObj::EXTINCTION)
 	{
 		if(m_Proprieties.IsAllocated())
 			m_Proprieties.CleanData();
@@ -124,6 +124,7 @@ public:
 		//	printf("\n");
 		//}
 
+		m_Volume->UpdateCubeFBO(m_Camera);
 		m_Volume->Render();
 
 		MatrixManager.SetModeMatrix(ama3D::MATRIX_2D);
@@ -134,26 +135,20 @@ public:
 	}
 };
 
-void Usage()
-{
-	std::cout << "SHDOMVisualizer : " << std::endl;
-	std::cout << " -f [file] : file to load" << std::endl;
-}
-
-#ifdef WIN32
-#include <windows.h>
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-#else
+//#ifdef WIN32
+//#include <windows.h>
+//int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+//#else
 int main(int argc, char *argv[])
-#endif
+//#endif
 {
+	po::options_description desc("Program Usage", 1024, 512);
 	try
 	{
 		std::string file;
 
-		po::options_description desc("Program Usage", 1024, 512);
 		desc.add_options()
-		  ("help",     "produce help message")
+		  ("help,h",     "produce help message")
 		  ("file,f",  po::value<std::string>(&file)->required(),   "set file to parse")
 		;
 
@@ -163,11 +158,9 @@ int main(int argc, char *argv[])
 		if (vm.count("help"))
 		{
 			std::cout << desc << "\n";
-			return false;
+			return -1;
 		}
 
-		// There must be an easy way to handle the relationship between the
-		// option "help" and "host"-"port"-"config"
 		po::notify(vm);
 
 		ama3D::CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
@@ -182,6 +175,7 @@ int main(int argc, char *argv[])
 	catch(std::exception& e)
 	{
 		std::cerr << "Error: " << e.what() << "\n";
+		std::cout << desc << "\n";
 		return -1;
 	}
 

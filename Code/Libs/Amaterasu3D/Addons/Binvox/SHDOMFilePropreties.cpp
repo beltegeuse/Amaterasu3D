@@ -21,7 +21,9 @@ SHDOMRenderableObj::SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties
 	Math::TVector2I repeat;
 	int Taille = sqrt(dim.z);
 	repeat.x = NearestPowerOfTwo(Taille);
-	repeat.y = dim.z / repeat.x;
+	repeat.y = (dim.z / repeat.x)+1; // if not power of 2
+
+	Logger::Log() << "DEBUG : Size : " << Taille << " Repeat : " << repeat.x << "x" << repeat.y << "\n";
 
 	Math::TVector2I size;
 	size.x = dim.x * repeat.x;
@@ -31,34 +33,46 @@ SHDOMRenderableObj::SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties
 	float min = 100000.0;
 	float max = -10.0;
 
+	Logger::Log() << "DEBUG : Texsize : " << size.x*size.y << " Data size : " << dim.z*dim.x*dim.y << "\n";
+
+	// Texture initialisation
 	for(int i = 0; i < size.x*size.y; i++)
 		image[i] = 0;
 
-	for(int rX = 0; rX < repeat.x; rX++)
-		for(int rY = 0; rY < repeat.y; rY++)
-			for(int i = 0; i < dim.x; i++)
-				for(int j = 0; j < dim.y; j++)
+	// Fill texture with data
+	for(int k = 0; k < dim.z; k++)
+		for(int i = 0; i < dim.x; i++)
+			for(int j = 0; j < dim.y; j++)
+			{
+				int row = k / repeat.x;
+				int col = k - row*repeat.x;
+
+				// Tex coordinates
+				int x = col*dim.x+i;
+				int y = row*dim.y+j;
+
+				// Data
+				float & data = image[y*size.x + x];
+				switch(type)
 				{
-					int x = rX*dim.z+i;
-					int y = rY*dim.z+j;
-					switch(type)
-					{
-						case EXTINCTION:
-							image[y*size.x + x] = file->GetData(i,j,rX+rY*repeat.x).extinction;
-							break;
-						case TEMPERATURE:
-							image[y*size.x + x] = file->GetData(i,j,rX+rY*repeat.x).temperature;
-							break;
-						case ALBEDO:
-							image[y*size.x + x] = file->GetData(i,j,rX+rY*repeat.x).albedo;
-							break;
-						default:
-							throw CException("Unknow type");
-					}
-					max = std::max(max, image[y*size.x + x]);
-					min = std::min(min, image[y*size.x + x]);
-					Logger::Log() << "DEBUG : " << image[y*size.x + x] << "\n";
+					case EXTINCTION:
+						data = file->GetData(i,j,k).extinction;
+						break;
+					case TEMPERATURE:
+						data = file->GetData(i,j,k).temperature;
+						break;
+					case ALBEDO:
+						data = file->GetData(i,j,k).albedo;
+						break;
+					default:
+						throw CException("Unknow type");
 				}
+
+				max = std::max(max, data);
+				min = std::min(min, data);
+
+				//Logger::Log() << "DEBUG : " << data << "\n";
+			}
 
 	Logger::Log() << "DEBUG : " << min << " - " << max << " ( " << max-min << ")\n";
 	// Mise a l'echelle :

@@ -40,7 +40,14 @@ void RayMarching(vec3 Entree, vec3 Sortie)
 	
 	// Initialisation for the loop
 	vec3 Position = Entree*GridDimension;
-	int NbIteration = int(GridDimension.x*MaxFactor); // FIXME: Normally the biggest dimension
+	int NbIteration = 0;
+
+	if(GridDimension.x > GridDimension.y && GridDimension.x > GridDimension.z)
+		NbIteration = int(GridDimension.x*MaxFactor)+1;
+	else if(GridDimension.y > GridDimension.z )
+		NbIteration = int(GridDimension.y*MaxFactor)+1;
+	else
+		NbIteration = int(GridDimension.z*MaxFactor)+1;
 	
 	// Loop variables
 	int i = 0;
@@ -55,12 +62,12 @@ void RayMarching(vec3 Entree, vec3 Sortie)
 		
 		// Read data
 		//if(GridInterpolation)
-		//	Res += texture(VolumeBuffer, Sample3DTexCoord2D(floor(Position))).a * 0.02;
+		//Res += texture(VolumeBuffer, Sample3DTexCoord2D(floor(Position))).a;
 		//else
-		Res += TrilinearInterpolation(VolumeBuffer, Position).a * 0.02;
+		Res += TrilinearInterpolation(VolumeBuffer, Position).a;
 	
 		// Break conditions
-		if(Res > 1.f)
+		if(Res >= 1.f)
 			break;
 	}
 	

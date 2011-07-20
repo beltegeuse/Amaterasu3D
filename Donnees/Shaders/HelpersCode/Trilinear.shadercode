@@ -9,7 +9,7 @@ vec2 Sample3DTexCoord2D(vec3 Position)
 {
 	float row = floor(Position.z / GridTextureSize.z);
 	float col = Position.z - (row*GridTextureSize.z);
-	return vec2(col * GridDimension.z + Position.x, row * GridDimension.z + Position.y) / GridTextureSize.xy;
+	return vec2(col * GridDimension.x + Position.x, row * GridDimension.y + Position.y) / GridTextureSize.xy;
 }
 
 // trilinear interpolation
