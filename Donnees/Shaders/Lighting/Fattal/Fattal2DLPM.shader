@@ -8,6 +8,7 @@
 		<Texture type="Custom" name="UBuffer" id=0 />
 		<Texture type="Custom" name="IBuffer" id=1 />
 	</Textures>
-	<VertexShader filename="SimpleQuadDisplay.vert" />
+	<VertexShader filename="Fattal2DLPM.vert" />
 	<FragmentShader filename="Fattal2DLPM.frag" />
+	<GeometryShader filename="Fattal2DLPM.geom" in="Point" out="Point" />
 </Shader>

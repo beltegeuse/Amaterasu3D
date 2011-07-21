@@ -1,11 +1,11 @@
-#version 130
+#version 150
 
 // Precision qualifier
 precision highp float;
 
 // Out 
-out vec4 outIBuffer;
-out vec4 outUBuffer;
+out flat vec3 OriPosition;
+out flat vec4 OriDirection;
 
 void main()
 {

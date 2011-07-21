@@ -14,5 +14,5 @@ out vec4 Color;
 
 void main()
 {	
-	Color = texture(Databuffer, outTexCoord).a;
+	Color = vec4(vec3(texture(Databuffer, outTexCoord).a),1.0);
 }
