@@ -8,12 +8,13 @@
 #include <stdlib.h>
 
 #include <Math/Matrix4.h>
+#include <Math/Matrix2.h>
 #include <Logger/LoggerFile.h>
-#include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
 #include <Addons/Binvox/VolumetricRenderableObject.h>
+#include <Graphics/SceneNode/IRenderableSceneNode.h>
 
 using namespace ama3D;
 
@@ -28,6 +29,8 @@ private:
 	TShaderPtr m_FattalComputeLPM; //< to compute one wave of LPM
 	TShaderPtr m_FattalUpdateBuffers; //< to update I & U
 	FBO* m_FinalBuffers[2];
+	// Points informations
+	ISimpleRenderableSceneNode* m_InitialRays[4];
 	// Topologic attributes
 	Math::TVector2I m_SizeGrid;
 	float m_ExtinctionCoeff;
@@ -56,6 +59,8 @@ public:
 		// Initialise buffers
 		m_FinalBuffers[1] = m_FattalUpdateBuffers->GetFBO();
 		m_FinalBuffers[2] = m_FattalUpdateBuffers->GetFBO()->Copy();
+		// Initialize Rays maps
+		InitializeRaysMaps();
 	}
 
 	virtual ~Fattal2DVolume()
@@ -85,7 +90,15 @@ public:
 		// Get I buffer in final
 		// Bind it and draw the image
 	}
-
+private:
+	void InitializeRaysMaps()
+	{
+		// Creation of the rays maps
+		for(int i = 0; i < 4; i++) // < Foreach directions
+		{
+			RenderableObject::RenderableBuffer buffer;
+		}
+	}
 };
 
 class Fattal : public Application
