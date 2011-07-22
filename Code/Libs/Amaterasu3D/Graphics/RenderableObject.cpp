@@ -60,10 +60,10 @@ void RenderableObject::SetIndiceBuffer(unsigned int* buffer, int size)
 }
 
 void RenderableObject::AddBuffer(RenderableObject::RenderableBuffer buffer,
-		ShaderAttributType type)
+		int typeID)
 {
 	Assert(!m_is_compiled);
-	m_buffers[type] = buffer;
+	m_buffers[typeID] = buffer;
 }
 
 void RenderableObject::AddTextureMap(TextureType type, TTexturePtr texture)

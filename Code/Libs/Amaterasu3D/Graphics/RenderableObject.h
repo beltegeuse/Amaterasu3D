@@ -57,7 +57,7 @@ private:
 	int m_indices_size;
 	// All data
 	typedef std::map<TextureType, TTexturePtr> TexturesMap;
-	typedef std::map<ShaderAttributType, RenderableObject::RenderableBuffer> BufferMap;
+	typedef std::map<int, RenderableObject::RenderableBuffer> BufferMap;
 	typedef std::map<MaterialType, Color> MaterialMap;
 	BufferMap m_buffers;
 	TexturesMap m_textures_map;
@@ -76,7 +76,7 @@ public:
 	void SetIndiceBuffer(unsigned int* buffer, int size);
 	// Add differents buffers
 	void AddBuffer(RenderableObject::RenderableBuffer buffer,
-			ShaderAttributType type);
+			int typeID);
 	void AddTextureMap(TextureType type, TTexturePtr texture);
 	void AddMaterial(MaterialType type, Color color);
 	// Compile all buffers

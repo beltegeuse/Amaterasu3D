@@ -30,7 +30,7 @@ private:
 	TShaderPtr m_FattalUpdateBuffers; //< to update I & U
 	FBO* m_FinalBuffers[2];
 	// Points informations
-	ISimpleRenderableSceneNode* m_InitialRays[4];
+	ISimpleRenderableSceneNode* m_InitialRaysMap[4];
 	// Topologic attributes
 	Math::TVector2I m_SizeGrid;
 	float m_ExtinctionCoeff;
@@ -93,10 +93,80 @@ public:
 private:
 	void InitializeRaysMaps()
 	{
-		// Creation of the rays maps
-		for(int i = 0; i < 4; i++) // < Foreach directions
+		// Generate the sampling
+		Math::TVector2F* samples = new Math::TVector2F[m_LPMNbAngles];
+		float offset = 1.0 / (m_LPMNbAngles+1);
+		for(int i = 0; i < m_LPMNbAngles; i++)
 		{
-			RenderableObject::RenderableBuffer buffer;
+			samples[i].x = 0.5;
+			samples[i].y = (i+1)*offset - 0.5;
+		}
+		// Creation of the rays maps
+		for(int idDir = 0; idDir < 4; idDir++) // < Foreach directions
+		{
+			int propagationOrientation = 1;
+			if(idDir < 2)
+				propagationOrientation = -1;
+			// Compute Ori position
+			Math::TVector2I OriPosition = Math::TVector2I(0,0);
+			if(propagationOrientation == -1)
+				OriPosition = m_SizeGrid;
+			// Transformation Matrix
+			Math::Matrix2 transMatrix;
+			int NbCells;
+			if(idDir % 2 == 0)
+			{
+				transMatrix.a11 = propagationOrientation;
+				transMatrix.a22 = propagationOrientation;
+				NbCells = m_SizeGrid.y;
+			}
+			else
+			{
+				transMatrix.a21 = propagationOrientation;
+				transMatrix.a12 = propagationOrientation;
+				NbCells = m_SizeGrid.x;
+			}
+			// Main direction to generates rays
+			Math::TVector2F offset(0,1);
+			offset = transMatrix.Transform(offset);
+			// Create all ray
+			int NbRay = NbCells*m_LPMMultRes*m_LPMNbAngles;
+			float* rayPosition = new float[NbRay*2];
+			float* rayOrientation = new float[NbRay*2];
+			for(int k = 0; k < NbCells; k++)
+			{
+				for(int j = 0; j < m_LPMNbAngles; j++)
+				{
+					rayPosition[k+j*2] = OriPosition.x+offset.x*((k+0.5)/NbCells);
+					rayPosition[k+j*2+1] = OriPosition.y+offset.y*((k+0.5)/NbCells);
+					rayOrientation[k+j*2] = transMatrix.Transform(samples[j]).x;
+					rayOrientation[k+j*2] = transMatrix.Transform(samples[j]).y;
+				}
+			}
+			// Create renderable objects
+			RenderableObject::RenderableBuffer bufferPosition;
+			RenderableObject::RenderableBuffer bufferDirection;
+			// Configure
+			// * Position
+			bufferPosition.buffer = rayPosition;
+			bufferPosition.dimension = 2;
+			bufferPosition.owner = true;
+			bufferPosition.size = NbRay*2;
+			// * Orientation
+			bufferDirection.buffer = rayOrientation;
+			bufferDirection.dimension = 2;
+			bufferDirection.owner = true;
+			bufferDirection.size = NbRay*2;
+			// Create indice buffer
+			unsigned int* indiceBuffer = new unsigned int[NbRay];
+			for(int i = 0; i < NbRay; i++)
+				indiceBuffer[i] = i;
+			// Create object and configure
+			ISimpleRenderableSceneNode * renderableObj = new ISimpleRenderableSceneNode("", 0);
+			renderableObj->GetObject().SetIndiceBuffer(indiceBuffer, NbRay);
+			renderableObj->GetObject().AddBuffer(bufferPosition, CUSTOM_ATTRIBUT+0);
+			renderableObj->GetObject().AddBuffer(bufferDirection, CUSTOM_ATTRIBUT+1);
+			m_InitialRaysMap[idDir] = renderableObj;
 		}
 	}
 };
