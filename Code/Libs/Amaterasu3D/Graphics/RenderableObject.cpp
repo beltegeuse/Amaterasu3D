@@ -115,11 +115,9 @@ void RenderableObject::Draw()
 	for (MaterialMap::iterator it = m_material_map.begin();
 			it != m_material_map.end(); it++)
 			{
-		if (!CShaderManager::Instance().currentShader()->IsMaterialAvailable(
-				it->first))
-			continue;
-		CShaderManager::Instance().currentShader()->SetMaterialValue(it->first,
-				it->second);
+			if (!CShaderManager::Instance().currentShader()->IsMaterialAvailable(it->first))
+				continue;
+			CShaderManager::Instance().currentShader()->SetMaterialValue(it->first,it->second);
 	}
 	// Textures activation
 	for (TexturesMap::iterator it = m_textures_map.begin();
@@ -135,13 +133,12 @@ void RenderableObject::Draw()
 	for (BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end();
 			it++)
 			{
-		if (!CShaderManager::Instance().currentShader()->IsAttributAvailable(
-				it->first))
-			continue;GLCheck(
-				glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
+		if (!CShaderManager::Instance().currentShader()->IsAttributAvailable(it->first))
+			continue;
+		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
 		glEnableVertexAttribArray(it->first);
-		GLCheck(
-				glVertexAttribPointer(it->first, it->second.dimension, GL_FLOAT, GL_FALSE, it->second.dimension * sizeof(float), 0));
+		GLCheck(glVertexAttribPointer(it->first, it->second.dimension,
+				GL_FLOAT, GL_FALSE, it->second.dimension * sizeof(float), 0));
 		i++;
 	}
 	// Drawing

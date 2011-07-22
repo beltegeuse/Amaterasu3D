@@ -50,7 +50,8 @@ enum ShaderAttributType
 	NORMAL_ATTRIBUT = 2,
 	TANGENT_ATTRIBUT = 3,
 	BITANGENT_ATTRIBUT = 4,
-	COLOR_ATTRIBUT = 5
+	COLOR_ATTRIBUT = 5,
+	CUSTOM_ATTRIBUT = 6 // Always at the end
 };
 
 enum MaterialType

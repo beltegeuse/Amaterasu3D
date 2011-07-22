@@ -179,10 +179,10 @@ void Shader::ShowLinkLog(unsigned int id)
 	}
 }
 
-void Shader::AddAttributBinding(ShaderAttributType type,
+void Shader::AddAttributBinding(int typeID,
 		const std::string& name)
 {
-	m_attributs_bind[type] = name;
+	m_attributs_bind[typeID] = name;
 }
 
 void Shader::UpdateAttributBinding()
@@ -194,9 +194,9 @@ void Shader::UpdateAttributBinding()
 	}
 }
 
-bool Shader::IsAttributAvailable(ShaderAttributType type)
+bool Shader::IsAttributAvailable(int typeID)
 {
-	return m_attributs_bind.find(type) != m_attributs_bind.end();
+	return m_attributs_bind.find(typeID) != m_attributs_bind.end();
 }
 
 void Shader::AddTextureUnit(int typeID, const std::string& name)

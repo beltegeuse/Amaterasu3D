@@ -76,7 +76,7 @@ private:
 //	typedef std::map<std::string, GLint> CachedIDMap;
 //	CachedIDMap m_CachedID;
 	// All binding attributs
-	typedef std::map<ShaderAttributType, std::string> MapAttributs;
+	typedef std::map<int, std::string> MapAttributs;
 	typedef std::map<int, std::string> MapTexture;
 	typedef std::map<MatrixType, std::string> MapMatrix;
 	typedef std::map<MaterialType, std::string> MapMaterials;
@@ -140,9 +140,9 @@ public:
 	// Shader Attributes Bindings
 	//////////////////////////////
 	// * Attributs
-	void AddAttributBinding(ShaderAttributType type, const std::string& name);
+	void AddAttributBinding(int typeID, const std::string& name);
 	void UpdateAttributBinding();
-	virtual bool IsAttributAvailable(ShaderAttributType type);
+	virtual bool IsAttributAvailable(int type);
 	// * Textures
 	void AddTextureUnit(int typeID, const std::string& name);
 	void UpdateTextureUnitsBinding();

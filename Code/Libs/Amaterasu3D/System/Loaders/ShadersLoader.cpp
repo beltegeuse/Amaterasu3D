@@ -282,46 +282,54 @@ void ShadersLoader::LoadShaderAttributs(Shader* shader, TiXmlElement *root)
 				&nameAttrib);
 		TinyXMLGetAttributeValue<std::string>(attributNode, "type",
 				&typeAttrib);
-		ShaderAttributType type;
+		int typeID;
 		//TODO: Faire une factory ???
 		if (typeAttrib == "Vertex")
 		{
 			Logger::Log() << "   * Attribut : " << nameAttrib << " (Vertex) \n";
-			type = VERTEX_ATTRIBUT;
+			typeID = VERTEX_ATTRIBUT;
 		}
 		else if (typeAttrib == "Color")
 		{
 			Logger::Log() << "   * Attribut : " << nameAttrib << " (Color) \n";
-			type = COLOR_ATTRIBUT;
+			typeID = COLOR_ATTRIBUT;
 		}
 		else if (typeAttrib == "TexCoord")
 		{
 			Logger::Log() << "   * Attribut : " << nameAttrib
 					<< " (TexCoord) \n";
-			type = TEXCOORD_ATTRIBUT;
+			typeID = TEXCOORD_ATTRIBUT;
 		}
 		else if (typeAttrib == "Tangent")
 		{
 			Logger::Log() << "   * Attribut : " << nameAttrib
 					<< " (Tangent) \n";
-			type = TANGENT_ATTRIBUT;
+			typeID = TANGENT_ATTRIBUT;
 		}
 		else if (typeAttrib == "BiTangent")
 		{
 			Logger::Log() << "   * Attribut : " << nameAttrib
 					<< " (BiTangent) \n";
-			type = BITANGENT_ATTRIBUT;
+			typeID = BITANGENT_ATTRIBUT;
 		}
 		else if (typeAttrib == "Normal")
 		{
 			Logger::Log() << "   * Attribut : " << nameAttrib << " (Normal) \n";
-			type = NORMAL_ATTRIBUT;
+			typeID = NORMAL_ATTRIBUT;
+		}
+		else if(typeAttrib == "Custom")
+		{
+			// TODO: Add Limit number & do verifications
+			int idNum;
+			TinyXMLGetAttributeValue<int>(attributNode, "id",&idNum);
+			Logger::Log() << "   * Attribut : " << nameAttrib << " (Custom " << idNum << ") \n";
+			typeID = CUSTOM_ATTRIBUT + idNum;
 		}
 		else
 		{
 			throw CException("Unknow attribut : " + typeAttrib);
 		}
-		shader->AddAttributBinding(type, nameAttrib);
+		shader->AddAttributBinding(typeID, nameAttrib);
 		attributNode = attributNode->NextSiblingElement("Attribut");
 	}
 }

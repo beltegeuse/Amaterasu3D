@@ -76,16 +76,16 @@ void GBufferShader::OnDraw()
 	m_use_tangants = false;
 }
 
-bool GBufferShader::IsAttributAvailable(ShaderAttributType type)
+bool GBufferShader::IsAttributAvailable(int typeID)
 {
 	//TODO: Rewrite this function
-	bool res = Shader::IsAttributAvailable(type);
+	bool res = Shader::IsAttributAvailable(typeID);
 	if (!res)
 		return res;
 	// Update attributs
-	if (type == TEXCOORD_ATTRIBUT)
+	if (typeID == TEXCOORD_ATTRIBUT)
 		m_use_texCoord = true;
-	else if (type == TANGENT_ATTRIBUT)
+	else if (typeID == TANGENT_ATTRIBUT)
 		m_use_tangants = true;
 	// Return the good value
 	return res;

@@ -45,7 +45,7 @@ public:
 	virtual ~GBufferShader();
 
 	virtual void OnDraw();
-	virtual bool IsAttributAvailable(ShaderAttributType type);
+	virtual bool IsAttributAvailable(int typeID);
 	virtual bool IsTextureAvailable(TextureType type);
 };
 }

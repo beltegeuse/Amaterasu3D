@@ -5,7 +5,7 @@ precision highp float;
 
 // Out 
 out flat vec3 OriPosition;
-out flat vec4 OriDirection;
+out flat vec3 OriDirection;
 
 void main()
 {

@@ -4,6 +4,10 @@
 		<Frame name="outUBuffer" type="outDeltaIBuffer" />
 		<Frame name="outUBuffer" type="outDeltaUBuffer" />
 	</OutputFrame>
+	<Attributs>
+    	<Attribut type="Custom" id=0 name="OriPosition" />
+    	<Attribut type="Custom" id=1 name="OriDirection" />
+    </Attributs>
 	<Textures>
 		<Texture type="Custom" name="UBuffer" id=0 />
 		<Texture type="Custom" name="IBuffer" id=1 />
