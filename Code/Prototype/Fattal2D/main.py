@@ -397,24 +397,33 @@ def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True, LPMFactor = 
                     ray.Draw(screen)
                     I.DrawLoopRayIntersection(ray)
                 # Get all intersections (group of group of intersection)
-                Allintersections = I.ComputeRayIntersectionsLoop(ray)
+                Allintersections = I.ComputeRayIntersectionsLoop(ray) # < Give a tab of tab of intersections
                 idIntersection = 0
                 for intersections in Allintersections:
+                    
+                    # Initialisation of the Ray value
                     rayValue = 0.0
                     if idIntersection == 0 and PassID == 0 and mainAxis == "X" and propaOri == 1 and rId >= beamLow and rId <= beamHigh:
                         if Vector2D.DotProduct(mainDirectionV, ray.direction) == 1:
                             rayValue = 10.0
+                            
+                    # Protection to don't add twice the initialisation
                     idIntersection+=1
+                    
+                    # For each couple of intersections
                     for i in range(len(intersections)-1):
+                        # Get the values :
+                        #  * Length
+                        #  * voxID
                         beginP = intersections[i]
                         endP = intersections[i+1]
                         v = endP - beginP
                         dist = v.Length()
-                        if dist == 0:
-                            #print "[DEBUG] Throw intersection ..."
+                        if dist == 0: # < Protections :)
                             continue
-                        # Know the CellID
+                        
                         voxID = I.World2VoxelsID(beginP+v.Factor(0.5))
+                        
                         # Precompute values for update U and I
                         Wn = Vector2D.DotProduct(mainDirectionV, ray.direction)
                         #print "Factor : " + str(Wn)
@@ -431,6 +440,7 @@ def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True, LPMFactor = 
                         # Update U value
                         for mID in range(4):
                             U.data[voxID][mID] += (cellVolumeInv/4.0)*Ars*(3.14/(9*3))*scatteringTerm
+                            
 if __name__=="__main__":
     # Constante
     # Real value for first compute

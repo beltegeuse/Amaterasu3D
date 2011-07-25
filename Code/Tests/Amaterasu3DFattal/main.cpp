@@ -77,10 +77,18 @@ public:
 		glDisable(GL_DEPTH_TEST);
 		for(int i = 0; i < nbPass; i++)
 		{
-			// for dir in directions:
-			//   Swap buffers
-			//   Compute LPM(dir)
-			//   UpdateBuffers
+			for(int j = 0; j < 4; j++)
+			{
+				// for dir in directions:
+				//   Swap buffers
+				//   Compute LPM(dir)
+				m_FattalComputeLPM->Begin();
+				m_InitialRaysMap[j]->Render();
+				m_FattalComputeLPM->End();
+				//   UpdateBuffers
+				m_FattalUpdateBuffers->Begin();
+				m_FattalUpdateBuffers->End();
+			}
 		}
 		glDisable(GL_BLEND);
 	}
