@@ -9,5 +9,5 @@ out vec4 outUBuffer;
 
 void main()
 {
-	
+	// Need to Reset The U main direction
 }

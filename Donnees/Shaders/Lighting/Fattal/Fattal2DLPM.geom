@@ -17,6 +17,8 @@ in flat vec2 vOriDirection;
 
 // Grid information
 uniform vec2 GridDimension;
+uniform float AbsortionCoeff;
+uniform float DiffusionCoeff;
 
 // Out (Offset modifications)
 out flat vec4 DeltaData;
@@ -33,6 +35,14 @@ bool isInGrid(in vec2 voxID)
 	return all(greaterThanEqual(voxID, vec2(0.0))) && all(lessThan(voxID, GridDimension));
 }
 
+vec2 ComputeMainDirectionRay(in vec2 DirectionAbs, in vec2 sDelta)
+{
+	if(DirectionAbs.x > DirectionAbs.y)
+		return vec2(sDelta.x,0.0);
+	else
+		return vec2(0.0, sDelta.y);
+}
+
 void main()
 {
 	// Constraints
@@ -41,7 +51,13 @@ void main()
 	/////////////////////////////////
 	// Get data
 	/////////////////////////////////
+	// Data with direction information
 	vec2 Direction = normalize(vOriDirection);
+	vec2 DirectionAbs = abs(Direction);
+	vec2 sDelta = sign(Direction);
+	float maxDirectionCoord = max(DirectionAbs.x,DirectionAbs.y);
+	vec2 MainDirection = ComputeMainDirectionRay(DirectionAbs, sDelta);
+	// Data with position information
 	vec2 Position = vOriPosition; // already mult by GridDimension
 	vec2 voxWorldPos = floor(Position);
 	
@@ -68,8 +84,6 @@ void main()
 		tDelta.x = 1.0/abs(Direction.x);
 	if(Direction.y != 0)
 		tDelta.y = 1.0/abs(Direction.y);
-		
-	vec2 sDelta = sign(Direction);
 	
 	////////////////////////////////
 	// Loop (Ray martching )
@@ -79,15 +93,44 @@ void main()
 	int nbIntersection;
 	// Values of rays
 	int rayValue = 0;
+	float OldCurrentLenght = 0.0;
+	vec2 CurrentVoxID;
 	// know the main direction
-	bool xMainDirection = abs(Direction.x) > abs(Direction.y);
+	bool xMainDirection = DirectionAbs.x > DirectionAbs.y;
+	
 	while(isNeedRecast)
 	{
 		isNeedRecast = false;
 		nbIntersection = 0;
 		while(isInGrid(voxWorldPos))
 		{
+			// Save the current VoxID for cell reading
+			CurrentVoxID = voxWorldPos; // Need +1 ?
 			
+			// Martch in the volume
+			vec2 diff;
+			if(tMax.x < tMax.y)
+			{
+				diff = tMax.x*Direction;
+				tMax.x += tDelta.x;
+				voxWorldPos.x += sDelta.x;
+			}
+			else
+			{
+				diff = tMax.y*Direction;
+				tMax.y += tDelta.y;
+				voxWorldPos.y += sDelta.y;
+			}
+			
+			// Get the length & Update OldCurrentLenght for next loop
+			float TravelLength = length(diff);
+			float DiffLength = TravelLength - OldCurrentLenght;
+			OldCurrentLenght = TravelLength;
+			
+			// Compute
+			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*I.S/maxDirectionCoord));
+			float extinctionFactor = exp(-1*dist*(DiffusionCoeff+AbsortionCoeff)/maxDirectionCoord);
+			// Protection
 			nbIntersection++;
 		}
 		
