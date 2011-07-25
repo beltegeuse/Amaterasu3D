@@ -38,6 +38,8 @@ private:
 	// LPM Topologic attributes
 	int m_LPMMultRes;
 	int m_LPMNbAngles;
+	// Others
+	int m_IDFinalFBO;
 public:
 	/*
 	 * Constructors & Destructors
@@ -72,33 +74,94 @@ public:
 	// Update I buffer
 	void ComputeLPM(int nbPass = 3)
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE);
-		glDisable(GL_DEPTH_TEST);
+		m_IDFinalFBO = 0;
+		// foreach pass
 		for(int i = 0; i < nbPass; i++)
 		{
-			for(int j = 0; j < 4; j++)
+			// foreach direction
+			for(int idDir = 0; idDir < 4; idDir++)
 			{
-				// for dir in directions:
-				//   Swap buffers
+				// Set blending
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_ONE, GL_ONE);
+				glDisable(GL_DEPTH_TEST);
+				//////////////////////////
 				//   Compute LPM(dir)
+				//////////////////////////
 				m_FattalComputeLPM->Begin();
-				m_InitialRaysMap[j]->Render();
+				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
+				m_InitialRaysMap[idDir]->Render();
+				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 				m_FattalComputeLPM->End();
+				glDisable(GL_BLEND);
+				//////////////////////////
 				//   UpdateBuffers
+				//////////////////////////
+				// Swap buffers
+				m_FattalUpdateBuffers->SetFBO(m_FinalBuffers[(m_IDFinalFBO+1) % 2], false);
+				// Add Buffers
 				m_FattalUpdateBuffers->Begin();
+				m_FattalUpdateBuffers->SetUniformVector("MainDirection", GetMainDirection(idDir));
+				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
+				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
+				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->activateMultiTex(CUSTOM_TEXTURE+3);
+
+				glBegin(GL_QUADS);
+					glTexCoord2f(0.0, 0.0);
+					glVertex2f(-1.0, -1.0);
+					glTexCoord2f(0.0, 1.0);
+					glVertex2f(-1.0, 1.0);
+					glTexCoord2f(1.0, 1.0);
+					glVertex2f(1.0, 1.0);
+					glTexCoord2f(1.0, 0.0);
+					glVertex2f(1.0, -1.0);
+				glEnd();
+
+				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+3);
 				m_FattalUpdateBuffers->End();
+				// Update id Final
+				m_IDFinalFBO = (m_IDFinalFBO+1) % 2;
 			}
 		}
-		glDisable(GL_BLEND);
 	}
 	// Draw I buffer
 	void Render()
 	{
-		// Get I buffer in final
-		// Bind it and draw the image
+		m_FattalDisplay->Begin();
+		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0, 0.0);
+			glVertex2f(-1.0, -1.0);
+			glTexCoord2f(0.0, 1.0);
+			glVertex2f(-1.0, 1.0);
+			glTexCoord2f(1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glTexCoord2f(1.0, 0.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_FattalDisplay->End();
 	}
 private:
+	Math::TVector2F GetMainDirection(int idDir)
+	{
+		// Setup direction
+		int propagationOrientation = 1;
+		if(idDir < 2)
+			propagationOrientation = -1;
+		// Setup vector
+		if((idDir % 2) == 0)
+			return Math::TVector2F(propagationOrientation, 0);
+		else
+			return Math::TVector2F(0,propagationOrientation);
+	}
+
 	void InitializeRaysMaps()
 	{
 		// Generate the sampling
@@ -113,26 +176,24 @@ private:
 		// Creation of the rays maps
 		for(int idDir = 0; idDir < 4; idDir++) // < Foreach directions
 		{
-			int propagationOrientation = 1;
-			if(idDir < 2)
-				propagationOrientation = -1;
+			Math::TVector2F mainDir = GetMainDirection(idDir);
 			// Compute Ori position
 			Math::TVector2I OriPosition = Math::TVector2I(0,0);
-			if(propagationOrientation == -1)
+			if(mainDir.x == -1.0 || mainDir.y == -1.0)
 				OriPosition = m_SizeGrid;
 			// Transformation Matrix
 			Math::Matrix2 transMatrix;
 			int NbCells;
-			if(idDir % 2 == 0)
+			if(mainDir.x != 0)
 			{
-				transMatrix.a11 = propagationOrientation;
-				transMatrix.a22 = propagationOrientation;
+				transMatrix.a11 = mainDir.x;
+				transMatrix.a22 = mainDir.x;
 				NbCells = m_SizeGrid.y;
 			}
 			else
 			{
-				transMatrix.a21 = propagationOrientation;
-				transMatrix.a12 = propagationOrientation;
+				transMatrix.a21 = mainDir.y;
+				transMatrix.a12 = mainDir.y;
 				NbCells = m_SizeGrid.x;
 			}
 			// Main direction to generates rays

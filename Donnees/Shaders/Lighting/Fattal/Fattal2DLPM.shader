@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <Shader name="VolumeRendering" type="Basic">
 	<OutputFrame depthType="None" size="Custom" width=256 height=128>
-		<Frame name="outUBuffer" type="RGBA32" />
-		<Frame name="outUBuffer" type="RGBA32" />
+		<Frame name="outDeltaIBuffer" type="RGBA32" />
+		<Frame name="outDeltaUBuffer" type="RGBA32" />
 	</OutputFrame>
 	<Attributs>
     	<Attribut type="Custom" id=0 name="OriPosition" />
