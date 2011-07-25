@@ -21,6 +21,9 @@ uniform vec2 GridDimension;
 // Out (Offset modifications)
 out flat vec4 DeltaData;
 
+// Define const
+#define BIAS 0.001
+
 /////////////////////////////////
 // Helper functions
 /////////////////////////////////
@@ -71,9 +74,52 @@ void main()
 	////////////////////////////////
 	// Loop (Ray martching )
 	////////////////////////////////
-	// TODO: Need to do the reinjection steps :)
-	while(isInGrid(voxWorldPos))
+	// Protection for reinjection steps
+	bool isNeedRecast = true;
+	int nbIntersection;
+	// Values of rays
+	int rayValue = 0;
+	// know the main direction
+	bool xMainDirection = abs(Direction.x) > abs(Direction.y);
+	while(isNeedRecast)
 	{
+		isNeedRecast = false;
+		nbIntersection = 0;
+		while(isInGrid(voxWorldPos))
+		{
+			
+			nbIntersection++;
+		}
 		
+		// Protection for looping
+		if(nbIntersection == 0) // < if no intersection => Quit
+			break;
+		
+		// Compute relooping :)
+		if(xMainDirection)
+		{
+			if(Position.y <= 0 || Position.y >= GridDimension.y)
+			{
+				isNeedRecast = true;
+				if(sDeltas.y == -1)
+					Position.y = GridDimension.y-BIAS;
+				else
+					Position.y = BIAS;
+			}
+		}
+		else
+		{
+			if(Position.x <= 0 || Position.x >= GridDimension.x)
+			{
+				isNeedRecast = true;
+				if(sDeltas.x == -1)
+					Position.x = GridDimension.x-BIAS;
+				else
+					Position.x = BIAS;
+			}
+		}
+		
+		// Reinitialise rayValue
+		rayValue = 0;
 	}
 }
