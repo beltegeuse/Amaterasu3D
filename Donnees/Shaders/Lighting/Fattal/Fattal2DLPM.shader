@@ -7,6 +7,7 @@
 	<Attributs>
     	<Attribut type="Custom" id=0 name="OriPosition" />
     	<Attribut type="Custom" id=1 name="OriDirection" />
+    	<Attribut type="Custom" id=2 name="OriValue" />
     </Attributs>
 	<Textures>
 		<Texture type="Custom" name="UBuffer" id=0 />

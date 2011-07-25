@@ -109,6 +109,7 @@ private:
 			samples[i].x = 0.5;
 			samples[i].y = (i+1)*offset - 0.5;
 		}
+
 		// Creation of the rays maps
 		for(int idDir = 0; idDir < 4; idDir++) // < Foreach directions
 		{
@@ -141,19 +142,28 @@ private:
 			int NbRay = NbCells*m_LPMMultRes*m_LPMNbAngles;
 			float* rayPosition = new float[NbRay*2];
 			float* rayOrientation = new float[NbRay*2];
+			float* rayValue = new float[NbRay];
 			for(int k = 0; k < NbCells; k++)
 			{
 				for(int j = 0; j < m_LPMNbAngles; j++)
 				{
-					rayPosition[k+j*2] = OriPosition.x+offset.x*((k+0.5)/NbCells);
-					rayPosition[k+j*2+1] = OriPosition.y+offset.y*((k+0.5)/NbCells);
-					rayOrientation[k+j*2] = transMatrix.Transform(samples[j]).x;
-					rayOrientation[k+j*2] = transMatrix.Transform(samples[j]).y;
+					rayPosition[m_LPMNbAngles*k+j*2] = OriPosition.x+offset.x*((k+0.5)/NbCells);
+					rayPosition[m_LPMNbAngles*k+j*2+1] = OriPosition.y+offset.y*((k+0.5)/NbCells);
+					rayOrientation[m_LPMNbAngles*k+j*2] = transMatrix.Transform(samples[j]).x;
+					rayOrientation[m_LPMNbAngles*k+j*2+1] = transMatrix.Transform(samples[j]).y;
+
+					// TODO: Do an real initialisation
+					// Initialisation Value
+					if(idDir == 0)
+						rayValue[m_LPMNbAngles*k+j] = 1.0;
+					else
+						rayValue[m_LPMNbAngles*k+j] = 0.0;
 				}
 			}
 			// Create renderable objects
 			RenderableObject::RenderableBuffer bufferPosition;
 			RenderableObject::RenderableBuffer bufferDirection;
+			RenderableObject::RenderableBuffer bufferValue;
 			// Configure
 			// * Position
 			bufferPosition.buffer = rayPosition;
@@ -165,6 +175,11 @@ private:
 			bufferDirection.dimension = 2;
 			bufferDirection.owner = true;
 			bufferDirection.size = NbRay*2;
+			// * Orientation
+			bufferValue.buffer = rayValue;
+			bufferValue.dimension = 1;
+			bufferValue.owner = true;
+			bufferValue.size = NbRay;
 			// Create indice buffer
 			unsigned int* indiceBuffer = new unsigned int[NbRay];
 			for(int i = 0; i < NbRay; i++)
@@ -174,6 +189,7 @@ private:
 			renderableObj->GetObject().SetIndiceBuffer(indiceBuffer, NbRay);
 			renderableObj->GetObject().AddBuffer(bufferPosition, CUSTOM_ATTRIBUT+0);
 			renderableObj->GetObject().AddBuffer(bufferDirection, CUSTOM_ATTRIBUT+1);
+			renderableObj->GetObject().AddBuffer(bufferValue, CUSTOM_ATTRIBUT+2);
 			m_InitialRaysMap[idDir] = renderableObj;
 		}
 	}

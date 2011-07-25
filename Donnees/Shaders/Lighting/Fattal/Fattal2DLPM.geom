@@ -14,6 +14,7 @@ uniform sampler2D IBuffer;
 // In Attributes values
 flat in vec2 vOriPosition;
 flat in vec2 vOriDirection;
+flat in float vOriValue;
 
 // Grid information
 uniform vec2 GridDimension;
@@ -105,7 +106,7 @@ void main()
 	bool isNeedRecast = true;
 	int nbIntersection;
 	// Values of rays
-	int rayValue = 0;
+	int rayValue = vOriValue;
 	float OldCurrentLenght = 0.0;
 	vec2 CurrentVoxID;
 	// know the main direction

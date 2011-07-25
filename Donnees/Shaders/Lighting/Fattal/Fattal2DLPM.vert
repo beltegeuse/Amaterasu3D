@@ -6,16 +6,18 @@ precision highp float;
 // In attributes
 in vec2 OriPosition;
 in vec2 OriDirection;
+in float OriValue;
 
 // Out 
 flat out vec2 vOriPosition;
 flat out vec2 vOriDirection;
-
+flat out float vOriValue;
 void main()
 {
 	// Pass Attributes to Geometry shader
 	vOriPosition = OriPosition;
 	vOriDirection = OriDirection;
+	vOriValue = OriValue;
 	
 	// put gl_Position normal
 	gl_Position = vec4(0.0,0.0,1.0,1.0);
