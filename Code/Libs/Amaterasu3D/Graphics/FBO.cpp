@@ -295,7 +295,19 @@ int FBO::GetMaxColorAttachement()
 
 Texture* FBO::GetTexture(const std::string& nameBuffer)
 {
-	Assert(m_ColoredBuffers.find(nameBuffer) != m_ColoredBuffers.end());
+	Logger::Log() << "[DEBUG] List of buffers : \n";
+	for (std::map<std::string, Texture*>::const_iterator it = m_ColoredBuffers.begin(); it != m_ColoredBuffers.end(); ++it)
+		Logger::Log() << "  * " << it->first << "\n";
+
+	if(m_ColoredBuffers.find(nameBuffer) == m_ColoredBuffers.end())
+	{
+		Logger::Log() << "[DEBUG] List of buffers : \n";
+		for (std::map<std::string, Texture*>::const_iterator it =
+					m_ColoredBuffers.begin(); it != m_ColoredBuffers.end(); ++it)
+			Logger::Log() << "  * " << it->first << "\n";
+		throw CException("Unable to find buffer named : " + nameBuffer);
+	}
+
 	return m_ColoredBuffers[nameBuffer];
 }
 

@@ -1,5 +1,6 @@
 
-IF(CMAKE_BUILD_TYPE MATCHES debug)    
+IF(CMAKE_BUILD_TYPE MATCHES debug)
+	MESSAGE("Special flags :)")
     IF(WIN32)
     	ADD_DEFINITIONS("-Wall -W -D_DEBUG")
     ELSE(WIN32)

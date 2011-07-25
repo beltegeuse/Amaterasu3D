@@ -91,7 +91,15 @@ void PythonInterpreter::Execute(const std::string& code, PythonMap& args, Python
 		//TODO: Gerer le nettoye du dictionnaire
 		//TODO: Handle exception
 		PyDict_SetItemString(m_MainDict, "args", args.GetObject());
-		PyRun_SimpleString(code.c_str());
+		try
+		{
+			PyRun_SimpleString(code.c_str());
+		}
+		catch(std::exception& e)
+		{
+			PyErr_Print();
+			throw CException("Python Error");
+		}
 		res.Update(m_MainDict);
 }
 
