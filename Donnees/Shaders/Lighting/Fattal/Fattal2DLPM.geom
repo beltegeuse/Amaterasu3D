@@ -2,7 +2,15 @@
 #extension GL_EXT_geometry_shader4 : enable
 
 layout(points) in;
-layout(points, max_vertices = 128)out; // TODO
+layout(points, max_vertices = 1) out; // TODO
+
+// In Attributes values
+in vec2 vOriPosition[1];
+in vec2 vOriDirection[1];
+in float vOriValue[1];
+
+// Out (Offset modifications)
+out float DeltaData;
 
 // Precision qualifier
 precision highp float;
@@ -11,18 +19,13 @@ precision highp float;
 uniform sampler2D UBuffer;
 uniform sampler2D IBuffer;
 
-// In Attributes values
-flat in vec2 vOriPosition;
-flat in vec2 vOriDirection;
-flat in float vOriValue;
-
 // Grid information
 uniform vec2 GridDimension;
 uniform float AbsortionCoeff;
 uniform float DiffusionCoeff;
 
-// Out (Offset modifications)
-flat out float DeltaData;
+// Other information
+uniform vec2 MainDirection;
 
 // Define const
 #define BIAS 0.001
@@ -36,17 +39,9 @@ bool isInGrid(in vec2 voxID)
 	return all(greaterThanEqual(voxID, vec2(0.0))) && all(lessThan(voxID, GridDimension));
 }
 
-vec2 ComputeMainDirectionRay(in vec2 DirectionAbs, in vec2 sDelta)
-{
-	if(DirectionAbs.x > DirectionAbs.y)
-		return vec2(sDelta.x,0.0);
-	else
-		return vec2(0.0, sDelta.y);
-}
-
 float ReadU(in vec2 voxID, in vec2 mainDirection)
 {
-	vec4 data = texture(UBuffer, voxID/GridDimension);
+	vec4 data = texelFetch(UBuffer, ivec2(voxID), 0);
 	if(mainDirection.x == -1)
 		return data.x;
 	else if(mainDirection.x == 1)
@@ -66,19 +61,18 @@ void main()
 	// Get data
 	/////////////////////////////////
 	// Data with direction information
-	vec2 Direction = normalize(vOriDirection);
+	vec2 Direction = normalize(vOriDirection[0]);
 	vec2 DirectionAbs = abs(Direction);
 	vec2 sDelta = sign(Direction);
 	float maxDirectionCoord = max(DirectionAbs.x,DirectionAbs.y);
-	vec2 MainDirection = ComputeMainDirectionRay(DirectionAbs, sDelta);
 	// Data with position information
-	vec2 Position = vOriPosition; // already mult by GridDimension
+	vec2 Position = vOriPosition[0]; // already mult by GridDimension
 	vec2 voxWorldPos = floor(Position);
 	
 	/////////////////////////////////
 	// Initialise tMax
 	/////////////////////////////////
-	vec2 tMax = vec3(100000);
+	vec2 tMax = vec2(100000);
 	// * x Initialisation
 	if(Direction.x < 0)
 		tMax.x = (voxWorldPos.x - Position.x) / Direction.x;
@@ -93,7 +87,7 @@ void main()
 	/////////////////////////////////
 	// Initialisation tDelta
 	/////////////////////////////////
-	vec2 tDelta = vec3(100000);
+	vec2 tDelta = vec2(100000);
 	if(Direction.x != 0)
 		tDelta.x = 1.0/abs(Direction.x);
 	if(Direction.y != 0)
@@ -106,7 +100,7 @@ void main()
 	bool isNeedRecast = true;
 	int nbIntersection;
 	// Values of rays
-	int rayValue = vOriValue;
+	float rayValue = vOriValue[0];
 	float OldCurrentLenght = 0.0;
 	vec2 CurrentVoxID;
 	// know the main direction
@@ -142,9 +136,9 @@ void main()
 			OldCurrentLenght = TravelLength;
 			
 			// Compute
-			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*I.S/maxDirectionCoord));
+			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*DiffusionCoeff/maxDirectionCoord));
 			float extinctionCoeff = (DiffusionCoeff+AbsortionCoeff);
-			float extinctionFactor = exp(-1*dist*extinctionCoeff/maxDirectionCoord);
+			float extinctionFactor = exp(-1*DiffLength*extinctionCoeff/maxDirectionCoord);
 			float UValue = ReadU(CurrentVoxID, MainDirection);
 			rayValue = rayValue*extinctionFactor+(UValue*(1 - extinctionFactor)/extinctionCoeff);
 			
@@ -170,7 +164,7 @@ void main()
 			if(Position.y <= 0 || Position.y >= GridDimension.y)
 			{
 				isNeedRecast = true;
-				if(sDeltas.y == -1)
+				if(sDelta.y == -1)
 					Position.y = GridDimension.y-BIAS;
 				else
 					Position.y = BIAS;
@@ -181,7 +175,7 @@ void main()
 			if(Position.x <= 0 || Position.x >= GridDimension.x)
 			{
 				isNeedRecast = true;
-				if(sDeltas.x == -1)
+				if(sDelta.x == -1)
 					Position.x = GridDimension.x-BIAS;
 				else
 					Position.x = BIAS;

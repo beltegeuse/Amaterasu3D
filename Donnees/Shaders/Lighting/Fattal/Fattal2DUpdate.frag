@@ -7,10 +7,10 @@ precision highp float;
 smooth in vec2 outTexCoord;
 
 // Texture
-uniform vec4 UBuffer;
-uniform vec4 IBuffer;
-uniform vec4 DeltaIBuffer;
-uniform vec4 DeltaUBuffer;
+uniform sampler2D UBuffer;
+uniform sampler2D IBuffer;
+uniform sampler2D DeltaIBuffer;
+uniform sampler2D DeltaUBuffer;
 
 // Information
 uniform vec2 MainDirection;
@@ -24,11 +24,11 @@ void main()
 	// Read data
 	float vDeltaI = texture(DeltaIBuffer, outTexCoord).a;
 	vec4 vDeltaU = texture(DeltaUBuffer, outTexCoord);
-	float vI = texture(IBuffer, outTexCoord);
+	float vI = texture(IBuffer, outTexCoord).a;
 	vec4 vU = texture(UBuffer, outTexCoord);
 	
 	// Update I
-	outIBuffer = vI + vDeltaI;
+	outIBuffer = vec4(vI + vDeltaI);
 	
 	// Update U
 	// * Empty main direction

@@ -9,9 +9,10 @@ in vec2 OriDirection;
 in float OriValue;
 
 // Out 
-flat out vec2 vOriPosition;
-flat out vec2 vOriDirection;
-flat out float vOriValue;
+out vec2 vOriPosition;
+out vec2 vOriDirection;
+out float vOriValue;
+
 void main()
 {
 	// Pass Attributes to Geometry shader

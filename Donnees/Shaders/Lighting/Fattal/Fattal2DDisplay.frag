@@ -4,7 +4,7 @@
 precision highp float;
 
 // Texture
-uniform sampler2d Databuffer;
+uniform sampler2D Databuffer;
 
 // Entree
 smooth in vec2 outTexCoord;

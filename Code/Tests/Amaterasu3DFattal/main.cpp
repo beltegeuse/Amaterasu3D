@@ -33,7 +33,7 @@ private:
 	ISimpleRenderableSceneNode* m_InitialRaysMap[4];
 	// Topologic attributes
 	Math::TVector2I m_SizeGrid;
-	float m_ExtinctionCoeff;
+	float m_AbsortionCoeff;
 	float m_DiffusionCoeff;
 	// LPM Topologic attributes
 	int m_LPMMultRes;
@@ -46,7 +46,7 @@ public:
 	 */
 	Fattal2DVolume(const Math::TVector2I size) :
 		m_SizeGrid(size),
-		m_ExtinctionCoeff(0.0),
+		m_AbsortionCoeff(0.0),
 		m_DiffusionCoeff(0.01),
 		m_LPMMultRes(2),
 		m_LPMNbAngles(9)
@@ -89,6 +89,10 @@ public:
 				//   Compute LPM(dir)
 				//////////////////////////
 				m_FattalComputeLPM->Begin();
+				m_FattalComputeLPM->SetUniformVector("MainDirection", GetMainDirection(idDir));
+				m_FattalComputeLPM->SetUniformVector("GridDimension",Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y));
+				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_DiffusionCoeff);
+				m_FattalComputeLPM->SetUniform1f("DiffusionCoeff",m_AbsortionCoeff);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
 				m_InitialRaysMap[idDir]->Render();

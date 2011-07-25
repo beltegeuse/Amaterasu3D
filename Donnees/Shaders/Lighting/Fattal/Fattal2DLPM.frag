@@ -4,7 +4,7 @@
 precision highp float;
 
 // In 
-flat in vec4 DeltaData;
+in float DeltaData;
 
 // Out 
 out vec4 outDeltaIBuffer;

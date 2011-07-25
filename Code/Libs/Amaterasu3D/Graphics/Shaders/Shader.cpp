@@ -155,10 +155,6 @@ void Shader::ShowLinkLog(unsigned int id)
 	}
 	GLint linked;
 	glGetProgramiv(id, GL_LINK_STATUS, &linked);
-	if (!linked)
-	{
-		throw CException("Shader program is not link.");
-	}
 	GLint blen = 0;
 	GLsizei slen = 0;
 	glGetProgramiv(id, GL_INFO_LOG_LENGTH, &blen);
@@ -176,6 +172,10 @@ void Shader::ShowLinkLog(unsigned int id)
 		{
 			std::cout << "[LOG] Compiler LOG : No log available" << std::endl;
 		}
+	}
+	if (!linked)
+	{
+		throw CException("Shader program is not link.");
 	}
 }
 
