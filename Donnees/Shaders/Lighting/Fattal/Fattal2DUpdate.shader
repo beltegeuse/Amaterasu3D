@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <Shader name="VolumeRendering" type="Basic">
 	<OutputFrame depthType="None" size="Custom" width=256 height=128>
-		<Frame name="outUBuffer" type="outIBuffer" />
-		<Frame name="outUBuffer" type="outUBuffer" />
+		<Frame name="outUBuffer" type="RGBA32" />
+		<Frame name="outIBuffer" type="RGBA32" />
 	</OutputFrame>
 	<Textures>
 		<Texture type="Custom" name="UBuffer" id=0 />

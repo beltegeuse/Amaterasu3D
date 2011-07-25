@@ -12,8 +12,8 @@ uniform sampler2D UBuffer;
 uniform sampler2D IBuffer;
 
 // In Attributes values
-in flat vec2 vOriPosition;
-in flat vec2 vOriDirection;
+flat in vec2 vOriPosition;
+flat in vec2 vOriDirection;
 
 // Grid information
 uniform vec2 GridDimension;
@@ -21,7 +21,7 @@ uniform float AbsortionCoeff;
 uniform float DiffusionCoeff;
 
 // Out (Offset modifications)
-out flat vec4 DeltaData;
+flat out float DeltaData;
 
 // Define const
 #define BIAS 0.001
@@ -41,6 +41,19 @@ vec2 ComputeMainDirectionRay(in vec2 DirectionAbs, in vec2 sDelta)
 		return vec2(sDelta.x,0.0);
 	else
 		return vec2(0.0, sDelta.y);
+}
+
+float ReadU(in vec2 voxID, in vec2 mainDirection)
+{
+	vec4 data = texture(UBuffer, voxID/GridDimension);
+	if(mainDirection.x == -1)
+		return data.x;
+	else if(mainDirection.x == 1)
+		return data.y;
+	else if(mainDirection.y == -1)
+		return data.z;
+	else
+		return data.w;
 }
 
 void main()
@@ -129,7 +142,19 @@ void main()
 			
 			// Compute
 			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*I.S/maxDirectionCoord));
-			float extinctionFactor = exp(-1*dist*(DiffusionCoeff+AbsortionCoeff)/maxDirectionCoord);
+			float extinctionCoeff = (DiffusionCoeff+AbsortionCoeff);
+			float extinctionFactor = exp(-1*dist*extinctionCoeff/maxDirectionCoord);
+			float UValue = ReadU(CurrentVoxID, MainDirection);
+			rayValue = rayValue*extinctionFactor+(UValue*(1 - extinctionFactor)/extinctionCoeff);
+			
+			// Emit new values
+			//TODO: NbRay
+			//TODO: Area
+			//TODO: CellVolume inverse
+			DeltaData = 1.0*1.0*(3.14/(9))*scatteringTerm;
+			gl_Position = vec4(CurrentVoxID/GridDimension,0.0,1.0);
+			EmitVertex();
+			
 			// Protection
 			nbIntersection++;
 		}

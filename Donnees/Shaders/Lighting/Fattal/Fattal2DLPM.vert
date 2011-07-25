@@ -8,8 +8,8 @@ in vec2 OriPosition;
 in vec2 OriDirection;
 
 // Out 
-out flat vec2 vOriPosition;
-out flat vec2 vOriDirection;
+flat out vec2 vOriPosition;
+flat out vec2 vOriDirection;
 
 void main()
 {

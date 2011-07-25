@@ -388,6 +388,7 @@ def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True, LPMFactor = 
             # Empty U direction because we take these energy
             for iData in range(U.NbCells.x*U.NbCells.y):
                 U.data[iData][idDir] = 0
+            
             for rId in range(lpm.NumberRays()):
             #for rId in [5]:
                 ray = lpm.rays[rId]
