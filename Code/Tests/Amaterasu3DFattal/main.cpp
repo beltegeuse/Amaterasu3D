@@ -158,10 +158,10 @@ private:
 	{
 		// Setup direction
 		int propagationOrientation = 1;
-		if(idDir < 2)
+		if((idDir % 2) == 0)
 			propagationOrientation = -1;
 		// Setup vector
-		if((idDir % 2) == 0)
+		if(idDir < 2)
 			return Math::TVector2F(propagationOrientation, 0);
 		else
 			return Math::TVector2F(0,propagationOrientation);
@@ -176,6 +176,7 @@ private:
 		{
 			samples[i].x = 0.5;
 			samples[i].y = (i+1)*offset - 0.5;
+			samples[i].Normalize();
 		}
 
 		// Creation of the rays maps
@@ -187,7 +188,7 @@ private:
 			if(mainDir.x == -1.0 || mainDir.y == -1.0)
 				OriPosition = m_SizeGrid;
 			// Transformation Matrix
-			Math::Matrix2 transMatrix;
+			Math::Matrix2 transMatrix(0,0,0,0);
 			int NbCells;
 			if(mainDir.x != 0)
 			{
@@ -213,10 +214,12 @@ private:
 			{
 				for(int j = 0; j < m_LPMNbAngles; j++)
 				{
-					rayPosition[m_LPMNbAngles*k+j*2] = OriPosition.x+offset.x*((k+0.5)/NbCells);
-					rayPosition[m_LPMNbAngles*k+j*2+1] = OriPosition.y+offset.y*((k+0.5)/NbCells);
-					rayOrientation[m_LPMNbAngles*k+j*2] = transMatrix.Transform(samples[j]).x;
-					rayOrientation[m_LPMNbAngles*k+j*2+1] = transMatrix.Transform(samples[j]).y;
+					int indice = (m_LPMNbAngles*k+j)*2;
+					float factor = (k+0.5)/m_LPMMultRes;
+					rayPosition[indice] = OriPosition.x+offset.x*factor;
+					rayPosition[indice+1] = OriPosition.y+offset.y*factor;
+					rayOrientation[indice] = transMatrix.Transform(samples[j]).x;
+					rayOrientation[indice+1] = transMatrix.Transform(samples[j]).y;
 
 					// TODO: Do an real initialisation
 					// Initialisation Value
