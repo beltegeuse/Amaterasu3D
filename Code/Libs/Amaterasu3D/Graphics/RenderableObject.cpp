@@ -105,6 +105,7 @@ void RenderableObject::CompileBuffers()
 
 void RenderableObject::Draw()
 {
+	Assert(m_is_compiled);
 	// pas de shader
 	if (!CShaderManager::Instance().activedShader())
 	{

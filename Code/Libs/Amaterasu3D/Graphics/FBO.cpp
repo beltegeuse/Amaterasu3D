@@ -194,8 +194,7 @@ void FBO::SetSize(const Math::TVector2I& size)
 	m_SizeBuffers = size;
 
 	// Update Colored buffers
-	for (std::map<std::string, Texture*>::iterator it =
-			m_ColoredBuffers.begin(); it != m_ColoredBuffers.end(); ++it)
+	for (std::map<std::string, Texture*>::iterator it = m_ColoredBuffers.begin(); it != m_ColoredBuffers.end(); ++it)
 	{
 		it->second->activateTexture();
 		FBOTextureBufferParam params = m_BuffersParams[it->first];
@@ -295,10 +294,6 @@ int FBO::GetMaxColorAttachement()
 
 Texture* FBO::GetTexture(const std::string& nameBuffer)
 {
-	Logger::Log() << "[DEBUG] List of buffers : \n";
-	for (std::map<std::string, Texture*>::const_iterator it = m_ColoredBuffers.begin(); it != m_ColoredBuffers.end(); ++it)
-		Logger::Log() << "  * " << it->first << "\n";
-
 	if(m_ColoredBuffers.find(nameBuffer) == m_ColoredBuffers.end())
 	{
 		Logger::Log() << "[DEBUG] List of buffers : \n";

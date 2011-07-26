@@ -59,8 +59,9 @@ public:
 		m_FattalComputeLPM->GetFBO()->SetSize(m_SizeGrid);
 		m_FattalUpdateBuffers->GetFBO()->SetSize(m_SizeGrid);
 		// Initialise buffers
-		m_FinalBuffers[1] = m_FattalUpdateBuffers->GetFBO();
-		m_FinalBuffers[2] = m_FattalUpdateBuffers->GetFBO()->Copy();
+		m_FinalBuffers[0] = m_FattalUpdateBuffers->GetFBO();
+		m_FinalBuffers[1] = m_FattalUpdateBuffers->GetFBO()->Copy();
+
 		// Initialize Rays maps
 		InitializeRaysMaps();
 	}
@@ -255,6 +256,7 @@ private:
 			renderableObj->GetObject().AddBuffer(bufferPosition, CUSTOM_ATTRIBUT+0);
 			renderableObj->GetObject().AddBuffer(bufferDirection, CUSTOM_ATTRIBUT+1);
 			renderableObj->GetObject().AddBuffer(bufferValue, CUSTOM_ATTRIBUT+2);
+			renderableObj->GetObject().CompileBuffers();
 			m_InitialRaysMap[idDir] = renderableObj;
 		}
 	}
