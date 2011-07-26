@@ -209,7 +209,7 @@ private:
 			float* rayPosition = new float[NbRay*2];
 			float* rayOrientation = new float[NbRay*2];
 			float* rayValue = new float[NbRay];
-			for(int k = 0; k < NbCells; k++)
+			for(int k = 0; k < NbCells*m_LPMMultRes; k++)
 			{
 				for(int j = 0; j < m_LPMNbAngles; j++)
 				{

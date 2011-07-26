@@ -438,7 +438,8 @@ void LPV::CreateGridModel(ISimpleRenderableSceneNode** GirdModel, int nbCellDim,
 		int CellSize)
 {
 	// Allocation des buffers
-	float * vertexBuffer = new float[3 * nbCellDim * nbCellDim * 3 * 2];float *colorBuffer = new float[3*nbCellDim*nbCellDim*3*2];
+	float * vertexBuffer = new float[3 * nbCellDim * nbCellDim * 3 * 2];
+	float *colorBuffer = new float[3*nbCellDim*nbCellDim*3*2];
 	unsigned int* indiceBuffer = new unsigned int[3*nbCellDim*nbCellDim*2];
 	unsigned int i = 0;
 	Color color(1.0,1.0,1.0);
