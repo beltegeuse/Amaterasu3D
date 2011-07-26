@@ -131,9 +131,8 @@ void RenderableObject::Draw()
 	}
 	// Buffer activation
 	int i = 1;
-	for (BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end();
-			it++)
-			{
+	for (BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end();it++)
+	{
 		if (!CShaderManager::Instance().currentShader()->IsAttributAvailable(it->first))
 			continue;
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
@@ -147,9 +146,8 @@ void RenderableObject::Draw()
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_buffers[0]));
 	GLCheck(glDrawElements(m_DrawMode, m_indices_size, GL_UNSIGNED_INT, 0));
 	// Buffer desactivation
-	for (BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end();
-			it++)
-			{
+	for (BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end();it++)
+	{
 		if (!CShaderManager::Instance().currentShader()->IsAttributAvailable(
 				it->first))
 			continue;

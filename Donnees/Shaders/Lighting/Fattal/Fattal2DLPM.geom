@@ -2,7 +2,7 @@
 #extension GL_EXT_geometry_shader4 : enable
 
 layout(points) in;
-layout(points, max_vertices = 1) out; // TODO
+layout(points, max_vertices = 64) out; // TODO
 
 // In Attributes values
 in vec2 vOriPosition[1];
@@ -106,6 +106,15 @@ void main()
 	// know the main direction
 	bool xMainDirection = DirectionAbs.x > DirectionAbs.y;
 	
+	voxWorldPos = GridDimension/2;
+
+	//////////////
+	// DEBUG
+	//////////////
+//	DeltaData = 1.0; //1.0*1.0*(3.14/(9))*scatteringTerm;
+//	//gl_Position = vec4(2*(CurrentVoxID/GridDimension)-1,0.0,1.0);
+//	gl_Position = vec4(Direction,0.0,1.0);
+//	EmitVertex();
 	while(isNeedRecast)
 	{
 		isNeedRecast = false;
@@ -114,7 +123,7 @@ void main()
 		{
 			// Save the current VoxID for cell reading
 			CurrentVoxID = voxWorldPos; // Need +1 ?
-			
+
 			// Martch in the volume
 			vec2 diff;
 			if(tMax.x < tMax.y)
@@ -129,35 +138,35 @@ void main()
 				tMax.y += tDelta.y;
 				voxWorldPos.y += sDelta.y;
 			}
-			
+
 			// Get the length & Update OldCurrentLenght for next loop
 			float TravelLength = length(diff);
 			float DiffLength = TravelLength - OldCurrentLenght;
 			OldCurrentLenght = TravelLength;
-			
+
 			// Compute
 			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*DiffusionCoeff/maxDirectionCoord));
 			float extinctionCoeff = (DiffusionCoeff+AbsortionCoeff);
 			float extinctionFactor = exp(-1*DiffLength*extinctionCoeff/maxDirectionCoord);
 			float UValue = ReadU(CurrentVoxID, MainDirection);
 			rayValue = rayValue*extinctionFactor+(UValue*(1 - extinctionFactor)/extinctionCoeff);
-			
+
 			// Emit new values
 			//TODO: NbRay
 			//TODO: Area
 			//TODO: CellVolume inverse
-			DeltaData = 1.0*1.0*(3.14/(9))*scatteringTerm;
-			gl_Position = vec4(CurrentVoxID/GridDimension,0.0,1.0);
+			DeltaData = 1.0; //1.0*1.0*(3.14/(9))*scatteringTerm;
+			gl_Position = vec4(2*(CurrentVoxID/GridDimension)-1,0.0,1.0);
 			EmitVertex();
-			
+
 			// Protection
 			nbIntersection++;
 		}
-		
+
 		// Protection for looping
 		if(nbIntersection == 0) // < if no intersection => Quit
 			break;
-		
+
 		// Compute relooping :)
 		if(xMainDirection)
 		{
@@ -181,8 +190,9 @@ void main()
 					Position.x = BIAS;
 			}
 		}
-		
+
 		// Reinitialise rayValue
 		rayValue = 0;
 	}
+	EndPrimitive();
 }

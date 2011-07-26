@@ -42,6 +42,7 @@ void ISimpleRenderableSceneNode::Render()
 {
 	//std::cout << GetWorldTransformation() << std::endl;
 	CMatrixManager::Instance().PushMatrix(GetWorldTransformation());
+	//std::cout << "Draw " << GetName() << std::endl;
 	m_RenderObject.Draw();
 	CMatrixManager::Instance().PopMatrix();
 }

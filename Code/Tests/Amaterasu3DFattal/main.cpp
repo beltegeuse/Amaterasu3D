@@ -77,15 +77,15 @@ public:
 	{
 		m_IDFinalFBO = 0;
 		// foreach pass
-		for(int i = 0; i < nbPass; i++)
-		{
+//		for(int i = 0; i < nbPass; i++)
+//		{
 			// foreach direction
-			for(int idDir = 0; idDir < 4; idDir++)
+			for(int idDir = 0; idDir < 1; idDir++)
 			{
 				// Set blending
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_ONE, GL_ONE);
-				glDisable(GL_DEPTH_TEST);
+//				glEnable(GL_BLEND);
+//				glBlendFunc(GL_ONE, GL_ONE);
+//				glDisable(GL_DEPTH_TEST);
 				//////////////////////////
 				//   Compute LPM(dir)
 				//////////////////////////
@@ -100,58 +100,59 @@ public:
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 				m_FattalComputeLPM->End();
-				glDisable(GL_BLEND);
+//				glDisable(GL_BLEND);
 				//////////////////////////
 				//   UpdateBuffers
 				//////////////////////////
 				// Swap buffers
-				m_FattalUpdateBuffers->SetFBO(m_FinalBuffers[(m_IDFinalFBO+1) % 2], false);
-				// Add Buffers
-				m_FattalUpdateBuffers->Begin();
-				m_FattalUpdateBuffers->SetUniformVector("MainDirection", GetMainDirection(idDir));
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->activateMultiTex(CUSTOM_TEXTURE+3);
-
-				glBegin(GL_QUADS);
-					glTexCoord2f(0.0, 0.0);
-					glVertex2f(-1.0, -1.0);
-					glTexCoord2f(0.0, 1.0);
-					glVertex2f(-1.0, 1.0);
-					glTexCoord2f(1.0, 1.0);
-					glVertex2f(1.0, 1.0);
-					glTexCoord2f(1.0, 0.0);
-					glVertex2f(1.0, -1.0);
-				glEnd();
-
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+3);
-				m_FattalUpdateBuffers->End();
+//				m_FattalUpdateBuffers->SetFBO(m_FinalBuffers[(m_IDFinalFBO+1) % 2], false);
+//				// Add Buffers
+//				m_FattalUpdateBuffers->Begin();
+//				m_FattalUpdateBuffers->SetUniformVector("MainDirection", GetMainDirection(idDir));
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
+//				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
+//				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->activateMultiTex(CUSTOM_TEXTURE+3);
+//
+//				glBegin(GL_QUADS);
+//					glTexCoord2f(0.0, 0.0);
+//					glVertex2f(-1.0, -1.0);
+//					glTexCoord2f(0.0, 1.0);
+//					glVertex2f(-1.0, 1.0);
+//					glTexCoord2f(1.0, 1.0);
+//					glVertex2f(1.0, 1.0);
+//					glTexCoord2f(1.0, 0.0);
+//					glVertex2f(1.0, -1.0);
+//				glEnd();
+//
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+//				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+//				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+//				m_FattalUpdateBuffers->End();
 				// Update id Final
 				m_IDFinalFBO = (m_IDFinalFBO+1) % 2;
 			}
-		}
+//		}
 	}
 	// Draw I buffer
 	void Render()
 	{
-		m_FattalDisplay->Begin();
-		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
-		glBegin(GL_QUADS);
-			glTexCoord2f(0.0, 0.0);
-			glVertex2f(-1.0, -1.0);
-			glTexCoord2f(0.0, 1.0);
-			glVertex2f(-1.0, 1.0);
-			glTexCoord2f(1.0, 1.0);
-			glVertex2f(1.0, 1.0);
-			glTexCoord2f(1.0, 0.0);
-			glVertex2f(1.0, -1.0);
-		glEnd();
-		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-		m_FattalDisplay->End();
+		m_FattalComputeLPM->GetFBO()->DrawDebug();
+//		m_FattalDisplay->Begin();
+//		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+//		glBegin(GL_QUADS);
+//			glTexCoord2f(0.0, 0.0);
+//			glVertex2f(-1.0, -1.0);
+//			glTexCoord2f(0.0, 1.0);
+//			glVertex2f(-1.0, 1.0);
+//			glTexCoord2f(1.0, 1.0);
+//			glVertex2f(1.0, 1.0);
+//			glTexCoord2f(1.0, 0.0);
+//			glVertex2f(1.0, -1.0);
+//		glEnd();
+//		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//		m_FattalDisplay->End();
 	}
 private:
 	Math::TVector2F GetMainDirection(int idDir)
@@ -180,7 +181,7 @@ private:
 		}
 
 		// Creation of the rays maps
-		for(int idDir = 0; idDir < 4; idDir++) // < Foreach directions
+		for(int idDir = 0; idDir < 1; idDir++) // < Foreach directions
 		{
 			Math::TVector2F mainDir = GetMainDirection(idDir);
 			// Compute Ori position
@@ -254,7 +255,9 @@ private:
 			for(int i = 0; i < NbRay; i++)
 				indiceBuffer[i] = i;
 			// Create object and configure
-			ISimpleRenderableSceneNode * renderableObj = new ISimpleRenderableSceneNode("", 0);
+			std::stringstream ss;
+			ss << "LPM " << mainDir;
+			ISimpleRenderableSceneNode * renderableObj = new ISimpleRenderableSceneNode(ss.str(), 0);
 			renderableObj->GetObject().SetIndiceBuffer(indiceBuffer, NbRay);
 			renderableObj->GetObject().AddBuffer(bufferPosition, CUSTOM_ATTRIBUT+0);
 			renderableObj->GetObject().AddBuffer(bufferDirection, CUSTOM_ATTRIBUT+1);

@@ -281,11 +281,11 @@ GLint Shader::GetUniformLocation(const GLchar* name)
 //		return it->second;
 	//FIXME: Faire du caching pour accelerer les appels
 	GLint loc = glGetUniformLocation(m_ProgramID, name);
-//	if (loc == -1)
-//	{
-//		Logger::Log() << "Error: can't find uniform variable \"" << name
-//				<< "\"\n";
-//	}
+	if (loc == -1)
+	{
+		Logger::Log() << "Error: can't find uniform variable \"" << name
+				<< "\"\n";
+	}
 //	else
 //	{
 //		m_CachedID[std::string(name)] = loc;
