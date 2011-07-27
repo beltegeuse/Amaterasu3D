@@ -2,7 +2,7 @@
 #extension GL_EXT_geometry_shader4 : enable
 
 layout(points) in;
-layout(points, max_vertices = 128) out; // TODO
+layout(line_strip, max_vertices = 128) out; // TODO
 
 // In Attributes values
 in vec2 vOriPosition[1];

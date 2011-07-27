@@ -12,6 +12,6 @@ out vec4 outDeltaUBuffer;
 
 void main()
 {
-	outDeltaIBuffer = vec4(DeltaData);
-	outDeltaUBuffer = vec4(DeltaData/4.0);
+	outDeltaIBuffer = vec4(DeltaData); // DeltaData
+	outDeltaUBuffer = vec4(DeltaData/4.0); //DeltaData
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Shader name="VolumeRendering" type="Basic">
-	<OutputFrame depthType="None" size="Custom" width=256 height=128>
+	<OutputFrame depthType="None" size="Custom" width=800 height=600>
 		<Frame name="outDeltaIBuffer" type="RGBA32" />
 		<Frame name="outDeltaUBuffer" type="RGBA32" />
 	</OutputFrame>

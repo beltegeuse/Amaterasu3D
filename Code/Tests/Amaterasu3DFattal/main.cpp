@@ -48,7 +48,7 @@ public:
 		m_SizeGrid(size),
 		m_AbsortionCoeff(0.0),
 		m_DiffusionCoeff(0.01),
-		m_LPMMultRes(2),
+		m_LPMMultRes(1),
 		m_LPMNbAngles(9)
 	{
 		// Initialise shaders
@@ -56,6 +56,7 @@ public:
 		m_FattalComputeLPM = CShaderManager::Instance().LoadShader("Fattal2DLPM.shader");
 		m_FattalUpdateBuffers = CShaderManager::Instance().LoadShader("Fattal2DUpdate.shader");
 		// Resized buffers
+		// FIXME
 		m_FattalComputeLPM->GetFBO()->SetSize(m_SizeGrid);
 		m_FattalUpdateBuffers->GetFBO()->SetSize(m_SizeGrid);
 		// Initialise buffers
@@ -80,12 +81,11 @@ public:
 		for(int i = 0; i < nbPass; i++)
 		{
 			// foreach direction
-			for(int idDir = 0; idDir < 4; idDir++)
+			for(int idDir = 0; idDir < 4; idDir++) // FIXME Puts 4
 			{
 				// Set blending
 				glEnable(GL_BLEND);
 				glBlendFunc(GL_ONE, GL_ONE);
-				glDisable(GL_DEPTH_TEST);
 				//////////////////////////
 				//   Compute LPM(dir)
 				//////////////////////////
@@ -138,6 +138,9 @@ public:
 	// Draw I buffer
 	void Render()
 	{
+//		m_FattalComputeLPM->GetFBO()->DrawDebug();
+
+		// Show result
 		m_FattalDisplay->Begin();
 		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
 		glBegin(GL_QUADS);
@@ -206,16 +209,18 @@ private:
 			Math::TVector2F offset(0,1);
 			offset = transMatrix.Transform(offset);
 			// Create all ray
-			int NbRay = NbCells*m_LPMMultRes*m_LPMNbAngles;
+			int NbGroupRays = NbCells*m_LPMMultRes;
+			int NbRay = NbGroupRays*m_LPMNbAngles;
 			float* rayPosition = new float[NbRay*2];
 			float* rayOrientation = new float[NbRay*2];
 			float* rayValue = new float[NbRay];
-			for(int k = 0; k < NbCells*m_LPMMultRes; k++)
+			for(int k = 0; k < NbGroupRays; k++)
 			{
 				for(int j = 0; j < m_LPMNbAngles; j++)
 				{
 					int indice = (m_LPMNbAngles*k+j)*2;
 					float factor = (k+0.5)/m_LPMMultRes;
+					// FIXME
 					rayPosition[indice] = OriPosition.x+offset.x*factor;
 					rayPosition[indice+1] = OriPosition.y+offset.y*factor;
 					rayOrientation[indice] = transMatrix.Transform(samples[j]).x;
@@ -223,7 +228,7 @@ private:
 
 					// TODO: Do an real initialisation
 					// Initialisation Value
-					if(idDir == 0)
+					if(idDir == 0 && j == (m_LPMNbAngles/2) && k >= (NbGroupRays/2)-2 && k <= (NbGroupRays/2)+2)
 						rayValue[m_LPMNbAngles*k+j] = 1.0;
 					else
 						rayValue[m_LPMNbAngles*k+j] = 0.0;
@@ -255,6 +260,7 @@ private:
 				indiceBuffer[i] = i;
 			// Create object and configure
 			ISimpleRenderableSceneNode * renderableObj = new ISimpleRenderableSceneNode("", 0);
+			renderableObj->GetObject().SetDrawMode(GL_POINTS);
 			renderableObj->GetObject().SetIndiceBuffer(indiceBuffer, NbRay);
 			renderableObj->GetObject().AddBuffer(bufferPosition, CUSTOM_ATTRIBUT+0);
 			renderableObj->GetObject().AddBuffer(bufferDirection, CUSTOM_ATTRIBUT+1);
@@ -270,6 +276,7 @@ class Fattal : public Application
 protected:
 	CameraFPS* m_Camera;
 	Fattal2DVolume* m_Fattal;
+	FPS m_FPSCounter;
 public:
 	Fattal()
 	{
@@ -281,7 +288,7 @@ public:
 
 	virtual void OnInitialize()
 	{
-		glPointSize(10.f);
+		glPointSize(1.f);
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(30,40,20), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
