@@ -36,6 +36,13 @@
 #include <map>
 #include <set>
 
+//
+#ifndef WIN32
+#define PythonRelease(x) Py_DECREF(x)
+#else
+#define PythonRelease(x)
+#endif
+
 namespace ama3D
 {
 

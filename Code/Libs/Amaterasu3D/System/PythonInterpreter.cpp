@@ -35,11 +35,11 @@ namespace ama3D
  */
 void PythonMap::Release()
 {
-	Py_DECREF(m_Dict);
+	PythonRelease(m_Dict);
 	for(std::map<std::string, PyObject*>::iterator it = m_Args.begin();
 		it != m_Args.end(); ++it)
 	{
-		Py_DECREF(it->second);
+		PythonRelease(it->second);
 	}
 }
 
@@ -50,7 +50,7 @@ void PythonResult::Update(PyObject* dict)
 	{
 		PyObject* pRes = PyMapping_GetItemString(dict, const_cast < char* >(it->c_str()));
 		m_Res[*it] = std::string(PyString_AsString(pRes));
-		Py_DECREF(pRes);
+		PythonRelease(pRes);
 	}
 }
 /*=================================================
