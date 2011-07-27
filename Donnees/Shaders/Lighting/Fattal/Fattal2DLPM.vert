@@ -25,5 +25,5 @@ void main()
 	vOriValue = OriValue;
 	
 	// put gl_Position normal
-	gl_Position = vec4(0.0,0.0,0.0,1.0);
+	gl_Position = vec4((vOriPosition+GridDimension*MainDirection*0.5)/GridDimension,0.0,1.0);
 }

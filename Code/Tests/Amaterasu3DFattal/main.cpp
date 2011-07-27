@@ -56,8 +56,8 @@ public:
 		m_FattalComputeLPM = CShaderManager::Instance().LoadShader("Fattal2DLPM.shader");
 		m_FattalUpdateBuffers = CShaderManager::Instance().LoadShader("Fattal2DUpdate.shader");
 		// Resized buffers
-		m_FattalComputeLPM->GetFBO()->SetSize(m_SizeGrid);
-		m_FattalUpdateBuffers->GetFBO()->SetSize(m_SizeGrid);
+//		m_FattalComputeLPM->GetFBO()->SetSize(m_SizeGrid);
+//		m_FattalUpdateBuffers->GetFBO()->SetSize(m_SizeGrid);
 		// Initialise buffers
 		m_FinalBuffers[0] = m_FattalUpdateBuffers->GetFBO();
 		m_FinalBuffers[1] = m_FattalUpdateBuffers->GetFBO()->Copy();
@@ -92,13 +92,13 @@ public:
 				m_FattalComputeLPM->Begin();
 				m_FattalComputeLPM->SetUniformVector("MainDirection", GetMainDirection(idDir));
 				m_FattalComputeLPM->SetUniformVector("GridDimension",Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y));
-				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_DiffusionCoeff);
-				m_FattalComputeLPM->SetUniform1f("DiffusionCoeff",m_AbsortionCoeff);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
+//				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_DiffusionCoeff);
+//				m_FattalComputeLPM->SetUniform1f("DiffusionCoeff",m_AbsortionCoeff);
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
 				m_InitialRaysMap[idDir]->Render();
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 				m_FattalComputeLPM->End();
 //				glDisable(GL_BLEND);
 				//////////////////////////
@@ -225,7 +225,7 @@ private:
 					// TODO: Do an real initialisation
 					// Initialisation Value
 					if(idDir == 0)
-						rayValue[m_LPMNbAngles*k+j] = 1.0;
+						rayValue[m_LPMNbAngles*k+j] = (1.0 / NbCells*m_LPMMultRes)*k;
 					else
 						rayValue[m_LPMNbAngles*k+j] = 0.0;
 				}
@@ -289,7 +289,7 @@ public:
 		m_Camera = new CameraFPS(Math::TVector3F(30,40,20), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
 		// Create fattal
-		m_Fattal = new Fattal2DVolume(Math::TVector2I(64,64));
+		m_Fattal = new Fattal2DVolume(Math::TVector2I(800,600));
 	}
 
 	virtual void OnUpdate(double delta)
