@@ -87,8 +87,7 @@ void RenderableObject::CompileBuffers()
 	Logger::Log() << "   * load indices buffers ... " << m_indices_buffers[0]
 			<< "\n";
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_buffers[0]));
-	GLCheck(
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*m_indices_size, m_indices, GL_STATIC_DRAW));
+	GLCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*m_indices_size, m_indices, GL_STATIC_DRAW));
 	// Add all others buffers
 	int i = 1;
 	for (BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end();
@@ -97,8 +96,7 @@ void RenderableObject::CompileBuffers()
 		Logger::Log() << "   * load other buffers ... " << m_indices_buffers[i]
 				<< "\n";
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
-		GLCheck(
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float)*it->second.size, it->second.buffer, GL_STATIC_DRAW));
+		GLCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(float)*it->second.size, it->second.buffer, GL_STATIC_DRAW));
 		i++;
 	}
 }
@@ -131,15 +129,13 @@ void RenderableObject::Draw()
 	}
 	// Buffer activation
 	int i = 1;
-	for (BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end();
-			it++)
-			{
+	for (BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end(); it++)
+	{
 		if (!CShaderManager::Instance().currentShader()->IsAttributAvailable(it->first))
 			continue;
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
 		glEnableVertexAttribArray(it->first);
-		GLCheck(glVertexAttribPointer(it->first, it->second.dimension,
-				GL_FLOAT, GL_FALSE, it->second.dimension * sizeof(float), 0));
+		GLCheck(glVertexAttribPointer(it->first, it->second.dimension, GL_FLOAT, GL_FALSE, 0, 0));
 		i++;
 	}
 	// Drawing

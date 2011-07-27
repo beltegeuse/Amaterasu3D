@@ -7,6 +7,10 @@
 #include <iostream>
 #include <stdlib.h>
 
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+
 #include <Math/Matrix4.h>
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
@@ -45,29 +49,46 @@ public:
 		int nbElements = sizeWindow.x*sizeWindow.y;
 		// Create Data
 		float * CustomPosition = new float[nbElements*2];
+		float * CustomColor = new float[nbElements*3];
+
+		boost::minstd_rand generator(42u);
+		boost::uniform_real<> uni_dist(0,1);
+		boost::variate_generator<boost::minstd_rand, boost::uniform_real<> > uni(generator, uni_dist);
+
 		for(int i = 0; i < sizeWindow.x; i++)
 			for(int j = 0; j < sizeWindow.y; j++)
 			{
-				int indiceData = (i*sizeWindow.y+j)*2;
-				CustomPosition[indiceData] = i;
-				CustomPosition[indiceData+1] = j;
+				int indiceData = (i*sizeWindow.y+j);
+				CustomPosition[indiceData*2] = i;
+				CustomPosition[indiceData*2+1] = j;
+				CustomColor[indiceData*3] = uni();
+				CustomColor[indiceData*3+1] = uni();
+				CustomColor[indiceData*3+2] = uni();
 			}
 
 		ama3D::RenderableObject::RenderableBuffer bufferPosition;
+		ama3D::RenderableObject::RenderableBuffer bufferColor;
 		// Configure
 		// * Position
 		bufferPosition.buffer = CustomPosition;
 		bufferPosition.dimension = 2;
 		bufferPosition.owner = true;
 		bufferPosition.size = nbElements*2;
+		// * Color
+		bufferColor.buffer = CustomColor;
+		bufferColor.dimension = 3;
+		bufferColor.owner = true;
+		bufferColor.size = nbElements*3;
 		// Create indice buffer
 		unsigned int* indiceBuffer = new unsigned int[nbElements];
 		for(int i = 0; i < nbElements; i++)
 			indiceBuffer[i] = i;
 		// Create object and configure
 		m_RenderableObj = new ama3D::ISimpleRenderableSceneNode("TestObject", 0);
+		m_RenderableObj->GetObject().SetDrawMode(GL_POINTS);
 		m_RenderableObj->GetObject().SetIndiceBuffer(indiceBuffer, nbElements);
-		m_RenderableObj->GetObject().AddBuffer(bufferPosition, ama3D::VERTEX_ATTRIBUT);
+		m_RenderableObj->GetObject().AddBuffer(bufferPosition, ama3D::CUSTOM_ATTRIBUT+0);
+		m_RenderableObj->GetObject().AddBuffer(bufferColor, ama3D::CUSTOM_ATTRIBUT+1);
 		m_RenderableObj->GetObject().CompileBuffers();
 	}
 
@@ -93,7 +114,7 @@ public:
 		MatrixManager.SetModeMatrix(ama3D::MATRIX_2D);
 
 		// Affichage du message d'aide
-		Console.Draw();
+		//Console.Draw();
 
 	}
 };
