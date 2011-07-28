@@ -142,7 +142,7 @@ public:
 int main(int argc, char *argv[])
 //#endif
 {
-	po::options_description desc("Program Usage", 1024, 512);
+  po::options_description desc("Usage",1024,512);
 	try
 	{
 		std::string file;
