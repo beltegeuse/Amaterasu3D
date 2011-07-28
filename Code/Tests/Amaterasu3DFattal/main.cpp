@@ -57,7 +57,7 @@ public:
 		m_FattalUpdateBuffers = CShaderManager::Instance().LoadShader("Fattal2DUpdate.shader");
 		// Resized buffers
 		// FIXME
-		m_FattalComputeLPM->GetFBO()->SetSize(m_SizeGrid);
+//		m_FattalComputeLPM->GetFBO()->SetSize(m_SizeGrid);
 		m_FattalUpdateBuffers->GetFBO()->SetSize(m_SizeGrid);
 		// Initialise buffers
 		m_FinalBuffers[0] = m_FattalUpdateBuffers->GetFBO();
@@ -74,14 +74,14 @@ public:
 	 * Public methods
 	 */
 	// Update I buffer
-	void ComputeLPM(int nbPass = 3)
+	void ComputeLPM(int nbPass = 1)
 	{
 		m_IDFinalFBO = 0;
 		// foreach pass
 		for(int i = 0; i < nbPass; i++)
 		{
 			// foreach direction
-			for(int idDir = 0; idDir < 4; idDir++) // FIXME Puts 4
+			for(int idDir = 0; idDir < 1; idDir++) // FIXME Puts 4
 			{
 				// Set blending
 				glEnable(GL_BLEND);
@@ -109,33 +109,33 @@ public:
 				//   UpdateBuffers
 				//////////////////////////
 				// Use swap buffer technique
-				m_FattalUpdateBuffers->SetFBO(m_FinalBuffers[(m_IDFinalFBO+1) % 2], false);
-				// Add Buffers
-				m_FattalUpdateBuffers->Begin();
-				// ==== Uniform
-				m_FattalUpdateBuffers->SetUniformVector("MainDirection", GetMainDirection(idDir));
-				// ==== Texture activation
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->activateMultiTex(CUSTOM_TEXTURE+3);
-				// ==== Drawing
-				glBegin(GL_QUADS);
-					glTexCoord2f(0.0, 0.0);
-					glVertex2f(-1.0, -1.0);
-					glTexCoord2f(0.0, 1.0);
-					glVertex2f(-1.0, 1.0);
-					glTexCoord2f(1.0, 1.0);
-					glVertex2f(1.0, 1.0);
-					glTexCoord2f(1.0, 0.0);
-					glVertex2f(1.0, -1.0);
-				glEnd();
-				// ==== Texture desactivation
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+3);
-				m_FattalUpdateBuffers->End();
+//				m_FattalUpdateBuffers->SetFBO(m_FinalBuffers[(m_IDFinalFBO+1) % 2], false);
+//				// Add Buffers
+//				m_FattalUpdateBuffers->Begin();
+//				// ==== Uniform
+//				m_FattalUpdateBuffers->SetUniformVector("MainDirection", GetMainDirection(idDir));
+//				// ==== Texture activation
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
+//				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
+//				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->activateMultiTex(CUSTOM_TEXTURE+3);
+//				// ==== Drawing
+//				glBegin(GL_QUADS);
+//					glTexCoord2f(0.0, 0.0);
+//					glVertex2f(-1.0, -1.0);
+//					glTexCoord2f(0.0, 1.0);
+//					glVertex2f(-1.0, 1.0);
+//					glTexCoord2f(1.0, 1.0);
+//					glVertex2f(1.0, 1.0);
+//					glTexCoord2f(1.0, 0.0);
+//					glVertex2f(1.0, -1.0);
+//				glEnd();
+//				// ==== Texture desactivation
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+//				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+//				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+//				m_FattalUpdateBuffers->End();
 				// Update id Final
 				m_IDFinalFBO = (m_IDFinalFBO+1) % 2;
 			}
@@ -233,7 +233,8 @@ private:
 
 					// TODO: Do an real initialisation
 					// Initialisation Value
-					if(idDir == 0 && j == (m_LPMNbAngles/2) && k >= (NbGroupRays/2)-2 && k <= (NbGroupRays/2)+2)
+					//if(idDir == 0 && j == (m_LPMNbAngles/2) && k >= (NbGroupRays/2)-2 && k <= (NbGroupRays/2)+2)
+					if(idDir == 0)
 						rayValue[m_LPMNbAngles*k+j] = 1.0;
 					else
 						rayValue[m_LPMNbAngles*k+j] = 0.0;
@@ -298,7 +299,7 @@ public:
 		m_Camera = new CameraFPS(Math::TVector3F(30,40,20), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
 		// Create fattal
-		m_Fattal = new Fattal2DVolume(Math::TVector2I(64,64));
+		m_Fattal = new Fattal2DVolume(Math::TVector2I(10,10));
 	}
 
 	virtual void OnUpdate(double delta)

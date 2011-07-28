@@ -27,16 +27,13 @@ uniform float DiffusionCoeff;
 // Other information
 uniform vec2 MainDirection;
 
-// Define const
-#define BIAS 0.001
-
 /////////////////////////////////
 // Helper functions
 /////////////////////////////////
 // to know if the ray is in the volume
-bool isNotInGrid(in vec2 voxID)
+bool isInGrid(in vec2 voxID)
 {
-	return any(lessThan(voxID, vec2(0.0))) || any(greaterThanEqual(voxID, GridDimension));
+	return all(greaterThan(voxID,vec2(-0.01))) && all(lessThan(voxID, GridDimension+0.01));
 }
 
 float ReadU(in vec2 voxID, in vec2 mainDirection)
@@ -68,6 +65,15 @@ void main()
 	// Data with position information
 	vec2 Position = vOriPosition[0]; // already mult by GridDimension
 	vec2 voxWorldPos = floor(Position); //FIXME
+
+	/////////////////////////////////
+	// Initialisation tDelta
+	/////////////////////////////////
+	vec2 tDelta = vec2(100000);
+	if(Direction.x != 0)
+		tDelta.x = 1.0/DirectionAbs.x;
+	if(Direction.y != 0)
+		tDelta.y = 1.0/DirectionAbs.y;
 	
 	/////////////////////////////////
 	// Initialise tMax
@@ -84,15 +90,10 @@ void main()
 	else if(Direction.y > 0)
 		tMax.y = (voxWorldPos.y + 1.0 - Position.y) / Direction.y;
 
-	/////////////////////////////////
-	// Initialisation tDelta
-	/////////////////////////////////
-	vec2 tDelta = vec2(100000);
-	if(Direction.x != 0)
-		tDelta.x = 1.0/abs(Direction.x);
-	if(Direction.y != 0)
-		tDelta.y = 1.0/abs(Direction.y);
-	
+//	if(tMax.x == 0)
+//		tMax.x += tDelta.x;
+//	if(tMax.y == 0)
+//		tMax.y += tDelta.y;
 	////////////////////////////////
 	// Loop (Ray martching )
 	////////////////////////////////
@@ -100,60 +101,58 @@ void main()
 	bool isNeedRecast = true;
 	int nbIntersection;
 	// Values of rays
-	float rayValue = vOriValue[0];
-	float OldCurrentLenght = 0.0;
 	int SumIntersection = 0;
-	vec2 CurrentVoxID;
+	// Loop variables
+	float OldCurrentLenght = 0.0;
+	float rayValue = vOriValue[0];
+	vec2 Offset = vec2(0.0);
+	float Dist;
 	// know the main direction
 	bool xMainDirection = DirectionAbs.x > DirectionAbs.y;
 	
+	// Intial bias
+//	Position += MainDirection*BIAS;
 	while(isNeedRecast)
 	{
-		Position += MainDirection*BIAS;
-		voxWorldPos = floor(Position);
-
 		isNeedRecast = false;
 		nbIntersection = 0;
-
-		while(!isNotInGrid(voxWorldPos)) // FIXME
+		while(true)
 		{
-			// Save the current VoxID for cell reading
-			CurrentVoxID = voxWorldPos; // Need +1 ?
-			
 			// Martch in the volume
-			vec2 diff;
 			if(tMax.x < tMax.y)
 			{
-				diff = tMax.x*Direction;
+				Dist = tMax.x;
 				tMax.x += tDelta.x;
-				voxWorldPos.x += sDelta.x;
 			}
 			else
 			{
-				diff = tMax.y*Direction;
+				Dist = tMax.y;
 				tMax.y += tDelta.y;
-				voxWorldPos.y += sDelta.y;
 			}
 			
 			// Get the length & Update OldCurrentLenght for next loop
-			float TravelLength = length(diff);
-			float DiffLength = TravelLength - OldCurrentLenght;
-			OldCurrentLenght = TravelLength;
-			
-			Position += DiffLength*Direction;
+			float DiffLength = Dist - OldCurrentLenght;
+			OldCurrentLenght = Dist;
+
+			// Update variables
+			vec2 NewPosition = vOriPosition[0] + (Dist-0.0001)*Direction + Offset;
+			voxWorldPos = floor(NewPosition); // Be careful
+			if(!isInGrid(voxWorldPos))
+				break;
+			Position = NewPosition;
 
 			// Compute
 			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*DiffusionCoeff/maxDirectionCoord));
 			float extinctionCoeff = (DiffusionCoeff+AbsortionCoeff);
 			float extinctionFactor = exp(-1*DiffLength*extinctionCoeff/maxDirectionCoord);
-			float UValue = ReadU(CurrentVoxID, MainDirection);
+			float UValue = ReadU(voxWorldPos, MainDirection);
 			rayValue = rayValue*extinctionFactor;//+(UValue*(1 - extinctionFactor)/extinctionCoeff);
 			
 			// Emit new values
 			//TODO: NbRay
 			//TODO: Area
 			//TODO: CellVolume inverse
-			DeltaData = rayValue+0.02;//1.0*1.0*(3.14/(9))*scatteringTerm;
+			DeltaData = rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
 			gl_Position = vec4((Position/GridDimension)*2 - 1,0.0,1.0);
 			EmitVertex();
 
@@ -164,38 +163,53 @@ void main()
 		SumIntersection += nbIntersection;
 		// Protection for looping
 		//FIXME
-		if(nbIntersection == 0 || SumIntersection > 64) // < if no intersection => Quit
+		if(nbIntersection == 0 || SumIntersection > 127) // < if no intersection => Quit
 			break;
 		
 		// Compute relooping :)
 		if(xMainDirection)
 		{
-			if(Position.y <= 0 || Position.y >= GridDimension.y)
+			if(abs(Position.y) <= 0.01 || abs(Position.y-GridDimension.y) <= 0.01 )
 			{
+				Position -= Offset;
 				isNeedRecast = true;
 				if(sDelta.y == -1)
-					Position.y = GridDimension.y;
+					Offset.y += GridDimension.y;
 				else
-					Position.y = 0;
+					Offset.y -= GridDimension.y;
+			}
+			else
+			{
+				DeltaData = rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
+				gl_Position = vec4(0.0,0.0,0.0,1.0);
+				EmitVertex();
 			}
 		}
 		else
 		{
-			if(Position.x <= 0 || Position.x >= GridDimension.x)
+			if(abs(Position.x) <= 0.01 || abs(Position.x-GridDimension.x) <= 0.01)
 			{
+				Position -= Offset;
 				isNeedRecast = true;
 				if(sDelta.x == -1)
-					Position.x = GridDimension.x;
+					Offset.x += GridDimension.x;
 				else
-					Position.x = 0;
+					Offset.x -= GridDimension.x;
+			}
+			else
+			{
+				DeltaData = rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
+				gl_Position = vec4(0.0,0.0,0.0,1.0);
+				EmitVertex();
 			}
 		}
-		
-		// Reinitialise rayValue
-		rayValue = 0;
-	}
+		EndPrimitive();
+		Position += Offset;
 
-	gl_Position = vec4((Position/GridDimension)*2 - 1,0.0,1.0);
-	EmitVertex();
-	EndPrimitive();
+		DeltaData = rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
+		gl_Position = vec4((Position/GridDimension)*2 - 1,0.0,1.0);
+		EmitVertex();
+		// Reinitialise rayValue
+		//rayValue = 0;
+	}
 }
