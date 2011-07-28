@@ -153,7 +153,7 @@ void main()
 			//TODO: NbRay
 			//TODO: Area
 			//TODO: CellVolume inverse
-			DeltaData = rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
+			DeltaData = rayValue+0.02;//1.0*1.0*(3.14/(9))*scatteringTerm;
 			gl_Position = vec4((Position/GridDimension)*2 - 1,0.0,1.0);
 			EmitVertex();
 

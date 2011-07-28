@@ -144,21 +144,22 @@ public:
 	// Draw I buffer
 	void Render()
 	{
+		m_FattalComputeLPM->GetFBO()->DrawDebug();
 		// Show result
-		m_FattalDisplay->Begin();
-		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
-		glBegin(GL_QUADS);
-			glTexCoord2f(0.0, 0.0);
-			glVertex2f(-1.0, -1.0);
-			glTexCoord2f(0.0, 1.0);
-			glVertex2f(-1.0, 1.0);
-			glTexCoord2f(1.0, 1.0);
-			glVertex2f(1.0, 1.0);
-			glTexCoord2f(1.0, 0.0);
-			glVertex2f(1.0, -1.0);
-		glEnd();
-		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-		m_FattalDisplay->End();
+//		m_FattalDisplay->Begin();
+//		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+//		glBegin(GL_QUADS);
+//			glTexCoord2f(0.0, 0.0);
+//			glVertex2f(-1.0, -1.0);
+//			glTexCoord2f(0.0, 1.0);
+//			glVertex2f(-1.0, 1.0);
+//			glTexCoord2f(1.0, 1.0);
+//			glVertex2f(1.0, 1.0);
+//			glTexCoord2f(1.0, 0.0);
+//			glVertex2f(1.0, -1.0);
+//		glEnd();
+//		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//		m_FattalDisplay->End();
 	}
 private:
 	Math::TVector2F GetMainDirection(int idDir)

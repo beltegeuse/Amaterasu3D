@@ -25,6 +25,8 @@
 #include "FBO.h"
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
+#include <vector>
+#include <cmath>
 
 namespace ama3D
 {
@@ -309,16 +311,26 @@ Texture* FBO::GetTexture(const std::string& nameBuffer)
 void FBO::DrawDebug()
 {
 	// Compute Grid need
-	// * Compute how many slot need
-	int nbElementsToDraw = m_ColoredBuffers.size();
-	// * Compute the grid dimension
-	int nbHeight = nbElementsToDraw / 2;
-	if (nbElementsToDraw % 2 != 0)
-		nbHeight++;
 
-	int nbWidth = nbHeight;
-	if (nbHeight * nbHeight < nbElementsToDraw)
-		nbWidth++;
+	// * Compute how many slot need
+	// Info : if depth buffer is an texture it'll be in m_ColoredBuffers
+	int nbElementsToDraw = m_ColoredBuffers.size();
+
+	// * Compute the grid dimension
+	float root = sqrt(nbElementsToDraw);
+	int sHeight = round(root);
+	int sWidth = sHeight;
+	if ((root-sHeight) > 0)
+		sWidth++;
+
+	// * Create Grid
+	const Math::TVector2I screenSize = CSettingsManager::Instance().GetSizeRenderingWindow();
+	// Compute factors width
+	const Math::TVector2I cellSize  = Math::TVector2I((screenSize.x / sHeight),(screenSize.y / sWidth));
+	std::vector<Math::TVector2I> cells;
+	for(int i = 0; i < sHeight; i++)
+		for(int j = 0; j < sWidth; j++)
+			cells.push_back(Math::TVector2I(i*cellSize.x,j*cellSize.y));
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -333,24 +345,17 @@ void FBO::DrawDebug()
 	glLoadIdentity();
 
 	// Draw the Grid
-	const int WindowHeight = 600;
-	const int WindowWidth = 800;
-	// Compute factors width
-	const int factorWidth = (WindowWidth / nbWidth);
-	const int factorHeight = (WindowHeight / nbHeight);
 	int nbElementDrew = 0;
 	// Draw others textures
 	for (std::map<std::string, Texture*>::iterator it =
 			m_ColoredBuffers.begin(); it != m_ColoredBuffers.end(); ++it)
 	{
-		int idWidth = nbElementDrew / nbWidth;
-		int idHeight = nbElementDrew % nbHeight;
-
+		// Difference if it's the depth buffer
 		if (it->first == "Depth")
 			m_DepthShader->Begin();
 
-		glViewport(idWidth * factorWidth, idHeight * factorHeight, factorWidth,
-				factorHeight);
+		Math::TVector2I posWin = cells[nbElementDrew];
+		glViewport(posWin.x, posWin.y, cellSize.x, cellSize.y);
 
 		// Draw the buffer content
 		it->second->activateTextureMapping();
@@ -366,6 +371,8 @@ void FBO::DrawDebug()
 		glVertex2f(1.0, -1.0);
 		glEnd();
 
+
+		// Difference if it's the depth buffer
 		if (it->first == "Depth")
 			m_DepthShader->End();
 
