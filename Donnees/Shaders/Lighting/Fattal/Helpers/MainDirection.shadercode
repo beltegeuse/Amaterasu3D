@@ -1,0 +1,28 @@
+float ReadU(in sampler2D textureID, in vec2 voxID, in vec2 mainDirection)
+{
+	vec4 data = texelFetch(textureID, ivec2(voxID), 0);
+	if(mainDirection.x == -1)
+		return data.x;
+	else if(mainDirection.x == 1)
+		return data.y;
+	else if(mainDirection.y == -1)
+		return data.z;
+	else
+		return data.w;
+}
+
+vec4 UpdateU(in vec4 UValue, in vec2 mDirection)
+{
+	vec4 vU = UValue;
+	// Update U
+	// * Empty main direction
+	if(mDirection.x == -1)
+		vU.x = 0;
+	else if(mDirection.x == 1)
+		vU.y = 0;
+	else if(mDirection.y == -1)
+		vU.z = 0;
+	else
+		vU.w = 0;
+	return vU;
+}

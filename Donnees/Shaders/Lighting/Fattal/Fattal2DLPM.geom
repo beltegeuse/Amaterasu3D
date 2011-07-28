@@ -33,23 +33,12 @@ uniform vec2 MainDirection;
 /////////////////////////////////
 // Helper functions
 /////////////////////////////////
+{% include 'Helpers/MainDirection.shadercode' %}
+
 // to know if the ray is in the volume
 bool isNotInGrid(in vec2 voxID)
 {
 	return any(lessThan(voxID, vec2(0.0))) || any(greaterThanEqual(voxID, GridDimension));
-}
-
-float ReadU(in vec2 voxID, in vec2 mainDirection)
-{
-	vec4 data = texelFetch(UBuffer, ivec2(voxID), 0);
-	if(mainDirection.x == -1)
-		return data.x;
-	else if(mainDirection.x == 1)
-		return data.y;
-	else if(mainDirection.y == -1)
-		return data.z;
-	else
-		return data.w;
 }
 
 void main()
@@ -146,7 +135,7 @@ void main()
 			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*DiffusionCoeff/maxDirectionCoord));
 			float extinctionCoeff = (DiffusionCoeff+AbsortionCoeff);
 			float extinctionFactor = exp(-1*DiffLength*extinctionCoeff/maxDirectionCoord);
-			float UValue = ReadU(CurrentVoxID, MainDirection);
+			float UValue = ReadU(UBuffer,CurrentVoxID, MainDirection);
 			rayValue = rayValue*extinctionFactor;//+(UValue*(1 - extinctionFactor)/extinctionCoeff);
 			
 			// Emit new values

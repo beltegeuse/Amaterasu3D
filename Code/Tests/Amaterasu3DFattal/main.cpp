@@ -144,8 +144,6 @@ public:
 	// Draw I buffer
 	void Render()
 	{
-//		m_FattalComputeLPM->GetFBO()->DrawDebug();
-
 		// Show result
 		m_FattalDisplay->Begin();
 		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);

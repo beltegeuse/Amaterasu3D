@@ -19,6 +19,11 @@ uniform vec2 MainDirection;
 out vec4 outUBuffer;
 out vec4 outIBuffer;
 
+////////////////////////
+// Helper functions
+////////////////////////
+{% include 'Helpers/MainDirection.shadercode' %}
+
 void main()
 {
 	// Read data
@@ -30,16 +35,6 @@ void main()
 	// Update I
 	outIBuffer = vec4(vI + vDeltaI);
 	
-	// Update U
-	// * Empty main direction
-	if(MainDirection.x == -1)
-		vU.x = 0;
-	else if(MainDirection.x == 1)
-		vU.y = 0;
-	else if(MainDirection.y == -1)
-		vU.z = 0;
-	else
-		vU.w = 0;
 	// * Add values
-	outUBuffer = vU + vDeltaU;
+	outUBuffer =  vDeltaU + UpdateU(vU, MainDirection);
 }
