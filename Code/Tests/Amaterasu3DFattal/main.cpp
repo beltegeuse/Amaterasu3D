@@ -90,13 +90,17 @@ public:
 				//   Compute LPM(dir)
 				//////////////////////////
 				m_FattalComputeLPM->Begin();
+				// ===== Uniform setters
 				m_FattalComputeLPM->SetUniformVector("MainDirection", GetMainDirection(idDir));
 				m_FattalComputeLPM->SetUniformVector("GridDimension",Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y));
 				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_DiffusionCoeff);
 				m_FattalComputeLPM->SetUniform1f("DiffusionCoeff",m_AbsortionCoeff);
+				// ==== Texture activation
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
+				// ==== Drawing (Attributes)
 				m_InitialRaysMap[idDir]->Render();
+				// ==== Texture desactivation
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 				m_FattalComputeLPM->End();
@@ -104,16 +108,18 @@ public:
 				//////////////////////////
 				//   UpdateBuffers
 				//////////////////////////
-				// Swap buffers
+				// Use swap buffer technique
 				m_FattalUpdateBuffers->SetFBO(m_FinalBuffers[(m_IDFinalFBO+1) % 2], false);
 				// Add Buffers
 				m_FattalUpdateBuffers->Begin();
+				// ==== Uniform
 				m_FattalUpdateBuffers->SetUniformVector("MainDirection", GetMainDirection(idDir));
+				// ==== Texture activation
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
 				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
 				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->activateMultiTex(CUSTOM_TEXTURE+3);
-
+				// ==== Drawing
 				glBegin(GL_QUADS);
 					glTexCoord2f(0.0, 0.0);
 					glVertex2f(-1.0, -1.0);
@@ -124,7 +130,7 @@ public:
 					glTexCoord2f(1.0, 0.0);
 					glVertex2f(1.0, -1.0);
 				glEnd();
-
+				// ==== Texture desactivation
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
