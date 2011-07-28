@@ -1,16 +1,19 @@
+#
+# Experimental
+#
 IF(WIN32)
 #ADD_SUBDIRECTORY(OpenGL3)
 #ADD_SUBDIRECTORY(Amaterasu3D)
 #ADD_SUBDIRECTORY(NeheLesson1)
 ELSE()
-ADD_SUBDIRECTORY(OpenCLRay)
+#ADD_SUBDIRECTORY(OpenCLRay)
 ENDIF()
 
 INCLUDE_DIRECTORIES(
 	${FREETYPE_INCLUDE_DIRS}
-    /usr/local/include/sigc++-2.0
+	/usr/local/include/sigc++-2.0
 	/usr/local/lib/sigc++-2.0/include
-	/usr/local/include/assimp
+	../Libs/Assimp/include
 	../Libs/TinyXML
 	../Libs/C3/Source
 	${PYTHON_INCLUDE_DIRS}
@@ -35,5 +38,5 @@ ADD_SUBDIRECTORY(Mipmapping)
 ADD_SUBDIRECTORY(FastBilateralFiltering)
 ADD_SUBDIRECTORY(Amaterasu3DFattal)
 ADD_SUBDIRECTORY(Jinja2Test)
-ADD_SUBDIRECTORY(SHDOMVisualizer)
+#ADD_SUBDIRECTORY(SHDOMVisualizer)
 ADD_SUBDIRECTORY(TestCustomAttributs)

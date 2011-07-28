@@ -9,15 +9,25 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Config/CMake ${CMAKE_MODULE_PATH})
 SET(PROJECT_BUILD_PATH ${CMAKE_SOURCE_DIR}/Build)
 
 # * --Subprojects--
+MESSAGE("Search dependancies ... ")
+# ----- Glew
 FIND_PACKAGE(GLEW REQUIRED)
+# ----- OpenGL
 FIND_PACKAGE(OpenGL REQUIRED)
+IF(OPENGL_FOUND)
+  MESSAGE(STATUS "Find OpenGL")
+ELSE(OPENGL_FOUND)
+  MESSAGE(FATAL_ERROR "You must install OpenGL")
+ENDIF(OPENGL_FOUND)
+# ----- FreeType
 FIND_PACKAGE(Freetype REQUIRED)
+# ----- FreeImage
 FIND_PACKAGE(FreeImage REQUIRED)
+# ----- Zlib
 FIND_PACKAGE(ZLIB REQUIRED)
+# ----- Python
 FIND_PACKAGE(PythonLibs REQUIRED)
-#FIND_PACKAGE(SigCXX2 REQUIRED)
-
-# *** Boost
+# ----- Boost
 IF(WIN32)
 set(BOOST_ROOT C:/MinGW)
 ELSE()
