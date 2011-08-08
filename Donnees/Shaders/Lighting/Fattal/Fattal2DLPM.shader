@@ -2,7 +2,7 @@
 <Shader name="VolumeRendering" type="Basic">
 	<OutputFrame depthType="None" size="Custom" width=800 height=600>
 	 	<Frame name="outDeltaIBuffer" type="RGBA32" />
-		<!-- <Frame name="outDeltaUBuffer" type="RGBA32" /> -->
+		<Frame name="outDeltaUBuffer" type="RGBA32" />
 	</OutputFrame>
 	<Attributs>
     	<Attribut type="Custom" id=0 name="OriPosition" />
@@ -15,5 +15,5 @@
 	</Textures>
 	<VertexShader filename="Fattal2DLPM.vert" />
 	<FragmentShader filename="Fattal2DLPM.frag" />
-	<GeometryShader filename="Fattal2DDebugLPM.geom" in="Point" out="LineStrip" />
+	<GeometryShader filename="Fattal2DLPM.geom" in="Point" out="Point" />
 </Shader>
