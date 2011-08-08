@@ -10,7 +10,7 @@ in vec2 vOriDirection[1];
 in float vOriValue[1];
 
 // Out (Offset modifications)
-out float DeltaData;
+flat out float DeltaData;
 
 // Precision qualifier
 precision highp float;
@@ -30,10 +30,13 @@ uniform vec2 MainDirection;
 /////////////////////////////////
 // Helper functions
 /////////////////////////////////
+
+{% include "ColorimetryHelper.shadercode" %}
+
 // to know if the ray is in the volume
 bool isInGrid(in vec2 voxID)
 {
-	return all(greaterThan(voxID,vec2(-0.01))) && all(lessThan(voxID, GridDimension+0.01));
+	return all(greaterThanEqual(voxID,vec2(0.0))) && all(lessThan(voxID, GridDimension));
 }
 
 float ReadU(in vec2 voxID, in vec2 mainDirection)
@@ -51,24 +54,31 @@ float ReadU(in vec2 voxID, in vec2 mainDirection)
 
 void main()
 {
-	// Constraints
+	// For the moment
+	// =====================
+	// ==== Constraints ====
+	// =====================
 	//  * Cell size = 1
 
 	/////////////////////////////////
 	// Get data
 	/////////////////////////////////
+	
 	// Data with direction information
 	vec2 Direction = normalize(vOriDirection[0]);
 	vec2 DirectionAbs = abs(Direction);
 	vec2 sDelta = sign(Direction);
-	float maxDirectionCoord = max(DirectionAbs.x,DirectionAbs.y);
+	float maxDirectionCoord = max(DirectionAbs.x,DirectionAbs.y); // < Used to compute
+	
 	// Data with position information
-	vec2 Position = vOriPosition[0]; // already mult by GridDimension
+	vec2 Position = vOriPosition[0]+Direction*0.00001; // already mult by GridDimension
 	vec2 voxWorldPos = floor(Position); //FIXME
 
 	/////////////////////////////////
 	// Initialisation tDelta
 	/////////////////////////////////
+	// ==== Know the tDelta jump to next intersection
+	// ===== /!\ Cell size contraint = 1.0
 	vec2 tDelta = vec2(100000);
 	if(Direction.x != 0)
 		tDelta.x = 1.0/DirectionAbs.x;
@@ -78,22 +88,19 @@ void main()
 	/////////////////////////////////
 	// Initialise tMax
 	/////////////////////////////////
+	// ==== Know the next tMax for next intersection
 	vec2 tMax = vec2(100000);
 	// * x Initialisation
 	if(Direction.x < 0)
 		tMax.x = (voxWorldPos.x - Position.x) / Direction.x;
 	else if(Direction.x > 0)
-		tMax.x = (voxWorldPos.x + 1.0 - Position.x) / Direction.x;
+		tMax.x = (voxWorldPos.x + 1.0 - Position.x) / Direction.x; // < See the upper cell
 	// * y Initialisation
 	if(Direction.y < 0)
 		tMax.y = (voxWorldPos.y - Position.y) / Direction.y;
 	else if(Direction.y > 0)
 		tMax.y = (voxWorldPos.y + 1.0 - Position.y) / Direction.y;
-
-//	if(tMax.x == 0)
-//		tMax.x += tDelta.x;
-//	if(tMax.y == 0)
-//		tMax.y += tDelta.y;
+		
 	////////////////////////////////
 	// Loop (Ray martching )
 	////////////////////////////////
@@ -110,8 +117,14 @@ void main()
 	// know the main direction
 	bool xMainDirection = DirectionAbs.x > DirectionAbs.y;
 	
+	// DEBUG Values
+	bool Black = false;
+	DeltaData = 0.8;
+	gl_Position = vec4(((Position/GridDimension)*2 - 1)*1,0.0,1.0);
+	EmitVertex();
+	
 	// Intial bias
-//	Position += MainDirection*BIAS;
+    //	Position += MainDirection*BIAS;
 	while(isNeedRecast)
 	{
 		isNeedRecast = false;
@@ -135,10 +148,13 @@ void main()
 			OldCurrentLenght = Dist;
 
 			// Update variables
-			vec2 NewPosition = vOriPosition[0] + (Dist-0.0001)*Direction + Offset;
+			vec2 NewPosition = vOriPosition[0] + (Dist)*Direction + Offset;
 			voxWorldPos = floor(NewPosition); // Be careful
 			if(!isInGrid(voxWorldPos))
+			{
 				break;
+			}
+				
 			Position = NewPosition;
 
 			// Compute
@@ -152,8 +168,14 @@ void main()
 			//TODO: NbRay
 			//TODO: Area
 			//TODO: CellVolume inverse
-			DeltaData = rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
-			gl_Position = vec4((Position/GridDimension)*2 - 1,0.0,1.0);
+			//rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
+			if(Black)
+				DeltaData = 0.2;
+			else
+				DeltaData = 0.8;
+			Black = !Black;
+			
+			gl_Position = vec4(((Position/GridDimension)*2 - 1)*1,0.0,1.0);
 			EmitVertex();
 
 			// Protection
@@ -207,7 +229,7 @@ void main()
 		Position += Offset;
 
 		DeltaData = rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
-		gl_Position = vec4((Position/GridDimension)*2 - 1,0.0,1.0);
+		gl_Position = vec4(((Position/GridDimension)*2 - 1),0.0,1.0);
 		EmitVertex();
 		// Reinitialise rayValue
 		//rayValue = 0;

@@ -81,7 +81,8 @@ public:
 		for(int i = 0; i < nbPass; i++)
 		{
 			// foreach direction
-			for(int idDir = 0; idDir < 1; idDir++) // FIXME Puts 4
+			int idDir = 3;
+			//for(int idDir = 0; idDir < 1; idDir++) // FIXME Puts 4
 			{
 				// Set blending
 				glEnable(GL_BLEND);
@@ -91,6 +92,8 @@ public:
 				//////////////////////////
 				m_FattalComputeLPM->Begin();
 				// ===== Uniform setters
+				std::cout << GetMainDirection(idDir) << std::endl;
+				std::cout << Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y) << std::endl;
 				m_FattalComputeLPM->SetUniformVector("MainDirection", GetMainDirection(idDir));
 				m_FattalComputeLPM->SetUniformVector("GridDimension",Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y));
 				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_DiffusionCoeff);
@@ -234,10 +237,11 @@ private:
 					// TODO: Do an real initialisation
 					// Initialisation Value
 					//if(idDir == 0 && j == (m_LPMNbAngles/2) && k >= (NbGroupRays/2)-2 && k <= (NbGroupRays/2)+2)
-					if(idDir == 0)
-						rayValue[m_LPMNbAngles*k+j] = 1.0;
-					else
-						rayValue[m_LPMNbAngles*k+j] = 0.0;
+//					if(idDir == 0)
+//						rayValue[m_LPMNbAngles*k+j] = 1.0;
+//					else
+//						rayValue[m_LPMNbAngles*k+j] = 0.0;
+					rayValue[m_LPMNbAngles*k+j] = 1.0;
 				}
 			}
 			// Create renderable objects
