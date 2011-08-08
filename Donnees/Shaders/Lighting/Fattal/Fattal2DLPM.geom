@@ -34,24 +34,11 @@ uniform vec2 MainDirection;
 // Helper functions
 /////////////////////////////////
 {% include "ColorimetryHelper.shadercode" %}
-
+{% include "Helpers/MainDirection.shadercode" %}
 // to know if the ray is in the volume
 bool isInGrid(in vec2 voxID)
 {
 	return all(greaterThanEqual(voxID,vec2(0.0))) && all(lessThan(voxID, GridDimension));
-}
-
-float ReadU(in vec2 voxID, in vec2 mainDirection)
-{
-	vec4 data = texelFetch(UBuffer, ivec2(voxID), 0);
-	if(mainDirection.x == -1)
-		return data.x;
-	else if(mainDirection.x == 1)
-		return data.y;
-	else if(mainDirection.y == -1)
-		return data.z;
-	else
-		return data.w;
 }
 
 void main()
@@ -149,14 +136,13 @@ void main()
 			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*DiffusionCoeff/maxDirectionCoord));
 			float extinctionCoeff = (DiffusionCoeff+AbsortionCoeff);
 			float extinctionFactor = exp(-1*DiffLength*extinctionCoeff/maxDirectionCoord);
-			float UValue = ReadU(voxWorldPos, MainDirection);
-			rayValue = rayValue*extinctionFactor+(UValue*(1 - extinctionFactor)/extinctionCoeff);
+			float UValue = ReadU(UBuffer, voxWorldPos, MainDirection);
+			rayValue = rayValue*extinctionFactor;+(UValue*(1 - extinctionFactor)/extinctionCoeff);//
 			
 			// Emit new values
 			//TODO: NbRay
 			//TODO: Area
 			//TODO: CellVolume inverse
-			//rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
 			DeltaData = 1.0*1.0*(3.14/(9))*scatteringTerm;
 			gl_Position = vec4(((Position/GridDimension)*2 - 1)*1,0.0,1.0);
 			EmitVertex();
