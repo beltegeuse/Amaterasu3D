@@ -48,9 +48,9 @@ public:
 	 */
 	Fattal2DVolume(const Math::TVector2I size) :
 		m_SizeGrid(size),
-		m_AbsortionCoeff(0.01),
-		m_DiffusionCoeff(0.01),
-		m_LPMMultRes(1),
+		m_AbsortionCoeff(0.1),
+		m_DiffusionCoeff(0.1),
+		m_LPMMultRes(2),
 		m_LPMNbAngles(9)
 	{
 		// Initialise shaders
@@ -110,6 +110,7 @@ public:
 				m_FattalComputeLPM->SetUniformVector("GridDimension",Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y));
 				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_DiffusionCoeff);
 				m_FattalComputeLPM->SetUniform1f("DiffusionCoeff",m_AbsortionCoeff);
+				m_FattalComputeLPM->SetUniform1i("isFristSweep", i == 0);
 				// ==== Texture activation
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
@@ -259,7 +260,7 @@ private:
 					rayValue[m_LPMNbAngles*k+j] = 1.0;
 #else
 					// Initialisation Value
-					if(idDir == 0 && j == (m_LPMNbAngles/2) && k >= (NbGroupRays/2)-2 && k <= (NbGroupRays/2)+2)
+					if(j == (m_LPMNbAngles/2) && k >= (NbGroupRays/2)-2 && k <= (NbGroupRays/2)+2 && idDir == 0) // &&
 						rayValue[m_LPMNbAngles*k+j] = 1.0;
 					else
 						rayValue[m_LPMNbAngles*k+j] = 0.0;
@@ -320,12 +321,12 @@ public:
 
 	virtual void OnInitialize()
 	{
-		glPointSize(1.f);
+		//glPointSize(1.f);
 		// Camera Setup
 		m_Camera = new CameraFPS(Math::TVector3F(30,40,20), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
 		// Create fattal
-		m_Fattal = new Fattal2DVolume(Math::TVector2I(64,64));
+		m_Fattal = new Fattal2DVolume(Math::TVector2I(100,100));
 	}
 
 	virtual void OnUpdate(double delta)

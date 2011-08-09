@@ -23,7 +23,7 @@ uniform sampler2D IBuffer;
 uniform vec2 GridDimension;
 uniform float AbsortionCoeff;
 uniform float DiffusionCoeff;
-
+uniform bool isFristSweep;
 // Other information
 uniform vec2 MainDirection;
 
@@ -33,8 +33,10 @@ uniform vec2 MainDirection;
 /////////////////////////////////
 // Helper functions
 /////////////////////////////////
+// Includes
 {% include "ColorimetryHelper.shadercode" %}
 {% include "Helpers/MainDirection.shadercode" %}
+
 // to know if the ray is in the volume
 bool isInGrid(in vec2 voxID)
 {
@@ -92,7 +94,12 @@ void main()
 	int SumIntersection = 0;
 	
 	// Values of rays
-	float rayValue = vOriValue[0];
+	float rayValue;
+	if(isFristSweep)
+		rayValue = vOriValue[0];
+	else
+		rayValue = 0;
+		
 	float OldCurrentLenght = 0.0;
 	vec2 Offset = vec2(0.0);
 	float Dist;
@@ -137,16 +144,18 @@ void main()
 			float extinctionCoeff = (DiffusionCoeff+AbsortionCoeff);
 			float extinctionFactor = exp(-1*DiffLength*extinctionCoeff/maxDirectionCoord);
 			float UValue = ReadU(UBuffer, voxWorldPos, MainDirection);
-			rayValue = rayValue*extinctionFactor;+(UValue*(1 - extinctionFactor)/extinctionCoeff);//
+			rayValue = rayValue*extinctionFactor+(UValue*(1 - extinctionFactor)/extinctionCoeff);
 			
 			// Emit new values
 			//TODO: NbRay
 			//TODO: Area
 			//TODO: CellVolume inverse
-			DeltaData = 1.0*1.0*(3.14/(9))*scatteringTerm;
+			//DeltaData = 1.0*1.0*scatteringTerm*(3.14/(9)); //
+			DeltaData = rayValue;
 			gl_Position = vec4(((Position/GridDimension)*2 - 1)*1,0.0,1.0);
 			EmitVertex();
-
+			EndPrimitive();
+			
 			// Protection
 			nbIntersection++;
 		}
@@ -182,7 +191,6 @@ void main()
 					Offset.x -= GridDimension.x;
 			}
 		}
-		EndPrimitive();
 		Position += Offset;
 
 		// Reinitialise rayValue

@@ -36,5 +36,5 @@ void main()
 	outIBuffer = vec4(vI + vDeltaI);
 	
 	// * Add values
-	outUBuffer =  vDeltaU + UpdateU(vU, MainDirection);
+	outUBuffer = UpdateU(vU, MainDirection) + vDeltaU;
 }
