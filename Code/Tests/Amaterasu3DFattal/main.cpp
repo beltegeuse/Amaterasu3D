@@ -74,6 +74,14 @@ public:
 	virtual ~Fattal2DVolume()
 	{}
 
+	void ClearBuffers()
+	{
+		m_FinalBuffers[0]->Bind();
+		m_FinalBuffers[0]->UnBind();
+		m_FinalBuffers[1]->Bind();
+		m_FinalBuffers[1]->UnBind();
+	}
+
 	/*
 	 * Public methods
 	 */
@@ -332,6 +340,7 @@ public:
 	{
 		MatrixManager.SetModeMatrix(MATRIX_3D);
 
+		m_Fattal->ClearBuffers();
 		m_Fattal->ComputeLPM();
 		m_Fattal->Render();
 
