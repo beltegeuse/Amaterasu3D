@@ -323,6 +323,8 @@ int save_png_SDFont(
 	// Add font information
 	fontNode->SetAttribute("name", font_name);
 	fontNode->SetAttribute("filename", fn);
+	fontNode->SetAttribute("width", img_width);
+	fontNode->SetAttribute("height", img_height);
 	// Add informations from Faces
 	TiXmlElement* facesNodes = new TiXmlElement("Faces");
 	for( unsigned int i = 0; i < packed_glyphs.size(); ++i )

@@ -2,11 +2,11 @@
 # Experimental
 #
 IF(WIN32)
-#ADD_SUBDIRECTORY(OpenGL3)
-#ADD_SUBDIRECTORY(Amaterasu3D)
-#ADD_SUBDIRECTORY(NeheLesson1)
+#SUBDIRS(OpenGL3)
+#SUBDIRS(Amaterasu3D)
+#SUBDIRS(NeheLesson1)
 ELSE()
-#ADD_SUBDIRECTORY(OpenCLRay)
+#SUBDIRS(OpenCLRay)
 ENDIF()
 
 INCLUDE_DIRECTORIES(
@@ -24,19 +24,20 @@ INCLUDE_DIRECTORIES(
 #    - Check Texture ID [main.cpp]
 #    - Add compute RSM Position (InverseCamera matrix ... etc) [GLSL]
 #    - Pass all uniform to GLSL [main.cpp]
-#ADD_SUBDIRECTORY(Amaterasu3DReflectiveShadowMapping)
-#ADD_SUBDIRECTORY(Amaterasu3DWhiteBalancing)
+#SUBDIRS(Amaterasu3DReflectiveShadowMapping)
+#SUBDIRS(Amaterasu3DWhiteBalancing)
 
-ADD_SUBDIRECTORY(Amaterasu3DGBuffer)
-ADD_SUBDIRECTORY(Amaterasu3DGeometryShader)
-ADD_SUBDIRECTORY(Amaterasu3DLPV)
-ADD_SUBDIRECTORY(Amaterasu3DSSAO)
-ADD_SUBDIRECTORY(CameraPath)
-ADD_SUBDIRECTORY(BinvoxViewer)
-ADD_SUBDIRECTORY(ShadowMap)
-ADD_SUBDIRECTORY(Mipmapping)
-ADD_SUBDIRECTORY(FastBilateralFiltering)
-ADD_SUBDIRECTORY(Amaterasu3DFattal)
-ADD_SUBDIRECTORY(Jinja2Test)
-#ADD_SUBDIRECTORY(SHDOMVisualizer)
-ADD_SUBDIRECTORY(TestCustomAttributs)
+SUBDIRS(Amaterasu3DGBuffer)
+SUBDIRS(Amaterasu3DGeometryShader)
+SUBDIRS(Amaterasu3DLPV)
+SUBDIRS(Amaterasu3DSSAO)
+SUBDIRS(CameraPath)
+SUBDIRS(BinvoxViewer)
+SUBDIRS(ShadowMap)
+SUBDIRS(Mipmapping)
+SUBDIRS(FastBilateralFiltering)
+SUBDIRS(Amaterasu3DFattal)
+SUBDIRS(Jinja2Test)
+#SUBDIRS(SHDOMVisualizer)
+SUBDIRS(TestCustomAttributs)
+SUBDIRS(FontNewSystem)
