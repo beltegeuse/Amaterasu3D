@@ -10,6 +10,9 @@
 #include FT_GLYPH_H
 // == TinyXML
 #include <tinyxml.h>
+// == Boost option
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
 // == Others
 #include "BinPacker.hpp"
 #include "lodepng.h"
@@ -30,12 +33,13 @@ bool render_signed_distance_font(
 		FT_Library &ft_lib,
 		const char* font_file,
 		int texture_size,
+		int max_unicode_char,
 		bool export_c_header );
 
-bool render_signed_distance_image(
-		const char* image_file,
-		int texture_size,
-		bool export_c_header );
+//bool render_signed_distance_image(
+//		const char* image_file,
+//		int texture_size,
+//		bool export_c_header );
 
 unsigned char get_SDF_radial(
 		unsigned char *fontmap,
@@ -72,32 +76,38 @@ int main( int argc, char **argv )
 {
 	printf( "Signed Distance Bitmap Font Tool\n" );
 	printf( "Jonathan \"lonesock\" Dummer\n" );
-	printf( "\n" );
-	if( argc < 2 )
+
+	po::options_description desc("Usage",1024,512);
+	std::string file;
+	int texture_size = 256;
+	int nbChar = 255;
+	desc.add_options()
+	  ("help,h",     "produce help message")
+	  ("file,f",  po::value<std::string>(&file)->required(),   "set file to parse")
+	  ("dimension,d",  po::value<int>(&texture_size),  "set texture size to the range 64 to 4096. Using powers of 2 is a good idea (e.g. 256 or 512). [default 256]")
+	  ("character,c",  po::value<int>(&nbChar),  "select the highest unicode character you wish to render. Good values for ANSI text is 128 or 255.  Good values for Unicode text is 65535. [default 255]")
+	  ("export-header", "export a C header")
+	;
+
+	po::variables_map vm;
+	po::store(po::parse_command_line(argc, argv, desc), vm);
+
+	if (vm.count("help"))
 	{
-		printf( "No good, I need a font file!\n" );
-		system( "pause" );
+		std::cout << desc << "\n";
+		return -1;
+	}
+	try
+	{
+		po::notify(vm);
+	}
+	catch(std::exception& e)
+	{
+		std::cout << "Error : " << e.what() << "\n";
+		std::cout << desc << "\n";
 		return -1;
 	}
 
-	int texture_size = -1;	//	trigger a request
-	bool export_c_header = false;
-
-	if( texture_size < 64 )
-	{
-		printf( "Select the texture size you would like for the output image.\n" );
-		printf( "Your choice will be limited to the range 64 to 4096.\n" );
-		printf( "Using powers of 2 is a good idea (e.g. 256 or 512).\n" );
-		printf( "(note: negative values will also export a C header)\n\n" );
-		printf( "Please select the texture size: " );
-		scanf( "%i", &texture_size );
-		printf( "\n" );
-		if( texture_size < 0 )
-		{
-			texture_size = -texture_size;
-			export_c_header = true;
-		}
-	}
 	if( texture_size < 64 ) { texture_size = 64; }
 	if( texture_size > 4096 ) { texture_size = 4096; }
 
@@ -111,181 +121,19 @@ int main( int argc, char **argv )
 		return -1;
 	}
 
-	for( int font_input_idx = 1; font_input_idx < argc; ++font_input_idx )
-	{
-		//	this may be either an image, or a font file, try the image first
-		if( !render_signed_distance_image( argv[font_input_idx], texture_size, export_c_header ) )
-		{
-			//	didn't work, try the font
-			render_signed_distance_font( ft_lib, argv[font_input_idx], texture_size, export_c_header );
-		}
-	}
+	render_signed_distance_font( ft_lib, file.c_str(), texture_size, nbChar, vm.count("export-header") );
 
 	ft_err = FT_Done_FreeType( ft_lib );
 
-	system( "pause" );
     return 0;
-}
-
-bool render_signed_distance_image(
-		const char* image_file,
-		int texture_size,
-		bool export_c_header )
-{
-	//	try to load this file as an image
-	int w, h, channels;
-	unsigned char *img = stbi_load( image_file, &w, &h, &channels, 0 );
-	if( !img )
-	{
-		return false;
-	}
-	//	image loaded
-	printf( "Loaded '%s', %i x %i, channels 0", image_file, w, h );
-	for( int i = 1; i < channels; ++i )
-	{
-		printf( ",%i", i );
-	}
-	printf( "\n" );
-	//	check for components and resizing issues
-	if( (w <= texture_size) && (h <= texture_size) )
-	{
-		printf( "The output texture size is larger than the input image dimensions!\n" );
-		stbi_image_free( img );
-		return false;
-	}
-	//	now, which channel do I use as the input function?
-	int chan = 0;
-	if( channels > 1 )
-	{
-		printf( "Which channel contains the input? " );
-		scanf( "%i", &chan );
-		if( chan < 0 )
-		{
-			chan = 0;
-		} else if( chan >= channels )
-		{
-			chan = channels - 1;
-		}
-	}
-	printf( "Using channel %i as the input\n", chan );
-	std::vector<unsigned char> img_data;
-	img_data.reserve( w*h );
-	for( int i = chan; i < w*h*channels; i += channels )
-	{
-		img_data.push_back( img[i] );
-	}
-	stbi_image_free( img );
-	//	is this channel strictly 2 values?
-	bool needs_threshold = false;
-	int vmax, vmin;
-	{
-		int val0 = img_data[0], val = -1;
-		vmin = img_data[0];
-		vmax = img_data[0];
-		for( int i = 0; i < w*h; ++i )
-		{
-			//	do I need a threshold?
-			if( img_data[i] != val0 )
-			{
-				if( val < 0 )
-				{
-					//	second value
-					val = img_data[i];
-				} else
-				{
-					needs_threshold = (val != img_data[i]);
-				}
-			}
-			//	find min and max, just in case
-			if( img_data[i] < vmin )
-			{
-				vmin = img_data[i];
-			}
-			if( img_data[i] > vmax )
-			{
-				vmax = img_data[i];
-			}
-		}
-	}
-	if( needs_threshold )
-	{
-		int thresh;
-		printf( "The image needs a threshold, between %i and %i (< threshold is 0): ", vmin, vmax );
-		scanf( "%i", &thresh );
-		if( thresh <= vmin )
-		{
-			thresh = vmin + 1;
-		} else if( thresh > vmax )
-		{
-			thresh = vmax;
-		}
-		printf( "using threshold=%i\n", thresh );
-		for( int i = 0; i < w*h; ++i )
-		{
-			if( img_data[i] < thresh )
-			{
-				img_data[i] = 0;
-			} else
-			{
-				img_data[i] = 255;
-			}
-		}
-	}
-
-	//	OK, I'm finally ready to perform the SDF analysis
-	int sw;
-	if( w > h )
-	{
-		sw = 2 * w / texture_size;
-	} else
-	{
-		sw = 2 * h / texture_size;
-	}
-	std::vector<unsigned char> pdata( 4 * texture_size * texture_size, 0 );
-	img = &(img_data[0]);
-	for( int j = 0; j < texture_size; ++j )
-	{
-		for( int i = 0; i < texture_size; ++i )
-		{
-			int sx = i * (w-1) / (texture_size-1);
-			int sy = j * (h-1) / (texture_size-1);
-			int pd_idx = (i+j*texture_size) * 4;
-			pdata[pd_idx] =
-				get_SDF_radial
-						( img, w, h,
-						sx, sy, sw );
-			pdata[pd_idx+1] = pdata[pd_idx];
-			pdata[pd_idx+2] = pdata[pd_idx];
-			pdata[pd_idx+3] = pdata[pd_idx];
-		}
-	}
-
-	//	save the image
-	int fn_size = strlen( image_file ) + 100;
-	char *fn = new char[ fn_size ];
-	#if 0
-	sprintf( fn, "%s_sdf.bmp", image_file );
-	stbi_write_bmp( fn, texture_size, texture_size, 4, &pdata[0] );
-	#endif
-	sprintf( fn, "%s_sdf.png", image_file );
-	printf( "'%s'\n", fn );
-	LodePNG::Encoder encoder;
-	encoder.addText("Comment", "Signed Distance Image: lonesock tools");
-	encoder.getSettings().zlibsettings.windowSize = 512; //	faster, not much worse compression
-	std::vector<unsigned char> buffer;
-	int tin = clock();
-	encoder.encode( buffer, pdata.empty() ? 0 : &pdata[0], texture_size, texture_size );
-	LodePNG::saveFile( buffer, fn );
-	tin = clock() - tin;
-
-	return true;
 }
 
 bool render_signed_distance_font(
 		FT_Library &ft_lib,
 		const char* font_file,
 		int texture_size,
-		bool export_c_header )
+		int max_unicode_char,
+		bool export_c_header)
 {
 	FT_Face ft_face;
 	int ft_err = FT_New_Face( ft_lib, font_file, 0, &ft_face );
@@ -296,17 +144,6 @@ bool render_signed_distance_font(
 	} else
 	{
 		printf( "Font to convert to a Signed Distance Field:\n%s\n\n", font_file );
-		int max_unicode_char= 0;
-		if( max_unicode_char < 1 )
-		{
-			printf( "Select the highest unicode character you wish to render.\n" );
-			printf( "Any characters without glyphs in the font will be skipped.\n" );
-			printf( "(Good values for ANSI text might be 128 or 255, while\n" );
-			printf( "a good value for Unicode text might be 65535.)\n\n" );
-			printf( "Please select the maximum character value: " );
-			scanf( "%i", &max_unicode_char );
-			printf( "\n" );
-		}
 		if( max_unicode_char < 1 ) { max_unicode_char = 1; }
 		//	Try all characters up to a user selected value (it will auto-skip any without glyphs)
 		std::vector< int > render_list;
@@ -508,31 +345,6 @@ int save_png_SDFont(
 	// Save the file
 	sprintf( fn, "%s.xml", orig_filename );
 	doc.SaveFile(fn);
-//	sprintf( fn, "%s_sdf.txt", orig_filename );
-//	FILE *fp = fopen( fn, "w" );
-//	if( fp )
-//	{
-//		fprintf( fp, "info face=\"%s\"\n",
-//				font_name  );
-//		fprintf( fp, "chars count=%i\n", packed_glyphs.size() );
-//		for( unsigned int i = 0; i < packed_glyphs.size(); ++i )
-//		{
-//			fprintf( fp, "char id=%-6ix=%-6iy=%-6iwidth=%-6iheight=%-6i",
-//				packed_glyphs[i].ID,
-//				packed_glyphs[i].x,
-//				packed_glyphs[i].y,
-//				packed_glyphs[i].width,
-//				packed_glyphs[i].height
-//				);
-//			fprintf( fp, "xoffset=%-10.3fyoffset=%-10.3fxadvance=%-10.3f",
-//				packed_glyphs[i].xoff,
-//				packed_glyphs[i].yoff,
-//				packed_glyphs[i].xadv
-//				);
-//			fprintf( fp, "  page=0  chnl=0\n" );
-//		}
-//		fclose( fp );
-//	}
 	delete [] fn;
 	return tin;
 }
@@ -855,3 +667,157 @@ unsigned char get_SDF_radial(
 	if( d2 > 255.0 ) d2 = 255.0;
 	return (unsigned char)(d2 + 0.5);
 }
+
+//bool render_signed_distance_image(
+//		const char* image_file,
+//		int texture_size,
+//		bool export_c_header )
+//{
+//	//	try to load this file as an image
+//	int w, h, channels;
+//	unsigned char *img = stbi_load( image_file, &w, &h, &channels, 0 );
+//	if( !img )
+//	{
+//		return false;
+//	}
+//	//	image loaded
+//	printf( "Loaded '%s', %i x %i, channels 0", image_file, w, h );
+//	for( int i = 1; i < channels; ++i )
+//	{
+//		printf( ",%i", i );
+//	}
+//	printf( "\n" );
+//	//	check for components and resizing issues
+//	if( (w <= texture_size) && (h <= texture_size) )
+//	{
+//		printf( "The output texture size is larger than the input image dimensions!\n" );
+//		stbi_image_free( img );
+//		return false;
+//	}
+//	//	now, which channel do I use as the input function?
+//	int chan = 0;
+//	if( channels > 1 )
+//	{
+//		printf( "Which channel contains the input? " );
+//		scanf( "%i", &chan );
+//		if( chan < 0 )
+//		{
+//			chan = 0;
+//		} else if( chan >= channels )
+//		{
+//			chan = channels - 1;
+//		}
+//	}
+//	printf( "Using channel %i as the input\n", chan );
+//	std::vector<unsigned char> img_data;
+//	img_data.reserve( w*h );
+//	for( int i = chan; i < w*h*channels; i += channels )
+//	{
+//		img_data.push_back( img[i] );
+//	}
+//	stbi_image_free( img );
+//	//	is this channel strictly 2 values?
+//	bool needs_threshold = false;
+//	int vmax, vmin;
+//	{
+//		int val0 = img_data[0], val = -1;
+//		vmin = img_data[0];
+//		vmax = img_data[0];
+//		for( int i = 0; i < w*h; ++i )
+//		{
+//			//	do I need a threshold?
+//			if( img_data[i] != val0 )
+//			{
+//				if( val < 0 )
+//				{
+//					//	second value
+//					val = img_data[i];
+//				} else
+//				{
+//					needs_threshold = (val != img_data[i]);
+//				}
+//			}
+//			//	find min and max, just in case
+//			if( img_data[i] < vmin )
+//			{
+//				vmin = img_data[i];
+//			}
+//			if( img_data[i] > vmax )
+//			{
+//				vmax = img_data[i];
+//			}
+//		}
+//	}
+//	if( needs_threshold )
+//	{
+//		int thresh;
+//		printf( "The image needs a threshold, between %i and %i (< threshold is 0): ", vmin, vmax );
+//		scanf( "%i", &thresh );
+//		if( thresh <= vmin )
+//		{
+//			thresh = vmin + 1;
+//		} else if( thresh > vmax )
+//		{
+//			thresh = vmax;
+//		}
+//		printf( "using threshold=%i\n", thresh );
+//		for( int i = 0; i < w*h; ++i )
+//		{
+//			if( img_data[i] < thresh )
+//			{
+//				img_data[i] = 0;
+//			} else
+//			{
+//				img_data[i] = 255;
+//			}
+//		}
+//	}
+//
+//	//	OK, I'm finally ready to perform the SDF analysis
+//	int sw;
+//	if( w > h )
+//	{
+//		sw = 2 * w / texture_size;
+//	} else
+//	{
+//		sw = 2 * h / texture_size;
+//	}
+//	std::vector<unsigned char> pdata( 4 * texture_size * texture_size, 0 );
+//	img = &(img_data[0]);
+//	for( int j = 0; j < texture_size; ++j )
+//	{
+//		for( int i = 0; i < texture_size; ++i )
+//		{
+//			int sx = i * (w-1) / (texture_size-1);
+//			int sy = j * (h-1) / (texture_size-1);
+//			int pd_idx = (i+j*texture_size) * 4;
+//			pdata[pd_idx] =
+//				get_SDF_radial
+//						( img, w, h,
+//						sx, sy, sw );
+//			pdata[pd_idx+1] = pdata[pd_idx];
+//			pdata[pd_idx+2] = pdata[pd_idx];
+//			pdata[pd_idx+3] = pdata[pd_idx];
+//		}
+//	}
+//
+//	//	save the image
+//	int fn_size = strlen( image_file ) + 100;
+//	char *fn = new char[ fn_size ];
+//	#if 0
+//	sprintf( fn, "%s_sdf.bmp", image_file );
+//	stbi_write_bmp( fn, texture_size, texture_size, 4, &pdata[0] );
+//	#endif
+//	sprintf( fn, "%s_sdf.png", image_file );
+//	printf( "'%s'\n", fn );
+//	LodePNG::Encoder encoder;
+//	encoder.addText("Comment", "Signed Distance Image: lonesock tools");
+//	encoder.getSettings().zlibsettings.windowSize = 512; //	faster, not much worse compression
+//	std::vector<unsigned char> buffer;
+//	int tin = clock();
+//	encoder.encode( buffer, pdata.empty() ? 0 : &pdata[0], texture_size, texture_size );
+//	LodePNG::saveFile( buffer, fn );
+//	tin = clock() - tin;
+//
+//	return true;
+//}
