@@ -18,6 +18,7 @@ target_link_libraries(
   SDFont
   ${FREETYPE_LIBRARY}
   ${Boost_LIBRARIES}
+  tinyxml
 )
 
 SET_TARGET_PROPERTIES(SDFont PROPERTIES

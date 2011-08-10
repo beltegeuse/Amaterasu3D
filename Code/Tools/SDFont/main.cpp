@@ -9,6 +9,7 @@
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 // == TinyXML
+#include <tinyxml.h>
 // == Others
 #include "BinPacker.hpp"
 #include "lodepng.h"
@@ -116,7 +117,7 @@ int main( int argc, char **argv )
 		if( !render_signed_distance_image( argv[font_input_idx], texture_size, export_c_header ) )
 		{
 			//	didn't work, try the font
-			render_signed_distance_font( ft_lrender_signed_distance_fontib, argv[font_input_idx], texture_size, export_c_header );
+			render_signed_distance_font( ft_lib, argv[font_input_idx], texture_size, export_c_header );
 		}
 	}
 
@@ -466,7 +467,7 @@ int save_png_SDFont(
 	//	save my image
 	int fn_size = strlen( orig_filename ) + 100;
 	char *fn = new char[ fn_size ];
-	sprintf( fn, "%s_sdf.png", orig_filename );
+	sprintf( fn, "%s.png", orig_filename );
 	printf( "'%s'\n", fn );
 	LodePNG::Encoder encoder;
 	encoder.addText("Comment", "Signed Distance Font: lonesock tools");
@@ -478,31 +479,60 @@ int save_png_SDFont(
 	tin = clock() - tin;
 
 	//	now save the acompanying info
-	sprintf( fn, "%s_sdf.txt", orig_filename );
-	FILE *fp = fopen( fn, "w" );
-	if( fp )
+	// Use XML
+	TiXmlDocument doc;
+	TiXmlDeclaration * decl = new TiXmlDeclaration("1.0", "", "");
+	TiXmlElement* fontNode = new TiXmlElement("Font");
+	// Add font information
+	fontNode->SetAttribute("name", font_name);
+	fontNode->SetAttribute("filename", fn);
+	// Add informations from Faces
+	TiXmlElement* facesNodes = new TiXmlElement("Faces");
+	for( unsigned int i = 0; i < packed_glyphs.size(); ++i )
 	{
-		fprintf( fp, "info face=\"%s\"\n",
-				font_name  );
-		fprintf( fp, "chars count=%i\n", packed_glyphs.size() );
-		for( unsigned int i = 0; i < packed_glyphs.size(); ++i )
-		{
-			fprintf( fp, "char id=%-6ix=%-6iy=%-6iwidth=%-6iheight=%-6i",
-				packed_glyphs[i].ID,
-				packed_glyphs[i].x,
-				packed_glyphs[i].y,
-				packed_glyphs[i].width,
-				packed_glyphs[i].height
-				);
-			fprintf( fp, "xoffset=%-10.3fyoffset=%-10.3fxadvance=%-10.3f",
-				packed_glyphs[i].xoff,
-				packed_glyphs[i].yoff,
-				packed_glyphs[i].xadv
-				);
-			fprintf( fp, "  page=0  chnl=0\n" );
-		}
-		fclose( fp );
+		TiXmlElement* faceNode = new TiXmlElement("Face");
+		faceNode->SetAttribute("id", packed_glyphs[i].ID);
+		faceNode->SetAttribute("x", packed_glyphs[i].x);
+		faceNode->SetAttribute("y", packed_glyphs[i].y);
+		faceNode->SetAttribute("width", packed_glyphs[i].width);
+		faceNode->SetAttribute("height", packed_glyphs[i].height);
+		faceNode->SetDoubleAttribute("xoffset", packed_glyphs[i].xoff);
+		faceNode->SetDoubleAttribute("yoffset", packed_glyphs[i].yoff);
+		faceNode->SetDoubleAttribute("xadvance", packed_glyphs[i].xadv);
+		facesNodes->LinkEndChild(faceNode);
 	}
+	// Create hierachie
+	doc.LinkEndChild(decl);
+	fontNode->LinkEndChild(facesNodes);
+	doc.LinkEndChild(fontNode);
+	// Save the file
+	sprintf( fn, "%s.xml", orig_filename );
+	doc.SaveFile(fn);
+//	sprintf( fn, "%s_sdf.txt", orig_filename );
+//	FILE *fp = fopen( fn, "w" );
+//	if( fp )
+//	{
+//		fprintf( fp, "info face=\"%s\"\n",
+//				font_name  );
+//		fprintf( fp, "chars count=%i\n", packed_glyphs.size() );
+//		for( unsigned int i = 0; i < packed_glyphs.size(); ++i )
+//		{
+//			fprintf( fp, "char id=%-6ix=%-6iy=%-6iwidth=%-6iheight=%-6i",
+//				packed_glyphs[i].ID,
+//				packed_glyphs[i].x,
+//				packed_glyphs[i].y,
+//				packed_glyphs[i].width,
+//				packed_glyphs[i].height
+//				);
+//			fprintf( fp, "xoffset=%-10.3fyoffset=%-10.3fxadvance=%-10.3f",
+//				packed_glyphs[i].xoff,
+//				packed_glyphs[i].yoff,
+//				packed_glyphs[i].xadv
+//				);
+//			fprintf( fp, "  page=0  chnl=0\n" );
+//		}
+//		fclose( fp );
+//	}
 	delete [] fn;
 	return tin;
 }

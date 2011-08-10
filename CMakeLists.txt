@@ -37,4 +37,4 @@ set(BOOST_LIBS filesystem system regex program_options) # LINUX PROBLEM : random
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 MESSAGE("Boost libraries link is ${Boost_LIBRARIES}")
 
-ADD_SUBDIRECTORY(Code)
+SUBDIRS(Code)
