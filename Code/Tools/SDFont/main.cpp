@@ -1,12 +1,15 @@
+/// Includes
+// == Common Includes
 #include <cmath>
 #include <ctime>
 #include <cstdio>
 #include <vector>
-
+// == FreeType
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
-
+// == TinyXML
+// == Others
 #include "BinPacker.hpp"
 #include "lodepng.h"
 #include "stb_image.h"
@@ -113,7 +116,7 @@ int main( int argc, char **argv )
 		if( !render_signed_distance_image( argv[font_input_idx], texture_size, export_c_header ) )
 		{
 			//	didn't work, try the font
-			render_signed_distance_font( ft_lib, argv[font_input_idx], texture_size, export_c_header );
+			render_signed_distance_font( ft_lrender_signed_distance_fontib, argv[font_input_idx], texture_size, export_c_header );
 		}
 	}
 
