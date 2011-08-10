@@ -35,6 +35,8 @@ private:
 		ama3D::Math::TVector2I m_Size;
 		ama3D::Math::TVector2I m_Position;
 		ama3D::Math::CVector2<double> m_Offset;
+		ama3D::Math::CVector2<double> m_MinPos;
+		ama3D::Math::CVector2<double> m_MaxPos;
 		double m_xadvance;
 		// Char drawable
 		ama3D::RenderableObject m_Buffer;
@@ -50,18 +52,22 @@ private:
 			TinyXMLGetAttributeValue<double>(element,"xoffset",&m_Offset.x);
 			TinyXMLGetAttributeValue<double>(element,"yoffset",&m_Offset.y);
 			TinyXMLGetAttributeValue<double>(element,"xadvance",&m_xadvance);
+			TinyXMLGetAttributeValue<double>(element,"xmin",&m_MinPos.x);
+			TinyXMLGetAttributeValue<double>(element,"ymin",&m_MinPos.y);
+			TinyXMLGetAttributeValue<double>(element,"xmax",&m_MaxPos.x);
+			TinyXMLGetAttributeValue<double>(element,"ymax",&m_MaxPos.y);
 
 			// Fill buffer
 			float* vertexBuffer = new float[8];
 			// TODO: See how to do
-			vertexBuffer[0] = 0;
-			vertexBuffer[1] = 0;
-			vertexBuffer[2] = 0;
-			vertexBuffer[3] = m_Size.y;
-			vertexBuffer[4] = m_Size.x;
-			vertexBuffer[5] = m_Size.y;
-			vertexBuffer[6] = m_Size.x;
-			vertexBuffer[7] = 0;
+			vertexBuffer[0] = m_MinPos.x*1;
+			vertexBuffer[1] = -m_MinPos.y*1;
+			vertexBuffer[2] = m_MinPos.x*1;
+			vertexBuffer[3] = -m_MaxPos.y*1;
+			vertexBuffer[4] = m_MaxPos.x*1;
+			vertexBuffer[5] = -m_MaxPos.y*1;
+			vertexBuffer[6] = m_MaxPos.x*1;
+			vertexBuffer[7] = -m_MinPos.y*1;
 			ama3D::RenderableObject::RenderableBuffer buffer;
 			buffer.buffer = vertexBuffer;
 			buffer.dimension = 2;
@@ -71,13 +77,13 @@ private:
 			// Create Texcoord buffer
 			float* uvBuffer = new float[8];
 			uvBuffer[0] = (m_Position.x/texSize.x);
-			uvBuffer[1] = 1 - (m_Position.y/texSize.y);
+			uvBuffer[1] = 1 - ((m_Position.y+m_Size.y)/texSize.y);
 			uvBuffer[2] = (m_Position.x/texSize.x);
-			uvBuffer[3] = 1 - ((m_Position.y+m_Size.y)/texSize.y);
+			uvBuffer[3] = 1 - ((m_Position.y)/texSize.y);
 			uvBuffer[4] = ((m_Position.x+m_Size.x)/texSize.x);
-			uvBuffer[5] = 1 - ((m_Position.y+m_Size.y)/texSize.y);
+			uvBuffer[5] = 1 - ((m_Position.y)/texSize.y);
 			uvBuffer[6] = ((m_Position.x+m_Size.x)/texSize.x);
-			uvBuffer[7] = 1 - (m_Position.y/texSize.y);
+			uvBuffer[7] = 1 - ((m_Position.y+m_Size.y)/texSize.y);
 			buffer.buffer = uvBuffer;
 			m_Buffer.AddBuffer(buffer, ama3D::TEXCOORD_ATTRIBUT);
 			// Create Index buffer
@@ -165,9 +171,9 @@ public:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		m_FontShader->Begin();
-		m_FontShader->SetUniform1i("FontEffectType", 1);
+		m_FontShader->SetUniform1i("FontEffectType", 4);
 		m_FontShader->SetUniformVector("FontColor", ama3D::Math::TVector4F(0.0,0.0,1.0,1.0));
-		m_FontShader->SetUniformVector("FontEffectColor", ama3D::Math::TVector4F(1.0,0.0,0.0,1.0));
+		m_FontShader->SetUniformVector("FontEffectColor", ama3D::Math::TVector4F(1.0,1.0,1.0,1.0));
 		m_FontsTex->activateMultiTex(ama3D::CUSTOM_TEXTURE+0);
 		char* ch;
 		std::map<int, NewFontCharacter*>::const_iterator element;
@@ -185,7 +191,7 @@ public:
 			ama3D::CMatrixManager::Instance().PushMatrix(transMat);
 			currentElement->Render();
 			ama3D::CMatrixManager::Instance().PopMatrix();
-			xOff += currentElement->GetXStep();
+			xOff += currentElement->GetXStep()*1.10;
 		}
 		m_FontsTex->desactivateMultiTex(ama3D::CUSTOM_TEXTURE+0);
 		m_FontShader->End();
@@ -219,7 +225,7 @@ public:
 		m_Camera = new ama3D::CameraFPS(ama3D::Math::TVector3F(30,40,20), ama3D::Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
 		// Create Font
-		m_Font = new NewFont("Impact.ttf.xml");
+		m_Font = new NewFont("Cheeseburger.ttf.xml");
 		m_Plane = new ama3D::Rectangle2D(ama3D::Math::TVector2I(0, 0),ama3D::Math::TVector2I(800,600));
 		m_Plane->GetObject().AddTextureMap(ama3D::DIFFUSE_TEXTURE,m_Font->m_FontsTex);
 	}
@@ -249,7 +255,10 @@ public:
 		MatrixManager.SetModeMatrix(ama3D::MATRIX_3D);
 
 		MatrixManager.SetModeMatrix(ama3D::MATRIX_2D);
-		m_Font->Render("Usually, an application wants to load a glyph image", 100,100);
+		m_Font->Render("Pap`", 100,100);
+		m_Font->Render("The following graphics illustrate the metrics more clearly.", 10,200);
+		m_Font->Render("‘bbox_mode’", 10,300);
+		m_Font->Render("|\\\"", 10,400);
 	}
 };
 

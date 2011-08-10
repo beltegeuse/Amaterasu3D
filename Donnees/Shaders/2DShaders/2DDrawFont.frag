@@ -13,10 +13,10 @@ uniform vec4 FontColor;
 uniform int FontEffectType;
 uniform vec4 FontEffectColor;
 //  ==== OutLine
-const float OUTLINE_MIN_0 = 0.4;
+const float OUTLINE_MIN_0 = 0.3;
 const float OUTLINE_MAX_0 = 0.5;
 //  ==== Soft Edge
-const float SOFTEDGE_MIN_0 = 0.4;
+const float SOFTEDGE_MIN_0 = 0.3;
 const float SOFTEDGE_MAX_0 = 0.5;
 //  ==== OuterGlow
 // Entree
@@ -31,7 +31,7 @@ void main()
 	baseColor.a = texture2D(FontTexture, outTexCoord.xy).a;
 	float distanceFactor = baseColor.a;
 	
-	float width = fwidth(outTexCoord.x) * 10.0; // 25 is an arbitrary scale factor to get an appropriate width for antialiasing
+	float width = fwidth(outTexCoord.x) * 30.0; // 25 is an arbitrary scale factor to get an appropriate width for antialiasing
 	baseColor.a = smoothstep(0.5-width, 0.5+width, baseColor.a);
 	
 	if(FontEffectType == 0)

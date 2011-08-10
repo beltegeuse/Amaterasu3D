@@ -27,6 +27,7 @@ struct sdf_glyph
 	int x, y;
 	float xoff, yoff;
 	float xadv;
+	float xmin, ymin, xmax, ymax;
 };
 
 bool render_signed_distance_font(
@@ -338,6 +339,10 @@ int save_png_SDFont(
 		faceNode->SetDoubleAttribute("xoffset", packed_glyphs[i].xoff);
 		faceNode->SetDoubleAttribute("yoffset", packed_glyphs[i].yoff);
 		faceNode->SetDoubleAttribute("xadvance", packed_glyphs[i].xadv);
+		faceNode->SetDoubleAttribute("xmin", packed_glyphs[i].xmin);
+		faceNode->SetDoubleAttribute("ymin", packed_glyphs[i].ymin);
+		faceNode->SetDoubleAttribute("xmax", packed_glyphs[i].xmax);
+		faceNode->SetDoubleAttribute("ymax", packed_glyphs[i].ymax);
 		facesNodes->LinkEndChild(faceNode);
 	}
 	// Create hierachie
@@ -475,6 +480,7 @@ bool gen_pack_list(
 	ft_err = FT_Set_Pixel_Sizes( ft_face, pixel_size*scaler, 0 );
 	std::vector< int > rectangle_info;
 	std::vector< std::vector<int> > packed_glyph_info;
+	FT_BBox bbox;
 	for( unsigned int char_index = 0; char_index < render_list.size(); ++char_index )
 	{
 		int glyph_index = FT_Get_Char_Index( ft_face, render_list[char_index] );
@@ -515,6 +521,29 @@ bool gen_pack_list(
 					add_me.xoff = add_me.xoff / scaler - 1.5;
 					add_me.yoff = add_me.yoff / scaler + 1.5;
 					add_me.xadv = add_me.xadv / scaler;
+					FT_Glyph dataFt;
+					FT_Get_Glyph(ft_face->glyph,&dataFt);
+					FT_Glyph_Get_CBox( dataFt, FT_GLYPH_BBOX_UNSCALED, &bbox );
+					if(w != 0 && h != 0)
+					{
+						float sfx = 1 + (4.0*scaler/(float)w);
+						float sfy = 1 + (4.0*scaler/(float)h);
+						add_me.xmin = (bbox.xMin / (64.0*scaler));
+						add_me.ymin = (bbox.yMin / (64.0*scaler));
+						add_me.xmax = (bbox.xMax / (64.0*scaler));
+						add_me.ymax = (bbox.yMax / (64.0*scaler));
+						add_me.xmin *= sfx;
+						add_me.xmax *= sfx;
+						add_me.ymin *= sfy;
+						add_me.ymax *= sfy;
+					}
+					else
+					{
+						add_me.xmin = 0;
+						add_me.xmax = 0;
+						add_me.ymin = 0;
+						add_me.ymax = 0;
+					}
 					//	add it to my list
 					packed_glyphs.push_back( add_me );
 				}
