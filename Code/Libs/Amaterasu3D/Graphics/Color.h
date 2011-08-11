@@ -30,11 +30,13 @@
 // En-t�tes
 //==========================================================
 #include <iostream>
+#include <Math/Vector4.h>
 
 namespace ama3D
 {
-struct Color
+class Color
 {
+public:
 	float R;
 	float G;
 	float B;
@@ -43,6 +45,11 @@ struct Color
 	Color(float r = 1.0, float g = 1.0, float b = 1.0, float a = 1.0) :
 			R(r), G(g), B(b), A(a)
 	{
+	}
+
+	Math::TVector4F ToVec4() const
+	{
+		return Math::TVector4F(R,G,B,A);
 	}
 };
 

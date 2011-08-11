@@ -136,7 +136,7 @@ int main()
 #endif
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	CFontManager::Instance().LoadFont("../Donnees/Fonts/eve.ttf", "arial");
+	CFontManager::Instance().LoadFont("Cheeseburger_ttf.font");
 
 	std::cout << "[INFO] Begin ..." << std::endl;
 

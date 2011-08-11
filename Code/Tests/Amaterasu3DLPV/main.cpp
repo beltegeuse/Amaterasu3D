@@ -620,7 +620,7 @@ int main()
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	// FIXME: Add auto
-	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
+	CFontManager::Instance().LoadFont("Cheeseburger_ttf.font");
 
 	std::cout << "[INFO] Begin ..." << std::endl;
 	ApplicationLPV application;

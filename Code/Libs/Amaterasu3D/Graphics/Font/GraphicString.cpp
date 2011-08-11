@@ -43,16 +43,13 @@ namespace ama3D
 ///
 ////////////////////////////////////////////////////////////
 CGraphicString::CGraphicString(const Math::TVector2F& StringPosition,
-		const std::string& StringText, const std::string& StringFont, int size) :
-		Position(StringPosition), Text(StringText), Size(size)
+		const std::string& StringText, const std::string& fontAlias, int size) :
+		Position(StringPosition), Text(StringText), Size(size), FontAlias(fontAlias)
 {
-	texture = CFontManager::Instance().GetTexture(StringFont);
 }
 
 CGraphicString::~CGraphicString()
 {
-	//FIXME: manage the gestion of the font
-	//CFontManager::Instance().DeleteTexture(texture);
 }
 
 /////////////////////////////////////////////////////////////
@@ -61,9 +58,8 @@ CGraphicString::~CGraphicString()
 ////////////////////////////////////////////////////////////
 void CGraphicString::Draw()
 {
-	CFontManager::Instance().rat_texture_font_render_text(texture, Position.x,
-			Position.y, const_cast<char*>(Text.c_str()), Size);
-		}
+	CFontManager::Instance().RenderText(*this);
+}
 
 void CGraphicString::SetString(std::string text)
 {

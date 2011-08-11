@@ -28,100 +28,96 @@
 //==========================================================
 // En-tetes
 //==========================================================
-#include <ft2build.h>
-#include <freetype2/freetype/ftbitmap.h>
-
+// --- TinyXML
+#include <tinyxml.h>
+#include <TinyXMLHelper.h>
+// --- Amaterasu3D
+#include <Graphics/RenderableObject.h>
 #include <Singleton.h>
 #include <Math/Vector2.h>
-
+#include <Utilities/File.h>
+#include <Debug/Exceptions.h>
+#include <Graphics/Texture.h>
+#include <Graphics/MatrixManagement.h>
+#include <Graphics/Font/GraphicString.h>
+// --- Std
 #include <map>
 
 namespace ama3D
 {
-struct rat_texture_font
+
+class Shader;
+typedef CSmartPtr<Shader, CResourceCOM> TShaderPtr;
+
+class CFont
 {
-	float pt, *wids, *hoss;
-	int *qvws, *qvhs; // widths heights ?
-	float *qtws, *qths;
-	unsigned int *textures;
-	float ascend;
+private:
+	class CFontCharacter
+	{
+	private:
+		/*
+		 * Attributes
+		 */
+		// Char description
+		int m_ID;
+		ama3D::Math::TVector2I m_Size;
+		ama3D::Math::TVector2I m_Position;
+		ama3D::Math::CVector2<double> m_Offset;
+		ama3D::Math::CVector2<double> m_MinPos;
+		ama3D::Math::CVector2<double> m_MaxPos;
+		double m_xadvance;
+		// Char drawable
+		RenderableObject m_Buffer;
+	public:
+		CFontCharacter(TiXmlElement* element, const ama3D::Math::TVector2F & texSize);
+
+		// Accesseurs
+		int GetID() { return m_ID; }
+		const ama3D::Math::TVector2I& GetSize() { return m_Size; }
+		int GetXStep() { return m_xadvance; }
+
+		// Public methods
+		void Render();
+	};
+
+public: // TODO: Need to be private
+	/*
+	 * Attributes
+	 */
+	ama3D::TTexturePtr m_FontsTex;
+	std::map<int, CFontCharacter*> m_Characteres;
+	bool m_isInitialize;
+	std::string m_FontName;
+	std::string m_FontFile;
+	/*
+	 * Private methods
+	 */
+	void LoadFile();
+	TiXmlElement* LoadXMLFile();
+public:
+	/*
+	 * Constructors & Destructors
+	 */
+	CFont(const std::string& filename);
+	~CFont();
+	/*
+	 * Public methods
+	 */
+	void Initialize();
+	void Render(const CGraphicString& gstring);
+
+	/*
+	 * Access to data
+	 */
+	const std::string& GetFontName() { return m_FontName; }
 };
 
-struct rat_glyph_font
-{
-	float pt;
-	FT_Face face;
-};
-
-struct PoliceData
-{
-	rat_glyph_font* Glyph;
-	rat_texture_font* Texture;
-};
-
-class GraphicsEngine;
 ////////////////////////////////////////////////////////////
 /// Gestionnaire de fonts / texte
 ////////////////////////////////////////////////////////////
 class CFontManager: public CSingleton<CFontManager>
 {
-MAKE_SINGLETON(CFontManager)
-public:
-
-	//----------------------------------------------------------
-	// Methodes pour charger et decharger des fonts
-	//----------------------------------------------------------
-	void LoadFont(const std::string& FontName, const std::string& alias);
-	void UnloadFonts();
-
-	//----------------------------------------------------------
-	// Pour recuperer ou supprimer des textures
-	//----------------------------------------------------------
-	rat_texture_font * GetTexture(const std::string& alias);
-	void DeleteTexture(rat_texture_font * a);
-
-	// ===== Des methodes pour modifier les couleurs ... etc.
-	void rat_set_text_color(float *rgba);
-	void rat_get_text_color(float *rgba);
-	float rat_texture_font_height(rat_texture_font *font);
-	float rat_texture_font_text_length(rat_texture_font *font, char *text);
-	float rat_texture_font_glyph_length(rat_texture_font *font, char ch);
-
-	// ===== Render
-	void rat_texture_font_render_text(rat_texture_font *font, float x, float y,
-			char *text, int size);
-	void rat_texture_font_render_text_notform(rat_texture_font *font,
-			char *text);
-
-	//----------------------------------------------------------
-	// Initialise les donnees
-	//----------------------------------------------------------
-	void Initialize();
-
 private:
-
-	//----------------------------------------------------------
-	// Constructeur par defaut
-	//----------------------------------------------------------
-	CFontManager();
-
-	//----------------------------------------------------------
-	// Destructeur
-	//----------------------------------------------------------
-	~CFontManager();
-
-	// ===== Les methodes pour les initialisations et destructions
-	int rat_start_font_system();
-	void rat_stop_font_system();
-
-	// ==== Pour charger ou detruire des polices
-	rat_glyph_font *rat_glyph_font_load(const char *filename, int pt);
-	void rat_glyph_font_destroy(rat_glyph_font *font);
-
-	// ==== Quelques methodes de chargement pour les textures
-	rat_texture_font *rat_texture_font_from_glyph_font(rat_glyph_font *font);
-	void rat_texture_font_destroy(rat_texture_font *font);
-
 	//----------------------------------------------------------
 	// Constantes
 	//----------------------------------------------------------
@@ -130,15 +126,30 @@ private:
 	//----------------------------------------------------------
 	// Donnees membres
 	//----------------------------------------------------------
-	// === Instance de Freetype
-	FT_Library m_freetype_lib;
 	// === Pour sauvegarder les polices
-	typedef std::map<std::string, PoliceData> TPolices;
+	typedef std::map<std::string,CFont*> TPolices;
 	TPolices m_polices;
+	ama3D::TShaderPtr m_FontShader;
+	bool m_Initialize;
 
-	// Attributs Charly :
-	Math::TVector2F m_coordHG;
-	float m_profondeur;
+	MAKE_SINGLETON(CFontManager)
+public:
+
+	//----------------------------------------------------------
+	// Methodes pour charger et decharger des fonts
+	//----------------------------------------------------------
+	void LoadFont(const std::string& filename);
+	void UnloadFonts();
+
+	void RenderText(const CGraphicString& gstring);
+
+private:
+	/*
+	 * Constructor & Destructor
+	 */
+	CFontManager();
+	~CFontManager();
+
 };
 
 }

@@ -128,7 +128,8 @@ int main(int argc, char *argv[])
 {
 
 	ama3D::CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	ama3D::CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
+	ama3D::CFontManager::Instance().LoadFont("Cheeseburger_ttf.font");
+
 	std::cout << "[INFO] Begin ..." << std::endl;
 	TestCustomAttributs window;
 	window.Run();

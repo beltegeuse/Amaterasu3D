@@ -27,10 +27,13 @@
 
 // Amaterasu3D includes
 #include <Graphics/Texture.h>
-#include <Graphics/Shaders/Shader.h>
+#include <Graphics/Color.h>
+#include <Enum.h>
 
 // Other includes
 #include <GL/gl.h>
+#include <map>
+
 namespace ama3D
 {
 

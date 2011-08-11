@@ -188,7 +188,8 @@ int main()
 #endif
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-	CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
+	CFontManager::Instance().LoadFont("Cheeseburger_ttf.font");
+
 	std::cout << "[INFO] Begin ..." << std::endl;
 	ApplicationSSAO window;
 	window.Run();

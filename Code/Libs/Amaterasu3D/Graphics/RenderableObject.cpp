@@ -23,6 +23,8 @@
 //==========================================================
 
 #include "RenderableObject.h"
+#include <Graphics/Shaders/Shader.h>
+
 namespace ama3D
 {
 

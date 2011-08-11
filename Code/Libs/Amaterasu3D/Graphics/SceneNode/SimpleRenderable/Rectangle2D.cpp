@@ -22,7 +22,7 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 #include "Rectangle2D.h"
-
+#include <Logger/Logger.h>
 namespace ama3D
 {
 Rectangle2D::Rectangle2D(const Math::TVector2I& top,

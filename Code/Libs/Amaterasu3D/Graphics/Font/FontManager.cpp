@@ -17,124 +17,218 @@
  */
 
 #include "FontManager.h"
-
+// --- Std includes
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
-#include <GL/gl.h>
-
-#include <ft2build.h>
-#include <freetype2/freetype/ftglyph.h>
-
+// --- ama3D includes
 #include <Debug/Exceptions.h>
+#include <Graphics/RenderableObject.h>
+#include <Graphics/Shaders/Shader.h>
+#include <System/MediaManager.h>
+// --- Other includes
+#include <GL/gl.h>
 
 namespace ama3D
 {
-SINGLETON_IMPL(CFontManager)
 
-// ==== Quelques fonctions inlines
-static float _textrgba[4] =
-{ 1.0f, 1.0f, 1.0f, 1.0f };
-
-inline static unsigned int _pow2(unsigned int i)
+//////////////////////////////////////////
+// CFontCharacter
+//////////////////////////////////////////
+CFont::CFontCharacter::CFontCharacter(TiXmlElement* element, const ama3D::Math::TVector2F & texSize)
 {
-	register unsigned int p2;
-	for (p2 = 1; p2 < i; p2 <<= 1)
-		;
-	return p2;
+	// Get element definition
+	TinyXMLGetAttributeValue<int>(element,"id",&m_ID);
+	TinyXMLGetAttributeValue<int>(element,"width",&m_Size.x);
+	TinyXMLGetAttributeValue<int>(element,"height",&m_Size.y);
+	TinyXMLGetAttributeValue<int>(element,"x",&m_Position.x);
+	TinyXMLGetAttributeValue<int>(element,"y",&m_Position.y);
+	TinyXMLGetAttributeValue<double>(element,"xoffset",&m_Offset.x);
+	TinyXMLGetAttributeValue<double>(element,"yoffset",&m_Offset.y);
+	TinyXMLGetAttributeValue<double>(element,"xadvance",&m_xadvance);
+	TinyXMLGetAttributeValue<double>(element,"xmin",&m_MinPos.x);
+	TinyXMLGetAttributeValue<double>(element,"ymin",&m_MinPos.y);
+	TinyXMLGetAttributeValue<double>(element,"xmax",&m_MaxPos.x);
+	TinyXMLGetAttributeValue<double>(element,"ymax",&m_MaxPos.y);
+
+	// Fill buffer
+	float* vertexBuffer = new float[8];
+	// TODO: See how to do
+	vertexBuffer[0] = m_MinPos.x*1;
+	vertexBuffer[1] = -m_MinPos.y*1;
+	vertexBuffer[2] = m_MinPos.x*1;
+	vertexBuffer[3] = -m_MaxPos.y*1;
+	vertexBuffer[4] = m_MaxPos.x*1;
+	vertexBuffer[5] = -m_MaxPos.y*1;
+	vertexBuffer[6] = m_MaxPos.x*1;
+	vertexBuffer[7] = -m_MinPos.y*1;
+	ama3D::RenderableObject::RenderableBuffer buffer;
+	buffer.buffer = vertexBuffer;
+	buffer.dimension = 2;
+	buffer.size = 8;
+	buffer.owner = true;
+	m_Buffer.AddBuffer(buffer, ama3D::VERTEX_ATTRIBUT);
+	// Create Texcoord buffer
+	float* uvBuffer = new float[8];
+	uvBuffer[0] = (m_Position.x/texSize.x);
+	uvBuffer[1] = 1 - ((m_Position.y+m_Size.y)/texSize.y);
+	uvBuffer[2] = (m_Position.x/texSize.x);
+	uvBuffer[3] = 1 - ((m_Position.y)/texSize.y);
+	uvBuffer[4] = ((m_Position.x+m_Size.x)/texSize.x);
+	uvBuffer[5] = 1 - ((m_Position.y)/texSize.y);
+	uvBuffer[6] = ((m_Position.x+m_Size.x)/texSize.x);
+	uvBuffer[7] = 1 - ((m_Position.y+m_Size.y)/texSize.y);
+	buffer.buffer = uvBuffer;
+	m_Buffer.AddBuffer(buffer, ama3D::TEXCOORD_ATTRIBUT);
+	// Create Index buffer
+	unsigned int* indiceBuffer = new unsigned int[6];
+	indiceBuffer[0] = 0;
+	indiceBuffer[1] = 1;
+	indiceBuffer[2] = 2;
+	indiceBuffer[3] = 0;
+	indiceBuffer[4] = 2;
+	indiceBuffer[5] = 3;
+	m_Buffer.SetIndiceBuffer(indiceBuffer, 6);
+	m_Buffer.CompileBuffers();
 }
 
-static int make_glyph_texture(rat_glyph_font *gf, rat_texture_font *tf,
-		unsigned char ch)
+void CFont::CFontCharacter::Render()
 {
-	register unsigned int i, j;
-	FT_Face face = gf->face;
-	unsigned int *textures = tf->textures;
-	unsigned int width, height;
-	float texx, texy;
+	m_Buffer.Draw();
+}
 
-	if (FT_Load_Glyph(face, FT_Get_Char_Index(face, ch), FT_LOAD_DEFAULT))
-		return 0;
-
-	FT_Glyph glyph;
-	if (FT_Get_Glyph(face->glyph, &glyph))
-		return 0;
-
-	FT_Glyph_To_Bitmap(&glyph, ft_render_mode_normal, 0, 1);
-	FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph) glyph;
-
-	FT_Bitmap bitmap = bitmap_glyph->bitmap;
-
-	width = _pow2(bitmap.width);
-	height = _pow2(bitmap.rows);
-
-	GLubyte* expanded_data = (GLubyte *) malloc(
-			sizeof(GLubyte) * 2 * width * height);
-
-	for (j = 0; j < height; j++)
+//////////////////////////////////////////
+//
+//////////////////////////////////////////
+CFont::CFont(const std::string& filename):
+	m_isInitialize(false)
+{
+	ama3D::CFile file = ama3D::CMediaManager::Instance().FindMedia(filename);
+	m_FontFile = file.Fullname();
+	ama3D::Logger::Log() << "[INFO] Load Font file : " << m_FontFile << "\n";
+	TiXmlDocument doc(m_FontFile);
+	if (!doc.LoadFile())
 	{
-		for (i = 0; i < width; i++)
-		{
-			expanded_data[2 * (i + j * width)] = expanded_data[2
-					* (i + j * width) + 1] =
-					(i >= bitmap.width || j >= bitmap.rows) ?
-							0 : bitmap.buffer[i + bitmap.width * j];
-		}
+		ama3D::Logger::Log() << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
+		throw ama3D::CLoadingFailed(m_FontFile, "unable to load xml with TinyXML");
 	}
 
-	glBindTexture(GL_TEXTURE_2D, textures[ch]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16, width, height, 0,
-			GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, expanded_data);
-
-	free((void *) expanded_data);
-
-	tf->wids[ch] = (float) (face->glyph->advance.x >> 6);
-	tf->hoss[ch] = (float) ((face->glyph->metrics.horiBearingY
-			- face->glyph->metrics.height) >> 6);
-
-	tf->qvws[ch] = bitmap.width;
-	tf->qvhs[ch] = bitmap.rows;
-
-	tf->qtws[ch] = (float) bitmap.width / (float) width;
-	tf->qths[ch] = (float) bitmap.rows / (float) height;
-
-	return 1;
+	TiXmlHandle hdl(&doc);
+	TiXmlElement *fontNode = hdl.FirstChild("Font").ToElement();
+	if(fontNode == 0)
+	{
+		throw CLoadingFailed(m_FontFile, "unable to find the Font node entry");
+	}
+	TinyXMLGetAttributeValue<std::string>(fontNode,"name",&m_FontName);
 }
 
-// CFontManager
-
-CFontManager::CFontManager()
+CFont::~CFont()
 {
-	rat_start_font_system();
+	if(m_isInitialize)
+	{
+		for(std::map<int, CFontCharacter*>::iterator it = m_Characteres.begin(); it != m_Characteres.end(); ++it)
+		{
+			delete it->second;
+		}
+	}
+}
 
-	// Code Charly
-	m_coordHG = Math::TVector2F(0.0, 0.0);
-	m_profondeur = -1.0;
+void CFont::Render(const CGraphicString& gstring)
+{
+	if(!m_isInitialize)
+	{
+		LoadFile();
+		m_isInitialize = true;
+	}
+
+	m_FontsTex->activateMultiTex(ama3D::CUSTOM_TEXTURE+0);
+	const char* ch;
+	std::map<int, CFontCharacter*>::const_iterator element;
+	CFontCharacter* currentElement;
+	ama3D::Math::CMatrix4 transMat;
+	float xOff = 0.0;
+	for (std::string::const_iterator it = gstring.Text.begin(); it != gstring.Text.end(); ++it)
+	{
+		element = m_Characteres.find((int)*ch);
+		if(element == m_Characteres.end())
+			currentElement = m_Characteres[32]; // Not found
+		else
+			currentElement = element->second;
+		transMat.SetTranslation(gstring.Position.x+xOff,gstring.Position.y,0);
+		ama3D::CMatrixManager::Instance().PushMatrix(transMat);
+		currentElement->Render();
+		ama3D::CMatrixManager::Instance().PopMatrix();
+		xOff += currentElement->GetXStep()*1.10;
+	}
+	m_FontsTex->desactivateMultiTex(ama3D::CUSTOM_TEXTURE+0);
+}
+
+
+void CFont::LoadFile()
+{
+	ama3D::Logger::Log() << "[INFO] Load Font file : " << m_FontFile << "\n";
+	TiXmlDocument doc(m_FontFile);
+	if (!doc.LoadFile())
+	{
+		ama3D::Logger::Log() << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
+		throw ama3D::CLoadingFailed(m_FontFile, "unable to load xml with TinyXML");
+	}
+
+	TiXmlHandle hdl(&doc);
+	TiXmlElement *fontNode = hdl.FirstChild("Font").ToElement();
+	if(fontNode == 0)
+	{
+		throw CLoadingFailed(m_FontFile, "unable to find the Font node entry");
+	}
+
+	std::string fileNameTex;
+	int texWidth, texHeight;
+	TinyXMLGetAttributeValue<std::string>(fontNode,"filename",&fileNameTex);
+	TinyXMLGetAttributeValue<int>(fontNode,"width",&texWidth);
+	TinyXMLGetAttributeValue<int>(fontNode,"height",&texHeight);
+
+	ama3D::Logger::Log() << "      * Load Texture : " << fileNameTex<< "\n";
+	m_FontsTex = ama3D::Texture::LoadFromFile(fileNameTex);
+
+	ama3D::Logger::Log() << "      * Load Fonts ... ";
+	TiXmlElement *facesNode = fontNode->FirstChildElement("Faces");
+	TiXmlElement *faceNode = facesNode->FirstChildElement("Face");
+	int i = 0;
+	while(faceNode)
+	{
+		CFontCharacter * face = new CFontCharacter(faceNode, ama3D::Math::TVector2F(texWidth, texHeight));
+		m_Characteres[face->GetID()] = face;
+		faceNode = faceNode->NextSiblingElement();
+		i++;
+	}
+	ama3D::Logger::Log() << i << " Font loaded ! \n";
+}
+
+//////////////////////////////////////////
+// CFontManager
+//////////////////////////////////////////
+SINGLETON_IMPL(CFontManager)
+CFontManager::CFontManager() :
+	m_Initialize(false)
+{
 }
 
 CFontManager::~CFontManager()
 {
 	// TODO: Verify no memory leak on texture font
 	UnloadFonts();
-	rat_stop_font_system();
 }
 
-void CFontManager::LoadFont(const std::string& FontName,
-		const std::string& alias)
+void CFontManager::LoadFont(const std::string& filename)
 {
-	TPolices::iterator it = m_polices.find(alias);
+	CFont* font = new CFont(filename);
+	TPolices::iterator it = m_polices.find(font->GetFontName());
 
 	// La police est absente
 	if (it == m_polices.end())
 	{
-		PoliceData data;
-		data.Glyph = rat_glyph_font_load(FontName.c_str(), 30);
-		data.Texture = 0;
-		m_polices[alias] = data;
+		Logger::Log() << "[INFO] Add new font : " << filename << " -> " <<  font->GetFontName() << "\n";
+		m_polices[font->GetFontName()] = font;
 	}
 }
 
@@ -144,298 +238,39 @@ void CFontManager::UnloadFonts()
 
 	while (it != m_polices.end())
 	{
-		rat_glyph_font_destroy(it->second.Glyph);
+		delete it->second;
 		++it;
 	}
 }
 
-rat_texture_font * CFontManager::GetTexture(const std::string& alias)
-{
-	TPolices::iterator it = m_polices.find(alias);
 
-	if (it == m_polices.end())
+void CFontManager::RenderText(const CGraphicString& gstring)
+{
+	if(!m_Initialize)
 	{
-		std::cout << "Alias : " << alias << std::endl;
-		throw CException(
-				"[CFontManager] Get texture ! impossible de trouver l'alias.");
+		// Shader loading ...
+		m_FontShader = ama3D::CShaderManager::Instance().LoadShader("2DDrawFont.shader");
+		m_Initialize = true;
 	}
 
-	// First time load texture
-	if (it->second.Texture == 0)
+	TPolices::iterator it = m_polices.find(gstring.FontAlias);
+	if(it == m_polices.end())
 	{
-		it->second.Texture = rat_texture_font_from_glyph_font(it->second.Glyph);
+		//Logger::Log() << "[Warning] Can't Draw Graphic String [Reason : Font \"" << gstring.FontAlias << "\" isn't found ! \n";
+		return;
 	}
 
-	return it->second.Texture;
-}
-
-void CFontManager::DeleteTexture(rat_texture_font * a)
-{
-	rat_texture_font_destroy(a);
-}
-
-int CFontManager::rat_start_font_system()
-{
-	return !(FT_Init_FreeType(&m_freetype_lib));
-}
-
-void CFontManager::rat_stop_font_system()
-{
-	FT_Done_FreeType(m_freetype_lib);
-}
-
-rat_glyph_font *CFontManager::rat_glyph_font_load(const char *filename, int pt)
-{
-	rat_glyph_font *font = (rat_glyph_font *) malloc(sizeof(rat_glyph_font));
-
-	printf("Loading font from file \"%s\" at ptsize %i...", filename, pt);
-
-	// load the font from the file
-	if (FT_New_Face(m_freetype_lib, filename, 0, &(font->face)))
-	{
-		printf("failed load!\n");
-		free((void *) font);
-		return NULL;
-	}
-
-	// freetype measures fonts in 64ths of pixels, which
-	// I will never understand.  6 left bit shift multiplies
-	// the pt size by 64.
-	FT_Set_Char_Size(font->face, pt << 6, pt << 6, 96, 96);
-	font->pt = pt;
-
-	printf("done.\n");
-	return font;
-}
-
-void CFontManager::rat_glyph_font_destroy(rat_glyph_font *font)
-{
-	printf("Destroying glyph font...");
-	FT_Done_Face(font->face);
-	free((void *) font);
-	printf("done.\n");
-}
-
-rat_texture_font *CFontManager::rat_texture_font_from_glyph_font(
-		rat_glyph_font *font)
-{
-	register unsigned char i;
-	rat_texture_font *tf = (rat_texture_font *) malloc(
-			sizeof(rat_texture_font));
-
-	tf->pt = font->pt;
-
-	// prepare the OpenGL textures / display lists
-	tf->wids = (float *) malloc(sizeof(float) * 255);
-	tf->hoss = (float *) malloc(sizeof(float) * 255);
-	tf->qvws = (int *) malloc(sizeof(int) * 255);
-	tf->qvhs = (int *) malloc(sizeof(int) * 255);
-	tf->qtws = (float *) malloc(sizeof(float) * 255);
-	tf->qths = (float *) malloc(sizeof(float) * 255);
-	tf->textures = (unsigned int *) malloc(sizeof(unsigned int) * 255);
-	glGenTextures(255, tf->textures);
-
-	for (i = 0; i < 255; i++)
-	{
-		if (!make_glyph_texture(font, tf, i))
-		{
-			glDeleteTextures(255, tf->textures);
-			free((void *) tf->textures);
-			free((void *) tf->wids);
-			free((void *) tf->hoss);
-			free((void *) tf->qvws);
-			free((void *) tf->qvhs);
-			free((void *) tf->qtws);
-			free((void *) tf->qths);
-			free((void *) tf);
-			return NULL;
-		}
-	}
-
-	return tf;
-}
-
-void CFontManager::rat_texture_font_destroy(rat_texture_font *font)
-{
-	glDeleteTextures(255, font->textures);
-	free((void *) font->wids);
-	free((void *) font->textures);
-	free((void *) font->qvws);
-	free((void *) font->qvhs);
-	free((void *) font->qtws);
-	free((void *) font->qths);
-	free((void *) font);
-}
-
-void CFontManager::rat_set_text_color(float *rgba)
-{
-	memcpy(_textrgba, rgba, 4 * sizeof(float));
-}
-
-void CFontManager::rat_get_text_color(float *rgba)
-{
-	memcpy(rgba, _textrgba, 4 * sizeof(float));
-}
-
-float CFontManager::rat_texture_font_height(rat_texture_font *font)
-{
-	return font->pt;
-}
-
-float CFontManager::rat_texture_font_text_length(rat_texture_font *font,
-		char *text)
-{
-	register float len = 0;
-	char *ch = text;
-	for (; *ch; ch++)
-		len += font->wids[*ch];
-	return len;
-}
-
-float CFontManager::rat_texture_font_glyph_length(rat_texture_font *font,
-		char ch)
-{
-	return font->wids[ch];
-}
-
-void CFontManager::rat_texture_font_render_text(rat_texture_font *font, float x,
-		float y, char *text, int size)
-{
-	char *ch;
-
-	glPushAttrib(
-			GL_LIST_BIT | GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4fv(_textrgba);
+	m_FontShader->Begin();
+	m_FontShader->SetUniform1i("FontEffectType", 4);
+	m_FontShader->SetUniformVector("FontColor", Math::TVector4F(gstring.Color.GetRed(),gstring.Color.GetGreen(),gstring.Color.GetBlue(), gstring.Color.GetAlpha()));
+	m_FontShader->SetUniformVector("FontEffectColor", ama3D::Math::TVector4F(1.0,1.0,1.0,1.0));
 
-	glPushMatrix();
-	glScalef(1, -1, 1);
-	// Code Charly
-	//float ratio = (size / 64.0); // On divise notre taille par 64.0 car c'est la taille par default
-	// On calcule le facteur de reduction de notre texte :
-	float ratio = size / rat_texture_font_height(font);
-	float m_largeur = ratio * rat_texture_font_text_length(font, text);
-	//			float m_largeur = 1000.0;
+	it->second->Render(gstring);
 
-	Math::TVector2F coordHG = Math::TVector2F(x, y);
-	Math::TVector2F coordBD = Math::TVector2F(x + m_largeur, y + size);
-
-	// Calcul des coordonnees OpenGL correspondant aux coordonnees de la fenetre
-	//FIXME: Acces aux dimensions de l'ecran
-	float windowX = 800;
-	float windowY = 600;
-
-	// On centre la coordonnee HG
-	coordHG.x -= windowX / 2.0;
-	coordHG.y -= windowY / 2.0;
-
-	// On change de repere
-	coordHG.x = coordHG.x * -2.0 * m_profondeur / windowX;
-	coordHG.y = coordHG.y * 2.0 * m_profondeur / windowY;
-
-	// On centre la coordonnee BD
-	coordBD.x -= windowX / 2.0;
-	coordBD.y -= windowY / 2.0;
-
-	// On change de repere
-	coordBD.x = coordBD.x * -2.0 * m_profondeur / windowX;
-	coordBD.y = coordBD.y * 2.0 * m_profondeur / windowY;
-
-	// Donnees pour le parcours :
-	float parcouru = 0.0; // Pour stocker la largeur parcourue
-
-	for (ch = text; *ch; ch++)
-	{
-		glPushMatrix();
-		glLoadIdentity();
-		glDepthMask(0);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, font->textures[*ch]);
-
-		// On calcule les coordonnees la lettre courante
-		Math::TVector2F HG = coordHG;
-		float ratio2 = (coordBD.x - coordHG.x) / (m_largeur);
-		float parcouru2 = parcouru * ratio2;
-		HG.x += parcouru2;
-
-		Math::TVector2F BD = coordBD;
-		char c = *ch;
-		float largeurLettre = ratio * rat_texture_font_glyph_length(font, c);
-		float largeurLettre2 = ratio2 * largeurLettre;
-		BD.x = HG.x + largeurLettre2;
-
-		// On met a jour la variable parcouru
-		parcouru += largeurLettre;
-
-		float largeur = BD.x - HG.x;
-		float hauteur = BD.y - HG.y;
-
-		glTranslatef(HG.x + largeur / 2, HG.y + hauteur / 2, 0);
-		glScalef(ratio, ratio, ratio);
-		glBegin(GL_TRIANGLE_STRIP);
-		glTexCoord2f(0.0, 0.0);
-		glVertex3f(-largeur / 2, -hauteur / 2, m_profondeur);
-
-		glTexCoord2f(0.0, font->qths[*ch]);
-		glVertex3f(-largeur / 2, hauteur / 2, m_profondeur);
-
-		glTexCoord2f(font->qtws[*ch], 0.0);
-		glVertex3f(largeur / 2, -hauteur / 2, m_profondeur);
-
-		glTexCoord2f(font->qtws[*ch], font->qths[*ch]);
-		glVertex3f(largeur / 2, hauteur / 2, m_profondeur);
-		glEnd();
-		glDepthMask(GL_TRUE);
-
-		// Fin Code Charly
-		glPopMatrix();
-		//glTranslatef(font->wids[*ch],0,0);
-	}
-	glPopMatrix();
-	glPopAttrib();
+	m_FontShader->End();
+	glDisable(GL_BLEND);
 }
 
-// upper left corner is always zero
-void CFontManager::rat_texture_font_render_text_notform(rat_texture_font *font,
-		char *text)
-{
-	char *ch;
-
-	glPushAttrib(
-			GL_LIST_BIT | GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4fv(_textrgba);
-
-	glPushMatrix();
-	for (ch = text; *ch; ch++)
-	{
-		glBindTexture(GL_TEXTURE_2D, font->textures[*ch]);
-		glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);
-		glVertex2f(0, font->qvhs[*ch]);
-
-		glTexCoord2f(0, font->qths[*ch]);
-		glVertex2f(0, 0);
-
-		glTexCoord2f(font->qtws[*ch], font->qths[*ch]);
-		glVertex2f(font->qvws[*ch], 0);
-
-		glTexCoord2f(font->qtws[*ch], 0);
-		glVertex2f(font->qvws[*ch], font->qvhs[*ch]);
-		glEnd();
-		glTranslatef(font->wids[*ch], 0, 0);
-	}
-	glPopMatrix();
-	glPopAttrib();
-}
 }

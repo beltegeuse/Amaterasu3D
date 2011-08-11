@@ -270,11 +270,13 @@ bool render_signed_distance_font(
 		printf( "\nRenderint took %1.3f seconds\n\n", 0.001f * tin );
 
 		printf( "\nCompressing the image to PNG\n" );
-		tin = save_png_SDFont(
-				font_file, ft_face->family_name,
-				texture_size, texture_size,
-				pdata, all_glyphs );
-		printf( "Done in %1.3f seconds\n\n", 0.001f * tin );
+		// Extract only name
+		std::string fontFile(font_file);
+		std::size_t found=fontFile.rfind(".");
+		if (found!=std::string::npos)
+		{
+			fontFile = fontFile.substr(0,found);
+		}
 
 		if( export_c_header )
 		{
@@ -284,6 +286,16 @@ bool render_signed_distance_font(
 					texture_size, texture_size,
 					pdata, all_glyphs );
 			printf( "Done in %1.3f seconds\n\n", 0.001f * tin );
+		}
+		else
+		{
+			// Save data
+			tin = save_png_SDFont(
+					fontFile.c_str(), ft_face->family_name,
+					texture_size, texture_size,
+					pdata, all_glyphs );
+			printf( "Done in %1.3f seconds\n\n", 0.001f * tin );
+
 		}
 
 		//	clean up my data
@@ -305,7 +317,7 @@ int save_png_SDFont(
 	//	save my image
 	int fn_size = strlen( orig_filename ) + 100;
 	char *fn = new char[ fn_size ];
-	sprintf( fn, "%s.png", orig_filename );
+	sprintf( fn, "%s_ttf.png", orig_filename );
 	printf( "'%s'\n", fn );
 	LodePNG::Encoder encoder;
 	encoder.addText("Comment", "Signed Distance Font: lonesock tools");
@@ -315,6 +327,19 @@ int save_png_SDFont(
 	encoder.encode( buffer, img_data.empty() ? 0 : &img_data[0], img_width, img_height );
 	LodePNG::saveFile( buffer, fn );
 	tin = clock() - tin;
+
+	// Take the filename
+//	std::string fileNamePng(fn);
+//	std::size_t found = fileNamePng.rfind("/");
+//	if(found != std::string::npos)
+//	{
+//		//fileNamePng
+//	}
+//	else
+//	{
+//		found = fileNamePng.rfind("\\");
+//		if(found != std::string::npos)
+//	}
 
 	//	now save the acompanying info
 	// Use XML
@@ -350,7 +375,7 @@ int save_png_SDFont(
 	fontNode->LinkEndChild(facesNodes);
 	doc.LinkEndChild(fontNode);
 	// Save the file
-	sprintf( fn, "%s.xml", orig_filename );
+	sprintf( fn, "%s_ttf.font", orig_filename );
 	doc.SaveFile(fn);
 	delete [] fn;
 	return tin;

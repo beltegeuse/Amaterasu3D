@@ -40,7 +40,7 @@ namespace ama3D
 // Donn�es statiques
 ////////////////////////////////////////////////////////////
 const std::string DefaultLook::s_Fonts[] =
-{ "arial" };
+{ "Cheeseburger" };
 
 ////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
@@ -229,9 +229,7 @@ void DefaultLook::AddLine(const std::string& Line, const CColor& Color)
 
 	// Et on cr�e la nouvelle
 	//TODO : Add Color
-	m_Lines.push_front(
-			CGraphicString(Math::TVector2F(10, 190), Line,
-					s_Fonts[m_CurrentFont], 20));
+	m_Lines.push_front(CGraphicString(Math::TVector2F(10, 190), Line, s_Fonts[m_CurrentFont], 20));
 }
 
 ////////////////////////////////////////////////////////////
