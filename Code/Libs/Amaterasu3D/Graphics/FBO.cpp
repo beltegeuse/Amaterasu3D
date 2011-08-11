@@ -347,6 +347,7 @@ void FBO::DrawDebug()
 	// Draw the Grid
 	int nbElementDrew = 0;
 	// Draw others textures
+	CMatrixManager::Instance().SetModeMatrix(MATRIX_2D);
 	for (std::map<std::string, Texture*>::iterator it =
 			m_ColoredBuffers.begin(); it != m_ColoredBuffers.end(); ++it)
 	{
@@ -383,6 +384,7 @@ void FBO::DrawDebug()
 		it->second->desactivateTextureMapping();
 		nbElementDrew++;
 	}
+	CMatrixManager::Instance().SetModeMatrix(MATRIX_3D);
 
 	glEnable(GL_DEPTH_TEST);
 

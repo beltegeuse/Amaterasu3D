@@ -142,14 +142,13 @@ void CFont::Render(const CGraphicString& gstring)
 	}
 
 	m_FontsTex->activateMultiTex(ama3D::CUSTOM_TEXTURE+0);
-	const char* ch;
 	std::map<int, CFontCharacter*>::const_iterator element;
 	CFontCharacter* currentElement;
 	ama3D::Math::CMatrix4 transMat;
 	float xOff = 0.0;
 	for (std::string::const_iterator it = gstring.Text.begin(); it != gstring.Text.end(); ++it)
 	{
-		element = m_Characteres.find((int)*ch);
+		element = m_Characteres.find((int)*it);
 		if(element == m_Characteres.end())
 			currentElement = m_Characteres[32]; // Not found
 		else
