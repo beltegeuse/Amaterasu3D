@@ -54,14 +54,19 @@ std::string ReadFile(const std::string& Filename);
 unsigned long StringHash(const std::string& String);
 
 //----------------------------------------------------------------
-// Convertit une cha�ne de caract�res en minuscule
+// Convertit une chaine de caracteres en minuscule
 //----------------------------------------------------------------
 std::string ToLower(const std::string& Text);
 
 //----------------------------------------------------------------
-// Convertit une cha�ne de caract�res en majuscules
+// Convertit une chaine de caracteres en majuscules
 //----------------------------------------------------------------
 std::string ToUpper(const std::string& Text);
+
+//----------------------------------------------------------------
+// Convertit une chaine de caracteres en bool
+//----------------------------------------------------------------
+bool ToBool(const std::string& Text);
 
 ////////////////////////////////////////////////////////////
 /// Template servant � construire les classes singleton

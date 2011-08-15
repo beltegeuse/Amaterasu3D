@@ -430,10 +430,10 @@ def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True, LPMFactor = 
                         #print "Factor : " + str(Wn)
                         scatteringTerm = rayValue*(1 - exp(-1*dist*I.S/Wn))
                         # Update ray value
-                        absortionCoeff = I.K+I.S
-                        absortionFactor = exp(-1*dist*absortionCoeff/Wn)
+                        extinctionCoeff = I.K+I.S
+                        extinctionFactor = exp(-1*dist*extinctionCoeff/Wn)
                         UTildeValue = UTilde.data[voxID][idDir]
-                        rayValue = rayValue*absortionFactor+(UTildeValue*(1 - absortionFactor)/absortionCoeff)
+                        rayValue = rayValue*extinctionFactor+(UTildeValue*(1 - extinctionFactor)/extinctionCoeff)
                         #print rayValue
                         # I value
                         # Only one direction so don't need to iterate

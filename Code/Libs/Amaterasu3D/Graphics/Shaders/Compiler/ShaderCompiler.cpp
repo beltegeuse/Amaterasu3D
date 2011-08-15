@@ -109,10 +109,10 @@ void ShaderCompiler::ResolveDefinesRules()
 	for (ShaderCompilerConfig::DefineMap::iterator it2 = defs.begin();
 			it2 != defs.end(); it2++)
 			{
-		Logger::Log() << "   *   |- " << it2->first << " : " << it2->second
+		Logger::Log() << "   *   |- " << it2->first << " : " << it2->second.value
 				<< "\n";
 		std::stringstream ss;
-		ss << "#define " << it2->first << " " << it2->second;
+		ss << "#define " << it2->first << " " << it2->second.value;
 		m_LinesCode.insert(it, ss.str());
 	}
 }

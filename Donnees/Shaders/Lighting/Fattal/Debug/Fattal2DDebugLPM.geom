@@ -107,13 +107,16 @@ void main()
 	// Protection for reinjection steps
 	bool isNeedRecast = true;
 	int nbIntersection;
+	
 	// Values of rays
 	int SumIntersection = 0;
+	
 	// Loop variables
 	float OldCurrentLenght = 0.0;
 	float rayValue = vOriValue[0];
 	vec2 Offset = vec2(0.0);
 	float Dist;
+	
 	// know the main direction
 	bool xMainDirection = DirectionAbs.x > DirectionAbs.y;
 	
@@ -123,15 +126,13 @@ void main()
 	gl_Position = vec4(((Position/GridDimension)*2 - 1)*1,0.0,1.0);
 	EmitVertex();
 	
-	// Intial bias
-    //	Position += MainDirection*BIAS;
 	while(isNeedRecast)
 	{
 		isNeedRecast = false;
 		nbIntersection = 0;
 		while(true)
 		{
-			// Martch in the volume
+			// March in the volume
 			if(tMax.x < tMax.y)
 			{
 				Dist = tMax.x;
@@ -220,7 +221,7 @@ void main()
 			}
 			else
 			{
-				DeltaData = rayValue;//1.0*1.0*(3.14/(9))*scatteringTerm;
+				DeltaData = 1.0;//1.0*1.0*(3.14/(9))*scatteringTerm;
 				gl_Position = vec4(0.0,0.0,0.0,1.0);
 				EmitVertex();
 			}

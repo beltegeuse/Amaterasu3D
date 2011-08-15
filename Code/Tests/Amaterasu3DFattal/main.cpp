@@ -35,6 +35,7 @@ private:
 	ISimpleRenderableSceneNode* m_InitialRaysMap[4];
 	// Topologic attributes
 	Math::TVector2I m_SizeGrid;
+	Math::TVector2F m_CellSize;
 	float m_AbsortionCoeff;
 	float m_DiffusionCoeff;
 	// LPM Topologic attributes
@@ -48,15 +49,22 @@ public:
 	 */
 	Fattal2DVolume(const Math::TVector2I size) :
 		m_SizeGrid(size),
-		m_AbsortionCoeff(0.1),
-		m_DiffusionCoeff(0.1),
+		m_AbsortionCoeff(0.0),
+		m_DiffusionCoeff(0.01),
 		m_LPMMultRes(2),
 		m_LPMNbAngles(9)
 	{
 		// Initialise shaders
 		m_FattalDisplay = CShaderManager::Instance().LoadShader("Fattal2DDisplay.shader");
+#if DEBUGFATTAL
+		m_FattalComputeLPM = CShaderManager::Instance().LoadShader("Fattal2DLPM_Debug.shader");
+#else
 		m_FattalComputeLPM = CShaderManager::Instance().LoadShader("Fattal2DLPM.shader");
+#endif
 		m_FattalUpdateBuffers = CShaderManager::Instance().LoadShader("Fattal2DUpdate.shader");
+		// Compute
+		Math::TVector2I screenSize = CSettingsManager::Instance().GetSizeRenderingWindow();
+		m_CellSize = Math::TVector2F(screenSize.x/(float)size.x, screenSize.y/(float)size.y);
 		// Resized buffers
 		// FIXME
 #if !DEBUGFATTAL
@@ -93,8 +101,11 @@ public:
 		for(int i = 0; i < nbPass; i++)
 		{
 			// foreach direction
-			//int idDir = 3;
+#if DEBUGFATTAL
+			int idDir = 2;
+#else
 			for(int idDir = 0; idDir < 4; idDir++)
+#endif
 			{
 				// Set blending
 				glEnable(GL_BLEND);
@@ -108,6 +119,7 @@ public:
 //				std::cout << Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y) << std::endl;
 				m_FattalComputeLPM->SetUniformVector("MainDirection", GetMainDirection(idDir));
 				m_FattalComputeLPM->SetUniformVector("GridDimension",Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y));
+				m_FattalComputeLPM->SetUniformVector("CellDimension", m_CellSize);
 				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_DiffusionCoeff);
 				m_FattalComputeLPM->SetUniform1f("DiffusionCoeff",m_AbsortionCoeff);
 				m_FattalComputeLPM->SetUniform1i("isFristSweep", i == 0);
@@ -217,7 +229,7 @@ private:
 			// Compute Ori position
 			Math::TVector2I OriPosition = Math::TVector2I(0,0);
 			if(mainDir.x == -1.0 || mainDir.y == -1.0)
-				OriPosition = m_SizeGrid;
+				OriPosition = Math::TVector2I(m_SizeGrid.x*m_CellSize.x,m_SizeGrid.y*m_CellSize.y);
 			// Transformation Matrix
 			Math::Matrix2 transMatrix(0,0,0,0);
 			int NbCells;
@@ -249,8 +261,8 @@ private:
 					int indice = (m_LPMNbAngles*k+j)*2;
 					float factor = (k+0.5)/m_LPMMultRes;
 					// FIXME
-					rayPosition[indice] = OriPosition.x+offset.x*factor;
-					rayPosition[indice+1] = OriPosition.y+offset.y*factor;
+					rayPosition[indice] = OriPosition.x+offset.x*factor*m_CellSize.x;
+					rayPosition[indice+1] = OriPosition.y+offset.y*factor*m_CellSize.y;
 					rayOrientation[indice] = transMatrix.Transform(samples[j]).x;
 					rayOrientation[indice+1] = transMatrix.Transform(samples[j]).y;
 
@@ -326,7 +338,7 @@ public:
 		m_Camera = new CameraFPS(Math::TVector3F(30,40,20), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
 		// Create fattal
-		m_Fattal = new Fattal2DVolume(Math::TVector2I(100,100));
+		m_Fattal = new Fattal2DVolume(Math::TVector2I(64,64));
 	}
 
 	virtual void OnUpdate(double delta)

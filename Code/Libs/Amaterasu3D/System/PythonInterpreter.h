@@ -86,7 +86,11 @@ public:
 		AddArgument(name, map.GetObject());
 	}
 
-private:
+	void AddArgument(const std::string& name, bool v)
+	{
+		AddArgument(name, PyBool_FromLong(v));
+	}
+
 	void AddArgument(const std::string& name, PyObject* obj)
 	{
 		if(m_Args.find(name) != m_Args.end())
@@ -94,6 +98,8 @@ private:
 		m_Args[name] = obj;
 		PyDict_SetItemString(m_Dict, name.c_str(), obj);
 	}
+
+private:
 
 	void Release();
 };

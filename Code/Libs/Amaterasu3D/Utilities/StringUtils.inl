@@ -22,6 +22,8 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
+#include <Debug/Exceptions.h>
+
 /////////////////////////////////////////////////////////////
 /// D�coupe une chaine de caract�res
 ///
@@ -127,7 +129,16 @@ inline std::string ToUpper(const std::string& Text)
     return Ret;
 }
 
-
+inline bool ToBool(const std::string& Text)
+{
+	std::string lowText = ToLower(Text);
+	if(lowText == "true")
+		return true;
+	else if (lowText == "false")
+		return false;
+	else
+		throw ama3D::CException("Cannot convert "+Text+" to Bool");
+}
 ////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
 ///

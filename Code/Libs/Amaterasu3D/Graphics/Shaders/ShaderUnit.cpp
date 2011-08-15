@@ -38,6 +38,7 @@
 
 #include <Debug/Exceptions.h>
 #include <Logger/Logger.h>
+#include <Utilities/StringUtils.h>
 //#include <Graphics/Shaders/Compiler/ShaderCompiler.h>
 #include <System/Python/Jinja2Template.h>
 
@@ -50,6 +51,22 @@
 //*********************************************************
 namespace ama3D
 {
+
+void AddArgument(Jinja2Template& jinja2, const std::string& name,const ShaderCompilerConfig::DefineEntry& entry)
+{
+	switch(entry.type)
+	{
+		case ShaderCompilerConfig::DEFINE_BOOL:
+			jinja2.AddArgument(name, ToBool(entry.value));
+			break;
+		case ShaderCompilerConfig::DEFINE_STRING:
+			jinja2.AddArgument(name, entry.value);
+			break;
+		default:
+			throw CException("Not supported type");
+	}
+}
+
 ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type,
 		const ShaderCompilerConfig& config)
 {
@@ -75,7 +92,7 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type,
 	// Use own shader Compiler to add extra stuff to GLSL langage
 	Jinja2Template jinja2(path);
 	for(ShaderCompilerConfig::DefineMap::const_iterator it = config.GetDefines().begin(); it != config.GetDefines().end(); ++it)
-		jinja2.AddArgument(it->first, it->second);
+		AddArgument(jinja2,it->first, it->second);
 	jinja2.Generate();
 	Logger::Log() << jinja2.GetCode() << "\n";
 	const std::string source = jinja2.GetCode();

@@ -47,10 +47,41 @@ struct CShaderCompilerException: public CException
 /// Structure to configure the compiler
 //////////////////////////////////////////
 ////////////// Main Config structure
+
 class ShaderCompilerConfig
 {
 public:
-	typedef std::map<std::string, std::string> DefineMap;
+	enum DefineType
+	{
+		DEFINE_BOOL,
+		DEFINE_STRING
+	};
+
+	static DefineType GetDefineType(const std::string& typeName)
+	{
+		if(typeName == "Bool")
+			return DEFINE_BOOL;
+		else if(typeName == "String")
+			return DEFINE_STRING;
+		else
+			throw CException("Unknow Define type : " + typeName);
+	}
+
+	struct DefineEntry
+	{
+		DefineType type;
+		std::string value;
+	};
+
+	static DefineEntry GetDefineEntry(const std::string& typeName, const std::string& value)
+	{
+		DefineEntry entry;
+		entry.type = GetDefineType(typeName);
+		entry.value = value;
+		return entry;
+	}
+
+	typedef std::map<std::string, DefineEntry> DefineMap;
 private:
 	/*
 	 * Attributes
@@ -64,7 +95,7 @@ public:
 	{
 	}
 
-	void AddDefine(const std::string& name, const std::string& value)
+	void AddDefine(const std::string& name, const DefineEntry& value)
 	{
 		m_Defines[name] = value;
 	}

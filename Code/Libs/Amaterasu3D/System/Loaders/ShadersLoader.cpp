@@ -397,13 +397,14 @@ ShaderCompilerConfig ShadersLoader::LoadShaderCompilerConfig(TiXmlElement* root)
 		while (defineNode)
 		{
 			std::string nameAttrib;
+			std::string type;
 			std::string defaultValueAttrib;
-			TinyXMLGetAttributeValue<std::string>(defineNode, "name",
-					&nameAttrib);
-			TinyXMLGetAttributeValue<std::string>(defineNode, "defaultValue",
-					&defaultValueAttrib);
+			TinyXMLGetAttributeValue<std::string>(defineNode, "name", &nameAttrib);
+			TinyXMLGetAttributeValue<std::string>(defineNode, "type", &type);
+			TinyXMLGetAttributeValue<std::string>(defineNode, "defaultValue", &defaultValueAttrib);
 
-			config.AddDefine(nameAttrib, defaultValueAttrib);
+			ShaderCompilerConfig::DefineEntry entry = ShaderCompilerConfig::GetDefineEntry(type, defaultValueAttrib);
+			config.AddDefine(nameAttrib, entry);
 
 			defineNode = defineNode->NextSiblingElement();
 		}
