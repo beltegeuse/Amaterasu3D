@@ -24,4 +24,9 @@ void LoggerFile::Write(const std::string& Message)
 {
 	_File << Message;
 }
+
+void LoggerFile::Flush()
+{
+	_File.flush();
+}
 }

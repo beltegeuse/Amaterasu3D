@@ -37,7 +37,7 @@ private:
 	Math::TVector2I m_SizeGrid;
 	Math::TVector2F m_CellSize;
 	float m_AbsortionCoeff;
-	float m_DiffusionCoeff;
+	float m_ScatteringCoeff;
 	// LPM Topologic attributes
 	int m_LPMMultRes;
 	int m_LPMNbAngles;
@@ -50,7 +50,7 @@ public:
 	Fattal2DVolume(const Math::TVector2I size) :
 		m_SizeGrid(size),
 		m_AbsortionCoeff(0.0),
-		m_DiffusionCoeff(0.01),
+		m_ScatteringCoeff(0.01),
 		m_LPMMultRes(2),
 		m_LPMNbAngles(9)
 	{
@@ -77,6 +77,8 @@ public:
 
 		// Initialize Rays maps
 		InitializeRaysMaps();
+
+		Logger::Log().Sync();
 	}
 
 	virtual ~Fattal2DVolume()
@@ -120,17 +122,15 @@ public:
 				m_FattalComputeLPM->SetUniformVector("MainDirection", GetMainDirection(idDir));
 				m_FattalComputeLPM->SetUniformVector("GridDimension",Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y));
 				m_FattalComputeLPM->SetUniformVector("CellDimension", m_CellSize);
-				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_DiffusionCoeff);
-				m_FattalComputeLPM->SetUniform1f("DiffusionCoeff",m_AbsortionCoeff);
+				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_AbsortionCoeff);
+				m_FattalComputeLPM->SetUniform1f("ScaterringCoef",m_ScatteringCoeff);
 				m_FattalComputeLPM->SetUniform1i("isFristSweep", i == 0);
 				// ==== Texture activation
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
 				// ==== Drawing (Attributes)
 				m_InitialRaysMap[idDir]->Render();
 				// ==== Texture desactivation
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
 				m_FattalComputeLPM->End();
 				glDisable(GL_BLEND);
 				//////////////////////////
@@ -179,21 +179,21 @@ public:
 #if DEBUGFATTAL
 		m_FattalComputeLPM->GetFBO()->DrawDebug();
 #else
-//		m_FattalDisplay->Begin();
-//		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
-//		glBegin(GL_QUADS);
-//			glTexCoord2f(0.0, 0.0);
-//			glVertex2f(-1.0, -1.0);
-//			glTexCoord2f(0.0, 1.0);
-//			glVertex2f(-1.0, 1.0);
-//			glTexCoord2f(1.0, 1.0);
-//			glVertex2f(1.0, 1.0);
-//			glTexCoord2f(1.0, 0.0);
-//			glVertex2f(1.0, -1.0);
-//		glEnd();
-//		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-//		m_FattalDisplay->End();
-		m_FinalBuffers[m_IDFinalFBO]->DrawDebug();
+		m_FattalDisplay->Begin();
+		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0, 0.0);
+			glVertex2f(-1.0, -1.0);
+			glTexCoord2f(0.0, 1.0);
+			glVertex2f(-1.0, 1.0);
+			glTexCoord2f(1.0, 1.0);
+			glVertex2f(1.0, 1.0);
+			glTexCoord2f(1.0, 0.0);
+			glVertex2f(1.0, -1.0);
+		glEnd();
+		m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+		m_FattalDisplay->End();
+		//m_FinalBuffers[m_IDFinalFBO]->DrawDebug();
 #endif
 	}
 private:
@@ -254,6 +254,9 @@ private:
 			float* rayPosition = new float[NbRay*2];
 			float* rayOrientation = new float[NbRay*2];
 			float* rayValue = new float[NbRay];
+			// For ray initialisation
+			int beamLow = NbGroupRays/2 - NbGroupRays*0.025;
+			int beamHigh = NbGroupRays/2 + NbGroupRays*0.025 + 1;
 			for(int k = 0; k < NbGroupRays; k++)
 			{
 				for(int j = 0; j < m_LPMNbAngles; j++)
@@ -272,8 +275,8 @@ private:
 					rayValue[m_LPMNbAngles*k+j] = 1.0;
 #else
 					// Initialisation Value
-					if(j == (m_LPMNbAngles/2) && k >= (NbGroupRays/2)-2 && k <= (NbGroupRays/2)+2 && idDir == 0) // &&
-						rayValue[m_LPMNbAngles*k+j] = 1.0;
+					if(j == (m_LPMNbAngles/2) && k >= beamLow && k <= beamHigh && idDir == 0) // &&
+						rayValue[m_LPMNbAngles*k+j] = 10.0;
 					else
 						rayValue[m_LPMNbAngles*k+j] = 0.0;
 #endif

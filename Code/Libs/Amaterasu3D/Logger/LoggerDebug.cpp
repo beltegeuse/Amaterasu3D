@@ -16,4 +16,9 @@ void LoggerDebug::Write(const std::string& Message)
 {
 	std::cout << Message;
 }
+
+void LoggerDebug::Flush()
+{
+	std::cout.flush();
+}
 }

@@ -36,6 +36,12 @@ Logger& Logger::Log()
 	return *(_instance);
 }
 
+void Logger::Sync()
+{
+	if( _instance)
+		_instance->Flush();
+}
+
 void Logger::Kill()
 {
 	if (_instance != NULL)

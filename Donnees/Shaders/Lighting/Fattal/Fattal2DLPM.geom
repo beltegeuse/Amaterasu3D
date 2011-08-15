@@ -24,13 +24,12 @@ precision highp float;
 
 // Texture data
 uniform sampler2D UBuffer;
-uniform sampler2D IBuffer;
 
 // Grid information
 uniform vec2 GridDimension;
 uniform vec2 CellDimension;
 uniform float AbsortionCoeff;
-uniform float DiffusionCoeff;
+uniform float ScaterringCoef;
 uniform bool isFristSweep;
 // Other information
 uniform vec2 MainDirection;
@@ -155,8 +154,8 @@ void main()
 			Position = NewPosition;
 
 			// Compute
-			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*DiffusionCoeff/maxDirectionCoord));
-			float extinctionCoeff = (DiffusionCoeff+AbsortionCoeff);
+			float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*ScaterringCoef/maxDirectionCoord));
+			float extinctionCoeff = (ScaterringCoef+AbsortionCoeff);
 			float extinctionFactor = exp(-1*DiffLength*extinctionCoeff/maxDirectionCoord);
 			float UValue = ReadU(UBuffer, voxID, MainDirection);
 			rayValue = rayValue*extinctionFactor+(UValue*(1 - extinctionFactor)/extinctionCoeff);
@@ -166,10 +165,12 @@ void main()
 			{% if DEBUG_MODE %}
 			DeltaData = 1.0;
 			{% else %}
-			if(xMainDirection)
+			/*if(xMainDirection)
 				DeltaData = CellDimension.x*(1.0/CellVolume)*scatteringTerm*(3.14/(9));
 			else
 				DeltaData = CellDimension.y*(1.0/CellVolume)*scatteringTerm*(3.14/(9));
+			*/
+			DeltaData = rayValue;
 			{% endif %}
 			
 			gl_Position = vec4(((Position/GridWorldDimension)*2 - 1)*1,0.0,1.0);

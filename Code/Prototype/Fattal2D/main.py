@@ -351,7 +351,7 @@ def GetDirID(v):
     else:
         return 3
 
-def FattalAlgorithm(I, U, screen, nbPass = 3, visualisation = True, LPMFactor = 1):
+def FattalAlgorithm(I, U, screen, nbPass = 1, visualisation = True, LPMFactor = 1):
     directions = [("X", 1, (0,255,0)),("X", -1, (255,0,255)),("Y", 1, (0,0,255)),("Y", -1, (255,255,0))]
     #directions = [("X", 1, (0,255,0))]
     lpm = LPM(I, 9, LPMFactor)
@@ -449,10 +449,10 @@ if __name__=="__main__":
     NBCELL = Vector2D(64,64)
     VIS = False
     LPMFACTOR = 2
-    NBPASS = 3
+    NBPASS = 1
     K = 1
     S = 1.0
-    K = 0.0
+    K = 0.01
     S = 0.01
     # Test value for drawing
     #RES = Vector2D(800,600)

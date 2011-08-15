@@ -20,6 +20,7 @@ private:
 	std::ofstream _File;
 	//! Definition de la fonction Write.
 	virtual void Write(const std::string& Message);
+	virtual void Flush();
 public:
 	LoggerFile(const std::string& Filename = "Output.log");
 	virtual ~LoggerFile();

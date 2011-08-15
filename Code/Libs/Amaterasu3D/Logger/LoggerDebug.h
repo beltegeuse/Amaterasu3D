@@ -13,6 +13,7 @@ class LoggerDebug: public Logger
 private:
 	//! Definition de la fonction Write.
 	virtual void Write(const std::string& Message);
+	virtual void Flush();
 public:
 	LoggerDebug();
 	virtual ~LoggerDebug();

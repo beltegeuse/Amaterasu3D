@@ -25,7 +25,7 @@ private:
 	 * Affichage du message.
 	 */
 	virtual void Write(const std::string& Message) = 0;
-
+	virtual void Flush() = 0;
 public:
 	/**
 	 * Constructeurs et destructeurs
@@ -42,6 +42,7 @@ public:
 	 * Get de l'instance de Logger.
 	 */
 	static Logger& Log();
+	static void Sync();
 	static void Kill();
 	/**
 	 * Definition de l'operateur de flux.

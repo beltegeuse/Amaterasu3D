@@ -7,11 +7,9 @@ precision highp float;
 flat in float DeltaData;
 
 // Out 
-out vec4 outDeltaIBuffer;
-out vec4 outDeltaUBuffer;
+out vec4 outDeltaBuffer;
 
 void main()
 {
-	outDeltaIBuffer = vec4(DeltaData); // DeltaData
-	outDeltaUBuffer = vec4(DeltaData/4.0); //DeltaData
+	outDeltaBuffer = vec4(DeltaData);
 }
