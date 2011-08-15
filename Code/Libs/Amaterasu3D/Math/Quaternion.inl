@@ -22,7 +22,6 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

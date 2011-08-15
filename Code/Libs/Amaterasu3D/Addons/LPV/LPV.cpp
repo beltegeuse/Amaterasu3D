@@ -46,7 +46,7 @@ LPV::LPV(int nbCells, int sizeCells, int propagationSteps, int nbLevels) :
 {
 	// Compute the texture size required
 	// * Repeat (map 3d texture into 2d)
-	int Taille = sqrt(m_NbCellDim);
+	int Taille = sqrt((float)m_NbCellDim);
 	m_TextureRepeat.x = NearestPowerOfTwo(Taille);
 	m_TextureRepeat.y = m_NbCellDim / m_TextureRepeat.x;
 	// * Final size of the texture
@@ -58,7 +58,7 @@ LPV::LPV(int nbCells, int sizeCells, int propagationSteps, int nbLevels) :
 	m_GirdPosition = new Math::TVector3F[m_NbCascadedLevels];
 	for (int i = 0; i < m_NbCascadedLevels; i++)
 	{
-		m_CellSize[i] = sizeCells / (std::pow(2, i)); // Compute automatically the size of each cascade
+		m_CellSize[i] = sizeCells / (std::pow(2.f, i)); // Compute automatically the size of each cascade
 		m_GirdPosition[i] = Math::TVector3F(-98.0, -98.0, -198.0);
 	}
 
@@ -401,7 +401,7 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 		m_GirdPosition[i] = Camera->GetPosition()
 				- (2 * borderFactor) * Math::TVector3F(1.0, 1.0, 1.0);
 
-		const float cubeBorder = 1.0 / sqrt(2);
+		const float cubeBorder = 1.0 / sqrt(2.0);
 
 		// \forgot Inverse vector coordinates to fit OpenGL representation
 		Math::TVector3F cubeCoordinates = Math::TVector3F(

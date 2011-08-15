@@ -27,6 +27,9 @@
 #include <Graphics/Shaders/Shader.h>
 #include <System/MediaManager.h>
 // --- Other includes
+#ifdef MSVC
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 
 namespace ama3D

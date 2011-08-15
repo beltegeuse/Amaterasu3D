@@ -8,7 +8,9 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Config/CMake ${CMAKE_MODULE_PATH})
 # * -- To install project ---
 SET(PROJECT_BUILD_PATH ${CMAKE_SOURCE_DIR}/Build)
 
+################################
 # * --Subprojects--
+################################
 MESSAGE("Search dependancies ... ")
 # ----- Glew
 FIND_PACKAGE(GLEW REQUIRED)
@@ -29,12 +31,27 @@ FIND_PACKAGE(ZLIB REQUIRED)
 FIND_PACKAGE(PythonLibs REQUIRED)
 # ----- Boost
 IF(WIN32)
-set(BOOST_ROOT C:/MinGW)
+	IF(MSVC)
+		set(BOOST_ROOT C:/Program Files (x86)/boost/boost_1_47/)
+	ENDIF()
+	IF(MINGW)
+		set(BOOST_ROOT C:/MinGW/)
+	ENDIF()
 ELSE()
 set(BOOST_ROOT /usr)
 ENDIF()
 set(BOOST_LIBS filesystem system regex program_options) # LINUX PROBLEM : random
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 MESSAGE("Boost libraries link is ${Boost_LIBRARIES}")
+MESSAGE("Boost include dir is ${Boost_INCLUDE_DIRS}")
+include_directories(${Boost_INCLUDE_DIRS})
+
+###################################
+## Special configuration
+###################################
+IF(MSVC)
+	ADD_DEFINITIONS("-D_USE_MATH_DEFINES") # For M_PI ... etc
+	ADD_DEFINITIONS("-DMSVC") # For add windows.h before gl.h
+ENDIF()
 
 SUBDIRS(Code)

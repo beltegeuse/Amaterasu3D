@@ -62,7 +62,7 @@ class Compilation:
         # On ajoute la fin de la commande
         commande += ' ..'
         
-        
+        print "EXEC " + commande
 
 
         os.system(commande)

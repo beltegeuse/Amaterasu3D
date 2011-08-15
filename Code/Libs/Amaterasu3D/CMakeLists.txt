@@ -110,19 +110,24 @@ SET(LIB_AMATERASU3D_HEADERS
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
+	# Libs includes DIR
+	${FREETYPE_INCLUDE_DIRS}
+	${PYTHON_INCLUDE_DIRS}
     /usr/local/include/sigc++-2.0
 	/usr/local/lib/sigc++-2.0/include
+	# Project include DIR
 	../C3/Source
 	../TinyXML
 	../Assimp/include
-	${FREETYPE_INCLUDE_DIRS}
-	${PYTHON_INCLUDE_DIRS}
 )
 
 SET(AMATERASU3D_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
+IF(MSVC)
+ADD_LIBRARY(Amaterasu3D STATIC ${LIB_AMATERASU3D_SRCS})
+ELSE()
 ADD_LIBRARY(Amaterasu3D SHARED ${LIB_AMATERASU3D_SRCS})
-
+ENDIF()
 target_link_libraries(
   Amaterasu3D
   # External dependencies

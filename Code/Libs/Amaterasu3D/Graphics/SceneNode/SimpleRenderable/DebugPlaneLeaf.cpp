@@ -25,6 +25,9 @@
 
 #include <Debug/OpenGLDebug.h>
 #include <iostream>
+#ifdef MSVC
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 #include <Enum.h>
 #include <Graphics/Shaders/Shader.h>

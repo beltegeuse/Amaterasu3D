@@ -36,7 +36,7 @@ ManualMipmapping::ManualMipmapping(int initialeSize) :
 	m_InitialSize = NearestPowerOfTwo(m_InitialSize);
 	Logger::Log() << "[INFO] Creation of Manual Mip-mapping : " << m_InitialSize
 			<< "\n";
-	m_NbLevels = log(m_InitialSize) / log(2);
+	m_NbLevels = log((float)m_InitialSize) / log(2.f);
 	Logger::Log() << "[INFO] Number levels : " << m_NbLevels << "\n";
 }
 
@@ -81,10 +81,10 @@ void ManualMipmapping::Initialize()
 	m_Mipmaps = new FBO*[m_NbLevels];
 	for (int i = 0; i < m_NbLevels; i++)
 	{
-		Logger::Log() << "    * Size of FBO : " << m_InitialSize / pow(2, i + 1)
+		Logger::Log() << "    * Size of FBO : " << m_InitialSize / pow(2.f, i + 1)
 				<< "\n";
 		m_Mipmaps[i] = CreateFBO(param, "ColorBuffer",
-				m_InitialSize / pow(2, i + 1));
+				m_InitialSize / pow(2.f, i + 1));
 	}
 }
 
@@ -130,7 +130,7 @@ void ManualMipmapping::Compute(Texture* texture)
 			m_Mipmaps[i - 1]->GetTexture("ColorBuffer")->activateMultiTex(
 					CUSTOM_TEXTURE + 0);
 
-		int size = m_InitialSize / pow(2, i);
+		int size = m_InitialSize / pow(2.f, i);
 		m_ManualMipmappingShader->SetUniformVector("TexSize",
 				Math::TVector2F(size, size));
 		DrawQuad();

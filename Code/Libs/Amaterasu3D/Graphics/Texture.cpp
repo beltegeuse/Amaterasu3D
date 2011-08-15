@@ -22,6 +22,9 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 #include <GL/glew.h>
+#ifdef MSVC
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 
 #include "Texture.h"

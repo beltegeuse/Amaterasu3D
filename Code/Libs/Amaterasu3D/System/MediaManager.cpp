@@ -23,7 +23,7 @@
 //==========================================================
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <System/MediaManager.h>
 #include <boost/filesystem.hpp>
@@ -31,7 +31,7 @@
 namespace ama3D
 {
 //////////////////////////////////////////////////////////////
-//// Impl�mentation des m�thodes du singleton
+//// Implementation des methodes du singleton
 //////////////////////////////////////////////////////////////
 SINGLETON_IMPL(ama3D::CMediaManager)
 

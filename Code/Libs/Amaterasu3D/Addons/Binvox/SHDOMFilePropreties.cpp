@@ -19,7 +19,7 @@ SHDOMRenderableObj::SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties
 
 	// Compute tex dim
 	Math::TVector2I repeat;
-	int Taille = sqrt(dim.z);
+	int Taille = sqrt((float)dim.z);
 	repeat.x = NearestPowerOfTwo(Taille);
 	repeat.y = (dim.z / repeat.x)+1; // if not power of 2
 

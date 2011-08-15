@@ -308,6 +308,11 @@ Texture* FBO::GetTexture(const std::string& nameBuffer)
 	return m_ColoredBuffers[nameBuffer];
 }
 
+double round(double number)
+{
+    return number < 0.0 ? ceil(number - 0.5) : floor(number + 0.5);
+}
+
 void FBO::DrawDebug()
 {
 	// Compute Grid need
@@ -317,7 +322,7 @@ void FBO::DrawDebug()
 	int nbElementsToDraw = m_ColoredBuffers.size();
 
 	// * Compute the grid dimension
-	float root = sqrt(nbElementsToDraw);
+	float root = sqrt((float)nbElementsToDraw);
 	int sHeight = round(root);
 	int sWidth = sHeight;
 	if ((root-sHeight) > 0)

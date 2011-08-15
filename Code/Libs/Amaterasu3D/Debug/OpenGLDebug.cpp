@@ -1,4 +1,7 @@
 #include "OpenGLDebug.h"
+#ifdef MSVC
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <iostream>

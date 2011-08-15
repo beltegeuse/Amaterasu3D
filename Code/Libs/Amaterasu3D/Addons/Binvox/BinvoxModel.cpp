@@ -8,6 +8,9 @@
 #include "BinvoxModel.h"
 
 #include <GL/glew.h>
+#ifdef MSVC
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 #include <Logger/Logger.h>
 #include <Debug/Exceptions.h>
@@ -148,7 +151,7 @@ void BinvoxModel::Bind()
 Math::TVector2I BinvoxModel::TextureRepeat()
 {
 	Math::TVector2I repeat;
-	int Taille = sqrt(m_Depth);
+	int Taille = sqrt((float)m_Depth);
 	repeat.x = NearestPowerOfTwo(Taille);
 	repeat.y = m_Depth / repeat.x;
 	return repeat;
