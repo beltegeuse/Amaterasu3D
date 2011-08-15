@@ -346,8 +346,8 @@ private:
 
 	void UpdateLightWorldPos()
 	{
-		m_Light.Position.z = 400.0*cos(m_AngleLight*(M_PI / 180.0));
-		m_Light.Position.y = 400.0*sin(m_AngleLight*(M_PI / 180.0));
+		m_Light.Position.z = 20.0*cos(m_AngleLight*(M_PI / 180.0));
+		m_Light.Position.y = 20.0*sin(m_AngleLight*(M_PI / 180.0));
 		m_Light.Position.x = 0.0;
 
 		m_Light.Direction = Math::TVector3F(0,0,0);
@@ -375,7 +375,7 @@ private:
 	//! Draw the scene
 	virtual void OnRender()
 	{
-		//UpdateLightWorldPos();
+		UpdateLightWorldPos();
 		m_LPV.ComputeGridPosition(m_Camera);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -505,26 +505,26 @@ private:
 //			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 //			m_ToneOperator->End();
 
-			m_ShowLum->Begin();
-			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
-			//m_Light.GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
-			glBegin(GL_QUADS);
-				glTexCoord2f(0.0, 0.0);
-				glVertex2f(-1.0, -1.0);
-				glTexCoord2f(0.0, 1.0);
-				glVertex2f(-1.0, 1.0);
-				glTexCoord2f(1.0, 1.0);
-				glVertex2f(1.0, 1.0);
-				glTexCoord2f(1.0, 0.0);
-				glVertex2f(1.0, -1.0);
-			glEnd();
-			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-			m_ShowLum->End();
+//			m_ShowLum->Begin();
+//			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+0);
+//			//m_Light.GetFBO()->GetTexture("Flux")->activateMultiTex(CUSTOM_TEXTURE+0);
+//			glBegin(GL_QUADS);
+//				glTexCoord2f(0.0, 0.0);
+//				glVertex2f(-1.0, -1.0);
+//				glTexCoord2f(0.0, 1.0);
+//				glVertex2f(-1.0, 1.0);
+//				glTexCoord2f(1.0, 1.0);
+//				glVertex2f(1.0, 1.0);
+//				glTexCoord2f(1.0, 0.0);
+//				glVertex2f(1.0, -1.0);
+//			glEnd();
+//			m_LPVLightingAllShader->GetFBO()->GetTexture("Color")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+//			m_ShowLum->End();
 			//m_ShowLum->GetFBO()->DrawDebug();
-//			m_ToneOperator->Compress(m_LPVLightingAllShader->GetFBO()->GetTexture("Color"));
-//
-//			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//			m_ToneOperator->DrawDebug();
+			m_ToneOperator->Compress(m_LPVLightingAllShader->GetFBO()->GetTexture("Color"));
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			m_ToneOperator->DrawDebug();
 //
 //			WhiteBalancing();
 
