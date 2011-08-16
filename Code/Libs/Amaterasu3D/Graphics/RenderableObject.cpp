@@ -83,7 +83,8 @@ void RenderableObject::CompileBuffers()
 	Logger::Log() << "[INFO] Generate " << m_buffers.size() + 1
 			<< " buffers ... \n";
 	m_is_compiled = true;
-	m_indices_buffers = new unsigned int[m_buffers.size() + 1];GLCheck(glGenBuffers( m_buffers.size()+1, m_indices_buffers ));
+	m_indices_buffers = new unsigned int[m_buffers.size() + 1];
+	GLCheck(glGenBuffers( m_buffers.size()+1, m_indices_buffers ));
 	Logger::Log() << "  * indice id : " << m_indices_buffers[0] << "\n";
 	// Add index buffer
 	Logger::Log() << "   * load indices buffers ... " << m_indices_buffers[0]
