@@ -27,19 +27,19 @@
 /// Enregistre un nouveau chargeur de media de type T
 ///
 /// \param Loader :     Pointeur sur le chargeur
-/// \param Extensions : Extensions associées au chargeur
+/// \param Extensions : Extensions associï¿½es au chargeur
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
 inline void CMediaManager::RegisterLoader(ILoader<T>* Loader, const std::string& Extensions)
 {
-    // Récupération des extensions
+    // Rï¿½cupï¿½ration des extensions
     std::vector<std::string> Ext;
     Split(Extensions, Ext, " /\\*.,;|-_\t\n'\"");
 
 	Logger::Log() << "[INFO] Add New Loader ... \n";
 
-    // Ajout des extensions une à une
+    // Ajout des extensions une ï¿½ une
     CSmartPtr<ILoader<T> > Ptr = Loader;
     for (std::vector<std::string>::iterator i = Ext.begin(); i != Ext.end(); ++i)
 	{
@@ -52,13 +52,13 @@ inline void CMediaManager::RegisterLoader(ILoader<T>* Loader, const std::string&
 ////////////////////////////////////////////////////////////
 /// Supprime un chargeur
 ///
-/// \param Extensions : Extensions associées au chargeur
+/// \param Extensions : Extensions associï¿½es au chargeur
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
 inline void CMediaManager::UnregisterLoader(const std::string& Extensions)
 {
-    // Récupération des extensions
+    // Rï¿½cupï¿½ration des extensions
     std::vector<std::string> Ext;
     Split(Extensions, Ext, " /\\*.,;|-_\t\n'\"");
 
@@ -69,21 +69,30 @@ inline void CMediaManager::UnregisterLoader(const std::string& Extensions)
 
 
 /////////////////////////////////////////////////////////////
-/// Charge un media de type T à partir d'un fichier
+/// Charge un media de type T ï¿½ partir d'un fichier
 ///
 /// \param Filename : Chemin du fichier
 ///
-/// \return Pointeur sur le T chargé
+/// \return Pointeur sur le T chargï¿½
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
 inline T* CMediaManager::LoadMediaFromFile(const CFile& Filename) const
 {
-    // Recherche du fichier dans les répertoires enregistrés
+    // Recherche du fichier dans les repertoires enregistres
     CFile MediaPath = FindMedia(Filename);
 
-    // On délègue le boulot au loader approprié
-    T* Media = FindLoader<T>(MediaPath).LoadFromFile(MediaPath.Fullname());
+    // On dï¿½lï¿½gue le boulot au loader approprie
+    T* Media;
+    try
+    {
+    	Media = FindLoader<T>(MediaPath).LoadFromFile(MediaPath.Fullname());
+    }
+    catch(CException e)
+    {
+    	Logger::Log() << "[ERROR] On loading " << MediaPath.Fullname() << " [Reason : " << e.what() << "]\n";
+    	throw CException("Unable to load " + MediaPath.Fullname());
+    }
 
     // Loggization du chargement
     Logger::Log() << "[LOAD] New resources loaded : " << MediaPath.Fullname() << "\n";
@@ -95,14 +104,14 @@ inline T* CMediaManager::LoadMediaFromFile(const CFile& Filename) const
 /////////////////////////////////////////////////////////////
 /// Sauvegarde un T dans un fichier
 ///
-/// \param Object :   Pointeur sur l'objet à sauvegarder
-/// \param Filename : Nom du fichier à créer
+/// \param Object :   Pointeur sur l'objet ï¿½ sauvegarder
+/// \param Filename : Nom du fichier ï¿½ crï¿½er
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
 inline void CMediaManager::SaveMediaToFile(const T* Object, const CFile& Filename) const
 {
-    // On délègue le boulot au loader approprié
+    // On dï¿½lï¿½gue le boulot au loader appropriï¿½
     FindLoader<T>(Filename).SaveToFile(Object, Filename.Fullname());
 
     // Loggization de la sauvegarde
@@ -111,11 +120,11 @@ inline void CMediaManager::SaveMediaToFile(const T* Object, const CFile& Filenam
 
 
 /////////////////////////////////////////////////////////////
-/// Cherche le loader correspondant à un fichier donné
+/// Cherche le loader correspondant ï¿½ un fichier donnï¿½
 ///
 /// \param Filename : Fichier
 ///
-/// \return Référence sur le loader, exception si non-trouvé
+/// \return Rï¿½fï¿½rence sur le loader, exception si non-trouvï¿½
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -125,7 +134,7 @@ inline ILoader<T>& CMediaManager::FindLoader(const CFile& Filename) const
     // Recherche de l'extension dans la map de loaders
     typename CMediaHolder<T>::TLoadersMap::const_iterator It = CMediaHolder<T>::m_Loaders.find(ToLower(Filename.Extension()));
 
-    // Si l'extension du fichier se trouve parmi celles reconnues on renvoie le loader associé, sinon on lance une exception
+    // Si l'extension du fichier se trouve parmi celles reconnues on renvoie le loader associï¿½, sinon on lance une exception
     if ((It != CMediaHolder<T>::m_Loaders.end()) && It->second)
         return *It->second;
 

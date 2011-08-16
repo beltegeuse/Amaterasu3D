@@ -12,7 +12,7 @@
 		<Texture type="Custom" name="ShadowBuffer" id=7 />
 	</Textures>
 	<Defines>
-		<Define name="NB_CASCADE" defaultValue="2" />
+		<Define name="NB_CASCADE" type="Integer" defaultValue="2" />
 	</Defines>
 	<OutputFrame depthType="None" size="Screen">
     	<Frame name="Color" type="RGBA32" />

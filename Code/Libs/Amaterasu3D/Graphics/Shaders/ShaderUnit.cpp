@@ -62,6 +62,12 @@ void AddArgument(Jinja2Template& jinja2, const std::string& name,const ShaderCom
 		case ShaderCompilerConfig::DEFINE_STRING:
 			jinja2.AddArgument(name, entry.value);
 			break;
+		case ShaderCompilerConfig::DEFINE_INTEGER:
+			jinja2.AddArgument(name, (long)ToIntType()(entry.value));
+			break;
+		case ShaderCompilerConfig::DEFINE_FLOAT:
+			jinja2.AddArgument(name, ToFloatType()(entry.value));
+			break;
 		default:
 			throw CException("Not supported type");
 	}

@@ -139,6 +139,7 @@ inline bool ToBool(const std::string& Text)
 	else
 		throw ama3D::CException("Cannot convert "+Text+" to Bool");
 }
+
 ////////////////////////////////////////////////////////////
 /// Constructeur par d�faut
 ///

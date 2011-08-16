@@ -12,7 +12,7 @@
 		<Texture type="Custom" name="Occlusion" id=3 />
 	</Textures>
 	<Defines>
-		<Define name="NB_CASCADE" defaultValue="2" />
+		<Define name="NB_CASCADE" type="Integer" defaultValue="2" />
 	</Defines>
 	<VertexShader filename="SimpleQuadDisplay.vert" />
 	<FragmentShader filename="LPVPropagation.frag" />

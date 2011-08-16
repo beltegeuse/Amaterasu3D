@@ -4,7 +4,7 @@
     	<Frame name="Grid" type="RGBA32" />
     </OutputFrame>
     <Defines>
-		<Define name="NB_CASCADE" defaultValue="2" />
+		<Define name="NB_CASCADE" type="Integer" defaultValue="2" />
 	</Defines>
     <Attributs>
     	<Attribut type="Vertex" name="VertexPosition" />

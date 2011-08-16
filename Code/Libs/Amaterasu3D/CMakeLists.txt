@@ -100,7 +100,7 @@ SET(LIB_AMATERASU3D_SRCS
 	Logger/LoggerDebug.cpp
 	Logger/LoggerFile.cpp
 	Utilities/File.cpp
-	
+	Utilities/StringUtils.cpp
 	Application.cpp
 )
 

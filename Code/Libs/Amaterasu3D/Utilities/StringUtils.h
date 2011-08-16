@@ -34,6 +34,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <Debug/Exceptions.h>
 
 namespace ama3D
 {
@@ -68,6 +69,43 @@ std::string ToUpper(const std::string& Text);
 //----------------------------------------------------------------
 bool ToBool(const std::string& Text);
 
+template <class T>
+struct MyTypeTraits
+{
+   static const char* name;
+};
+
+template <class T>
+const char* MyTypeTraits<T>::name = "Unknow";
+
+template <>
+struct MyTypeTraits<int>
+{
+   static const char* name;
+};
+
+template <>
+struct MyTypeTraits<float>
+{
+   static const char* name;
+};
+
+template < typename T >
+class CToCustomType
+{
+public:
+	T operator ()(const std::string& str)
+	{
+		std::istringstream iss(str);
+		T obj;
+		iss >> std::ws >> obj >> std::ws;
+		if(!iss.eof()) throw ama3D::CException("Cannot convert "+str+" to "+MyTypeTraits<T>::name);
+		return obj;
+	}
+};
+
+typedef CToCustomType<int> ToIntType;
+typedef CToCustomType<float> ToFloatType;
 ////////////////////////////////////////////////////////////
 /// Template servant � construire les classes singleton
 ////////////////////////////////////////////////////////////

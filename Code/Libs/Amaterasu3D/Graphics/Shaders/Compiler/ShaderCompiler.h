@@ -54,7 +54,9 @@ public:
 	enum DefineType
 	{
 		DEFINE_BOOL,
-		DEFINE_STRING
+		DEFINE_STRING,
+		DEFINE_INTEGER,
+		DEFINE_FLOAT
 	};
 
 	static DefineType GetDefineType(const std::string& typeName)
@@ -63,6 +65,10 @@ public:
 			return DEFINE_BOOL;
 		else if(typeName == "String")
 			return DEFINE_STRING;
+		else if(typeName == "Integer")
+			return DEFINE_INTEGER;
+		else if(typeName == "Float")
+			return DEFINE_FLOAT;
 		else
 			throw CException("Unknow Define type : " + typeName);
 	}
