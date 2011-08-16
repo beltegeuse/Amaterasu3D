@@ -165,11 +165,17 @@ void main()
 			{% if DEBUG_MODE %}
 			DeltaData = rayValue;
 			{% else %}
+			DeltaData = scatteringTerm;
+			// Compute Ars
+			// TODO: nbRay
 			if(xMainDirection)
-				DeltaData = CellDimension.x*(1.0/CellVolume)*scatteringTerm*(3.14/(9));
+				DeltaData *= CellDimension.y/9;
 			else
-				DeltaData = CellDimension.y*(1.0/CellVolume)*scatteringTerm*(3.14/(9));
-			
+				DeltaData *= CellDimension.x/9;
+			// Compute Volume
+			DeltaData *= 1/CellVolume;
+			// Compute factor
+			DeltaData *= 1/(4*3.14);
 			//DeltaData = rayValue;
 			{% endif %}
 			
@@ -219,7 +225,7 @@ void main()
 
 		{% if DEBUG_MODE %}
 		EndPrimitive();
-		DeltaData = 1.0;//1.0*1.0*(3.14/(9))*scatteringTerm;
+		DeltaData = 1.0;
 		gl_Position = vec4(((Position/GridWorldDimension)*2 - 1),0.0,1.0);
 		EmitVertex();
 		{% endif %}

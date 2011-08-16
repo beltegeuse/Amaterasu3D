@@ -124,7 +124,7 @@ class Grid:
         #maxV = 1.0
         for i in range(self.NbCells.x):
             for j in range(self.NbCells.y):
-                color = (self.data[self.GetVoxelID(i,j)][0] / maxV)*255.0
+                color = (self.data[self.GetVoxelID(i,j)][0])*255.0
                 #print color
                 pygame.draw.rect(self.screen,(color,color,color),(i*self.cellDimension.x, j*self.cellDimension.y, self.cellDimension.x, self.cellDimension.y))
 
@@ -437,10 +437,10 @@ def FattalAlgorithm(I, U, screen, nbPass = 1, visualisation = True, LPMFactor = 
                         #print rayValue
                         # I value
                         # Only one direction so don't need to iterate
-                        I.data[voxID][0] += cellVolumeInv*Ars*(3.14/(9))*scatteringTerm
+                        I.data[voxID][0] += cellVolumeInv*(Ars/9.0)*(1/(4*3.14))*scatteringTerm
                         # Update U value
                         for mID in range(4):
-                            U.data[voxID][mID] += (cellVolumeInv/4.0)*Ars*(3.14/(9*3))*scatteringTerm
+                            U.data[voxID][mID] += (cellVolumeInv/4.0)*(Ars/9.0)*(1/(4*3.14))*scatteringTerm
                             
 if __name__=="__main__":
     # Constante
