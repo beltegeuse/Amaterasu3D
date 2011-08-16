@@ -26,7 +26,7 @@ out vec4 outIBuffer;
 void main()
 {
 	// Read data
-	vec vDelta = texture(DeltaBuffer, outTexCoord);
+	vec4 vDelta = texture(DeltaBuffer, outTexCoord);
 	float vI = texture(IBuffer, outTexCoord).a;
 	vec4 vU = texture(UBuffer, outTexCoord);
 	
@@ -34,5 +34,5 @@ void main()
 	outIBuffer = vec4(vI + vDelta.a);
 	
 	// * Add values
-	//outUBuffer = UpdateU(vU, MainDirection) + vDeltaU/4.0;
+	outUBuffer = UpdateU(vU, MainDirection) + vDelta/4.0;
 }

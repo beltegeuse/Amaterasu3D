@@ -163,14 +163,14 @@ void main()
 			// Emit new values
 			//TODO: NbRay
 			{% if DEBUG_MODE %}
-			DeltaData = 1.0;
+			DeltaData = rayValue;
 			{% else %}
-			/*if(xMainDirection)
+			if(xMainDirection)
 				DeltaData = CellDimension.x*(1.0/CellVolume)*scatteringTerm*(3.14/(9));
 			else
 				DeltaData = CellDimension.y*(1.0/CellVolume)*scatteringTerm*(3.14/(9));
-			*/
-			DeltaData = rayValue;
+			
+			//DeltaData = rayValue;
 			{% endif %}
 			
 			gl_Position = vec4(((Position/GridWorldDimension)*2 - 1)*1,0.0,1.0);
@@ -202,14 +202,6 @@ void main()
 				else
 					Offset.y -= GridWorldDimension.y;
 			}
-			{% if DEBUG_MODE %}
-			else
-			{
-				DeltaData = 1.0;//1.0*1.0*(3.14/(9))*scatteringTerm;
-				gl_Position = vec4(0.0,0.0,0.0,1.0);
-				EmitVertex();
-			}
-			{% endif %}
 		}
 		else
 		{
@@ -222,14 +214,6 @@ void main()
 				else
 					Offset.x -= GridWorldDimension.x;
 			}
-			{% if DEBUG_MODE %}
-			else
-			{
-				DeltaData = 1.0;//1.0*1.0*(3.14/(9))*scatteringTerm;
-				gl_Position = vec4(0.0,0.0,0.0,1.0);
-				EmitVertex();
-			}
-			{% endif %}
 		}
 		Position += Offset;
 
@@ -244,3 +228,12 @@ void main()
 		rayValue = 0;
 	}
 }
+
+// {% if DEBUG_MODE %}
+//		else
+//		{
+//			DeltaData = 1.0;//1.0*1.0*(3.14/(9))*scatteringTerm;
+//			gl_Position = vec4(0.0,0.0,0.0,1.0);
+//			EmitVertex();
+//		}
+//		{% endif %}

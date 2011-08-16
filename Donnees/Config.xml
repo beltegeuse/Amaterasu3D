@@ -2,5 +2,5 @@
 	<Resolution x=512 y=512 />
 	<Projection near=1.0 far=80.0 fov=70 />
 	<Data rootDir="../Donnees" />
-	<Logger type="File" file="log.out" />
+	<Logger type="Debug" file="log.out" />
 </Config>

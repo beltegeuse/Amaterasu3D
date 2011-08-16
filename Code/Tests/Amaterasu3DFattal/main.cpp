@@ -96,18 +96,18 @@ public:
 	 * Public methods
 	 */
 	// Update I buffer
-	void ComputeLPM(int nbPass = 1)
+	void ComputeLPM(int nbPass = 3)
 	{
 		m_IDFinalFBO = 0;
 		// foreach pass
 		for(int i = 0; i < nbPass; i++)
 		{
 			// foreach direction
-#if DEBUGFATTAL
-			int idDir = 2;
-#else
+//#if DEBUGFATTAL
+//			int idDir = 2;
+//#else
 			for(int idDir = 0; idDir < 4; idDir++)
-#endif
+//#endif
 			{
 				// Set blending
 				glEnable(GL_BLEND);
@@ -146,8 +146,7 @@ public:
 				// ==== Texture activation
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->activateMultiTex(CUSTOM_TEXTURE+3);
+				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
 				// ==== Drawing
 				glBegin(GL_QUADS);
 					glTexCoord2f(0.0, 0.0);
@@ -162,8 +161,7 @@ public:
 				// ==== Texture desactivation
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
 				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+3);
+				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
 				m_FattalUpdateBuffers->End();
 #endif
 				// Update id Final
@@ -341,7 +339,11 @@ public:
 		m_Camera = new CameraFPS(Math::TVector3F(30,40,20), Math::TVector3F(0,0,0));
 		m_Camera->SetSpeed(100.0);
 		// Create fattal
+#if DEBUGFATTAL
+		m_Fattal = new Fattal2DVolume(Math::TVector2I(10,10));
+#else
 		m_Fattal = new Fattal2DVolume(Math::TVector2I(64,64));
+#endif
 	}
 
 	virtual void OnUpdate(double delta)
