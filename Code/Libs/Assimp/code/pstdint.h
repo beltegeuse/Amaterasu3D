@@ -372,6 +372,8 @@
 #endif
 #endif
 
+#if 1
+
 #ifndef UINT32_MAX
 # define UINT32_MAX (0xffffffffUL)
 #endif
@@ -604,7 +606,7 @@
 # endif
 #endif
 #undef stdint_least_defined
-
+#endif
 /*
  *  The ANSI C committee pretending to know or specify anything about
  *  performance is the epitome of misguided arrogance.  The mandate of

@@ -113,7 +113,7 @@ INCLUDE_DIRECTORIES(
 	# Libs includes DIR
 	${FREETYPE_INCLUDE_DIRS}
 	${PYTHON_INCLUDE_DIRS}
-    /usr/local/include/sigc++-2.0
+    ${LibSigGCXX2_INCLUDE_DIRS}
 	/usr/local/lib/sigc++-2.0/include
 	# Project include DIR
 	../C3/Source
@@ -138,7 +138,7 @@ target_link_libraries(
   ${OPENGL_LIBRARY}
   ${Boost_LIBRARIES}
   ${PYTHON_LIBRARIES}
-  sigc-2.0
+  ${LibSigGCXX2_LIBRARY}
   # Internal dependencies
   tinyxml
   assimp

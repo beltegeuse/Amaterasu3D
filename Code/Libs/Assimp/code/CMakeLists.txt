@@ -7,6 +7,10 @@ SET( LIBRARY_SOVERSION "2" )
 #
 SET( HEADER_PATH ../include )
 
+IF(MSVC10)
+	ADD_DEFINITIONS("-DVS_2010")
+ENDIF(MSVC10)
+
 SET( COMPILER_HEADERS
 	${HEADER_PATH}/Compiler/pushpack1.h
 	${HEADER_PATH}/Compiler/poppack1.h

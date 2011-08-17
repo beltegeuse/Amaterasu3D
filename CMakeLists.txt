@@ -12,6 +12,11 @@ SET(PROJECT_BUILD_PATH ${CMAKE_SOURCE_DIR}/Build)
 # * --Subprojects--
 ################################
 MESSAGE("Search dependancies ... ")
+##### Root dir
+SET(GLEW_ROOT_DIR ${DEPENDANCIES_ROOT_DIR})
+SET(FreeImage_ROOT_DIR ${DEPENDANCIES_ROOT_DIR})
+SET(LibSigGCXX2_ROOT_DIR ${DEPENDANCIES_ROOT_DIR})
+
 # ----- Glew
 FIND_PACKAGE(GLEW REQUIRED)
 # ----- OpenGL
@@ -29,6 +34,8 @@ FIND_PACKAGE(FreeImage REQUIRED)
 FIND_PACKAGE(ZLIB REQUIRED)
 # ----- Python
 FIND_PACKAGE(PythonLibs REQUIRED)
+# ----- LibSigGCXX2
+FIND_PACKAGE(LibSigGCXX2 REQUIRED)
 # ----- Boost
 IF(WIN32)
 	IF(MSVC)
@@ -38,8 +45,9 @@ IF(WIN32)
 		set(BOOST_ROOT C:/MinGW/)
 	ENDIF()
 ELSE()
-set(BOOST_ROOT /usr)
+	set(BOOST_ROOT /usr)
 ENDIF()
+
 set(BOOST_LIBS filesystem system regex program_options) # LINUX PROBLEM : random
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 MESSAGE("Boost libraries link is ${Boost_LIBRARIES}")
