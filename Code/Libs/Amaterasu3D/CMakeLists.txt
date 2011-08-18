@@ -110,11 +110,6 @@ SET(LIB_AMATERASU3D_HEADERS
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	# Libs includes DIR
-	${FREETYPE_INCLUDE_DIRS}
-	${PYTHON_INCLUDE_DIRS}
-    ${LibSigGCXX2_INCLUDE_DIRS}
-	/usr/local/lib/sigc++-2.0/include
 	# Project include DIR
 	../C3/Source
 	../TinyXML

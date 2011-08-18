@@ -10,13 +10,9 @@ ELSE()
 ENDIF()
 
 INCLUDE_DIRECTORIES(
-	${FREETYPE_INCLUDE_DIRS}
-	/usr/local/include/sigc++-2.0
-	/usr/local/lib/sigc++-2.0/include
 	../Libs/Assimp/include
 	../Libs/TinyXML
 	../Libs/C3/Source
-	${PYTHON_INCLUDE_DIRS}
 )
 
 # Unsupported :
