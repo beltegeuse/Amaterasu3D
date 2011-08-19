@@ -1,5 +1,5 @@
 SUBDIRS(
 	Fattal
 	BinvoxViewer
-	SHDOMVisualizer
+	#SHDOMVisualizer
 )

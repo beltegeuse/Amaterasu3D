@@ -8,5 +8,5 @@ SUBDIRS(Techniques/GBuffer
 		Techniques/LPV
 		Techniques/SSAO
 		Techniques/ShadowMap
-		Techniques/WhiteBalancing
+		#Techniques/WhiteBalancing
 )

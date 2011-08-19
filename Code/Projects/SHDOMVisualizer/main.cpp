@@ -14,6 +14,7 @@
 #include <Graphics/Camera/CameraFPS.h>
 #include <Addons/FPS/FPS.h>
 #include <Addons/Binvox/SHDOMFilePropreties.h>
+#include <Graphics/Font/FontManager.h>
 
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
@@ -135,12 +136,7 @@ public:
 	}
 };
 
-//#ifdef WIN32
-//#include <windows.h>
-//int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-//#else
 int main(int argc, char *argv[])
-//#endif
 {
   po::options_description desc("Usage",1024,512);
 	try
@@ -164,7 +160,7 @@ int main(int argc, char *argv[])
 		po::notify(vm);
 
 		ama3D::CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-		ama3D::CFontManager::Instance().LoadFont("../Donnees/Fonts/Cheeseburger.ttf", "arial");
+		CFontManager::Instance().LoadFont("Cheeseburger_ttf.font");
 		std::cout << "[INFO] Begin ..." << std::endl;
 		SHDOMVisualizer window;
 		window.Load(file);
