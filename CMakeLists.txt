@@ -50,8 +50,8 @@ ENDIF()
 
 set(BOOST_LIBS filesystem system regex program_options) # LINUX PROBLEM : random
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
-MESSAGE("Boost libraries link is ${Boost_LIBRARIES}")
-MESSAGE("Boost include dir is ${Boost_INCLUDE_DIRS}")
+MESSAGE(STATUS "Boost libraries link is ${Boost_LIBRARIES}")
+MESSAGE(STATUS "Boost include dir is ${Boost_INCLUDE_DIRS}")
 
 ##### Setup includes
 include_directories(
