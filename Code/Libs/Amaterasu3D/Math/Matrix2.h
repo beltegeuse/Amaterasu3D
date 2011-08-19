@@ -26,35 +26,13 @@
 #define MATRIX2_H_
 
 #include <Math/Vector2.h>
-
+#include "glm/glm.hpp"
 namespace ama3D
 {
 namespace Math
 {
 
-class Matrix2
-{
-public:
-	Matrix2(float a11 = 1.f, float a12 = 0.f,
-			float a21 = 0.f, float a22 = 1.f);
-	virtual ~Matrix2();
-
-	TVector2F Transform(const TVector2F& v) const;
-
-	// Access to the data
-	float& operator ()(std::size_t i, std::size_t j);
-	const float& operator ()(std::size_t i, std::size_t j) const;
-
-	// Access to the data (array)
-	operator float*();
-	operator const float*() const;
-
-	// Attributes
-	float a11, a12; ///< 1ere ligne de la matrice
-	float a21, a22; ///< 2eme ligne de la matrice
-};
-
-#include <Math/Matrix2.inl>
+typedef glm::mat2 CMatrix2;
 
 } /* namespace Math */
 } /* namespace ama3D */
