@@ -27,7 +27,7 @@
 #include <Math/Matrix4.h>
 #include <vector>
 #include <Singleton.h>
-#include <sigc++/signal.h>
+#include <boost/signal.hpp>
 
 namespace ama3D
 {
@@ -49,7 +49,7 @@ private:
 	Math::CMatrix4 m_NormalMatrix; ///< Normal matrix
 	// Others attributes
 	MatrixMode m_MatrixMode; ///< To know the matrix mode
-	sigc::signal<void, MatrixType> m_signal_event; ///< To update all shaders Matrix attributes
+	boost::signal<void (MatrixType)> m_signal_event; ///< To update all shaders Matrix attributes
 
 	/*
 	 * Constructors & Destructors
@@ -87,7 +87,7 @@ public:
 	void SetModeMatrix(MatrixMode mode);
 
 	//** to subscribe to the signal
-	sigc::signal<void, MatrixType>& GetSignalEvent();
+	boost::signal<void (MatrixType)>& GetSignalEvent();
 };
 }
 

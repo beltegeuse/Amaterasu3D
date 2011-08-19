@@ -54,8 +54,8 @@ void CMatrixManager::PushMatrix(const Math::CMatrix4& matrix)
 	else
 		m_Matrix.push_back(m_Matrix.back() * matrix);
 
-	m_signal_event.emit(MODEL_MATRIX);
-	m_signal_event.emit(NORMAL_MATRIX);
+	m_signal_event(MODEL_MATRIX);
+	m_signal_event(NORMAL_MATRIX);
 
 }
 
@@ -65,8 +65,8 @@ void CMatrixManager::PopMatrix()
 		throw CException("Matrix stack is empty. Unable to pop matrix");
 	m_Matrix.pop_back();
 
-	m_signal_event.emit(MODEL_MATRIX);
-	m_signal_event.emit(NORMAL_MATRIX);
+	m_signal_event(MODEL_MATRIX);
+	m_signal_event(NORMAL_MATRIX);
 }
 
 bool CMatrixManager::IsEmpty() const
@@ -110,13 +110,13 @@ const Math::CMatrix4& CMatrixManager::GetMatrix(MatrixType type)
 void CMatrixManager::SetProjectionMatrix(const Math::CMatrix4& matrix)
 {
 	m_ProjectionMatrix = matrix;
-	m_signal_event.emit(PROJECTION_MATRIX);
+	m_signal_event(PROJECTION_MATRIX);
 }
 
 void CMatrixManager::SetViewMatrix(const Math::CMatrix4& matrix)
 {
 	m_ViewMatrix = matrix;
-	m_signal_event.emit(VIEW_MATRIX);
+	m_signal_event(VIEW_MATRIX);
 }
 
 void CMatrixManager::SetModeMatrix(MatrixMode mode)
@@ -150,7 +150,7 @@ void CMatrixManager::SetModeMatrix(MatrixMode mode)
 	m_MatrixMode = mode;
 }
 
-sigc::signal<void, MatrixType>& CMatrixManager::GetSignalEvent()
+boost::signal<void (MatrixType) >& CMatrixManager::GetSignalEvent()
 {
 	return m_signal_event;
 }

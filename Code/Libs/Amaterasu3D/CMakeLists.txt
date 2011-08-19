@@ -119,13 +119,12 @@ target_link_libraries(
   
   # External dependencies
   ${FREETYPE_LIBRARY}
-  ${FREEIMAGE_LIBRARY}
+  ${FreeImage_LIBRARY}
   ${ZLIB_LIBRARY}
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARY}
   ${Boost_LIBRARIES}
   ${PYTHON_LIBRARIES}
-  ${LibSigGCXX2_LIBRARY}
   
   # Internal dependencies
   tinyxml

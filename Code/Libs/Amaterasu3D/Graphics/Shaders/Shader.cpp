@@ -22,6 +22,8 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 #include "Shader.h"
+#include <boost/bind.hpp>
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -403,12 +405,13 @@ void Shader::SetUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix)
 ////////////////// ShaderManager  ////////////////////////
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
+
 CShaderManager::CShaderManager() :
 		m_max_stack(100)
 {
 	//InitOpenGLExtensions();
 	CMatrixManager::Instance().GetSignalEvent().connect(
-			sigc::mem_fun(*this, &CShaderManager::UpdateMatrix));
+			boost::bind(&CShaderManager::UpdateMatrix, this, _1));
 }
 
 CShaderManager::~CShaderManager()

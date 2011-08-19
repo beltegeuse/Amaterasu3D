@@ -34,8 +34,6 @@ FIND_PACKAGE(FreeImage REQUIRED)
 FIND_PACKAGE(ZLIB REQUIRED)
 # ----- Python
 FIND_PACKAGE(PythonLibs REQUIRED)
-# ----- LibSigGCXX2
-FIND_PACKAGE(LibSigGCXX2 REQUIRED)
 # ----- Boost
 IF(WIN32)
 	IF(MSVC)
@@ -48,7 +46,7 @@ ELSE()
 	set(BOOST_ROOT /usr)
 ENDIF()
 
-set(BOOST_LIBS filesystem system regex program_options) # LINUX PROBLEM : random
+set(BOOST_LIBS filesystem system regex program_options signals) # random
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 MESSAGE(STATUS "Boost libraries link is ${Boost_LIBRARIES}")
 MESSAGE(STATUS "Boost include dir is ${Boost_INCLUDE_DIRS}")
@@ -56,7 +54,6 @@ MESSAGE(STATUS "Boost include dir is ${Boost_INCLUDE_DIRS}")
 ##### Setup includes
 include_directories(
 	${Boost_INCLUDE_DIRS}
-	${LibSigGCXX2_INCLUDE_DIR}
 	${FREETYPE_INCLUDE_DIRS}
 	${PYTHON_INCLUDE_DIRS}
 )
