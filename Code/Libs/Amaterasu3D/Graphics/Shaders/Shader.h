@@ -237,11 +237,10 @@ inline void ShaderHelperUniformImagePlane(Shader* shader)
 	Math::TVector2F UnprojectInfo;
 	Math::CMatrix4 ProjectionMatrix = CMatrixManager::Instance().GetMatrix(
 			PROJECTION_MATRIX);
-	UnprojectInfo.x = 1.0f / ProjectionMatrix.a11;
-	UnprojectInfo.y = -1.0f / ProjectionMatrix.a22;
+	UnprojectInfo.x = 1.0f / ProjectionMatrix[1][1];
+	UnprojectInfo.y = -1.0f / ProjectionMatrix[2][2];
 	shader->SetUniformVector("UnprojectInfo", UnprojectInfo);
-	shader->SetUniformMatrix4fv("InverseViewMatrix",
-			CMatrixManager::Instance().GetMatrix(VIEW_MATRIX).Inverse());
+	shader->SetUniformMatrix4fv("InverseViewMatrix",glm::inverse(CMatrixManager::Instance().GetMatrix(VIEW_MATRIX)));
 }
 
 inline void ShaderHelperUniformPositionFromView(Shader* shader)
@@ -258,10 +257,10 @@ inline void ShaderHelperUniformPosition(Shader* shader,
 	shader->SetUniform1f("FarClipping", farValue);
 	shader->SetUniform1f("NearClipping", nearValue);
 	Math::TVector2F UnprojectInfo;
-	UnprojectInfo.x = 1.0f / projectionMatrix.a11;
-	UnprojectInfo.y = -1.0f / projectionMatrix.a22;
+	UnprojectInfo.x = 1.0f / projectionMatrix[1][1];
+	UnprojectInfo.y = -1.0f / projectionMatrix[2][2];
 	shader->SetUniformVector("UnprojectInfo", UnprojectInfo);
-	shader->SetUniformMatrix4fv("InverseViewMatrix", viewMatrix.Inverse());
+	shader->SetUniformMatrix4fv("InverseViewMatrix", glm::inverse(viewMatrix));
 }
 
 //***********************

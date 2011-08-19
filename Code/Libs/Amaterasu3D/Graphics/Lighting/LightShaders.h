@@ -69,14 +69,13 @@ public:
 	Math::CMatrix4 GetViewMatrix() const
 	{
 		Math::CMatrix4 LightViewMatrix;
-		LightViewMatrix.LookAt(Position, Direction);
+		LightViewMatrix = glm::lookAt(Position, Direction, glm::vec3(0,1,0));
 		return LightViewMatrix;
 	}
 	Math::CMatrix4 GetProjectionMatrix() const
 	{
 		Math::CMatrix4 LightProjectionMatrix;
-		LightProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(70.0, 1.0,
-				1.0, LightRaduis);
+		LightProjectionMatrix = glm::perspectiveFov(70.0, 1.0, 1.0, 1.0, LightRaduis);
 		return LightProjectionMatrix;
 	}
 
