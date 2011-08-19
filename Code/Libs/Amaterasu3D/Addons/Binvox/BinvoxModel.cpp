@@ -1,10 +1,3 @@
-/*
- * BinvoxModel.cpp
- *
- *  Created on: May 5, 2011
- *      Author: adrien
- */
-
 #include "BinvoxModel.h"
 
 #include <GL/glew.h>
@@ -19,9 +12,9 @@
 #include <Utilities/Util.h>
 #include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
 #include <Graphics/SceneManager.h>
-
-
 #include <vector>
+#include <glm/glm.hpp>
+
 namespace ama3D
 {
 BinvoxModel::BinvoxModel(const std::string& file) :
@@ -148,19 +141,19 @@ void BinvoxModel::Bind()
 	//m_volumeRenderingShader->SetUniform1i("GridInterpolation", true);
 }
 
-Math::TVector2I BinvoxModel::TextureRepeat()
+glm::ivec2 BinvoxModel::TextureRepeat()
 {
-	Math::TVector2I repeat;
+	glm::ivec2 repeat;
 	int Taille = sqrt((float)m_Depth);
 	repeat.x = NearestPowerOfTwo(Taille);
 	repeat.y = m_Depth / repeat.x;
 	return repeat;
 }
 
-Math::TVector2I BinvoxModel::TextureSize()
+glm::ivec2 BinvoxModel::TextureSize()
 {
-	Math::TVector2I size;
-	Math::TVector2I repeat = TextureRepeat();
+	glm::ivec2 size;
+	glm::ivec2 repeat = TextureRepeat();
 	size.x = m_Width * repeat.x;
 	size.y = m_Height * repeat.y;
 	return size;
@@ -170,8 +163,8 @@ TTexturePtr BinvoxModel::Create2DTexture()
 {
 	/// Generate the Array
 	float* image = new float[m_Width * m_Height * m_Depth];
-	Math::TVector2I texSize =TextureSize();
-	Math::TVector2I repeat = TextureRepeat();
+	glm::ivec2 texSize =TextureSize();
+	glm::ivec2 repeat = TextureRepeat();
 
 	for(int rX = 0; rX < repeat.x; rX++)
 		for(int rY = 0; rY < repeat.y; rY++)
@@ -196,9 +189,9 @@ TTexturePtr BinvoxModel::Create2DTexture()
 	return tex;
 }
 
-Math::TVector3F BinvoxModel::GridSize() const
+glm::vec3 BinvoxModel::GridSize() const
 {
-	return Math::TVector3F(m_Width, m_Height, m_Depth);
+	return glm::vec3(m_Width, m_Height, m_Depth);
 }
 
 void BinvoxModel::LoadFile(const std::string& file)

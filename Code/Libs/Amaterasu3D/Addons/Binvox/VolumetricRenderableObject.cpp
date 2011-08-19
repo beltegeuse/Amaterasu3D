@@ -1,10 +1,3 @@
-/*
- * VolumetricRenderableObject.cpp
- *
- *  Created on: Jul 19, 2011
- *      Author: adrien
- */
-
 #include "VolumetricRenderableObject.h"
 
 #include <Graphics/SceneManager.h>
@@ -81,12 +74,12 @@ void VolumetricRenderableObject::Render()
 	Unbind();
 }
 
-void VolumetricRenderableObject::Initialise(TTexturePtr tex, const Math::TVector2I& texSize,
-			const Math::TVector2I& texRepet, const Math::TVector3F& gridSize)
+void VolumetricRenderableObject::Initialise(TTexturePtr tex, const glm::ivec2& texSize,
+			const glm::ivec2& texRepet, const glm::vec3& gridSize)
 {
 	m_Initialized = true;
 	m_VolumeTexture = tex;
-	m_TextureSpec = Math::TVector4F(texSize.x, texSize.y, texRepet.x, texRepet.y);
+	m_TextureSpec = glm::vec4(texSize.x, texSize.y, texRepet.x, texRepet.y);
 	m_GridSize = gridSize;
 
 	// Update cube model

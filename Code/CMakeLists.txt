@@ -6,6 +6,6 @@ INCLUDE_DIRECTORIES(
 )
 
 SUBDIRS(Libs)
-SUBDIRS(Projects)
+#SUBDIRS(Projects)
 SUBDIRS(Tests)
-SUBDIRS(Tools)
+#SUBDIRS(Tools)

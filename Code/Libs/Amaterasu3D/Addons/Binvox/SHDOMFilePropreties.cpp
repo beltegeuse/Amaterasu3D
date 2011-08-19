@@ -15,17 +15,17 @@ namespace ama3D
 SHDOMRenderableObj::SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties * file) :
 	VolumetricRenderableObject("VolumeRendering.shader")
 {
-	Math::TVector3I dim = file->GetDimension();
+	glm::ivec3 dim = file->GetDimension();
 
 	// Compute tex dim
-	Math::TVector2I repeat;
+	glm::ivec2 repeat;
 	int Taille = sqrt((float)dim.z);
 	repeat.x = NearestPowerOfTwo(Taille);
 	repeat.y = (dim.z / repeat.x)+1; // if not power of 2
 
 	Logger::Log() << "DEBUG : Size : " << Taille << " Repeat : " << repeat.x << "x" << repeat.y << "\n";
 
-	Math::TVector2I size;
+	glm::ivec2 size;
 	size.x = dim.x * repeat.x;
 	size.y = dim.y * repeat.y;
 
@@ -70,25 +70,9 @@ SHDOMRenderableObj::SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties
 
 				max = std::max(max, data);
 				min = std::min(min, data);
-
-				//Logger::Log() << "DEBUG : " << data << "\n";
 			}
 
 	Logger::Log() << "DEBUG : " << min << " - " << max << " ( " << max-min << ")\n";
-	// Mise a l'echelle :
-//	float dynamique = max-min;
-//	for(int rX = 0; rX < repeat.x; rX++)
-//		for(int rY = 0; rY < repeat.y; rY++)
-//			for(int i = 0; i < dim.x; i++)
-//				for(int j = 0; j < dim.y; j++)
-//				{
-//					int x = rX*dim.z+i;
-//					int y = rY*dim.z+j;
-//					Logger::Log() << "Original val : " << image[y*size.x + x] << " ";
-//					image[y*size.x + x] = (image[y*size.x + x]-min)/dynamique;
-//					Logger::Log() << "Normalize : " << image[y*size.x + x]  << "\n";
-//				}
-
 	Texture* tex = new Texture(true);
 	Texture2DParams param;
 	glBindTexture(GL_TEXTURE_2D,tex->getIdTex());
@@ -96,7 +80,7 @@ SHDOMRenderableObj::SHDOMRenderableObj(RENDERABLE_TYPE type, SHDOMFilePropreties
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, size.x, size.y, 0, GL_ALPHA, GL_FLOAT, image);
 	glBindTexture(GL_TEXTURE_2D,0);
 
-	Initialise(tex, size, repeat, Math::TVector3F(dim.x,dim.y,dim.z));
+	Initialise(tex, size, repeat, glm::vec3(dim.x,dim.y,dim.z));
 }
 
 SHDOMRenderableObj::~SHDOMRenderableObj()
@@ -386,7 +370,7 @@ bool SHDOMFilePropreties::IsAllocated() const
 	return m_Allocated;
 }
 
-const ama3D::Math::TVector3I& SHDOMFilePropreties::GetDimension() const
+const glm::ivec3& SHDOMFilePropreties::GetDimension() const
 {
 	return m_Dimension;
 }
@@ -397,7 +381,7 @@ int SHDOMFilePropreties::GetIndexData(int x, int y, int z) const
 	return x + m_Dimension.x*y + m_Dimension.x*m_Dimension.y*z;
 }
 
-int SHDOMFilePropreties::GetIndexData(const ama3D::Math::TVector3I& coordinates) const
+int SHDOMFilePropreties::GetIndexData(const glm::ivec3& coordinates) const
 {
 	return GetIndexData(coordinates.x,coordinates.y,coordinates.z);
 }
@@ -407,7 +391,7 @@ const SHDOMCell& SHDOMFilePropreties::GetData(int x, int y, int z) const
 	return m_Cells[GetIndexData(x,y,z)];
 }
 
-const SHDOMCell& SHDOMFilePropreties::GetData(const ama3D::Math::TVector3I& coordinates) const
+const SHDOMCell& SHDOMFilePropreties::GetData(const glm::ivec3& coordinates) const
 {
 	return m_Cells[GetIndexData(coordinates)];
 }

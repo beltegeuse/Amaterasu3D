@@ -1,13 +1,6 @@
-/*
- * VolumetricRenderableObject.h
- *
- *  Created on: Jul 19, 2011
- *      Author: adrien
- */
-
 #ifndef VOLUMETRICRENDERABLEOBJECT_H_
 #define VOLUMETRICRENDERABLEOBJECT_H_
-
+#include <glm/glm.hpp>
 #include <Graphics/Shaders/Shader.h>
 #include <Graphics/Camera/CameraAbstract.h>
 #include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
@@ -28,8 +21,8 @@ protected:
 	FBO * m_BackFBO;
 	ISimpleRenderableSceneNode* m_CubeModel;
 	// Information attributes
-	Math::TVector3F m_GridSize;
-	Math::TVector4F m_TextureSpec;
+	glm::vec3 m_GridSize;
+	glm::vec4 m_TextureSpec;
 	// Protection
 	bool m_Initialized;
 public:
@@ -45,8 +38,8 @@ protected:
 	virtual void Unbind();
 
 	// Set data methods
-	void Initialise(TTexturePtr tex, const Math::TVector2I& texSize,
-			const Math::TVector2I& texRepet, const Math::TVector3F& gridSize);
+	void Initialise(TTexturePtr tex, const glm::ivec2& texSize,
+			const glm::ivec2& texRepet, const glm::vec3& gridSize);
 };
 
 }

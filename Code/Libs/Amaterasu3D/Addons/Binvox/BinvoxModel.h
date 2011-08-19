@@ -8,8 +8,9 @@
 #ifndef BINVOXMODEL_H_
 #define BINVOXMODEL_H_
 
-#include <string>
+#include <glm/glm.hpp>
 
+#include <string>
 #include <Graphics/Texture.h>
 #include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
 #include <Math/Vector2.h>
@@ -48,10 +49,10 @@ private:
 	}
 
 	/// Grid informations
-	Math::TVector3F GridSize() const;
+	glm::vec3 GridSize() const;
 	/// Texture methods
-	Math::TVector2I TextureRepeat();
-	Math::TVector2I TextureSize();
+	glm::ivec2 TextureRepeat();
+	glm::ivec2 TextureSize();
 	TTexturePtr Create2DTexture();
 };
 }

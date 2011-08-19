@@ -43,34 +43,34 @@ double SphericalCoordinates::Angle(double x, double y)
 	return res;
 }
 
-/** \brief Changement du vecteur repr�sent� en coordonn�es sph�riques */
+/** \brief Changement du vecteur repr���sent��� en coordonn���es sph���riques */
 void SphericalCoordinates::Set(Math::TVector3F const & v)
 {
-	m_module = v.Length();
+	m_module = glm::length(v);
 	m_phy = acos(v.z / m_module);
 	m_theta = Angle(v.x, v.y);
 }
 
-/** \brief R�cup�ration du vecteur � partir des coordonn�es sph�riques */
+/** \brief R���cup���ration du vecteur ��� partir des coordonn���es sph���riques */
 Math::TVector3F SphericalCoordinates::Get() const
 {
 	return Math::TVector3F(m_module * sin(m_phy) * cos(m_theta),
 			m_module * sin(m_phy) * sin(m_theta), m_module * cos(m_phy));
 }
 
-/** \brief Construction des coordonn�es sph�riques sur la base d'un vecteur 3D */
+/** \brief Construction des coordonn���es sph���riques sur la base d'un vecteur 3D */
 SphericalCoordinates::SphericalCoordinates(Math::TVector3F const & v)
 {
 	Set(v);
 }
 
-/** \brief Renvoie l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
+/** \brief Renvoie l'angle entre le vecteur projet��� sur le plan x,y et l'axe X */
 double SphericalCoordinates::GetTheta() const
 {
 	return m_theta;
 }
 
-/** \brief Changement de l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
+/** \brief Changement de l'angle entre le vecteur projet��� sur le plan x,y et l'axe X */
 void SphericalCoordinates::SetTheta(double v)
 {
 	m_theta = v;

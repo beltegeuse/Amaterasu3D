@@ -31,115 +31,52 @@
 #include <cmath>
 #include <limits>
 #include <iostream>
-
+#include <glm/glm.hpp>
 namespace ama3D
 {
 namespace Math
 {
-////////////////////////////////////////////////////////////
-/// Classe des vecteurs a 2 composantes de type paramatrable
-////////////////////////////////////////////////////////////
-template<class T>
-class CVector2
-{
-public:
-
-	//----------------------------------------------------------
-	// Constructeur par dafaut
-	//----------------------------------------------------------
-	CVector2(T X = 0, T Y = 0);
-
-	//----------------------------------------------------------
-	// Rainitialise le vecteur
-	//----------------------------------------------------------
-	void Set(T X, T Y);
-
-	//----------------------------------------------------------
-	// Renvoie la norme du vecteur
-	//----------------------------------------------------------
-	T Length() const;
-
-	//----------------------------------------------------------
-	// Renvoie la norme au carra du vecteur
-	//----------------------------------------------------------
-	T LengthSq() const;
-
-	//----------------------------------------------------------
-	// Normalise le vecteur
-	//----------------------------------------------------------
-	void Normalize();
-
-	//----------------------------------------------------------
-	// Oparateurs unaires + et -
-	//----------------------------------------------------------
-	CVector2<T> operator +() const;
-	CVector2<T> operator -() const;
-
-	//----------------------------------------------------------
-	// Oparateurs binaires + et -
-	//----------------------------------------------------------
-	CVector2<T> operator +(const CVector2<T>& v) const;
-	CVector2<T> operator -(const CVector2<T>& v) const;
-
-	//----------------------------------------------------------
-	// Oparateurs += et -=
-	//----------------------------------------------------------
-	const CVector2<T>& operator +=(const CVector2<T>& v);
-	const CVector2<T>& operator -=(const CVector2<T>& v);
-
-	//----------------------------------------------------------
-	// Oparateurs * et /
-	//----------------------------------------------------------
-	CVector2<T> operator *(T t) const;
-	CVector2<T> operator /(T t) const;
-
-	//----------------------------------------------------------
-	// Oparateurs *= et /=
-	//----------------------------------------------------------
-	const CVector2<T>& operator *=(T t);
-	const CVector2<T>& operator /=(T t);
-
-	//----------------------------------------------------------
-	// Oparateurs de comparaison
-	//----------------------------------------------------------
-	bool operator ==(const CVector2<T>& v) const;
-	bool operator !=(const CVector2<T>& v) const;
-
-	//----------------------------------------------------------
-	// Oparateur de cast en T*
-	//----------------------------------------------------------
-	operator T*();
-
-	//----------------------------------------------------------
-	// Donnaes membres
-	//----------------------------------------------------------
-	T x; ///< Composante X
-	T y; ///< Composante Y
-};
-
-//==========================================================
-// Fonctions globales relatives aux vecteurs
-//==========================================================
-template<class T> CVector2<T> operator *(const CVector2<T>& v, T t);
-template<class T> CVector2<T> operator /(const CVector2<T>& v, T t);
-template<class T> CVector2<T> operator *(T t, const CVector2<T>& v);
-template<class T> T VectorDot(const CVector2<T>& v1, const CVector2<T>& v2);
-template<class T> CVector2<T> VectorCross(const CVector2<T>& v1,
-		const CVector2<T>& v2);
-template<class T> std::istream& operator >>(std::istream& Stream,
-		CVector2<T>& Vector);
-template<class T> std::ostream& operator <<(std::ostream& Stream,
-		const CVector2<T>& Vector);
 
 //==========================================================
 // Dafinition des types de vecteurs usuels
 //==========================================================
-typedef CVector2<int> TVector2I;
-typedef CVector2<float> TVector2F;
-
-#include "Vector2.inl"
+typedef glm::ivec2 TVector2I;
+typedef glm::vec2 TVector2F;
 
 } // namespace Math
+
+inline std::ostream & operator<< (std::ostream & s, const ama3D::Math::TVector2I& v)
+{
+	s << "<" << v.x << "," << v.y << ">";
+	return s;
 }
+
+inline std::ostream & operator<< (std::ostream & s, const ama3D::Math::TVector2F& v)
+{
+	s << "<" << v.x << "," << v.y << ">";
+	return s;
+}
+
+inline std::istream & operator>> (std::istream & s, ama3D::Math::TVector2I& v)
+{
+	int x,y;
+	s >> x >> y;
+	v.x = x;
+	v.y = y;
+	return s;
+}
+
+inline std::istream & operator>> (std::istream & s, ama3D::Math::TVector2F& v)
+{
+	float x,y;
+	s >> x >> y;
+	v.x = x;
+	v.y = y;
+	return s;
+}
+
+}
+
+
 
 #endif // VECTOR2_H

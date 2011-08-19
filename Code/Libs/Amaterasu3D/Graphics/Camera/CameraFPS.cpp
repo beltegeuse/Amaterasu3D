@@ -147,8 +147,8 @@ void CameraFPS::ComputeAngles()
 	m_forward.x = r_temp * cos(m_angleY * M_PI / 180);
 	m_forward.z = r_temp * sin(m_angleY * M_PI / 180);
 
-	m_left = m_Up ^ m_forward;
-	m_left.Normalize();
+	m_left = glm::cross(m_Up, m_forward);
+	m_left = glm::normalize(m_left);
 
 //	std::cout << "left " << m_left << std::endl;
 //	std::cout << "forward " << m_forward << std::endl;

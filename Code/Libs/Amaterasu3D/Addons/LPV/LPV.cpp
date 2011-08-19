@@ -386,7 +386,7 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 	//////////////////////////////////
 	Math::TVector3F cameraDirection = Camera->GetTarget()
 			- Camera->GetPosition();
-	cameraDirection.Normalize(); // To be sure ...
+	cameraDirection = glm::normalize(cameraDirection); // To be sure ...
 	// Inverse the direction to project on the Cube
 	cameraDirection = -cameraDirection;
 
