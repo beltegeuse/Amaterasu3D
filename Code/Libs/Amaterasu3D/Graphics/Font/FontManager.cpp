@@ -46,13 +46,13 @@ CFont::CFontCharacter::CFontCharacter(TiXmlElement* element, const ama3D::Math::
 	TinyXMLGetAttributeValue<int>(element,"height",&m_Size.y);
 	TinyXMLGetAttributeValue<int>(element,"x",&m_Position.x);
 	TinyXMLGetAttributeValue<int>(element,"y",&m_Position.y);
-	TinyXMLGetAttributeValue<double>(element,"xoffset",&m_Offset.x);
-	TinyXMLGetAttributeValue<double>(element,"yoffset",&m_Offset.y);
+	TinyXMLGetAttributeValue<float>(element,"xoffset",&m_Offset.x);
+	TinyXMLGetAttributeValue<float>(element,"yoffset",&m_Offset.y);
 	TinyXMLGetAttributeValue<double>(element,"xadvance",&m_xadvance);
-	TinyXMLGetAttributeValue<double>(element,"xmin",&m_MinPos.x);
-	TinyXMLGetAttributeValue<double>(element,"ymin",&m_MinPos.y);
-	TinyXMLGetAttributeValue<double>(element,"xmax",&m_MaxPos.x);
-	TinyXMLGetAttributeValue<double>(element,"ymax",&m_MaxPos.y);
+	TinyXMLGetAttributeValue<float>(element,"xmin",&m_MinPos.x);
+	TinyXMLGetAttributeValue<float>(element,"ymin",&m_MinPos.y);
+	TinyXMLGetAttributeValue<float>(element,"xmax",&m_MaxPos.x);
+	TinyXMLGetAttributeValue<float>(element,"ymax",&m_MaxPos.y);
 
 	// Fill buffer
 	float* vertexBuffer = new float[8];

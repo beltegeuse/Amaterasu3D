@@ -221,20 +221,6 @@ bool CRectangle::operator !=(const CRectangle& Rect) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op���rateur >> pour saisir un rectangle
-///
-/// \param  Stream : Flux d'entr���e
-/// \param Rect :   Rectangle ��� saisir
-///
-/// \return R���f���rence sur le flux d'entr���e
-///
-////////////////////////////////////////////////////////////
-std::istream& operator >>(std::istream& Stream, CRectangle& Rect)
-{
-	return Stream >> Rect.Origin >> Rect.End;
-}
-
-/////////////////////////////////////////////////////////////
 /// Surcharge de l'op���rateur << pour afficher un rectangle
 ///
 /// \param Stream : Flux de sortie

@@ -131,7 +131,6 @@ public:
 //==========================================================
 // Fonctions globales relatives aux rectangles
 //==========================================================
-std::istream& operator >>(std::ostream& Stream, CRectangle& Rect);
 std::ostream& operator <<(std::ostream& Stream, const CRectangle& Rect);
 
 } // namespace Yes

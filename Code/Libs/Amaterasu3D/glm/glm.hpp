@@ -72,6 +72,9 @@ namespace glm
 #include "./core/func_noise.hpp"
 #include "./core/_swizzle.hpp"
 
+// Custom includes
+#include "iostream_math.hpp"
+
 ////////////////////
 // check type sizes
 #ifndef GLM_STATIC_ASSERT_NULL

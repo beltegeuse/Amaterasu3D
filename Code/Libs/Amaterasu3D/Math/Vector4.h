@@ -44,13 +44,6 @@ namespace Math
 typedef glm::vec4 TVector4F;
 typedef glm::ivec4 TVector4I;
 
-template< typename T >
-std::ostream & operator << (std::ostream & s, const glm::detail::tvec4<T> & v)
-{
-	s << "<" << v.x << "," << v.y << "," << v.z << "," << v.w << ">";
-	return s;
-}
-
 } // namespace Math
 }
 

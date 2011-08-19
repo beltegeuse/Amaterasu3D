@@ -45,36 +45,6 @@ typedef glm::vec2 TVector2F;
 
 } // namespace Math
 
-inline std::ostream & operator<< (std::ostream & s, const ama3D::Math::TVector2I& v)
-{
-	s << "<" << v.x << "," << v.y << ">";
-	return s;
-}
-
-inline std::ostream & operator<< (std::ostream & s, const ama3D::Math::TVector2F& v)
-{
-	s << "<" << v.x << "," << v.y << ">";
-	return s;
-}
-
-inline std::istream & operator>> (std::istream & s, ama3D::Math::TVector2I& v)
-{
-	int x,y;
-	s >> x >> y;
-	v.x = x;
-	v.y = y;
-	return s;
-}
-
-inline std::istream & operator>> (std::istream & s, ama3D::Math::TVector2F& v)
-{
-	float x,y;
-	s >> x >> y;
-	v.x = x;
-	v.y = y;
-	return s;
-}
-
 }
 
 

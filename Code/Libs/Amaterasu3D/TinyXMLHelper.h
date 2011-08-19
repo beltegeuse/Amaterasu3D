@@ -64,6 +64,14 @@ template<typename T> inline void TinyXMLGetAttributeValue(TiXmlElement* element,
 		throw CTinyXMLAttributException(nameAttribute, error);
 }
 
+template <> inline void TinyXMLGetAttributeValue(TiXmlElement* element,
+		const std::string nameAttribute, float* value)
+{
+	double v;
+	TinyXMLGetAttributeValue<double>(element, nameAttribute, &v);
+	(*value) = v;
+}
+
 inline GLenum OpenGLEnumFromString(const std::string& name)
 {
 	if (name == "Line")

@@ -62,9 +62,9 @@ private:
 		int m_ID;
 		ama3D::Math::TVector2I m_Size;
 		ama3D::Math::TVector2I m_Position;
-		ama3D::Math::CVector2<double> m_Offset;
-		ama3D::Math::CVector2<double> m_MinPos;
-		ama3D::Math::CVector2<double> m_MaxPos;
+		ama3D::Math::TVector2F m_Offset;
+		ama3D::Math::TVector2F m_MinPos;
+		ama3D::Math::TVector2F m_MaxPos;
 		double m_xadvance;
 		// Char drawable
 		RenderableObject m_Buffer;
