@@ -52,7 +52,7 @@ ELSE(WIN32)
 	find_library(FreeImage_LIBRARY
  	 NAMES libfreeimage freeimage
   	 PATHS 
-  	 	${FreeImage_ROOT_DIR}/include
+  	 	${FreeImage_ROOT_DIR}/lib
   	 	${FreeImage_PKGCONF_LIBRARY_DIRS} 
   	 	/usr/lib64
 		/usr/lib

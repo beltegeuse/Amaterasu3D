@@ -74,7 +74,7 @@ private:
 		// Accesseurs
 		int GetID() { return m_ID; }
 		const ama3D::Math::TVector2I& GetSize() { return m_Size; }
-		int GetXStep() { return m_xadvance; }
+		double GetXStep() { return m_xadvance; }
 
 		// Public methods
 		void Render();

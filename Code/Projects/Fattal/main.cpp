@@ -18,7 +18,7 @@
 
 using namespace ama3D;
 
-#define DEBUGFATTAL false
+#define DEBUGFATTAL 0
 
 class Fattal2DVolume
 {
@@ -370,12 +370,7 @@ public:
 	}
 };
 
-#ifdef WIN32
-#include <windows.h>
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-#else
 int main()
-#endif
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	CFontManager::Instance().LoadFont("Cheeseburger_ttf.font");

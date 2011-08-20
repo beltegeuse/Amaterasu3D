@@ -27,7 +27,7 @@ ELSE(OPENGL_FOUND)
   MESSAGE(FATAL_ERROR "You must install OpenGL")
 ENDIF(OPENGL_FOUND)
 # ----- FreeType
-FIND_PACKAGE(Freetype REQUIRED)
+FIND_PACKAGE(FreeType REQUIRED)
 # ----- FreeImage
 FIND_PACKAGE(FreeImage REQUIRED)
 # ----- Zlib
@@ -37,10 +37,11 @@ FIND_PACKAGE(PythonLibs REQUIRED)
 # ----- Boost
 IF(WIN32)
 	IF(MSVC)
-		set(BOOST_ROOT C:/Program Files (x86)/boost/boost_1_47/)
+		set(Boost_USE_STATIC_LIBS        ON)
+		set(BOOST_ROOT "C:/Program Files (x86)/boost/boost_1_47/")
 	ENDIF()
 	IF(MINGW)
-		set(BOOST_ROOT C:/MinGW/)
+		set(BOOST_ROOT "C:/MinGW/")
 	ENDIF()
 ELSE()
 	set(BOOST_ROOT /usr)
@@ -54,7 +55,7 @@ MESSAGE(STATUS "Boost include dir is ${Boost_INCLUDE_DIRS}")
 ##### Setup includes
 include_directories(
 	${Boost_INCLUDE_DIRS}
-	${FREETYPE_INCLUDE_DIRS}
+	${FreeType_INCLUDE_DIRS}
 	${PYTHON_INCLUDE_DIRS}
 )
 
@@ -64,6 +65,7 @@ include_directories(
 IF(MSVC)
 	ADD_DEFINITIONS("-D_USE_MATH_DEFINES") # For M_PI ... etc
 	ADD_DEFINITIONS("-DMSVC") # For add windows.h before gl.h
+	link_directories(${Boost_LIBRARY_DIRS})
 ENDIF()
 
 SUBDIRS(Code)

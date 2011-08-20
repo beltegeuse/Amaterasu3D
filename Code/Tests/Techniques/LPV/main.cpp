@@ -611,12 +611,7 @@ private:
 	}
 };
 
-#ifdef WIN32
-#include <windows.h>
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-#else
 int main()
-#endif
 {
 	CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
 	// FIXME: Add auto

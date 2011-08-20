@@ -118,12 +118,11 @@ target_link_libraries(
   Amaterasu3D
   
   # External dependencies
-  ${FREETYPE_LIBRARY}
+  ${FreeType_LIBRARY}
   ${FreeImage_LIBRARY}
   ${ZLIB_LIBRARY}
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARY}
-  ${Boost_LIBRARIES}
   ${PYTHON_LIBRARIES}
   
   # Internal dependencies
@@ -131,6 +130,15 @@ target_link_libraries(
   assimp
   C3
 )
+
+IF(MSVC)
+	# Use to auto link
+ELSE(MSVC)
+	target_link_libraries(
+	Amaterasu3D
+	${Boost_LIBRARIES}
+	)
+ENDIF(MSVC)
 
 install(TARGETS Amaterasu3D 
   LIBRARY DESTINATION ${Amaterasu3D_BINARY_DIR}
