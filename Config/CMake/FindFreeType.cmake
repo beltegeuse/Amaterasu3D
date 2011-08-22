@@ -28,7 +28,7 @@ IF(WIN32)
 	
 	find_path(FreeType_INCLUDE_DIR_freetype2
  	 NAMES freetype/config/ftheader.h
-	 HINTS freetype2
+	 PATH_SUFFIXES freetype2
   	 PATHS 
   	    ${FreeType_ROOT_DIR}/include
   	 	${FreeType_PKGCONF_INCLUDE_DIRS} 
@@ -62,7 +62,7 @@ ELSE(WIN32)
 	
 	find_path(FreeType_INCLUDE_DIR_freetype2
  	 NAMES freetype/config/ftheader.h
-	 HINTS freetype2
+	 PATH_SUFFIXES freetype2
   	 PATHS 
   	    ${FreeType_ROOT_DIR}/include
   	 	${FreeType_PKGCONF_INCLUDE_DIRS} 

@@ -165,6 +165,7 @@ void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode,
 			continue;
 		}
 		RenderableObject* assimpMesh = new RenderableObject;
+
 		// Build the indice faces
 		std::vector<unsigned int> indicesVector;
 		std::vector<float> vertexVector;

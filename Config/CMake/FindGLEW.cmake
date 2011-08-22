@@ -50,7 +50,7 @@ ELSE(WIN32)
 	)
 	
 	find_library(GLEW_LIBRARY
- 	 NAMES libglew glew glew32 glew32s libGLEW
+ 	 NAMES glew GLEW
   	 PATHS 
   	 	${GLEW_ROOT_DIR}/lib
   	 	${GLEW_PKGCONF_LIBRARY_DIRS} 
