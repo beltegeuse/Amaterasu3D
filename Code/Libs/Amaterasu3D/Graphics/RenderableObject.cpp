@@ -47,6 +47,7 @@ RenderableObject::~RenderableObject()
 			it++)
 			{
 		if (it->second.owner)
+
 		{
 			Logger::Log() << "[DEBUG] * Delete buffer dim : "
 					<< it->second.dimension << "\n";

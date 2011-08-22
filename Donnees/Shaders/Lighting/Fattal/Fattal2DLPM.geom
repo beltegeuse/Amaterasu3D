@@ -172,10 +172,12 @@ void main()
 				DeltaData *= CellDimension.y/9;
 			else
 				DeltaData *= CellDimension.x/9;
+			
 			// Compute Volume
 			DeltaData *= 1/CellVolume;
+			
 			// Compute factor
-			DeltaData *= 1/(4*3.14);
+			//DeltaData *= 1/(4*3.14);
 			//DeltaData = rayValue;
 			{% endif %}
 			

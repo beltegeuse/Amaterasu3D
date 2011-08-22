@@ -161,7 +161,7 @@ public:
 	 * Public methods
 	 */
 	//! To enable the FBO
-	void Bind();
+	void Bind(bool clear = true);
 	//! To disable the FBO
 	void UnBind();
 	//! Draw all associates buffer in a single frame (EXPERIMENTAL)

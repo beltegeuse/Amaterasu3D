@@ -236,7 +236,7 @@ FBO::~FBO()
 	Logger::Log() << "[INFO] FBO destory \n";
 }
 
-void FBO::Bind()
+void FBO::Bind(bool clearNeed)
 {
 	if (m_IsActivated)
 		return;
@@ -245,17 +245,20 @@ void FBO::Bind()
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO_ID);
 	glViewport(0, 0, m_SizeBuffers.x, m_SizeBuffers.y);
 
-	GLbitfield flags = 0;
-	if (m_DepthType != FBODEPTH_NONE)
-		flags = flags | GL_DEPTH_BUFFER_BIT;
+	if(clearNeed)
+	{
+		GLbitfield flags = 0;
+		if (m_DepthType != FBODEPTH_NONE)
+			flags = flags | GL_DEPTH_BUFFER_BIT;
 
-	if (!m_ColoredBuffers.empty())
-		flags = flags | GL_COLOR_BUFFER_BIT;
-	else
-		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+		if (!m_ColoredBuffers.empty())
+			flags = flags | GL_COLOR_BUFFER_BIT;
+		else
+			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
-	if (flags)
-		glClear(flags);
+		if (flags)
+			glClear(flags);
+	}
 
 	m_IsActivated = true;
 }

@@ -96,7 +96,7 @@ public:
 	 * Public Methods
 	 */
 	// ***** Common Shader methods
-	void Begin();
+	void Begin(bool clearbuffers = true);
 	void End();
 	GLuint GetProgramObject();
 	// To setup the geometry shader

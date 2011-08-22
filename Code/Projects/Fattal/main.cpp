@@ -49,7 +49,7 @@ public:
 	 */
 	Fattal2DVolume(const Math::TVector2I size) :
 		m_SizeGrid(size),
-		m_AbsortionCoeff(0.0),
+		m_AbsortionCoeff(0.01),
 		m_ScatteringCoeff(0.01),
 		m_LPMMultRes(2),
 		m_LPMNbAngles(9)
@@ -96,78 +96,76 @@ public:
 	 * Public methods
 	 */
 	// Update I buffer
-	void ComputeLPM(int nbPass = 3)
+	void ComputeLPM(int nbPass = 5)
 	{
 		m_IDFinalFBO = 0;
 		// foreach pass
+
+
 		for(int i = 0; i < nbPass; i++)
 		{
-			// foreach direction
-//#if DEBUGFATTAL
-//			int idDir = 2;
-//#else
-			for(int idDir = 0; idDir < 4; idDir++)
-//#endif
-			{
-				// Set blending
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_ONE, GL_ONE);
-				//////////////////////////
-				//   Compute LPM(dir)
-				//////////////////////////
-				m_FattalComputeLPM->Begin();
-				// ===== Uniform setters
-//				std::cout << GetMainDirection(idDir) << std::endl;
-//				std::cout << Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y) << std::endl;
-				m_FattalComputeLPM->SetUniformVector("MainDirection", GetMainDirection(idDir));
-				m_FattalComputeLPM->SetUniformVector("GridDimension",Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y));
-				m_FattalComputeLPM->SetUniformVector("CellDimension", m_CellSize);
-				m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_AbsortionCoeff);
-				m_FattalComputeLPM->SetUniform1f("ScaterringCoef",m_ScatteringCoeff);
-				m_FattalComputeLPM->SetUniform1i("isFristSweep", i == 0);
-				// ==== Texture activation
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
-				// ==== Drawing (Attributes)
-				m_InitialRaysMap[idDir]->Render();
-				// ==== Texture desactivation
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-				m_FattalComputeLPM->End();
-				glDisable(GL_BLEND);
-				//////////////////////////
-				//   UpdateBuffers
-				//////////////////////////
+			//////////////////////////
+			//   Compute LPM(dir)
+			//////////////////////////
+			// Set blending
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE);
+			m_FattalComputeLPM->Begin();
+			m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+				for(int idDir = 0; idDir < 4; idDir++)
+				{
+					// ===== Uniform setters
+					m_FattalComputeLPM->SetUniformVector("MainDirection", GetMainDirection(idDir));
+					m_FattalComputeLPM->SetUniformVector("GridDimension",Math::TVector2F(m_SizeGrid.x,m_SizeGrid.y));
+					m_FattalComputeLPM->SetUniformVector("CellDimension", m_CellSize);
+					m_FattalComputeLPM->SetUniform1f("AbsortionCoeff",m_AbsortionCoeff);
+					m_FattalComputeLPM->SetUniform1f("ScaterringCoef",m_ScatteringCoeff);
+					m_FattalComputeLPM->SetUniform1i("isFristSweep", i == 0);
+					// ==== Texture activation
+
+					// ==== Drawing (Attributes)
+					m_InitialRaysMap[idDir]->Render();
+					// ==== Texture desactivation
+				}
+			m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+			m_FattalComputeLPM->End();
+			glDisable(GL_BLEND);
+			//////////////////////////
+			//   UpdateBuffers
+			//////////////////////////
 #if !DEBUGFATTAL
-				// Use swap buffer technique
-				m_FattalUpdateBuffers->SetFBO(m_FinalBuffers[(m_IDFinalFBO+1) % 2], false);
-				// Add Buffers
-				m_FattalUpdateBuffers->Begin();
-				// ==== Uniform
-				m_FattalUpdateBuffers->SetUniformVector("MainDirection", GetMainDirection(idDir));
-				// ==== Texture activation
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
-				// ==== Drawing
-				glBegin(GL_QUADS);
-					glTexCoord2f(0.0, 0.0);
-					glVertex2f(-1.0, -1.0);
-					glTexCoord2f(0.0, 1.0);
-					glVertex2f(-1.0, 1.0);
-					glTexCoord2f(1.0, 1.0);
-					glVertex2f(1.0, 1.0);
-					glTexCoord2f(1.0, 0.0);
-					glVertex2f(1.0, -1.0);
-				glEnd();
-				// ==== Texture desactivation
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
-				m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
-				m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
-				m_FattalUpdateBuffers->End();
+			// Use swap buffer technique
+			m_FattalUpdateBuffers->SetFBO(m_FinalBuffers[(m_IDFinalFBO+1) % 2], false);
+			// Add Buffers
+			m_FattalUpdateBuffers->Begin();
+			// ==== Uniform
+			//m_FattalUpdateBuffers->SetUniformVector("MainDirection", GetMainDirection(idDir));
+			// ==== Texture activation
+			m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->activateMultiTex(CUSTOM_TEXTURE+0);
+			m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->activateMultiTex(CUSTOM_TEXTURE+1);
+			m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaBuffer")->activateMultiTex(CUSTOM_TEXTURE+2);
+			// ==== Drawing
+			glBegin(GL_QUADS);
+				glTexCoord2f(0.0, 0.0);
+				glVertex2f(-1.0, -1.0);
+				glTexCoord2f(0.0, 1.0);
+				glVertex2f(-1.0, 1.0);
+				glTexCoord2f(1.0, 1.0);
+				glVertex2f(1.0, 1.0);
+				glTexCoord2f(1.0, 0.0);
+				glVertex2f(1.0, -1.0);
+			glEnd();
+			// ==== Texture desactivation
+			m_FinalBuffers[m_IDFinalFBO]->GetTexture("outUBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+0);
+			m_FinalBuffers[m_IDFinalFBO]->GetTexture("outIBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+1);
+			m_FattalComputeLPM->GetFBO()->GetTexture("outDeltaBuffer")->desactivateMultiTex(CUSTOM_TEXTURE+2);
+			m_FattalUpdateBuffers->End();
+
+			// Update id Final
+			m_IDFinalFBO = (m_IDFinalFBO+1) % 2;
 #endif
-				// Update id Final
-				m_IDFinalFBO = (m_IDFinalFBO+1) % 2;
-			}
 		}
+
 	}
 	// Draw I buffer
 	void Render()
@@ -274,7 +272,7 @@ private:
 #else
 					// Initialisation Value
 					if(j == (m_LPMNbAngles/2) && k >= beamLow && k <= beamHigh && idDir == 0) // &&
-						rayValue[m_LPMNbAngles*k+j] = 10.0;
+						rayValue[m_LPMNbAngles*k+j] = 512.0;
 					else
 						rayValue[m_LPMNbAngles*k+j] = 0.0;
 #endif

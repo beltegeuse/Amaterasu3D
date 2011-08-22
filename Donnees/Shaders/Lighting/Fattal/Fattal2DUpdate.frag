@@ -12,7 +12,7 @@ uniform sampler2D UBuffer;
 uniform sampler2D IBuffer;
 
 // Information
-uniform vec2 MainDirection;
+//uniform vec2 MainDirection;
 
 // Out buffers
 out vec4 outUBuffer;
@@ -34,5 +34,5 @@ void main()
 	outIBuffer = vec4(vI + vDelta.a);
 	
 	// * Add values
-	outUBuffer = UpdateU(vU, MainDirection) + vDelta/4.0;
+	outUBuffer = vDelta/4.0;
 }

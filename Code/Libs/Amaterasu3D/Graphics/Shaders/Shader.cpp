@@ -96,12 +96,12 @@ void Shader::Link()
 	m_IsLink = true;
 }
 
-void Shader::Begin()
+void Shader::Begin(bool clearbuffers)
 {
 	glUseProgram(m_ProgramID);
 	CShaderManager::Instance().Push(this);
 	if (m_FBO)
-		m_FBO->Bind();
+		m_FBO->Bind(clearbuffers);
 }
 
 void Shader::End()
