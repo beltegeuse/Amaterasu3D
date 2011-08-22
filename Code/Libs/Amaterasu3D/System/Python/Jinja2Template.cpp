@@ -23,7 +23,7 @@
 //==========================================================
 
 #include "Jinja2Template.h"
-
+#include <System/SettingsManager.h>
 namespace ama3D
 {
 
@@ -32,7 +32,10 @@ const std::string Jinja2Template::CODE_JINJA = "\n"
 		"dirpath = os.path.join(os.path.split(args['fullpath'])[:-1])[0]\n"
 		"print '[SCRIPT] Filename : '+filename\n"
 		"print '[SCRIPT] Dir path : '+dirpath\n"
-		"loader = jinja2.FileSystemLoader(['.', '../Donnees/Shaders/HelpersCode', dirpath])\n"
+		"dirsList = ['.', dirpath]\n"
+		"dirsList.append(args['helpercodepath'])\n"
+		"print '[SCRIPT] Dir path : ' + str(dirsList)\n"
+		"loader = jinja2.FileSystemLoader(dirsList)\n"
 		"environment = jinja2.Environment(loader=loader)\n"
 		"tpl = environment.get_template(filename)\n"
 		"res = tpl.render(args['template'])\n";
@@ -43,7 +46,7 @@ Jinja2Template::Jinja2Template(const std::string& file) :
 	// Setup Args
 	m_Args.AddArgument("template", *this);
 	m_Args.AddArgument("fullpath", m_File);
-
+	m_Args.AddArgument("helpercodepath",CSettingsManager::Instance().GetRootDir() + "/Shaders/HelpersCode");
 	// Import modules
 	m_Python.Import("os");
 	m_Python.Import("jinja2");

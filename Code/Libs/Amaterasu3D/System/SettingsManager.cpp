@@ -41,6 +41,7 @@ CSettingsManager::CSettingsManager() :
 {
 	// The default values
 	m_SizeRenderingWindow = Math::TVector2I(800, 600);
+	m_RootDataDir = "../Donnees";
 }
 
 CSettingsManager::~CSettingsManager()
@@ -110,6 +111,7 @@ void CSettingsManager::LoadFile(const std::string& path)
 		std::string rootDataDir = std::string(nodeData->Attribute("rootDir"));
 		Logger::Log() << "[INFO] SettingsManager : Root data dir : "
 				<< rootDataDir << "\n";
+		m_RootDataDir = rootDataDir;
 		CMediaManager::Instance().AddSearchPathAndChilds(rootDataDir);
 	}
 	// * Projection
@@ -162,6 +164,11 @@ float CSettingsManager::GetFarClipping() const
 float CSettingsManager::GetFOV() const
 {
 	return m_FOV;
+}
+
+const std::string& CSettingsManager::GetRootDir() const
+{
+	return m_RootDataDir;
 }
 
 /*

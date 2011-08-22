@@ -44,6 +44,8 @@ private:
 	float m_NearClipping;
 	float m_FarClipping;
 	float m_FOV;
+	//! Root data dir
+	std::string m_RootDataDir;
 public:
 	CSettingsManager();
 	virtual ~CSettingsManager();
@@ -61,6 +63,7 @@ public:
 	float GetNearClipping() const;
 	float GetFarClipping() const;
 	float GetFOV() const;
+	const std::string& GetRootDir() const;
 	/*
 	 * Public attributs
 	 */

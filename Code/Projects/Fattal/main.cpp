@@ -272,7 +272,7 @@ private:
 #else
 					// Initialisation Value
 					if(j == (m_LPMNbAngles/2) && k >= beamLow && k <= beamHigh && idDir == 0) // &&
-						rayValue[m_LPMNbAngles*k+j] = 512.0;
+						rayValue[m_LPMNbAngles*k+j] = 100.0;
 					else
 						rayValue[m_LPMNbAngles*k+j] = 0.0;
 #endif
