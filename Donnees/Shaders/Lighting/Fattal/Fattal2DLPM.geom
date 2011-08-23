@@ -34,7 +34,6 @@ uniform bool isFristSweep;
 // Other information
 uniform vec2 MainDirection;
 
-
 // Define const
 #define BIAS 0.001
 

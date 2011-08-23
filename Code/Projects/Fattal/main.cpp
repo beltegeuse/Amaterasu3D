@@ -96,7 +96,7 @@ public:
 	 * Public methods
 	 */
 	// Update I buffer
-	void ComputeLPM(int nbPass = 5)
+	void ComputeLPM(int nbPass = 3)
 	{
 		m_IDFinalFBO = 0;
 		// foreach pass
@@ -340,7 +340,7 @@ public:
 #if DEBUGFATTAL
 		m_Fattal = new Fattal2DVolume(Math::TVector2I(10,10));
 #else
-		m_Fattal = new Fattal2DVolume(Math::TVector2I(64,64));
+		m_Fattal = new Fattal2DVolume(Math::TVector2I(256,256));
 #endif
 	}
 
