@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
 		po::notify(vm);
 
 		ama3D::CSettingsManager::Instance().LoadFile("../Donnees/Config.xml");
-		CFontManager::Instance().LoadFont("Cheeseburger_ttf.font");
+		ama3D::CFontManager::Instance().LoadFont("Cheeseburger_ttf.font");
 		std::cout << "[INFO] Begin ..." << std::endl;
 		SHDOMVisualizer window;
 		window.Load(file);
