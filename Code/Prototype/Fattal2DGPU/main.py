@@ -306,7 +306,7 @@ inline __global__ void Fattal2DKernel(Ray* rays, {{code['def']}})
 """)
 
 FattalComputeLPM = { 
-            "def" : "uint* offsetBuffer, float* tempBuffer",
+            "def" : "uint* offsetBuffer, float* tempBuffer, float* UBuffer",
             "init" : """float rayValue = rays[dataID].Value;
              uint CurrIntersectionID = 0;
              uint memoryOffset = offsetBuffer[dataID];""",
@@ -315,7 +315,7 @@ FattalComputeLPM = {
             float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*ScaterringCoeff/maxDirectionCoord));
             float extinctionCoeff = (ScaterringCoeff+AbsortionCoeff);
             float extinctionFactor = exp(-1*DiffLength*extinctionCoeff/maxDirectionCoord);
-            float UValue = 0; //ReadU(UBuffer, voxID, MainDirection);
+            float UValue = UBuffer[int(voxID.x*GridDimension.y + voxID.y)];
             rayValue = rayValue*extinctionFactor+(UValue*(1 - extinctionFactor)/extinctionCoeff);
             
             // Emit new values
@@ -326,9 +326,6 @@ FattalComputeLPM = {
                 DeltaData *= CellDimension.y/9;
             else
                 DeltaData *= CellDimension.x/9;
-            
-            // Compute Volume
-            DeltaData *= 1/CellVolume;
             
             // Write value
             tempBuffer[memoryOffset+CurrIntersectionID] = DeltaData;
@@ -353,7 +350,62 @@ DebugPass = {
         "end" : "testID[dataID] = dataID;"
         }
 
-TemplateCompaction = Template("")
+TemplateCompaction = Template("""
+struct Vox
+{
+    uint * nbRaysValueAdresse;
+    uint ** raysValues;
+};
+
+extern "C"
+{
+    __global__ void Fattal2DCompaction(Vox* voxels, float* tempBuffer, float* UBuffer, float* IBuffer);
+}
+
+__global__ void Fattal2DCompaction(Vox* voxels, float* tempBuffer, float* UBuffer, float* IBuffer)
+{
+    /////////////////////////
+    // Const template settings
+    /////////////////////////
+    uint DirectionIndice = {{DirNum}};
+     
+    ////////////////////////////
+    // Get Data
+    ////////////////////////////
+    // Get the thread ID
+    // TODO: Transformation
+    const int dataID = blockIdx.x * (blockDim.x*blockDim.y*blockDim.z) + threadIdx.x;
+    
+    Vox voxel = voxels[dataID];
+    // TODO: Normalisation by Volume
+    for(int i = 0; i < voxel.nbRaysValueAdresse[DirectionIndice]; i++)
+    {
+        float value = tempBuffer[voxel.raysValues[DirectionIndice][i]];
+        UBuffer[dataID] += value / 4.f;
+        IBuffer[dataID] += value;
+    }
+    
+    //IBuffer[dataID] = voxel.raysValues[DirectionIndice][0];
+    //IBuffer[dataID] = tempBuffer[voxel.raysValues[DirectionIndice][0]];
+    //IBuffer[dataID] = voxel.nbRaysValueAdresse[DirectionIndice];
+}
+""")
+
+TemplateClear = Template("""
+extern "C"
+{
+    __global__ void ClearKernel({{code['def']}});
+}
+
+__global__ void ClearKernel({{code['def']}})
+{
+    const int dataID = blockIdx.x * (blockDim.x*blockDim.y*blockDim.z) + threadIdx.x;
+    {{code['main']}}
+}
+""")
+
+ClearPass = {"def" : "float* buffer",
+             "main" : "buffer[dataID] = 0;"}
 
 #
 # Cuda structures
@@ -392,7 +444,12 @@ class CudaVox:
     def toCuda(self, struct_arr_ptr, indice):
         # Just allocated & send to the gpu
         self.voxDataNbPtr = drv.to_device(numpy.array(self.voxDataNb, dtype=numpy.uint32))
-        self.voxDataBuffersPtr = drv.to_device(numpy.array(self.voxDataBuffers, dtype=numpy.intp))
+        convertBuffer = []
+        for i in range(len(self.voxDataBuffers)):
+            convertBuffer.append(numpy.intp(int(self.voxDataBuffers[i])))
+        #print convertBuffer
+        
+        self.voxDataBuffersPtr = drv.to_device(numpy.array(convertBuffer, dtype=numpy.intp))
         # Send pointeurs in object memory
         ptr_current = int(struct_arr_ptr) + indice*self.mem_size
         drv.memcpy_htod(ptr_current, 
@@ -472,7 +529,7 @@ class Fattal2D:
                     factor = (k+0.5) # / subLevel
                     rayPos = Vector2D(0,0)
                     rayDir = Vector2D(0,0)
-                    rayValue = 0
+                    rayValue = 0.0
                     
                     rayPos.x = OriPosition.x+offset.x*factor*self.cellSize.x;
                     rayPos.y = OriPosition.y+offset.y*factor*self.cellSize.y;
@@ -571,7 +628,7 @@ class Fattal2D:
             
             print "        -- send to GPU"
             self.offsetBuffers.append((drv.to_device(numpy.array(offsetMap, dtype=numpy.uint32)),
-                                       len(offsetMap)))
+                                       offset))
             
             
             print "     * Build VoxID ..."
@@ -590,6 +647,7 @@ class Fattal2D:
 #            for idVox in range(self.gridSize.x*self.gridSize.y):
 #                print len(voxID[idVox])
 #                print voxID[idVox]
+#            print voxID
             
             print "        -- send to GPU"
             for idVox in range(self.gridSize.x*self.gridSize.y):
@@ -610,10 +668,21 @@ class Fattal2D:
         print "Precomputation : %.2f sec" % timeit.Timer(self.DoPrecomputation).timeit(1)
         
         print "Preallocate ressources..."
+        print "  -- temp buffers"
         self.tempBuffers = []
         for i in range(4):
          self.tempBuffers.append(drv.to_device(numpy.zeros(self.offsetBuffers[i][1], dtype=numpy.float32)))
-        # --- Load kernel modules
+        
+        print "  -- U buffers"
+        self.UBuffers = []
+        for i in range(2):
+            self.UBuffers.append(drv.to_device(numpy.zeros(self.gridSize.x*self.gridSize.y, dtype=numpy.float32)))
+        
+        print "  -- I buffer"
+        self.IBuffer = drv.to_device(numpy.zeros(self.gridSize.x*self.gridSize.y, dtype=numpy.float32))
+        
+        print "Load Fattals Kernels ..."
+        # --- Fattal Computation
         self.Fattal2DKernels = []
         for i in range(4):
             mainDir = self.GetMainDirection(i)
@@ -631,23 +700,74 @@ class Fattal2D:
             mod = SourceModule(rendered_TemplateFattal,
                                options=["-I /opt/cuda_sdk/CUDALibraries/common/inc"],
                                no_extern_c=True)
+            
             self.Fattal2DKernels.append(mod.get_function("Fattal2DKernel"))
         
+        # --- Compaction Kernel
+        self.CompactionKernels = []
+        for i in range(4):
+            rendered_TemplateCompaction = TemplateCompaction.render(
+                                DirNum=i)
+            #print_source_code(rendered_TemplateCompaction)
+            
+            mod = SourceModule(rendered_TemplateCompaction,
+                               options=["-I /opt/cuda_sdk/CUDALibraries/common/inc"],
+                               no_extern_c=True)
+            self.CompactionKernels.append(mod.get_function("Fattal2DCompaction"))
+        
+        # --- Clear kernel
+        rendered_TemplateClear = TemplateClear.render(
+                                code=ClearPass)
+        #print_source_code(rendered_TemplateCompaction)
+        
+        mod = SourceModule(rendered_TemplateClear,
+                           options=["-I /opt/cuda_sdk/CUDALibraries/common/inc"],
+                           no_extern_c=True)
+        
+        self.ClearKernel = mod.get_function("ClearKernel")
+        
     def Compute(self, nbPass = 3):
-        #print " * Compute : "
+        #Need to reset I buffer
+        self.ClearKernel(self.IBuffer,
+                         block=(32,1,1), grid=((self.gridSize.y*self.gridSize.x)/32,1))
+        self.ClearKernel(self.UBuffers[0],
+                         block=(32,1,1), grid=((self.gridSize.y*self.gridSize.x)/32,1))
+        currentUBufferID = 0
         for idPass in range(nbPass):
-            #print "   -- Pass " + str(idPass)
+            nextUBufferID = (currentUBufferID+1)%2
+            self.ClearKernel(self.UBuffers[nextUBufferID],
+                         block=(32,1,1), grid=((self.gridSize.y*self.gridSize.x)/32,1))
             for i in range(4):
                 self.Fattal2DKernels[i](
-                    self.raysBuffers[i][0], self.offsetBuffers[i][0], self.tempBuffers[i],
+                    self.raysBuffers[i][0], self.offsetBuffers[i][0], self.tempBuffers[i],self.UBuffers[currentUBufferID],
                     block=(1,1,1), grid=(self.raysBuffers[i][1],1))
+                
+                self.CompactionKernels[i](
+                    self.cudaVoxBuffer, self.tempBuffers[i], 
+                    self.UBuffers[nextUBufferID], self.IBuffer,
+                    block=(32,1,1), grid=((self.gridSize.y*self.gridSize.x)/32,1))
+            currentUBufferID = nextUBufferID
         drv.Context.synchronize()
                 
 if __name__=="__main__":
-    technique = Fattal2D(Vector2D(256,256), 9)
+    technique = Fattal2D(Vector2D(128,128), 9, scattering=0.1, absortion=0.0)
     technique.Initialize()
     
     print "Launch ..."
     t = timeit.Timer(technique.Compute)
-    print "Fattal GPU : %.2f msec/pass" % (1000 * t.timeit(number=100)/100)
+    print "Fattal GPU : %.2f msec/pass" % (1000 * t.timeit(number=1)/1)
+    
+    values = numpy.zeros(technique.gridSize.x*technique.gridSize.y, dtype=numpy.float32)
+    drv.memcpy_dtoh(values, technique.IBuffer)
+    print values
+    values = numpy.reshape(values, (technique.gridSize.x,technique.gridSize.y))
+    try:
+        import matplotlib.pyplot as plt
+        plt.imshow(values)
+        plt.show()
+    except e:
+        pass
+#    for i in range(len(values)):
+#        if values[i] > technique.offsetBuffers[-1][1]:
+#            print "Overflow : " + str(i)
 
