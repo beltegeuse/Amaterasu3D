@@ -2,6 +2,8 @@ import pycuda.autoinit
 import pycuda.driver as drv
 import pycuda.gpuarray as gpuarray
 from pycuda.compiler import SourceModule
+from pycuda.elementwise import ElementwiseKernel
+
 import timeit
 
 from jinja2 import Template
@@ -162,7 +164,7 @@ inline __global__ void Fattal2DKernel(Ray* rays, {{code['def']}})
     // Get Data
     ////////////////////////////
     // Get the thread ID
-    const int dataID = blockIdx.x * blockDim.x * blockDim.y + blockIdx.y * blockDim.y + threadIdx.x;
+    const int dataID = blockIdx.x * (blockDim.x*blockDim.y*blockDim.z) + threadIdx.x;
     
     // * Direction
     float2 Direction = normalize(rays[dataID].Direction);
@@ -172,7 +174,7 @@ inline __global__ void Fattal2DKernel(Ray* rays, {{code['def']}})
     
     // * Position
     float2 OriPositon = rays[dataID].Position;
-    float2 Position = OriPositon+Direction*0.001; // already mult by GridDimension
+    float2 Position = OriPositon+Direction*0.0001; // already mult by GridDimension
     float2 voxID = floor(Position/CellDimension);
     float2 voxWorldPos = voxID*CellDimension;
     
@@ -304,8 +306,10 @@ inline __global__ void Fattal2DKernel(Ray* rays, {{code['def']}})
 """)
 
 FattalComputeLPM = { 
-            "def" : "float* dest",
-            "init" : "float rayValue = rays[dataID].Value;",
+            "def" : "uint* offsetBuffer, float* tempBuffer",
+            "init" : """float rayValue = rays[dataID].Value;
+             uint CurrIntersectionID = 0;
+             uint memoryOffset = offsetBuffer[dataID];""",
             "loop" : """
             // Compute
             float scatteringTerm = rayValue*(1 - exp(-1*DiffLength*ScaterringCoeff/maxDirectionCoord));
@@ -324,10 +328,13 @@ FattalComputeLPM = {
                 DeltaData *= CellDimension.x/9;
             
             // Compute Volume
-            DeltaData *= 1/CellVolume;""",
+            DeltaData *= 1/CellVolume;
+            
+            // Write value
+            tempBuffer[memoryOffset+CurrIntersectionID] = DeltaData;
+            CurrIntersectionID++;""",
             "before_resend" : """// Reinitialise rayValue
-            rayValue = 0;""",
-            "end" : "dest[dataID] = rays[dataID].Position.x;"}
+            rayValue = 0;"""}
 
 FattalPreComputePass = {
         "def" : "uint* destVoxID, uint* destNbIntersection",
@@ -336,9 +343,21 @@ FattalPreComputePass = {
         int oriWritePos = dataID*2*{{sizeForRays}};""",
         "loop" : """
             destVoxID[oriWritePos+NbIntersection] = voxID.x * GridDimension.y + voxID.y;
+            //destVoxID[oriWritePos+NbIntersection] = dataID;
             NbIntersection++;
         """,
         "end" : "destNbIntersection[dataID] = NbIntersection;"}
+
+DebugPass = {
+        "def" : "int* testID",
+        "end" : "testID[dataID] = dataID;"
+        }
+
+TemplateCompaction = Template("")
+
+#
+# Cuda structures
+#
 
 class CudaRay:
     mem_size = 6*numpy.float32(0).nbytes
@@ -355,6 +374,34 @@ class CudaRay:
                         numpy.array([self.position.x, self.position.y, 
                                      self.direction.x, self.direction.y, 
                                      self.value],dtype=numpy.float32))
+
+class CudaVox:
+    mem_size = numpy.intp(0).nbytes*2
+    
+    def __init__(self):
+        self.voxDataBuffers = []
+        self.voxDataBuffersPtr = None
+        self.voxDataNb = []
+        self.voxDataNbPtr = None
+    def AddDataDirection(self, data):
+        # Just allocated & send to the gpu
+        self.voxDataBuffers.append(drv.to_device(numpy.array(data, dtype=numpy.uint32)))
+        # Update numbers
+        self.voxDataNb.append(len(data))
+    
+    def toCuda(self, struct_arr_ptr, indice):
+        # Just allocated & send to the gpu
+        self.voxDataNbPtr = drv.to_device(numpy.array(self.voxDataNb, dtype=numpy.uint32))
+        self.voxDataBuffersPtr = drv.to_device(numpy.array(self.voxDataBuffers, dtype=numpy.intp))
+        # Send pointeurs in object memory
+        ptr_current = int(struct_arr_ptr) + indice*self.mem_size
+        drv.memcpy_htod(ptr_current, 
+                        numpy.intp(int(self.voxDataNbPtr)))
+        drv.memcpy_htod(ptr_current +  numpy.intp(0).nbytes,
+                        numpy.intp(int(self.voxDataBuffersPtr)))
+#    
+# Technique class
+#
 
 class Fattal2D:
     def __init__(self, size, nbLPVray, absortion=0.01, scattering=0.01):
@@ -442,6 +489,13 @@ class Fattal2D:
             self.raysBuffers.append((struct_arr_ptr,nbGenerateRay))
     
     def DoPrecomputation(self):
+        # --- init GPU buffers
+        self.offsetBuffers = []
+        self.cudaVoxObjects = []
+        
+        for i in range(self.gridSize.x*self.gridSize.y):
+            self.cudaVoxObjects.append(CudaVox())
+        
         # --- Allocated data
         for i in range(4):
             mainDir = self.GetMainDirection(i)
@@ -470,7 +524,7 @@ class Fattal2D:
             
             # --- Custom flags
             PreComputeCode = Template(PreComputeCode).render(sizeForRays= sizeVox)
-            #print_source_code(str(rendered_TemplateFattal))
+            #print_source_code(str(PreComputeCode))
             
             mod = SourceModule(PreComputeCode,
                                options=["-I /opt/cuda_sdk/CUDALibraries/common/inc"],
@@ -481,21 +535,71 @@ class Fattal2D:
             # Run Kernel
             kernelBlock = (1,1,1)
             kernelGrid = (self.raysBuffers[i][1],1)
-            
-            print "Kernel run ..."
-            print " -- Block : " + str(kernelBlock)
-            print " -- Grid : " + str(kernelGrid)
+            print "  --Pass " + str(mainDir)
+            print "     * Kernel run ..."
+            print "       -- Block : " + str(kernelBlock)
+            print "       -- Grid : " + str(kernelGrid)
             
             func(self.raysBuffers[i][0], drv.Out(destVoxID), drv.Out(destNumIntersection),
                  block=kernelBlock, grid=kernelGrid)
             
-            print "Data ... "
-            print destVoxID
-            print destNumIntersection
+            print "     * Data ..."
+            print "       -- voxID : " + str(destVoxID)
+            print "       -- NbInter : " + str(destNumIntersection)
+            maxIntersection = max(destNumIntersection)
             
-            print "Frist ray data : "
-            print " - num intersection " + str(destNumIntersection[0])
-            print " - voxID intersection " + str(destVoxID[:destNumIntersection[0]])
+#            offset = 0
+#            for idRay in range(self.raysBuffers[i][1]):
+#                if(destNumIntersection[idRay] == maxIntersection):
+#                    print "Ray data : " + str(mainDir)
+#                    print " - num intersection " + str(destNumIntersection[idRay])
+#                    print " - voxID intersection " + str(destVoxID[offset:offset+destNumIntersection[idRay]])
+#                offset += sizeVox*2
+            
+            #--- Find doublon
+            # TODO
+            
+            print "     * Build offsetMap ..."
+            print "        -- init array"
+            offset = 0
+            offsetMap = (self.raysBuffers[i][1]) * [0]
+            
+            print "        -- fill array"
+            for idRay in range(self.raysBuffers[i][1]):
+                offsetMap[idRay] = offset
+                offset += destNumIntersection[idRay]
+            
+            print "        -- send to GPU"
+            self.offsetBuffers.append((drv.to_device(numpy.array(offsetMap, dtype=numpy.uint32)),
+                                       len(offsetMap)))
+            
+            
+            print "     * Build VoxID ..."
+            print "        -- init array"
+            voxID = []
+            for idVox in range(self.gridSize.x*self.gridSize.y):
+                voxID.append([])
+            
+            print "        -- fill array"
+            for idRay in range(self.raysBuffers[i][1]):
+                currentOffsetData = offsetMap[idRay]
+                dataVoxIdOffset = (sizeVox*2*idRay)
+                for currI in range(destNumIntersection[idRay]):
+                    voxID[destVoxID[dataVoxIdOffset+currI]].append(currentOffsetData+currI)
+            
+#            for idVox in range(self.gridSize.x*self.gridSize.y):
+#                print len(voxID[idVox])
+#                print voxID[idVox]
+            
+            print "        -- send to GPU"
+            for idVox in range(self.gridSize.x*self.gridSize.y):
+                self.cudaVoxObjects[idVox].AddDataDirection(voxID[idVox])
+        
+        # Send all vox On GPU
+        print "  -- Pass Send VOX GPU"
+        self.cudaVoxBuffer = drv.mem_alloc(len(self.cudaVoxObjects) * CudaVox.mem_size)
+        for i in range(len(self.cudaVoxObjects)):
+            self.cudaVoxObjects[i].toCuda(self.cudaVoxBuffer, i)
             
     def Initialize(self):
         # --- Generate rays
@@ -505,6 +609,10 @@ class Fattal2D:
         print "Compute precomputation..."
         print "Precomputation : %.2f sec" % timeit.Timer(self.DoPrecomputation).timeit(1)
         
+        print "Preallocate ressources..."
+        self.tempBuffers = []
+        for i in range(4):
+         self.tempBuffers.append(drv.to_device(numpy.zeros(self.offsetBuffers[i][1], dtype=numpy.float32)))
         # --- Load kernel modules
         self.Fattal2DKernels = []
         for i in range(4):
@@ -525,19 +633,21 @@ class Fattal2D:
                                no_extern_c=True)
             self.Fattal2DKernels.append(mod.get_function("Fattal2DKernel"))
         
-    def Compute(self, nbDir = 3):
-        for idDir in range(nbDir):
+    def Compute(self, nbPass = 3):
+        #print " * Compute : "
+        for idPass in range(nbPass):
+            #print "   -- Pass " + str(idPass)
             for i in range(4):
-                dest = numpy.zeros(self.raysBuffers[i][1]).astype(numpy.float32)
                 self.Fattal2DKernels[i](
-                    self.raysBuffers[i][0], drv.Out(dest),
-                    block=(self.gridSize.x,1,1), grid=(self.gridSize.y,self.nbLPVray))
-                #print dest
+                    self.raysBuffers[i][0], self.offsetBuffers[i][0], self.tempBuffers[i],
+                    block=(1,1,1), grid=(self.raysBuffers[i][1],1))
+        drv.Context.synchronize()
+                
 if __name__=="__main__":
     technique = Fattal2D(Vector2D(256,256), 9)
     technique.Initialize()
     
+    print "Launch ..."
     t = timeit.Timer(technique.Compute)
-    print "Fattal GPU : %.2f msec/pass" % (1000 * t.timeit(number=1000)/1000)
-
+    print "Fattal GPU : %.2f msec/pass" % (1000 * t.timeit(number=100)/100)
 
