@@ -90,6 +90,7 @@ def print_source_code(code):
 #
 #
 
+# --- this template describe the uniform grid traversing
 TemplateFattal = Template("""
 ///////////////////////////
 // Includes
@@ -150,6 +151,7 @@ inline __global__ void Fattal2DKernel(Ray* rays, {{code['def']}})
     // Const template settings
     /////////////////////////
     // Uniform trad
+    const int LPMDimension = {{nbLPM}};
     const int2 GridDimension = make_int2({{gridDimX}},{{gridDimY}});
     const float2 CellDimension = make_float2(1,1);
     const float AbsortionCoeff = {{AbsortionCoeff}};
@@ -323,9 +325,9 @@ FattalComputeLPM = {
             // Compute Ars
             // TODO: nbRay
             if(xMainDirection)
-                DeltaData *= CellDimension.y/9;
+                DeltaData *= CellDimension.y/LPMDimension;
             else
-                DeltaData *= CellDimension.x/9;
+                DeltaData *= CellDimension.x/LPMDimension;
             
             // Write value
             tempBuffer[memoryOffset+CurrIntersectionID] = DeltaData;
@@ -378,11 +380,12 @@ __global__ void Fattal2DCompaction(Vox* voxels, float* tempBuffer, float* UBuffe
     
     Vox voxel = voxels[dataID];
     // TODO: Normalisation by Volume
+    // TODO: Factor 
     for(int i = 0; i < voxel.nbRaysValueAdresse[DirectionIndice]; i++)
     {
         float value = tempBuffer[voxel.raysValues[DirectionIndice][i]];
-        UBuffer[dataID] += value / 4.f;
-        IBuffer[dataID] += value;
+        UBuffer[dataID] += value / (4);
+        IBuffer[dataID] += value ;
     }
     
     //IBuffer[dataID] = voxel.raysValues[DirectionIndice][0];
@@ -537,7 +540,7 @@ class Fattal2D:
                     rayDir.y = transMatrix.Transform(samples[j]).y;
                     
                     if(j == (self.nbLPVray/2) and k >= beamLow and k <= beamHigh and id == 0):
-                        rayValue = 100.0;
+                        rayValue = 1000.0;
                     
                     r = CudaRay(rayPos, rayDir, rayValue)
                     r.toCuda(struct_arr_ptr, (self.nbLPVray*k+j))
@@ -572,6 +575,7 @@ class Fattal2D:
             PreComputeCode = TemplateFattal.render(
                     gridDimX=self.gridSize.x,
                     gridDimY=self.gridSize.y,
+                    nbLPM=self.nbLPVray,
                     AbsortionCoeff=self.absortionCoeff,
                     ScaterringCoeff=self.scaterringCoeff,
                     mainDirX=mainDir.x,
@@ -691,6 +695,7 @@ class Fattal2D:
             rendered_TemplateFattal = TemplateFattal.render(
                         gridDimX=self.gridSize.x,
                         gridDimY=self.gridSize.y,
+                        nbLPM=self.nbLPVray,
                         AbsortionCoeff=self.absortionCoeff,
                         ScaterringCoeff=self.scaterringCoeff,
                         mainDirX=mainDir.x,
@@ -750,7 +755,7 @@ class Fattal2D:
         drv.Context.synchronize()
                 
 if __name__=="__main__":
-    technique = Fattal2D(Vector2D(64,64), 9, scattering=0.01, absortion=0.0)
+    technique = Fattal2D(Vector2D(128,128), 3, scattering=0.05, absortion=0.01)
     technique.Initialize()
     
     print "Launch ..."
@@ -763,7 +768,8 @@ if __name__=="__main__":
     values = numpy.reshape(values, (technique.gridSize.x,technique.gridSize.y))
     try:
         import matplotlib.pyplot as plt
-        plt.imshow(values)
+        print numpy.max(values)
+        plt.imshow(numpy.clip(values,0,1.5))
         plt.show()
     except e:
         pass
