@@ -750,7 +750,7 @@ class Fattal2D:
         drv.Context.synchronize()
                 
 if __name__=="__main__":
-    technique = Fattal2D(Vector2D(128,128), 9, scattering=0.1, absortion=0.0)
+    technique = Fattal2D(Vector2D(64,64), 9, scattering=0.01, absortion=0.0)
     technique.Initialize()
     
     print "Launch ..."

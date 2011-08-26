@@ -124,7 +124,7 @@ class Grid:
         #maxV = 1.0
         for i in range(self.NbCells.x):
             for j in range(self.NbCells.y):
-                color = (self.data[self.GetVoxelID(i,j)][0])*255.0
+                color = (self.data[self.GetVoxelID(i,j)][0]/maxV)*255.0
                 #print color
                 pygame.draw.rect(self.screen,(color,color,color),(i*self.cellDimension.x, j*self.cellDimension.y, self.cellDimension.x, self.cellDimension.y))
 
@@ -449,10 +449,10 @@ if __name__=="__main__":
     NBCELL = Vector2D(64,64)
     VIS = False
     LPMFACTOR = 2
-    NBPASS = 1
+    NBPASS = 3
     K = 1
     S = 1.0
-    K = 0.01
+    K = 0.0
     S = 0.01
     # Test value for drawing
     #RES = Vector2D(800,600)
