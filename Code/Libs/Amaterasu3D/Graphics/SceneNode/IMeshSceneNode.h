@@ -36,7 +36,7 @@ namespace ama3D
 class IMeshSceneNode: public IRenderableSceneNode //, public IResource
 {
 private:
-	typedef std::map<RenderableObject*, Math::CMatrix4> RenderableWorldObjectsList;
+	typedef std::map<RenderableObject*, glm::mat4x4> RenderableWorldObjectsList;
 	/*
 	 * Attributes
 	 */
@@ -52,7 +52,7 @@ public:
 	virtual void Render();
 	void SetAssimpScene(const aiScene* scene);
 	void AddRenderableObject(RenderableObject* obj,
-			const Math::CMatrix4& trans);
+			const glm::mat4x4& trans);
 	RenderableWorldObjectsList& GetRenderableObjects();
 	/*
 	 * Static methods

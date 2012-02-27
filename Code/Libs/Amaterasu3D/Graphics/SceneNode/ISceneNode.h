@@ -26,8 +26,8 @@
 #define ISCENENODE_H_
 
 // Amaterasu3D includes
-#include <Math/Matrix4.h>
-#include <Math/Quaternion.h>
+#include "glm/glm.hpp"
+#include "glm/ext.hpp"
 
 // STL includes
 #include <map>
@@ -59,12 +59,12 @@ protected:
 	// Geometrical attributes
 	// * Cache matrix management
 	bool m_NeedUpdate;
-	Math::CMatrix4 m_CachedWorldTransformationMatrix;
-	Math::CMatrix4 m_CachedLocalTransformationMatrix;
+	glm::mat4x4 m_CachedWorldTransformationMatrix;
+	glm::mat4x4 m_CachedLocalTransformationMatrix;
 	// * Geometry information
-	Math::TVector3F m_Position;
-	Math::CQuaternion m_Orientation;
-	Math::TVector3F m_Scale;
+	 glm::vec3 m_Position;
+	 glm::fquat m_Orientation;
+	 glm::vec3 m_Scale;
 
 public:
 	ISceneNode(const std::string& name, ISceneNode* parent);
@@ -87,22 +87,22 @@ public:
 
 	// * Getters
 	// -- Transformation
-	const Math::CMatrix4 GetLocalTransformation() const;
-	const Math::CMatrix4 GetWorldTransformation() const;
+	const glm::mat4x4 GetLocalTransformation() const;
+	const glm::mat4x4 GetWorldTransformation() const;
 	// -- Basic
-	Math::TVector3F GetPosition() const;
-	Math::TVector3F GetScale() const;
-	Math::CQuaternion GetOrientation() const;
+	 glm::vec3 GetPosition() const;
+	 glm::vec3 GetScale() const;
+	 glm::fquat GetOrientation() const;
 	// * Setters
 	// -- Basic
-	void SetPosition(Math::TVector3F position);
-	void SetOrientation(Math::CQuaternion orientation);
-	void SetScale(Math::TVector3F scale);
-	void LoadLocalTransformMatrix(const Math::CMatrix4& matrix);
+	void SetPosition( glm::vec3 position);
+	void SetOrientation(glm::fquat orientation);
+	void SetScale( glm::vec3 scale);
+	void LoadLocalTransformMatrix(const glm::mat4x4& matrix);
 	// -- Others
-	void Move(Math::TVector3F offsetPosition);
-	void Rotate(Math::CQuaternion rotation);
-	void Scale(Math::TVector3F offsetScale);
+	void Move( glm::vec3 offsetPosition);
+	void Rotate(glm::fquat rotation);
+	void Scale( glm::vec3 offsetScale);
 
 	// Culling information
 	//TODO: Do this part (Bounding box, sphere, ... etc).

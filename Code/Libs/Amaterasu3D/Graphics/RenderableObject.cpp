@@ -22,6 +22,7 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 
+#include "glm/ext.hpp"
 #include "RenderableObject.h"
 #include <Graphics/Shaders/Shader.h>
 
@@ -194,7 +195,7 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 	// Last step : Check buffer contents
 	// * Check if they needs to compute the transformation
 	bool needTransformation = false;
-	Math::CMatrix4 transformationMatrix;
+	glm::mat4x4 transformationMatrix;
 	if (m_buffers.find(VERTEX_ATTRIBUT) != m_buffers.end()
 			&& m_buffers[VERTEX_ATTRIBUT].size >= 11)
 	{
@@ -205,23 +206,26 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 		{
 			needTransformation = true;
 			// Frist matrix
-			Math::TVector3F v1(b1.buffer[0], b1.buffer[1], b1.buffer[2]);
-			Math::TVector3F v2(b1.buffer[3], b1.buffer[4], b1.buffer[5]);
-			Math::TVector3F v3(b1.buffer[6], b1.buffer[7], b1.buffer[8]);
-			Math::TVector3F v4 = v1 + ((v2 - v1) ^ (v3 - v1));
-			Math::CMatrix4 t1(v1.x, v2.x, v3.x, v4.x, v1.y, v2.y, v3.y, v4.y,
+			 glm::vec3 v1(b1.buffer[0], b1.buffer[1], b1.buffer[2]);
+			 glm::vec3 v2(b1.buffer[3], b1.buffer[4], b1.buffer[5]);
+			 glm::vec3 v3(b1.buffer[6], b1.buffer[7], b1.buffer[8]);
+			 glm::vec3 v4 = v1 + ((v2 - v1) ^ (v3 - v1));
+			glm::mat4x4 t1(v1.x, v2.x, v3.x, v4.x, v1.y, v2.y, v3.y, v4.y,
 					v1.z, v2.z, v3.z, v4.z, 1, 1, 1, 1);
 			// second matrix
-			Math::TVector3F v1p(b2.buffer[0], b2.buffer[1], b2.buffer[2]);
-			Math::TVector3F v2p(b2.buffer[3], b2.buffer[4], b2.buffer[5]);
-			Math::TVector3F v3p(b2.buffer[6], b2.buffer[7], b2.buffer[8]);
-			Math::TVector3F v4p = v1p + ((v2p - v1p) ^ (v3p - v1p));
-			Math::CMatrix4 t2(v1p.x, v2p.x, v3p.x, v4p.x, v1p.y, v2p.y, v3p.y,
+			 glm::vec3 v1p(b2.buffer[0], b2.buffer[1], b2.buffer[2]);
+			 glm::vec3 v2p(b2.buffer[3], b2.buffer[4], b2.buffer[5]);
+			 glm::vec3 v3p(b2.buffer[6], b2.buffer[7], b2.buffer[8]);
+			 glm::vec3 v4p = v1p + ((v2p - v1p) ^ (v3p - v1p));
+			glm::mat4x4 t2(v1p.x, v2p.x, v3p.x, v4p.x, v1p.y, v2p.y, v3p.y,
 					v4p.y, v1p.z, v2p.z, v3p.z, v4p.z, 1, 1, 1, 1);
 
-			transformationMatrix = t1.Inverse() * t2;
+			transformationMatrix = glm::inverse(t1) * t2;
 			Logger::Log() << "[INFO] Transform matrice : \n"
-					<< transformationMatrix;
+					<< transformationMatrix[0][0] << " " << transformationMatrix[0][1] << " " << transformationMatrix[0][2] << " " << transformationMatrix[0][3] << "\n"
+					<< transformationMatrix[1][0] << " " << transformationMatrix[1][1] << " " << transformationMatrix[1][2] << " " << transformationMatrix[1][3] << "\n"
+					<< transformationMatrix[2][0] << " " << transformationMatrix[2][1] << " " << transformationMatrix[2][2] << " " << transformationMatrix[2][3] << "\n"
+					<< transformationMatrix[3][0] << " " << transformationMatrix[3][1] << " " << transformationMatrix[3][2] << " " << transformationMatrix[3][3] << "\n";
 		}
 	}
 	for (BufferMap::const_iterator it = m_buffers.begin();
@@ -250,13 +254,13 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 						|| it->first == BITANGENT_ATTRIBUT)
 				{
 					// Construct the Vector
-					Math::TVector4F v1(it->second.buffer[i],
+					glm::vec4 v1(it->second.buffer[i],
 							it->second.buffer[i + 1], it->second.buffer[i + 2],
 							1.0);
-					Math::TVector4F v2(it2->second.buffer[i],
+					glm::vec4 v2(it2->second.buffer[i],
 							it2->second.buffer[i + 1],
 							it2->second.buffer[i + 2], 1.0);
-					Math::TVector4F vTrans = transformationMatrix.Transform(v1);
+					glm::vec4 vTrans = transformationMatrix * v1;
 					vTrans /= vTrans.w;
 					if (v2 != vTrans)
 					{

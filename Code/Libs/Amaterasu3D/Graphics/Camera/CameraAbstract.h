@@ -24,8 +24,7 @@
 #ifndef CAMERAABSTRACT_H_
 #define CAMERAABSTRACT_H_
 
-#include <Math/Vector3.h>
-#include <Math/Matrix4.h>
+#include "glm/glm.hpp"
 #include <iostream>
 
 #include <System/EventListeners.h>
@@ -45,35 +44,35 @@ protected:
 	/*
 	 * Attributes
 	 */
-	Math::CMatrix4 m_ViewMatrixTransform; ///< Matrix correspond to the View transform matrix
+	glm::mat4x4 m_ViewMatrixTransform; ///< Matrix correspond to the View transform matrix
 	// * Pour le GluLookAt
-	Math::TVector3F m_Position; ///< Camera position
-	Math::TVector3F m_Target; ///< Camera direction
-	Math::TVector3F m_Up; ///< Camera orientation
+	 glm::vec3 m_Position; ///< Camera position
+	 glm::vec3 m_Target; ///< Camera direction
+	 glm::vec3 m_Up; ///< Camera orientation
 public:
 	/*
 	 * Constructors & Destructors
 	 */
-	CameraAbstract(const Math::TVector3F& pos, const Math::TVector3F& target,
-			const Math::TVector3F& up = Math::TVector3F(0, 0, 1));
+	CameraAbstract(const  glm::vec3& pos, const  glm::vec3& target,
+			const  glm::vec3& up =  glm::vec3(0, 0, 1));
 	virtual ~CameraAbstract();
 
 	/*
 	 * Public methods
 	 */
 	// Methods to manage View matrix
-	void SetMatrix(const Math::CMatrix4& matrix);
-	const Math::CMatrix4& GetMatrix();
+	void SetMatrix(const glm::mat4x4& matrix);
+	const glm::mat4x4& GetMatrix();
 	//! method to update the m_ViewMatrixTransform
 	void ComputeMatrix();
 	//! method to send the m_ViewMatrixTransform to the MatrixManager
 	void GetView();
 	// Methods to get somes imformations about the camera
-	const Math::TVector3F& GetPosition() const;
-	const Math::TVector3F& GetTarget() const;
+	const  glm::vec3& GetPosition() const;
+	const  glm::vec3& GetTarget() const;
 	// Methods to configure the camera
-	void SetPosition(const Math::TVector3F& position);
-	void SetTarget(const Math::TVector3F& target);
+	void SetPosition(const  glm::vec3& position);
+	void SetTarget(const  glm::vec3& target);
 	/*
 	 * Abstract methods (heritated by Listeners)
 	 */
@@ -88,8 +87,8 @@ public:
 
 inline std::ostream& operator<<(std::ostream& out, const CameraAbstract& cam)
 {
-	out << "Position : " << cam.GetPosition() << " | Target : "
-			<< cam.GetTarget();
+	out << "Position : " << cam.GetPosition().x << "x" << cam.GetPosition().y << "x" << cam.GetPosition().z << " | Target : "
+			<< cam.GetTarget().x << "x" << cam.GetTarget().y << "x" << cam.GetTarget().z;
 	return out;
 }
 }

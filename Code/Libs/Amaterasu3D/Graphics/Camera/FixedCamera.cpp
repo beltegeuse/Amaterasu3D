@@ -26,8 +26,8 @@
 
 namespace ama3D
 {
-FixedCamera::FixedCamera(const Math::TVector3F& pos,
-		const Math::TVector3F& target, const Math::TVector3F& up) :
+FixedCamera::FixedCamera(const  glm::vec3& pos,
+		const  glm::vec3& target, const  glm::vec3& up) :
 		CameraAbstract(pos, target, up)
 {
 }

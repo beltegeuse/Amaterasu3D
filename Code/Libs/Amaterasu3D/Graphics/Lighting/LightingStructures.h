@@ -24,7 +24,7 @@
 #ifndef LIGHTINGSTRUCTURES_H_
 #define LIGHTINGSTRUCTURES_H_
 
-#include <Math/Vector3.h>
+#include "glm/glm.hpp"
 #include <Graphics/Color.h>
 
 //XXX Add heritage structure
@@ -33,7 +33,7 @@ namespace ama3D
 
 struct PointLight
 {
-	Math::TVector3F Position;
+	 glm::vec3 Position;
 	Color LightColor;
 	float LightRaduis;
 	float LightIntensity;
@@ -41,8 +41,8 @@ struct PointLight
 
 struct SpotLight
 {
-	Math::TVector3F Position;
-	Math::TVector3F Direction;
+	 glm::vec3 Position;
+	 glm::vec3 Direction;
 	Color LightColor;
 	float LightIntensity;
 	float LightRaduis;
@@ -52,8 +52,8 @@ struct SpotLight
 // FIXME: Raduis ?????
 struct SunLight
 {
-	Math::TVector3F Position;
-	Math::TVector3F Direction;
+	 glm::vec3 Position;
+	 glm::vec3 Direction;
 	Color LightColor;
 	float LightIntensity;
 	float LightRaduis;

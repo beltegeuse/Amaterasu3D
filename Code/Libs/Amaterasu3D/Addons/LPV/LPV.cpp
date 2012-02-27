@@ -55,11 +55,11 @@ LPV::LPV(int nbCells, int sizeCells, int propagationSteps, int nbLevels) :
 	m_TextureSize.y = m_TextureSize.y * m_NbCascadedLevels;
 	// * Grid position and cell size
 	m_CellSize = new float[m_NbCascadedLevels];
-	m_GirdPosition = new Math::TVector3F[m_NbCascadedLevels];
+	m_GirdPosition = new  glm::vec3[m_NbCascadedLevels];
 	for (int i = 0; i < m_NbCascadedLevels; i++)
 	{
 		m_CellSize[i] = sizeCells / (std::pow(2.f, i)); // Compute automatically the size of each cascade
-		m_GirdPosition[i] = Math::TVector3F(-98.0, -98.0, -198.0);
+		m_GirdPosition[i] =  glm::vec3(-98.0, -98.0, -198.0);
 	}
 
 }
@@ -197,7 +197,7 @@ void LPV::ComputePropagation(int nbSteps)
 
 		m_LPVPropagationShader->SetUniformVector(
 				"LPVSize",
-				Math::TVector4F(m_TextureSize.x, m_TextureSize.y,
+				glm::vec4(m_TextureSize.x, m_TextureSize.y,
 						m_TextureRepeat.x, m_TextureRepeat.y));
 		m_LPVPropagationShader->SetUniform1i("LPVNbCell", m_NbCellDim);
 		m_LPVPropagationShader->SetUniform1i("DoOcclusion", true);
@@ -384,7 +384,7 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 	//////////////////////////////////
 	// Compute Coordinates with orientation
 	//////////////////////////////////
-	Math::TVector3F cameraDirection = Camera->GetTarget()
+	 glm::vec3 cameraDirection = Camera->GetTarget()
 			- Camera->GetPosition();
 	cameraDirection.Normalize(); // To be sure ...
 	// Inverse the direction to project on the Cube
@@ -399,12 +399,12 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 		//////////////////////////////////
 		// Place on the center of the LPV
 		m_GirdPosition[i] = Camera->GetPosition()
-				- (2 * borderFactor) * Math::TVector3F(1.0, 1.0, 1.0);
+				- (2 * borderFactor) *  glm::vec3(1.0, 1.0, 1.0);
 
 		const float cubeBorder = 1.0 / sqrt(2.0);
 
 		// \forgot Inverse vector coordinates to fit OpenGL representation
-		Math::TVector3F cubeCoordinates = Math::TVector3F(
+		 glm::vec3 cubeCoordinates =  glm::vec3(
 				std::max(std::min(cubeBorder, cameraDirection.x), -cubeBorder),
 				std::max(std::min(cubeBorder, cameraDirection.y), -cubeBorder),
 				std::max(std::min(cubeBorder, cameraDirection.z), -cubeBorder))
@@ -415,7 +415,7 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 		///////////////////////////////////////////
 		// Snapping
 		///////////////////////////////////////////
-		m_GirdPosition[i] = Math::TVector3F(
+		m_GirdPosition[i] =  glm::vec3(
 				floor(m_GirdPosition[i].x / m_CellSize[i]) * m_CellSize[i],
 				floor(m_GirdPosition[i].y / m_CellSize[i]) * m_CellSize[i],
 				floor(m_GirdPosition[i].z / m_CellSize[i]) * m_CellSize[i]);
@@ -537,8 +537,8 @@ void LPV::DrawGrids()
 void LPV::DrawGrid(int level)
 {
 	Assert(level >= 0 && level < m_NbCascadedLevels);
-	Math::CMatrix4 matGrid;
-	Math::TVector3F gridPos = GetGridPosition(level);
+	glm::mat4x4 matGrid;
+	 glm::vec3 gridPos = GetGridPosition(level);
 	matGrid.SetTranslation(gridPos.x, gridPos.y, gridPos.z);
 	m_GridModels[level]->LoadLocalTransformMatrix(matGrid);
 	m_GridModels[level]->Render();
@@ -549,20 +549,20 @@ void LPV::DrawGrid(int level)
 /// Old code
 /////////////////////////////
 // Compute Transform grid matrix
-//Math::CMatrix4 transGrid;
+//glm::mat4x4 transGrid;
 //{
-//	Math::CMatrix4 rotationGird;
-//	Math::CMatrix4 rotationGird2;
-//	Math::TVector3F directionView = m_Camera->GetTarget() - m_Camera->GetPosition();
+//	glm::mat4x4 rotationGird;
+//	glm::mat4x4 rotationGird2;
+//	 glm::vec3 directionView = m_Camera->GetTarget() - m_Camera->GetPosition();
 //	directionView.Normalize();
-//	Math::SphericalCoordinates gridSphericalCoords(Math::TVector3F(directionView.x, directionView.z, directionView.y));
+//	Math::SphericalCoordinates gridSphericalCoords( glm::vec3(directionView.x, directionView.z, directionView.y));
 //	rotationGird.SetRotationY(gridSphericalCoords.GetTheta());
 //	rotationGird2.SetRotationZ(gridSphericalCoords.GetPhy()-(M_PI/2.0));
 //	//Logger::Log() << "Dir : " << m_Camera->GetTarget() - m_Camera->GetPosition() << " Theta : " << gridSphericalCoords.GetTheta() << " Phy : " << gridSphericalCoords.GetPhy() << "\n";
-//	//Math::CMatrix4 transGrid = MatrixManager.GetMatrix(VIEW_MATRIX);
-//	Math::TVector3F cameraPos = m_Camera->GetPosition();
+//	//glm::mat4x4 transGrid = MatrixManager.GetMatrix(VIEW_MATRIX);
+//	 glm::vec3 cameraPos = m_Camera->GetPosition();
 //	transGrid.SetTranslation(cameraPos.x,cameraPos.y,cameraPos.z);
-//	Math::CMatrix4 offsetGrid;
+//	glm::mat4x4 offsetGrid;
 //	offsetGrid.SetTranslation(-8*m_CellSize.x,-(m_NbCellDim/2)*m_CellSize.y,-(m_NbCellDim/2)*m_CellSize.z);
 //	transGrid = offsetGrid*rotationGird2*rotationGird*transGrid;
 //}

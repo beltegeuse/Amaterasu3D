@@ -137,7 +137,7 @@ private:
 	GLuint m_DepthID; ///< The id of the depth buffer
 	// Other attributes
 	GLuint m_FBO_ID; ///< OpenGL FBO id
-	Math::TVector2I m_SizeBuffers; ///< The size of associated buffers
+	glm::ivec2 m_SizeBuffers; ///< The size of associated buffers
 	bool m_IsActivated; ///< To know if the FBO is activated
 	TShaderPtr m_DepthShader; ///< To display the Depth buffer in more good conditions
 	// Attributes for copy
@@ -151,7 +151,7 @@ public:
 	/*
 	 * Constructors & Destructors
 	 */
-	FBO(const Math::TVector2I& size,
+	FBO(const glm::ivec2& size,
 			std::map<std::string, FBOTextureBufferParam>& buffers,
 			FBODepthType type,
 			FBODepthBufferParam& paramDepth);
@@ -173,9 +173,9 @@ public:
 	//! Return an copy of this FBO
 	FBO* Copy();
 	//! Specify new size of FBO
-	void SetSize(const Math::TVector2I& size);
+	void SetSize(const glm::ivec2& size);
 	//! Get the size of buffers
-	Math::TVector2I GetSize() const
+	glm::ivec2 GetSize() const
 	{
 		return m_SizeBuffers;
 	}

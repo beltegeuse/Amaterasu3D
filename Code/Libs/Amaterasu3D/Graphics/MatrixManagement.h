@@ -24,7 +24,7 @@
 #ifndef MATRIXMANAGEMENT_H_
 #define MATRIXMANAGEMENT_H_
 #include <Enum.h>
-#include <Math/Matrix4.h>
+#include "glm/glm.hpp"
 #include <vector>
 #include <Singleton.h>
 #include <boost/signal.hpp>
@@ -40,13 +40,13 @@ private:
 	 */
 	// World Matrix
 	int m_MaxMatrix; ///< Max world matrix
-	std::vector<Math::CMatrix4> m_Matrix; ///< World matrix stack
-	Math::CMatrix4 m_IdentityMatrix; ///< Matrix when the stack is empty
+	std::vector<glm::mat4x4> m_Matrix; ///< World matrix stack
+	glm::mat4x4 m_IdentityMatrix; ///< Matrix when the stack is empty
 	// Other matrix
-	Math::CMatrix4 m_ProjectionMatrix; ///< Projection matrix
-	Math::CMatrix4 m_ProjectionMatrixOld; ///< To save the matrix
-	Math::CMatrix4 m_ViewMatrix; ///< View matrix
-	Math::CMatrix4 m_NormalMatrix; ///< Normal matrix
+	glm::mat4x4 m_ProjectionMatrix; ///< Projection matrix
+	glm::mat4x4 m_ProjectionMatrixOld; ///< To save the matrix
+	glm::mat4x4 m_ViewMatrix; ///< View matrix
+	glm::mat4x4 m_NormalMatrix; ///< Normal matrix
 	// Others attributes
 	MatrixMode m_MatrixMode; ///< To know the matrix mode
 	boost::signal<void (MatrixType)> m_signal_event; ///< To update all shaders Matrix attributes
@@ -64,22 +64,22 @@ public:
 	 * ModelView Matrix
 	 */
 	// Public methods
-	void PushMatrix(const Math::CMatrix4& matrix);
+	void PushMatrix(const glm::mat4x4& matrix);
 	void PopMatrix();
 	// States of the stack
 	bool IsEmpty() const;
 	int StackSize() const;
 	// Get Matrix
-	const Math::CMatrix4& GetMatrix(MatrixType type);
+	const glm::mat4x4& GetMatrix(MatrixType type);
 	/**
 	 * Projection matrix
 	 */
-	void SetProjectionMatrix(const Math::CMatrix4& matrix);
+	void SetProjectionMatrix(const glm::mat4x4& matrix);
 
 	/**
 	 * View matrix
 	 */
-	void SetViewMatrix(const Math::CMatrix4& matrix);
+	void SetViewMatrix(const glm::mat4x4& matrix);
 
 	/**
 	 * Matrix Mode

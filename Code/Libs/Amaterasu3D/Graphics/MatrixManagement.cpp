@@ -24,6 +24,7 @@
 #include "MatrixManagement.h"
 #include <Debug/Exceptions.h>
 #include <System/SettingsManager.h>
+#include <iostream>
 
 namespace ama3D
 {
@@ -32,7 +33,7 @@ SINGLETON_IMPL(CMatrixManager)
 CMatrixManager::CMatrixManager(int maxMatrix) :
 		m_MaxMatrix(maxMatrix), m_MatrixMode(MATRIX_3D)
 {
-	m_IdentityMatrix.Identity();
+	m_IdentityMatrix = glm::mat4x4();
 }
 
 CMatrixManager::~CMatrixManager()
@@ -42,7 +43,7 @@ CMatrixManager::~CMatrixManager()
 				<< std::endl;
 }
 
-void CMatrixManager::PushMatrix(const Math::CMatrix4& matrix)
+void CMatrixManager::PushMatrix(const glm::mat4x4& matrix)
 {
 	// Debug limit
 	if (m_MaxMatrix < (int) m_Matrix.size())
@@ -79,7 +80,7 @@ int CMatrixManager::StackSize() const
 	return m_Matrix.size();
 }
 
-const Math::CMatrix4& CMatrixManager::GetMatrix(MatrixType type)
+const glm::mat4x4& CMatrixManager::GetMatrix(MatrixType type)
 {
 	if (type == MODEL_MATRIX)
 	{
@@ -98,7 +99,7 @@ const Math::CMatrix4& CMatrixManager::GetMatrix(MatrixType type)
 	else if (type == NORMAL_MATRIX)
 	{
 		// Update
-		m_NormalMatrix = GetMatrix(MODEL_MATRIX).Inverse().Transpose();
+		m_NormalMatrix = glm::transpose(glm::inverse(GetMatrix(MODEL_MATRIX)));
 		return m_NormalMatrix;
 	}
 	else
@@ -107,13 +108,13 @@ const Math::CMatrix4& CMatrixManager::GetMatrix(MatrixType type)
 	}
 }
 
-void CMatrixManager::SetProjectionMatrix(const Math::CMatrix4& matrix)
+void CMatrixManager::SetProjectionMatrix(const glm::mat4x4& matrix)
 {
 	m_ProjectionMatrix = matrix;
 	m_signal_event(PROJECTION_MATRIX);
 }
 
-void CMatrixManager::SetViewMatrix(const Math::CMatrix4& matrix)
+void CMatrixManager::SetViewMatrix(const glm::mat4x4& matrix)
 {
 	m_ViewMatrix = matrix;
 	m_signal_event(VIEW_MATRIX);
@@ -128,8 +129,8 @@ void CMatrixManager::SetModeMatrix(MatrixMode mode)
 	if (mode == MATRIX_2D)
 	{
 		// Compute the Matrix
-		Math::CMatrix4 mat;
-		Math::TVector2I size =
+		glm::mat4x4 mat;
+		glm::ivec2 size =
 				CSettingsManager::Instance().GetSizeRenderingWindow();
 		mat.OrthoOffCenter(0, 0, size.x, size.y);
 		m_ProjectionMatrixOld = m_ProjectionMatrix;

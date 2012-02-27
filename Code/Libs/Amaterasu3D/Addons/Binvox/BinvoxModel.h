@@ -48,10 +48,10 @@ private:
 	}
 
 	/// Grid informations
-	Math::TVector3F GridSize() const;
+	 glm::vec3 GridSize() const;
 	/// Texture methods
-	Math::TVector2I TextureRepeat();
-	Math::TVector2I TextureSize();
+	glm::ivec2 TextureRepeat();
+	glm::ivec2 TextureSize();
 	TTexturePtr Create2DTexture();
 };
 }

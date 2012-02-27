@@ -30,7 +30,7 @@
 #include <Graphics/Lighting/LightingStructures.h>
 #include <Graphics/MatrixManagement.h>
 #include <Graphics/SceneManager.h>
-#include <Math/Matrix4.h>
+#include "glm/glm.hpp"
 
 #include <cmath>
 
@@ -66,16 +66,16 @@ public:
 				"RefectiveShadowMapSpot.shader");
 	}
 	// Matrices methods
-	Math::CMatrix4 GetViewMatrix() const
+	glm::mat4x4 GetViewMatrix() const
 	{
-		Math::CMatrix4 LightViewMatrix;
+		glm::mat4x4 LightViewMatrix;
 		LightViewMatrix.LookAt(Position, Direction);
 		return LightViewMatrix;
 	}
-	Math::CMatrix4 GetProjectionMatrix() const
+	glm::mat4x4 GetProjectionMatrix() const
 	{
-		Math::CMatrix4 LightProjectionMatrix;
-		LightProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(70.0, 1.0,
+		glm::mat4x4 LightProjectionMatrix;
+		LightProjectionMatrix = glm::mat4x4::CreatePerspectiveFOV(70.0, 1.0,
 				1.0, LightRaduis);
 		return LightProjectionMatrix;
 	}
@@ -84,8 +84,8 @@ public:
 	{
 		// Fill in RSM spot buffers
 		// * Matrix Setup
-		Math::CMatrix4 oldProjectionMatrix;
-		Math::CMatrix4 oldViewMatrix;
+		glm::mat4x4 oldProjectionMatrix;
+		glm::mat4x4 oldViewMatrix;
 		// * Save old transformations
 		oldProjectionMatrix = CMatrixManager::Instance().GetMatrix(
 				PROJECTION_MATRIX);

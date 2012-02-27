@@ -51,7 +51,7 @@ void DurandToneOperator::Compress(Texture* HDRBuffer)
 	 uniform int HalfSizeNeigbours;
 	 uniform float SigS;
 	 uniform float SigR;*/
-	Math::TVector2I size =
+	glm::ivec2 size =
 			CSettingsManager::Instance().GetSizeRenderingWindow();
 	int HalfSize = floor(std::min(size.x, size.y) * 0.01);
 

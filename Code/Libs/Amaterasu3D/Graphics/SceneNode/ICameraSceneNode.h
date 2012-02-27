@@ -27,7 +27,7 @@
 
 // Amaterasu3D includes
 #include <Graphics/SceneNode/ISceneNode.h>
-#include <Math/Matrix4.h>
+#include "glm/glm.hpp"
 
 namespace ama3D
 {
@@ -38,10 +38,10 @@ private:
 	 * Attributes
 	 */
 	// View matrix
-	Math::CMatrix4 m_ViewMatrix;
+	glm::mat4x4 m_ViewMatrix;
 	// Projection attributes
 	// * Cache projection matrix
-	Math::CMatrix4 m_ProjectionMatrix;
+	glm::mat4x4 m_ProjectionMatrix;
 	bool m_NeedUpdateProjectionMatrix;
 	// * Projection attributes
 	float m_Near;
@@ -56,11 +56,11 @@ public:
 	virtual ~ICameraSceneNode();
 
 	// View management
-	const Math::CMatrix4 GetViewMatrix();
+	const glm::mat4x4 GetViewMatrix();
 
 	// Projection management
 	// * General
-	const Math::CMatrix4 GetProjectionMatrix();
+	const glm::mat4x4 GetProjectionMatrix();
 	// * Setters
 	void SetFOV(float fov);
 	void SetRatio(float ratio);

@@ -42,10 +42,10 @@ void Logo::Draw()
 	// On initialise au premier appel
 	if (m_Rectangle == 0)
 	{
-		Math::TVector2I screenSize = Math::TVector2I(
+		glm::ivec2 screenSize = glm::ivec2(
 				CSettingsManager::Instance().GetSizeRenderingWindow());
-		m_Rectangle = new Rectangle2D(screenSize - Math::TVector2I(240, 160),
-				screenSize - Math::TVector2I(10, 10), true);
+		m_Rectangle = new Rectangle2D(screenSize - glm::ivec2(240, 160),
+				screenSize - glm::ivec2(10, 10), true);
 		m_Rectangle->GetObject().AddTextureMap(DIFFUSE_TEXTURE,
 				Texture::LoadFromFile("logo.png"));
 		m_2DShader = CShaderManager::Instance().LoadShader("2DDraw.shader");

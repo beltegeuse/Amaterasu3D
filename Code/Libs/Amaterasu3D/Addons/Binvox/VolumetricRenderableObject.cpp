@@ -54,7 +54,7 @@ void VolumetricRenderableObject::Bind()
 	m_BackFBO->GetTexture("Color")->activateMultiTex(CUSTOM_TEXTURE+1);
 	m_VolumeTexture->activateMultiTex(CUSTOM_TEXTURE+2);
 	m_volumeRenderingShader->SetUniformVector("GridDimension", m_GridSize);
-	//Math::TVector4F(sizeTex.x, sizeTex.y, repeatTex.x, repeatTex.y)
+	//glm::vec4(sizeTex.x, sizeTex.y, repeatTex.x, repeatTex.y)
 	m_volumeRenderingShader->SetUniformVector("GridTextureSize", m_TextureSpec);
 	ShaderHelperUniformImagePlane(m_volumeRenderingShader);
 }
@@ -81,12 +81,12 @@ void VolumetricRenderableObject::Render()
 	Unbind();
 }
 
-void VolumetricRenderableObject::Initialise(TTexturePtr tex, const Math::TVector2I& texSize,
-			const Math::TVector2I& texRepet, const Math::TVector3F& gridSize)
+void VolumetricRenderableObject::Initialise(TTexturePtr tex, const glm::ivec2& texSize,
+			const glm::ivec2& texRepet, const  glm::vec3& gridSize)
 {
 	m_Initialized = true;
 	m_VolumeTexture = tex;
-	m_TextureSpec = Math::TVector4F(texSize.x, texSize.y, texRepet.x, texRepet.y);
+	m_TextureSpec = glm::vec4(texSize.x, texSize.y, texRepet.x, texRepet.y);
 	m_GridSize = gridSize;
 
 	// Update cube model

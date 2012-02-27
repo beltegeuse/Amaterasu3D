@@ -28,7 +28,7 @@
 //==========================================================
 // En-tetes
 //==========================================================
-#include <Math/Vector2.h>
+#include "glm/glm.hpp"
 #include <iostream>
 
 namespace ama3D
@@ -57,8 +57,8 @@ public:
 	//----------------------------------------------------------
 	// Constructeur par defaut
 	//----------------------------------------------------------
-	CRectangle(const TVector2I& Start = TVector2I(0, 0), const TVector2I& Size =
-			TVector2I(0, 0));
+	CRectangle(const glm::ivec2& Start = glm::ivec2(0, 0), const glm::ivec2& Size =
+			glm::ivec2(0, 0));
 
 	//----------------------------------------------------------
 	// Constructeur e partir de 2 coordonnees et 2 dimensions
@@ -103,12 +103,12 @@ public:
 	//----------------------------------------------------------
 	// Renvoie la taille du rectangle
 	//----------------------------------------------------------
-	TVector2I Size() const;
+	glm::ivec2 Size() const;
 
 	//----------------------------------------------------------
 	// Test d'intersection avec un point
 	//----------------------------------------------------------
-	TIntersection Intersects(const TVector2I& Point) const;
+	TIntersection Intersects(const glm::ivec2& Point) const;
 
 	//----------------------------------------------------------
 	// Test d'intersection avec un rectangle
@@ -124,8 +124,8 @@ public:
 	//----------------------------------------------------------
 	// Donnees membres
 	//----------------------------------------------------------
-	TVector2I Origin; ///< Coin haut-gauche
-	TVector2I End; ///< Coin bas-droit
+	glm::ivec2 Origin; ///< Coin haut-gauche
+	glm::ivec2 End; ///< Coin bas-droit
 };
 
 //==========================================================

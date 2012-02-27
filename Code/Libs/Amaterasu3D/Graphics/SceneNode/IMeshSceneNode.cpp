@@ -58,7 +58,7 @@ IMeshSceneNode::RenderableWorldObjectsList& IMeshSceneNode::GetRenderableObjects
 }
 
 void IMeshSceneNode::AddRenderableObject(RenderableObject* obj,
-		const Math::CMatrix4& trans)
+		const glm::mat4x4& trans)
 {
 	m_Objects[obj] = trans;
 }
@@ -81,7 +81,7 @@ void IMeshSceneNode::Render()
 	for (RenderableWorldObjectsList::iterator it = m_Objects.begin();
 			it != m_Objects.end(); ++it)
 			{
-		Math::CMatrix4 transMat = it->second
+		glm::mat4x4 transMat = it->second
 				* m_CachedWorldTransformationMatrix;
 		mm.PushMatrix(transMat);
 		it->first->Draw();

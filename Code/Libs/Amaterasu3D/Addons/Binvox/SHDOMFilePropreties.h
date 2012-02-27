@@ -1,4 +1,4 @@
-#include <Math/Vector3.h>
+#include "glm/glm.hpp"
 #include <string>
 #include <fstream>
 #include <Addons/Binvox/VolumetricRenderableObject.h>
@@ -114,7 +114,7 @@ protected:
 	int m_MaxDegreeLegendre;
 	SHDOMPhaseCoeff* m_Coeffs;
 
-	ama3D::Math::TVector3I m_Dimension;
+	glm::ivec3 m_Dimension;
 	float    delX, delY, *Zlevels;
 	SHDOMCell* m_Cells;
 	bool m_Allocated;

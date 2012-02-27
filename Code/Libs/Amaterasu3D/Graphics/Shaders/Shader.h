@@ -24,6 +24,9 @@
 #ifndef SHADER_H_
 #define SHADER_H_
 
+// GLM includes
+#include "glm/glm.hpp"
+
 // GL includes
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -38,8 +41,6 @@
 #include <Singleton.h>
 #include <Enum.h>
 #include <Debug/OpenGLDebug.h>
-#include <Math/Matrix4.h>
-#include <Math/Vector2.h>
 #include <System/Resource.h>
 #include <Logger/Logger.h>
 #include <Graphics/Shaders/ShaderUnit.h>
@@ -115,20 +116,20 @@ public:
 	void SetUniform1uiv(const GLcharARB* varname, int nbValues, GLuint *tab);
 	// **** 2 Dimension Settings
 	void SetUniformVector(const GLcharARB* varname,
-			const Math::TVector2F& vector);
+			const glm::vec2& vector);
 	// **** 3 Dimension Settings
 	void SetUniformVector(const GLcharARB* varname,
-			const Math::TVector3F& vector);
+		const glm::vec3& vector);
 	void SetUniformVectorArray(const GLcharARB* varname, int nbValues,
-			Math::TVector3F *tab);
+			 glm::vec3 *tab);
 	// **** 4 Dimension Settings
 	void SetUniformVector(const GLcharARB* varname,
-			const Math::TVector4F& vector);
+			const glm::vec4& vector);
 	void SetUniformColor(const GLcharARB* varname, Color& color);
 	// **** 3x3 Matrice Settings
 	// **** 4x4 Matrice Settings
-	void SetUniformMatrix4fv(const GLchar* name, const Math::CMatrix4& matrix);
-	void SetUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix);
+	void SetUniformMatrix4fv(const GLchar* name, const glm::mat4x4& matrix);
+	void SetUniformMatrix4fv(MatrixType type, const glm::mat4x4& matrix);
 
 	// **** Attributes locations
 	void BindAttribLocation(GLint index, const GLchar* name);
@@ -232,16 +233,13 @@ private:
 
 inline void ShaderHelperUniformImagePlane(Shader* shader)
 {
-	shader->SetUniform1f("NearClipping",
-			CSettingsManager::Instance().GetNearClipping());
-	Math::TVector2F UnprojectInfo;
-	Math::CMatrix4 ProjectionMatrix = CMatrixManager::Instance().GetMatrix(
-			PROJECTION_MATRIX);
-	UnprojectInfo.x = 1.0f / ProjectionMatrix.a11;
-	UnprojectInfo.y = -1.0f / ProjectionMatrix.a22;
+	shader->SetUniform1f("NearClipping",CSettingsManager::Instance().GetNearClipping());
+	glm::vec2 UnprojectInfo;
+	glm::mat4x4 ProjectionMatrix = CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
+	UnprojectInfo.x = 1.0f / ProjectionMatrix[0][0];
+	UnprojectInfo.y = -1.0f / ProjectionMatrix[1][1];
 	shader->SetUniformVector("UnprojectInfo", UnprojectInfo);
-	shader->SetUniformMatrix4fv("InverseViewMatrix",
-			CMatrixManager::Instance().GetMatrix(VIEW_MATRIX).Inverse());
+	shader->SetUniformMatrix4fv("InverseViewMatrix",glm::inverse(CMatrixManager::Instance().GetMatrix(VIEW_MATRIX)));
 }
 
 inline void ShaderHelperUniformPositionFromView(Shader* shader)
@@ -252,16 +250,16 @@ inline void ShaderHelperUniformPositionFromView(Shader* shader)
 }
 
 inline void ShaderHelperUniformPosition(Shader* shader,
-		const Math::CMatrix4& projectionMatrix,
-		const Math::CMatrix4& viewMatrix, float nearValue, float farValue)
+		const glm::mat4x4& projectionMatrix,
+		const glm::mat4x4& viewMatrix, float nearValue, float farValue)
 {
 	shader->SetUniform1f("FarClipping", farValue);
 	shader->SetUniform1f("NearClipping", nearValue);
-	Math::TVector2F UnprojectInfo;
-	UnprojectInfo.x = 1.0f / projectionMatrix.a11;
-	UnprojectInfo.y = -1.0f / projectionMatrix.a22;
+	glm::vec2 UnprojectInfo;
+	UnprojectInfo.x = 1.0f / projectionMatrix[0][0];
+	UnprojectInfo.y = -1.0f / projectionMatrix[1][1];
 	shader->SetUniformVector("UnprojectInfo", UnprojectInfo);
-	shader->SetUniformMatrix4fv("InverseViewMatrix", viewMatrix.Inverse());
+	shader->SetUniformMatrix4fv("InverseViewMatrix", glm::inverse(viewMatrix));
 }
 
 //***********************

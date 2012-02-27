@@ -77,17 +77,17 @@ public:
 	T* operator ->() const;
 
 	//----------------------------------------------------------
-	// Op�rateur d'affectation
+	// Operateur d'affectation
 	//----------------------------------------------------------
 	const CSmartPtr& operator =(const CSmartPtr& Pointer);
 
 	//----------------------------------------------------------
-	// Op�rateur d'affectation (� partir d'un pointeur brut)
+	// Operateur d'affectation (a partir d'un pointeur brut)
 	//----------------------------------------------------------
 	const CSmartPtr& operator =(T* Ptr);
 
 	//----------------------------------------------------------
-	// Op�rateur de cast en T*
+	// Operateur de cast en T*
 	//----------------------------------------------------------
 	operator T*() const;
 
@@ -104,9 +104,9 @@ private:
 	void Swap(CSmartPtr& Ptr);
 
 	//----------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------
-	T* m_Data; ///< Pointeur vers la donn�es stock�e
+	T* m_Data; ///< Pointeur vers la donnees stockee
 };
 
 #include "SmartPtr.inl"

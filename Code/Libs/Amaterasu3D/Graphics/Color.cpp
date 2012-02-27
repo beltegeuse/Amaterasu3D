@@ -23,14 +23,14 @@
 //==========================================================
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include "Color.h"
 
 namespace ama3D
 {
 /////////////////////////////////////////////////////////////
-// Donn�es membres statiques
+// Donnees membres statiques
 /////////////////////////////////////////////////////////////
 const CColor CColor::White(255, 255, 255);
 const CColor CColor::Black(0, 0, 0);
@@ -39,7 +39,7 @@ const CColor CColor::Green(0, 255, 0);
 const CColor CColor::Blue(0, 0, 255);
 
 /////////////////////////////////////////////////////////////
-/// Constructeur par d�faut
+/// Constructeur par defaut
 ///
 /// \param Color : Couleur sous forme ARGB 32 bits
 ///
@@ -51,7 +51,7 @@ CColor::CColor(unsigned long Color) :
 }
 
 /////////////////////////////////////////////////////////////
-/// Constructeur � partir de composantes 
+/// Constructeur a partir de composantes 
 ///
 /// \param r : Canal rouge
 /// \param g : Canal vert
@@ -66,7 +66,7 @@ CColor::CColor(unsigned char r, unsigned char g, unsigned char b,
 }
 
 /////////////////////////////////////////////////////////////
-/// Met � jour la couleur � partir de 4 composantes flottantes
+/// Met a jour la couleur a partir de 4 composantes flottantes
 ///
 /// \param r : Canal rouge
 /// \param g : Canal vert
@@ -84,7 +84,7 @@ void CColor::SetFloats(float r, float g, float b, float a)
 }
 
 /////////////////////////////////////////////////////////////
-/// Met � jour la couleur � partir de 4 composantes
+/// Met a jour la couleur a partir de 4 composantes
 ///
 /// \param r : Canal rouge
 /// \param g : Canal vert
@@ -99,8 +99,8 @@ void CColor::Set(unsigned char r, unsigned char g, unsigned char b,
 }
 
 /////////////////////////////////////////////////////////////
-/// Met � jour la couleur � partir de 4 composantes
-/// Utilis� en interne - sert � clamper les composantes
+/// Met a jour la couleur a partir de 4 composantes
+/// Utilise en interne - sert a clamper les composantes
 ///
 /// \param r : Canal rouge
 /// \param g : Canal vert
@@ -119,9 +119,9 @@ void CColor::SetInt(int r, int g, int b, int a)
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur == pour comparer deux couleurs
+/// Surcharge de l'operateur == pour comparer deux couleurs
 ///
-/// \param c : Couleur � comparer
+/// \param c : Couleur a comparer
 ///
 /// \return True si les deux couleurs sont identiques
 ///
@@ -132,11 +132,11 @@ bool CColor::operator ==(const CColor& c) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur != pour comparer deux couleurs
+/// Surcharge de l'operateur != pour comparer deux couleurs
 ///
-/// \param c : Couleur � comparer
+/// \param c : Couleur a comparer
 ///
-/// \return True si les deux couleurs sont diff�rentes
+/// \return True si les deux couleurs sont differentes
 ///
 ////////////////////////////////////////////////////////////
 bool CColor::operator!=(const CColor& c) const
@@ -145,9 +145,9 @@ bool CColor::operator!=(const CColor& c) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur +=
+/// Surcharge de l'operateur +=
 ///
-/// \param c : Couleur � ajouter
+/// \param c : Couleur a ajouter
 ///
 /// \return Nouvelle couleur
 ///
@@ -165,9 +165,9 @@ const CColor& CColor::operator +=(const CColor& c)
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur -=
+/// Surcharge de l'operateur -=
 ///
-/// \param c : Couleur � soustraire
+/// \param c : Couleur a soustraire
 ///
 /// \return Nouvelle couleur
 ///
@@ -185,9 +185,9 @@ const CColor& CColor::operator -=(const CColor& c)
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur +
+/// Surcharge de l'operateur +
 ///
-/// \param c : Couleur � ajouter
+/// \param c : Couleur a ajouter
 ///
 /// \return Nouvelle couleur
 ///
@@ -206,9 +206,9 @@ CColor CColor::operator +(const CColor& c) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur -
+/// Surcharge de l'operateur -
 ///
-/// \param c : Couleur � soustraire
+/// \param c : Couleur a soustraire
 ///
 /// \return Nouvelle couleur
 ///
@@ -227,7 +227,7 @@ CColor CColor::operator -(const CColor& c) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur *
+/// Surcharge de l'operateur *
 ///
 /// \param v : Multiplicateur
 ///
@@ -247,7 +247,7 @@ CColor CColor::operator *(float v) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur *=
+/// Surcharge de l'operateur *=
 ///
 /// \param v : Multiplicateur
 ///
@@ -266,7 +266,7 @@ const CColor& CColor::operator *=(float v)
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur /
+/// Surcharge de l'operateur /
 ///
 /// \param v : Diviseur
 ///
@@ -279,7 +279,7 @@ CColor CColor::operator /(float v) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur /=
+/// Surcharge de l'operateur /=
 ///
 /// \param v : Diviseur
 ///
@@ -294,7 +294,7 @@ const CColor& CColor::operator /=(float v)
 /////////////////////////////////////////////////////////////
 /// Ajoute deux couleurs
 ///
-/// \param c : Couleur � ajouter
+/// \param c : Couleur a ajouter
 ///
 /// \return Somme des deux couleurs
 ///
@@ -307,7 +307,7 @@ CColor CColor::Add(const CColor& c) const
 /////////////////////////////////////////////////////////////
 /// Module deux couleurs
 ///
-/// \param c : Couleur � moduler
+/// \param c : Couleur a moduler
 ///
 /// \return Modulation des deux couleurs
 ///
@@ -322,7 +322,7 @@ CColor CColor::Modulate(const CColor& c) const
 }
 
 /////////////////////////////////////////////////////////////
-/// R�cup�re le canal alpha
+/// Recupere le canal alpha
 ///
 /// \return Valeur du canal alpha
 ///
@@ -333,7 +333,7 @@ unsigned char CColor::GetAlpha() const
 }
 
 /////////////////////////////////////////////////////////////
-/// R�cup�re le canal rouge
+/// Recupere le canal rouge
 ///
 /// \return Valeur du canal rouge
 ///
@@ -344,7 +344,7 @@ unsigned char CColor::GetRed() const
 }
 
 /////////////////////////////////////////////////////////////
-/// R�cup�re le canal vert
+/// Recupere le canal vert
 ///
 /// \return Valeur du canal vert
 ///
@@ -355,7 +355,7 @@ unsigned char CColor::GetGreen() const
 }
 
 /////////////////////////////////////////////////////////////
-/// R�cup�re le canal bleu
+/// Recupere le canal bleu
 ///
 /// \return Valeur du canal bleu
 ///
@@ -382,7 +382,7 @@ void CColor::ToFloat(float Dest[]) const
 /////////////////////////////////////////////////////////////
 /// Renvoie la couleur en nuance de gris
 ///
-/// \return Octet repr�sentant le niveau de gris associ�
+/// \return Octet representant le niveau de gris associe
 ///
 ////////////////////////////////////////////////////////////
 unsigned char CColor::ToGrey() const
@@ -428,12 +428,12 @@ unsigned long CColor::ToRGBA() const
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur >> entre un flux et une couleur
+/// Surcharge de l'operateur >> entre un flux et une couleur
 ///
-/// \param Stream : Flux d'entr�e
+/// \param Stream : Flux d'entree
 /// \param Color :  Couleur
 ///
-/// \return R�f�rence sur le flux d'entr�e
+/// \return Reference sur le flux d'entree
 ///
 ////////////////////////////////////////////////////////////
 std::istream& operator >>(std::istream& Stream, CColor& Color)
@@ -446,12 +446,12 @@ std::istream& operator >>(std::istream& Stream, CColor& Color)
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur << entre un flux et une couleur
+/// Surcharge de l'operateur << entre un flux et une couleur
 ///
 /// \param Stream : Flux de sortie
 /// \param Color :  Couleur
 ///
-/// \return R�f�rence sur le flux de sortie
+/// \return Reference sur le flux de sortie
 ///
 ////////////////////////////////////////////////////////////
 std::ostream& operator <<(std::ostream& Stream, const CColor& Color)

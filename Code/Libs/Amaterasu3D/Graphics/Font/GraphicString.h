@@ -31,7 +31,7 @@
 #include <Math/Rectangle.h>
 #include <Graphics/Color.h>
 #include <Singleton.h>
-#include <Math/Vector2.h>
+#include "glm/glm.hpp"
 
 #include <map>
 #include <string>
@@ -48,7 +48,7 @@ public:
 	//----------------------------------------------------------
 	// Constructeur par defaut
 	//----------------------------------------------------------
-	CGraphicString(const Math::TVector2F& StringPosition = Math::TVector2F(0, 0),
+	CGraphicString(const glm::ivec2& StringPosition = glm::ivec2(0, 0),
 			const std::string& StringText = "Seagull", const std::string& fontAlias = "Cheeseburger", int size = 18);
 	virtual ~CGraphicString();
 	//----------------------------------------------------------
@@ -62,7 +62,7 @@ public:
 	//----------------------------------------------------------
 	// Donnees membres
 	//----------------------------------------------------------
-	Math::TVector2F Position; ///< Position du texte a l'ecran
+	glm::vec2 Position; ///< Position du texte a l'ecran
 	std::string Text; ///< Chaine de caracteres
 	std::string FontAlias;
 	CColor Color; ///< Couleur du texte

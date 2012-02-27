@@ -27,29 +27,26 @@
 
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <iostream>
-#include <Math/Vector4.h>
+#include "glm/glm.hpp"
 
 namespace ama3D
 {
 class Color
 {
 public:
-	float R;
-	float G;
-	float B;
-	float A;
+	glm::vec4 C;
 
 	Color(float r = 1.0, float g = 1.0, float b = 1.0, float a = 1.0) :
-			R(r), G(g), B(b), A(a)
+			C(r,g,b,a)
 	{
 	}
 
-	Math::TVector4F ToVec4() const
+	glm::vec4 ToVec4() const
 	{
-		return Math::TVector4F(R,G,B,A);
+		return C;
 	}
 };
 
@@ -205,13 +202,13 @@ public:
 private:
 
 	//----------------------------------------------------------------
-	// Nouvelle couleur sous forme de 4 int [0..255] - sert � clamper
+	// Nouvelle couleur sous forme de 4 int [0..255] - sert a clamper
 	// les valeurs
 	//----------------------------------------------------------------
 	void SetInt(int r, int g, int b, int a = 0xFF);
 
 	//----------------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------------
 	unsigned long m_Color; ///< Couleur sous forme ARGB 32 bits
 };

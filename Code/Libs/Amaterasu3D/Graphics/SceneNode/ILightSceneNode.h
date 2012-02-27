@@ -26,7 +26,7 @@
 #define ILIGHTSCENENODE_H_
 
 #include <Graphics/SceneNode/ISceneNode.h>
-#include <Math/Vector3.h>
+#include "glm/glm.hpp"
 #include <Graphics/Color.h>
 
 namespace ama3D

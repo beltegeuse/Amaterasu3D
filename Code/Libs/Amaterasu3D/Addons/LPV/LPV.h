@@ -50,9 +50,9 @@ public:
 	float* m_CellSize; ///< Array for each cascade
 	int m_NbPropagationStep;
 	int m_NbCascadedLevels;
-	Math::TVector2I m_TextureSize;
-	Math::TVector2I m_TextureRepeat;
-	Math::TVector3F* m_GirdPosition; ///< Array for each cascade
+	glm::ivec2 m_TextureSize;
+	glm::ivec2 m_TextureRepeat;
+	 glm::vec3* m_GirdPosition; ///< Array for each cascade
 	/////////////
 	// Shaders
 	/////////////
@@ -97,7 +97,7 @@ public:
 				m_GirdPosition);
 		shader->SetUniformVector(
 				"LPVSize",
-				Math::TVector4F(m_TextureSize.x, m_TextureSize.y,
+				glm::vec4(m_TextureSize.x, m_TextureSize.y,
 						m_TextureRepeat.x, m_TextureRepeat.y));
 		shader->SetUniform1fv("LPVCellSize[0]", m_NbCascadedLevels, m_CellSize);
 		shader->SetUniform1i("LPVNbCell", m_NbCellDim);
@@ -133,7 +133,7 @@ public:
 	/// Lighting pass
 	///////////////////////////////////
 	void ShowDebugPropagation(TShaderPtr GBuffer, int PropagatedShow);
-	Math::TVector3F GetGridPosition(int cascadeLevel)
+	 glm::vec3 GetGridPosition(int cascadeLevel)
 	{
 		Assert(cascadeLevel >= 0 && cascadeLevel < m_NbCascadedLevels);
 		return m_GirdPosition[cascadeLevel];

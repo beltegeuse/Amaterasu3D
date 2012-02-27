@@ -28,13 +28,15 @@
 //==========================================================
 // En-tetes
 //==========================================================
+#include "glm/glm.hpp"
+#include "glm/ext.hpp"
 // --- TinyXML
 #include <tinyxml.h>
 #include <TinyXMLHelper.h>
 // --- Amaterasu3D
 #include <Graphics/RenderableObject.h>
 #include <Singleton.h>
-#include <Math/Vector2.h>
+#include "glm/glm.hpp"
 #include <Utilities/File.h>
 #include <Debug/Exceptions.h>
 #include <Graphics/Texture.h>
@@ -60,20 +62,20 @@ private:
 		 */
 		// Char description
 		int m_ID;
-		ama3D::Math::TVector2I m_Size;
-		ama3D::Math::TVector2I m_Position;
-		ama3D::Math::CVector2<double> m_Offset;
-		ama3D::Math::CVector2<double> m_MinPos;
-		ama3D::Math::CVector2<double> m_MaxPos;
+		glm::ivec2 m_Size;
+		glm::ivec2 m_Position;
+		glm::dvec4 m_Offset;
+		glm::dvec4 m_MinPos;
+		glm::dvec4 m_MaxPos;
 		double m_xadvance;
 		// Char drawable
 		RenderableObject m_Buffer;
 	public:
-		CFontCharacter(TiXmlElement* element, const ama3D::Math::TVector2F & texSize);
+		CFontCharacter(TiXmlElement* element, const glm::vec2 & texSize);
 
 		// Accesseurs
 		int GetID() { return m_ID; }
-		const ama3D::Math::TVector2I& GetSize() { return m_Size; }
+		const glm::ivec2& GetSize() { return m_Size; }
 		double GetXStep() { return m_xadvance; }
 
 		// Public methods

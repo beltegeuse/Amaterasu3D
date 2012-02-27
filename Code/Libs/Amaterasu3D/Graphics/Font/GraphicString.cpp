@@ -26,14 +26,14 @@
 // En-tetes
 //==========================================================
 #include "GraphicString.h"
-
+#include "glm/glm.hpp"
 #include <Graphics/Font/FontManager.h>
 
 namespace ama3D
 {
 
 /////////////////////////////////////////////////////////////
-/// Constructeur par d�faut
+/// Constructeur par defaut
 ///
 /// \param StringPosition : Position
 /// \param StringText :     Texte
@@ -42,7 +42,7 @@ namespace ama3D
 /// \param StringSize :     Taille
 ///
 ////////////////////////////////////////////////////////////
-CGraphicString::CGraphicString(const Math::TVector2F& StringPosition,
+	CGraphicString::CGraphicString(const glm::vec2& StringPosition,
 		const std::string& StringText, const std::string& fontAlias, int size) :
 		Position(StringPosition), Text(StringText), Size(size), FontAlias(fontAlias)
 {
@@ -53,7 +53,7 @@ CGraphicString::~CGraphicString()
 }
 
 /////////////////////////////////////////////////////////////
-/// Affiche la cha�ne de caract�res � l'�cran
+/// Affiche la chaine de caracteres a l'ecran
 ///
 ////////////////////////////////////////////////////////////
 void CGraphicString::Draw()

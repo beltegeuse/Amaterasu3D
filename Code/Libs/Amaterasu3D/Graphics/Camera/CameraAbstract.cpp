@@ -22,13 +22,14 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 
+#include "glm/ext.hpp"
 #include "CameraAbstract.h"
 #include <Graphics/MatrixManagement.h>
 
 namespace ama3D
 {
-CameraAbstract::CameraAbstract(const Math::TVector3F& pos,
-		const Math::TVector3F& target, const Math::TVector3F& up) :
+CameraAbstract::CameraAbstract(const  glm::vec3& pos,
+		const  glm::vec3& target, const  glm::vec3& up) :
 		m_Position(pos), m_Target(target), m_Up(up)
 {
 }
@@ -37,19 +38,19 @@ CameraAbstract::~CameraAbstract()
 {
 }
 
-const Math::CMatrix4& CameraAbstract::GetMatrix()
+const glm::mat4x4& CameraAbstract::GetMatrix()
 {
 	return m_ViewMatrixTransform;
 }
 
-void CameraAbstract::SetMatrix(const Math::CMatrix4& matrix)
+void CameraAbstract::SetMatrix(const glm::mat4x4& matrix)
 {
 	m_ViewMatrixTransform = matrix;
 }
 
 void CameraAbstract::ComputeMatrix()
 {
-	m_ViewMatrixTransform.LookAt(m_Position, m_Target);
+	m_ViewMatrixTransform = glm::lookAt(m_Position, m_Target, glm::vec3(0,1,0));
 }
 
 void CameraAbstract::GetView()
@@ -57,22 +58,22 @@ void CameraAbstract::GetView()
 	CMatrixManager::Instance().SetViewMatrix(m_ViewMatrixTransform);
 }
 
-const Math::TVector3F& CameraAbstract::GetPosition() const
+const  glm::vec3& CameraAbstract::GetPosition() const
 {
 	return m_Position;
 }
 
-const Math::TVector3F& CameraAbstract::GetTarget() const
+const  glm::vec3& CameraAbstract::GetTarget() const
 {
 	return m_Target;
 }
 
-void CameraAbstract::SetPosition(const Math::TVector3F& position)
+void CameraAbstract::SetPosition(const  glm::vec3& position)
 {
 	m_Position = position;
 }
 
-void CameraAbstract::SetTarget(const Math::TVector3F& target)
+void CameraAbstract::SetTarget(const  glm::vec3& target)
 {
 	m_Target = target;
 }

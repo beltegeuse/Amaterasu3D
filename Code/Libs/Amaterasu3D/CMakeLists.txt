@@ -11,25 +11,25 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES debug)
 SET(LIST_DIR 
 	# ADDONS
 	Addons
-	Addons\\FPS
-	Addons\\Logo
-	Addons\\PerformancePanel
-	Addons\\Binvox
-	Addons\\LPV
-	Addons\\ToneMappingOperator
-	Addons\\ToneMappingOperator\\PhotographicToneOperator
-	Addons\\ToneMappingOperator\\AdaptationLuminance
-	Addons\\ToneMappingOperator\\SumantToneOperator
-	Addons\\ToneMappingOperator\\DurandToneOperator
+	Addons/FPS
+	Addons/Logo
+	Addons/PerformancePanel
+	Addons/Binvox
+	Addons/LPV
+	Addons/ToneMappingOperator
+	Addons/ToneMappingOperator/PhotographicToneOperator
+	Addons/ToneMappingOperator/AdaptationLuminance
+	Addons/ToneMappingOperator/SumantToneOperator
+	Addons/ToneMappingOperator/DurandToneOperator
 	
 	Math
 	
 	Graphics
-	GraphicsSceneNode
-	Graphics\\Font
-	Graphics\\Lighting
-	Graphics\\Camera
-	Graphics\\Shaders
+	Graphics/SceneNode
+	Graphics/Font
+	Graphics/Lighting
+	Graphics/Camera
+	Graphics/Shaders
 	
 	Debug
 	Logger

@@ -88,7 +88,7 @@ void PerformancePanel::Draw()
 		m_Text = new CGraphicString;
 
 	m_Text->Text = "Steps : ";
-	m_Text->Position = Math::TVector2F(0, 0);
+	m_Text->Position = glm::vec2(0, 0);
 	m_Text->Draw();
 
 	float cumulatedTime = 0.0;
@@ -98,7 +98,7 @@ void PerformancePanel::Draw()
 		cumulatedTime += m_Steps[i].Time;
 		ss << " * " << m_Steps[i].Name << " : " << m_Steps[i].Time << " ms";
 		m_Text->Text = ss.str();
-		m_Text->Position = Math::TVector2F(10, 18 * (i + 1));
+		m_Text->Position = glm::vec2(10, 18 * (i + 1));
 		m_Text->Draw();
 	}
 
@@ -106,14 +106,14 @@ void PerformancePanel::Draw()
 		std::stringstream ss;
 		ss << "Other : " << m_Totaltime - cumulatedTime << " ms";
 		m_Text->Text = ss.str();
-		m_Text->Position = Math::TVector2F(0, 18 * (m_Steps.size() + 1));
+		m_Text->Position = glm::vec2(0, 18 * (m_Steps.size() + 1));
 		m_Text->Draw();
 	}
 	{
 		std::stringstream ss;
 		ss << "Total time : " << m_Totaltime << " ms";
 		m_Text->Text = ss.str();
-		m_Text->Position = Math::TVector2F(0, 18 * (m_Steps.size() + 2));
+		m_Text->Position = glm::vec2(0, 18 * (m_Steps.size() + 2));
 		m_Text->Draw();
 	}
 }

@@ -30,7 +30,7 @@
 
 namespace ama3D
 {
-FBO::FBO(const Math::TVector2I& size,
+FBO::FBO(const glm::ivec2& size,
 		std::map<std::string, FBOTextureBufferParam>& buffers,
 		FBODepthType type,
 		FBODepthBufferParam& paramDepth) :
@@ -38,7 +38,7 @@ FBO::FBO(const Math::TVector2I& size,
 				false), m_BuffersParams(buffers), m_DepthParams(paramDepth)
 {
 	// ============== Initialisation Debug test
-	m_TextDebug.Position = Math::TVector2F(0.0, 0.0);
+	m_TextDebug.Position = glm::vec2(0.0, 0.0);
 	m_TextDebug.Size = 30;
 	// ============== Creation FBO
 	Logger::Log() << "[INFO] FBO Creation ... \n";
@@ -190,7 +190,7 @@ void FBO::CheckFBOStatus()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FBO::SetSize(const Math::TVector2I& size)
+void FBO::SetSize(const glm::ivec2& size)
 {
 	// Update size
 	m_SizeBuffers = size;
@@ -332,13 +332,13 @@ void FBO::DrawDebug()
 		sWidth++;
 
 	// * Create Grid
-	const Math::TVector2I screenSize = CSettingsManager::Instance().GetSizeRenderingWindow();
+	const glm::ivec2 screenSize = CSettingsManager::Instance().GetSizeRenderingWindow();
 	// Compute factors width
-	const Math::TVector2I cellSize  = Math::TVector2I((screenSize.x / sHeight),(screenSize.y / sWidth));
-	std::vector<Math::TVector2I> cells;
+	const glm::ivec2 cellSize  = glm::ivec2((screenSize.x / sHeight),(screenSize.y / sWidth));
+	std::vector<glm::ivec2> cells;
 	for(int i = 0; i < sHeight; i++)
 		for(int j = 0; j < sWidth; j++)
-			cells.push_back(Math::TVector2I(i*cellSize.x,j*cellSize.y));
+			cells.push_back(glm::ivec2(i*cellSize.x,j*cellSize.y));
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -363,7 +363,7 @@ void FBO::DrawDebug()
 		if (it->first == "Depth")
 			m_DepthShader->Begin();
 
-		Math::TVector2I posWin = cells[nbElementDrew];
+		glm::ivec2 posWin = cells[nbElementDrew];
 		glViewport(posWin.x, posWin.y, cellSize.x, cellSize.y);
 
 		// Draw the buffer content

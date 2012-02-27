@@ -25,7 +25,7 @@
 #define __Texture_h_
 #include <GL/glew.h>
 #include <GL/gl.h>
-#include <Math/Vector2.h>
+#include "glm/glm.hpp"
 #include <System/Resource.h>
 #include <Utilities/SmartPtr.h>
 

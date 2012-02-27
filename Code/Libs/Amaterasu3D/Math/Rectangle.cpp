@@ -32,20 +32,20 @@ namespace Math
 {
 
 /////////////////////////////////////////////////////////////
-/// Constructeur par d�faut
+/// Constructeur par defaut
 ///
 /// \param Start : Origine
 /// \param Size :  Taille
 ///
 ////////////////////////////////////////////////////////////
-CRectangle::CRectangle(const TVector2I& Start, const TVector2I& Size) :
+	CRectangle::CRectangle(const glm::ivec2& Start, const glm::ivec2& Size) :
 		Origin(Start), End(Start + Size)
 {
 
 }
 
 /////////////////////////////////////////////////////////////
-/// Constructeur � partir de 2 coordonn�es et 2 dimensions
+/// Constructeur a partir de 2 coordonnees et 2 dimensions
 ///
 /// \param Left :   Gauche
 /// \param Top :    Haut
@@ -60,7 +60,7 @@ CRectangle::CRectangle(int Left, int Top, int Width, int Height) :
 }
 
 /////////////////////////////////////////////////////////////
-/// R�initialise le rectangle
+/// Reinitialise le rectangle
 ///
 /// \param Left :   Gauche
 /// \param Top :    Haut
@@ -70,12 +70,12 @@ CRectangle::CRectangle(int Left, int Top, int Width, int Height) :
 ////////////////////////////////////////////////////////////
 void CRectangle::Set(int Left, int Top, int Width, int Height)
 {
-	Origin.Set(Left, Top);
-	End.Set(Left + Width, Top + Height);
+	Origin = glm::ivec2(Left, Top);
+	End = glm::ivec2(Left + Width, Top + Height);
 }
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le cot� gauche du rectangle
+/// Renvoie le cote gauche du rectangle
 ///
 /// \return Gauche du rectangle
 ///
@@ -86,7 +86,7 @@ int CRectangle::Left() const
 }
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le cot� droit du rectangle
+/// Renvoie le cote droit du rectangle
 ///
 /// \return Droite du rectangle
 ///
@@ -97,7 +97,7 @@ int CRectangle::Right() const
 }
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le cot� haut du rectangle
+/// Renvoie le cote haut du rectangle
 ///
 /// \return Haut du rectangle
 ///
@@ -108,7 +108,7 @@ int CRectangle::Top() const
 }
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le cot� bas du rectangle
+/// Renvoie le cote bas du rectangle
 ///
 /// \return Bas du rectangle
 ///
@@ -146,7 +146,7 @@ int CRectangle::Height() const
 /// \return Taille du rectangle
 ///
 ////////////////////////////////////////////////////////////
-TVector2I CRectangle::Size() const
+glm::ivec2 CRectangle::Size() const
 {
 	return End - Origin;
 }
@@ -154,7 +154,7 @@ TVector2I CRectangle::Size() const
 /////////////////////////////////////////////////////////////
 /// Test d'intersection avec un point
 ///
-/// \param Point : Point � tester
+/// \param Point : Point a tester
 ///
 /// \return Type d'intersection
 ///
@@ -171,7 +171,7 @@ TIntersection CRectangle::Intersects(const TVector2I& Point) const
 /////////////////////////////////////////////////////////////
 /// Test d'intersection avec un rectangle
 ///
-/// \param Rect : Rectangle � tester
+/// \param Rect : Rectangle a tester
 ///
 /// \return Type d'intersection
 ///
@@ -179,9 +179,9 @@ TIntersection CRectangle::Intersects(const TVector2I& Point) const
 TIntersection CRectangle::Intersects(const CRectangle& Rect) const
 {
 	// Calcul du rectangle d'intersection
-	TVector2I Start(std::max(Origin.x, Rect.Origin.x),
+	glm::ivec2 Start(std::max(Origin.x, Rect.Origin.x),
 			std::max(Origin.y, Rect.Origin.y));
-	TVector2I End(std::min(End.x, Rect.End.x), std::min(End.y, Rect.End.y));
+	glm::ivec2 End(std::min(End.x, Rect.End.x), std::min(End.y, Rect.End.y));
 	CRectangle Overlap(Start, End - Start);
 
 	if ((Start.x > End.x) || (Start.y > End.y))
@@ -193,9 +193,9 @@ TIntersection CRectangle::Intersects(const CRectangle& Rect) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Op�rateur de comparaison ==
+/// Operateur de comparaison ==
 ///
-/// \param Rect : Rectangle � comparer
+/// \param Rect : Rectangle a comparer
 ///
 /// \return True si les deux rectangles sont identiques
 ///
@@ -206,11 +206,11 @@ bool CRectangle::operator ==(const CRectangle& Rect) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Op�rateur de comparaison !=
+/// Operateur de comparaison !=
 ///
-/// \param Rect : Rectangle � comparer
+/// \param Rect : Rectangle a comparer
 ///
-/// \return True si les deux rectangles sont diff�rents
+/// \return True si les deux rectangles sont differents
 ///
 ////////////////////////////////////////////////////////////
 bool CRectangle::operator !=(const CRectangle& Rect) const
@@ -219,26 +219,26 @@ bool CRectangle::operator !=(const CRectangle& Rect) const
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur >> pour saisir un rectangle
+/// Surcharge de l'operateur >> pour saisir un rectangle
 ///
-/// \param  Stream : Flux d'entr�e
-/// \param Rect :   Rectangle � saisir
+/// \param  Stream : Flux d'entree
+/// \param Rect :   Rectangle a saisir
 ///
-/// \return R�f�rence sur le flux d'entr�e
+/// \return Reference sur le flux d'entree
 ///
 ////////////////////////////////////////////////////////////
 std::istream& operator >>(std::istream& Stream, CRectangle& Rect)
 {
-	return Stream >> Rect.Origin >> Rect.End;
+	return Stream >> Rect.Origin.x >> Rect.Origin.y >> Rect.End.x >> Rect.End.y;
 }
 
 /////////////////////////////////////////////////////////////
-/// Surcharge de l'op�rateur << pour afficher un rectangle
+/// Surcharge de l'operateur << pour afficher un rectangle
 ///
 /// \param Stream : Flux de sortie
-/// \param Rect :   Rectangle � afficher
+/// \param Rect :   Rectangle a afficher
 ///
-/// \return R�f�rence sur le flux de sortie
+/// \return Reference sur le flux de sortie
 ///
 ////////////////////////////////////////////////////////////
 std::ostream& operator <<(std::ostream& Stream, const CRectangle& Rect)

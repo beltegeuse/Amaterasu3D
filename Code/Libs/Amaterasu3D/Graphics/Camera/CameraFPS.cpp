@@ -27,8 +27,8 @@
 
 namespace ama3D
 {
-CameraFPS::CameraFPS(const Math::TVector3F& pos, const Math::TVector3F& target,
-		const Math::TVector3F& up) :
+CameraFPS::CameraFPS(const  glm::vec3& pos, const  glm::vec3& target,
+		const  glm::vec3& up) :
 		CameraAbstract(pos, target, up), m_angleX(0.0), m_angleY(0.0), m_mouse_click(
 				false), m_angleX_new(0.0), m_angleY_new(0.0), m_factor_move(
 				10.0), m_up_press(false), m_down_press(false), m_left_press(
@@ -135,7 +135,7 @@ void CameraFPS::FrameStarted(double delta)
 
 void CameraFPS::ComputeAngles()
 {
-	m_Up = Math::TVector3F(0, 1, 0);
+	m_Up =  glm::vec3(0, 1, 0);
 
 	/*if ((m_angleX > 90 && m_angleX < 270)|| (m_angleX < -90 && m_angleX > -270))
 	 m_up = -1;
@@ -148,7 +148,7 @@ void CameraFPS::ComputeAngles()
 	m_forward.z = r_temp * sin(m_angleY * M_PI / 180);
 
 	m_left = m_Up ^ m_forward;
-	m_left.Normalize();
+	glm::normalize(m_left);
 
 //	std::cout << "left " << m_left << std::endl;
 //	std::cout << "forward " << m_forward << std::endl;

@@ -25,7 +25,7 @@
 #define SETTINGSMANAGER_H_
 
 #include <Singleton.h>
-#include <Math/Vector2.h>
+#include "glm/glm.hpp"
 
 namespace ama3D
 {
@@ -39,7 +39,7 @@ MAKE_SINGLETON(CSettingsManager)
 private:
 	// Attributes
 	//! Size of the rendering window
-	Math::TVector2I m_SizeRenderingWindow;
+	glm::ivec2 m_SizeRenderingWindow;
 	//! Projection attributs
 	float m_NearClipping;
 	float m_FarClipping;
@@ -55,8 +55,8 @@ public:
 	void LoadFile(const std::string& path);
 
 	// To manage the Size of the rendering window
-	const Math::TVector2I& GetSizeRenderingWindow() const;
-	void SetSizeRenderingWindow(const Math::TVector2I& newSize);
+	const glm::ivec2& GetSizeRenderingWindow() const;
+	void SetSizeRenderingWindow(const glm::ivec2& newSize);
 
 	// To manage the projection window
 	void SetProjection(float near, float far, float fov);

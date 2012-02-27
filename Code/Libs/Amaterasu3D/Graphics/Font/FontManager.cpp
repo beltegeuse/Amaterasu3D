@@ -38,7 +38,7 @@ namespace ama3D
 //////////////////////////////////////////
 // CFontCharacter
 //////////////////////////////////////////
-CFont::CFontCharacter::CFontCharacter(TiXmlElement* element, const ama3D::Math::TVector2F & texSize)
+	CFont::CFontCharacter::CFontCharacter(TiXmlElement* element, const glm::vec2 & texSize)
 {
 	// Get element definition
 	TinyXMLGetAttributeValue<int>(element,"id",&m_ID);
@@ -147,7 +147,7 @@ void CFont::Render(const CGraphicString& gstring)
 	m_FontsTex->activateMultiTex(ama3D::CUSTOM_TEXTURE+0);
 	std::map<int, CFontCharacter*>::const_iterator element;
 	CFontCharacter* currentElement;
-	ama3D::Math::CMatrix4 transMat;
+	glm::mat4x4 transMat;
 	float xOff = 0.0;
 	for (std::string::const_iterator it = gstring.Text.begin(); it != gstring.Text.end(); ++it)
 	{
@@ -156,7 +156,7 @@ void CFont::Render(const CGraphicString& gstring)
 			currentElement = m_Characteres[32]; // Not found
 		else
 			currentElement = element->second;
-		transMat.SetTranslation(gstring.Position.x+xOff,gstring.Position.y,0);
+		transMat = glm::translate(glm::mat4x4(), glm::vec3(gstring.Position.x+xOff,gstring.Position.y,0));
 		ama3D::CMatrixManager::Instance().PushMatrix(transMat);
 		currentElement->Render();
 		ama3D::CMatrixManager::Instance().PopMatrix();
@@ -198,7 +198,7 @@ void CFont::LoadFile()
 	int i = 0;
 	while(faceNode)
 	{
-		CFontCharacter * face = new CFontCharacter(faceNode, ama3D::Math::TVector2F(texWidth, texHeight));
+		CFontCharacter * face = new CFontCharacter(faceNode, glm::vec2(texWidth, texHeight));
 		m_Characteres[face->GetID()] = face;
 		faceNode = faceNode->NextSiblingElement();
 		i++;
@@ -266,8 +266,8 @@ void CFontManager::RenderText(const CGraphicString& gstring)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	m_FontShader->Begin();
 	m_FontShader->SetUniform1i("FontEffectType", 4);
-	m_FontShader->SetUniformVector("FontColor", Math::TVector4F(gstring.Color.GetRed(),gstring.Color.GetGreen(),gstring.Color.GetBlue(), gstring.Color.GetAlpha()));
-	m_FontShader->SetUniformVector("FontEffectColor", ama3D::Math::TVector4F(1.0,1.0,1.0,1.0));
+	m_FontShader->SetUniformVector("FontColor", glm::vec4(gstring.Color.GetRed(),gstring.Color.GetGreen(),gstring.Color.GetBlue(), gstring.Color.GetAlpha()));
+	m_FontShader->SetUniformVector("FontEffectColor", glm::vec4(1.0,1.0,1.0,1.0));
 
 	it->second->Render(gstring);
 

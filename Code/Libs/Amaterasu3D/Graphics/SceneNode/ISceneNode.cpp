@@ -30,8 +30,8 @@ namespace ama3D
 {
 
 ISceneNode::ISceneNode(const std::string& name, ISceneNode* parent) :
-		m_Name(name), m_Parent(parent), m_NeedUpdate(false), m_Position(Math::TVector3F(0, 0, 0)),
-		m_Scale(Math::TVector3F(1, 1, 1))
+		m_Name(name), m_Parent(parent), m_NeedUpdate(false), m_Position( glm::vec3(0, 0, 0)),
+		m_Scale( glm::vec3(1, 1, 1))
 {
 	if (m_Parent)
 		m_Parent->AddChild(this);
@@ -99,60 +99,60 @@ bool ISceneNode::IsNeedUpdate() const
 	return m_NeedUpdate;
 }
 // * Getters
-const Math::CMatrix4 ISceneNode::GetLocalTransformation() const
+const glm::mat4x4 ISceneNode::GetLocalTransformation() const
 {
 	return m_CachedLocalTransformationMatrix;
 }
-const Math::CMatrix4 ISceneNode::GetWorldTransformation() const
+const glm::mat4x4 ISceneNode::GetWorldTransformation() const
 {
 	return m_CachedWorldTransformationMatrix;
 }
 // -- Basic
-Math::TVector3F ISceneNode::GetPosition() const
+ glm::vec3 ISceneNode::GetPosition() const
 {
 	return m_Position;
 }
-Math::TVector3F ISceneNode::GetScale() const
+ glm::vec3 ISceneNode::GetScale() const
 {
 	return m_Scale;
 }
-Math::CQuaternion ISceneNode::GetOrientation() const
+ glm::quat ISceneNode::GetOrientation() const
 {
 	return m_Orientation;
 }
 // * Setters
 // -- Basic
-void ISceneNode::SetPosition(Math::TVector3F position)
+void ISceneNode::SetPosition( glm::vec3 position)
 {
 	m_Position = position;
 	NeedUpdate();
 }
-void ISceneNode::SetOrientation(Math::CQuaternion orientation)
+void ISceneNode::SetOrientation(glm::quat orientation)
 {
 	m_Orientation = orientation;
 	NeedUpdate();
 }
-void ISceneNode::SetScale(Math::TVector3F scale)
+void ISceneNode::SetScale( glm::vec3 scale)
 {
 	m_Scale = scale;
 	NeedUpdate();
 }
-void ISceneNode::LoadLocalTransformMatrix(const Math::CMatrix4& matrix)
+void ISceneNode::LoadLocalTransformMatrix(const glm::mat4x4& matrix)
 {
 	m_CachedLocalTransformationMatrix = matrix;
 	UpdateAttributes();
 	NeedUpdate();
 }
 // -- Others
-void ISceneNode::Move(Math::TVector3F offsetPosition)
+void ISceneNode::Move( glm::vec3 offsetPosition)
 {
 	SetPosition(GetPosition() + offsetPosition);
 }
-void ISceneNode::Rotate(Math::CQuaternion rotation)
+void ISceneNode::Rotate(glm::quat rotation)
 {
 	SetOrientation(GetOrientation() + rotation);
 }
-void ISceneNode::Scale(Math::TVector3F offsetScale)
+void ISceneNode::Scale( glm::vec3 offsetScale)
 {
 	SetScale(GetScale() + offsetScale);
 }
@@ -177,7 +177,7 @@ void ISceneNode::UpdateTransformations()
 		m_NeedUpdate = false;
 
 		Logger::Log() << "[DEBUG] NeedUpdate : " << this << "\n";
-		Math::CMatrix4 positionMatrix, scaleMatrix;
+		glm::mat4x4 positionMatrix, scaleMatrix;
 		positionMatrix.SetTranslation(m_Position.x, m_Position.y,
 				m_Position.z);
 		scaleMatrix.SetScaling(m_Scale.x, m_Scale.y, m_Scale.z);

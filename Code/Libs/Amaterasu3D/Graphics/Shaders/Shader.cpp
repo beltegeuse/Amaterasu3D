@@ -341,7 +341,7 @@ void Shader::SetUniform1uiv(const GLcharARB* varname, int nbValues, GLuint *tab)
  * 2 Dimension Setters
  */
 void Shader::SetUniformVector(const GLcharARB* varname,
-		const Math::TVector2F& vector)
+							  const glm::vec2& vector)
 {
 	CheckLoc(glUniform2f(loc, vector.x,vector.y))
 }
@@ -349,13 +349,13 @@ void Shader::SetUniformVector(const GLcharARB* varname,
  * 3 Dimension Setters
  */
 void Shader::SetUniformVector(const GLcharARB* varname,
-		const Math::TVector3F& vector)
+		const  glm::vec3& vector)
 {
 	CheckLoc(glUniform3f(loc, vector.x,vector.y,vector.z))
 }
 
 void Shader::SetUniformVectorArray(const GLcharARB* varname, int nbValues,
-		Math::TVector3F *tab)
+		 glm::vec3 *tab)
 {
 	//FIXME: Not good representation ...
 	GLfloat* values = new GLfloat[nbValues * 3];for(int i = 0; i < nbValues; i++)
@@ -373,11 +373,11 @@ void Shader::SetUniformVectorArray(const GLcharARB* varname, int nbValues,
 	 */
 void Shader::SetUniformColor(const GLcharARB* varname, Color& color)
 {
-	CheckLoc(glUniform4f(loc, color.R,color.G,color.B,color.A))
+	CheckLoc(glUniform4f(loc, color.C.r,color.C.g,color.C.b,color.C.a))
 }
 
 void Shader::SetUniformVector(const GLcharARB* varname,
-		const Math::TVector4F& vector)
+		const glm::vec4& vector)
 {
 	CheckLoc(glUniform4f(loc, vector.x, vector.y, vector.z, vector.w))
 }
@@ -386,14 +386,14 @@ void Shader::SetUniformVector(const GLcharARB* varname,
  * 4x4 Matrix setter
  */
 void Shader::SetUniformMatrix4fv(const GLchar* varname,
-		const Math::CMatrix4& matrix)
+		const glm::mat4x4& matrix)
 {
-	CheckLoc(glUniformMatrix4fv(loc,1, GL_FALSE, (const float*)matrix))
+	CheckLoc(glUniformMatrix4fv(loc,1, GL_FALSE, (const float*)glm::value_ptr(matrix)))
 //	Logger::Log() << "[DEBUG] " << varname << " : "  << loc << "\n";
 //	Logger::Log() << matrix << "\n";
 }
 
-void Shader::SetUniformMatrix4fv(MatrixType type, const Math::CMatrix4& matrix)
+void Shader::SetUniformMatrix4fv(MatrixType type, const glm::mat4x4& matrix)
 {
 	Assert(IsMatrixModeAvailable(type));
 	SetUniformMatrix4fv(m_matrix_bind[type].c_str(), matrix);

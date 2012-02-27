@@ -37,7 +37,7 @@ ICameraSceneNode::~ICameraSceneNode()
 
 // Projection management
 // * General
-const Math::CMatrix4 ICameraSceneNode::GetProjectionMatrix()
+const glm::mat4x4 ICameraSceneNode::GetProjectionMatrix()
 {
 	return m_ProjectionMatrix;
 }
@@ -80,7 +80,7 @@ void ICameraSceneNode::UpdateTransformations()
 	ISceneNode::UpdateTransformations();
 	if (m_NeedUpdateProjectionMatrix)
 	{
-		m_ProjectionMatrix = Math::CMatrix4::CreatePerspectiveFOV(m_FOV,
+		m_ProjectionMatrix = glm::mat4x4::CreatePerspectiveFOV(m_FOV,
 				m_Ratio, m_Near, m_Far);
 		m_NeedUpdateProjectionMatrix = false;
 	}

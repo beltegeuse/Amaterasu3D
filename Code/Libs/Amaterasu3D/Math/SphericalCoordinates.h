@@ -24,7 +24,7 @@
 #ifndef _MATH_SPHERICALCOORDINATES_H_
 #define _MATH_SPHERICALCOORDINATES_H_
 
-#include <Math/Vector3.h>
+#include "glm/glm.hpp"
 #include <math.h>
 
 namespace ama3D
@@ -40,23 +40,23 @@ protected:
 	double m_phy, m_theta;
 
 private:
-	/** \brief R�cup�ration de l'angle entre le vecteur (1,0) et le vecteur (x,y) */
+	/** \brief Recuperation de l'angle entre le vecteur (1,0) et le vecteur (x,y) */
 	double Angle(double x, double y);
 
 public:
-	/** \brief Changement du vecteur repr�sent� en coordonn�es sph�riques */
-	void Set(Math::TVector3F const & v);
+	/** \brief Changement du vecteur represente en coordonnes spheriques */
+	void Set( glm::vec3 const & v);
 
-	/** \brief R�cup�ration du vecteur � partir des coordonn�es sph�riques */
-	Math::TVector3F Get() const;
+	/** \brief Recuperation du vecteur a partir des coordonnees spheriques */
+	 glm::vec3 Get() const;
 
-	/** \brief Construction des coordonn�es sph�riques sur la base d'un vecteur 3D */
-	SphericalCoordinates(Math::TVector3F const & v);
+	/** \brief Construction des coordonnees spheriques sur la base d'un vecteur 3D */
+	SphericalCoordinates( glm::vec3 const & v);
 
-	/** \brief Renvoie l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
+	/** \brief Renvoie l'angle entre le vecteur projete sur le plan x,y et l'axe X */
 	double GetTheta() const;
 
-	/** \brief Changement de l'angle entre le vecteur projet� sur le plan x,y et l'axe X */
+	/** \brief Changement de l'angle entre le vecteur projete sur le plan x,y et l'axe X */
 	void SetTheta(double v);
 
 	/** \brief Renvoie l'angle entre le vecteur et le plan (x,y) */
