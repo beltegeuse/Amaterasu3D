@@ -124,10 +124,10 @@ target_link_libraries(
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARY}
   ${PYTHON_LIBRARIES}
+  ${Assimp_LIBRARY}
   
   # Internal dependencies
   tinyxml
-  assimp
   C3
 )
 

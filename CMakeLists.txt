@@ -31,6 +31,8 @@ ENDIF(OPENGL_FOUND)
 FIND_PACKAGE(FreeType REQUIRED)
 # ----- FreeImage
 FIND_PACKAGE(FreeImage REQUIRED)
+# ----- Assimp
+FIND_PACKAGE(Assimp REQUIRED)
 # ----- Zlib
 FIND_PACKAGE(ZLIB REQUIRED)
 # ----- Python
