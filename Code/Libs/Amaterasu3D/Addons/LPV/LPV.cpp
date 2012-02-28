@@ -386,7 +386,7 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 	//////////////////////////////////
 	 glm::vec3 cameraDirection = Camera->GetTarget()
 			- Camera->GetPosition();
-	cameraDirection.Normalize(); // To be sure ...
+	cameraDirection = glm::normalize(cameraDirection); // To be sure ...
 	// Inverse the direction to project on the Cube
 	cameraDirection = -cameraDirection;
 
@@ -449,17 +449,17 @@ void LPV::CreateGridModel(ISimpleRenderableSceneNode** GirdModel, int nbCellDim,
 			vertexBuffer[i] = x*CellSize;
 			vertexBuffer[i+1] = 0;
 			vertexBuffer[i+2] = z*CellSize;
-			colorBuffer[i] = color.R;
-			colorBuffer[i+1] = color.G;
-			colorBuffer[i+2] = color.B;
+			colorBuffer[i] = color.C.r;
+			colorBuffer[i+1] = color.C.g;
+			colorBuffer[i+2] = color.C.b;
 			i += 3;
 
 			vertexBuffer[i] = x*CellSize;
 			vertexBuffer[i+1] = nbCellDim*CellSize;
 			vertexBuffer[i+2] = z*CellSize;
-			colorBuffer[i] = color.R;
-			colorBuffer[i+1] = color.G;
-			colorBuffer[i+2] = color.B;
+			colorBuffer[i] = color.C.r;
+			colorBuffer[i+1] = color.C.g;
+			colorBuffer[i+2] = color.C.b;
 			i += 3;
 		}
 
@@ -467,17 +467,17 @@ void LPV::CreateGridModel(ISimpleRenderableSceneNode** GirdModel, int nbCellDim,
 			vertexBuffer[i] = 0;
 			vertexBuffer[i+1] = y*CellSize;
 			vertexBuffer[i+2] = z*CellSize;
-			colorBuffer[i] = color.R;
-			colorBuffer[i+1] = color.G;
-			colorBuffer[i+2] = color.B;
+			colorBuffer[i] = color.C.r;
+			colorBuffer[i+1] = color.C.g;
+			colorBuffer[i+2] = color.C.b;
 			i += 3;
 
 			vertexBuffer[i] = nbCellDim*CellSize;
 			vertexBuffer[i+1] = y*CellSize;
 			vertexBuffer[i+2] = z*CellSize;
-			colorBuffer[i] = color.R;
-			colorBuffer[i+1] = color.G;
-			colorBuffer[i+2] = color.B;
+			colorBuffer[i] = color.C.r;
+			colorBuffer[i+1] = color.C.g;
+			colorBuffer[i+2] = color.C.b;
 			i += 3;
 		}
 	}
@@ -487,17 +487,17 @@ void LPV::CreateGridModel(ISimpleRenderableSceneNode** GirdModel, int nbCellDim,
 			vertexBuffer[i] = x*CellSize;
 			vertexBuffer[i+1] = y*CellSize;
 			vertexBuffer[i+2] = 0;
-			colorBuffer[i] = color.R;
-			colorBuffer[i+1] = color.G;
-			colorBuffer[i+2] = color.B;
+			colorBuffer[i] = color.C.r;
+			colorBuffer[i+1] = color.C.g;
+			colorBuffer[i+2] = color.C.b;
 			i += 3;
 
 			vertexBuffer[i] = x*CellSize;
 			vertexBuffer[i+1] = y*CellSize;
 			vertexBuffer[i+2] = nbCellDim*CellSize;
-			colorBuffer[i] = color.R;
-			colorBuffer[i+1] = color.G;
-			colorBuffer[i+2] = color.B;
+			colorBuffer[i] = color.C.r;
+			colorBuffer[i+1] = color.C.g;
+			colorBuffer[i+2] = color.C.b;
 			i += 3;
 		}
 	}
@@ -538,8 +538,8 @@ void LPV::DrawGrid(int level)
 {
 	Assert(level >= 0 && level < m_NbCascadedLevels);
 	glm::mat4x4 matGrid;
-	 glm::vec3 gridPos = GetGridPosition(level);
-	matGrid.SetTranslation(gridPos.x, gridPos.y, gridPos.z);
+	glm::vec3 gridPos = GetGridPosition(level);
+	matGrid = glm::translate(matGrid,gridPos);
 	m_GridModels[level]->LoadLocalTransformMatrix(matGrid);
 	m_GridModels[level]->Render();
 }

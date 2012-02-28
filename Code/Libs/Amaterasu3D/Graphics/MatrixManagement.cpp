@@ -22,6 +22,7 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 #include "MatrixManagement.h"
+#include "glm/ext.hpp"
 #include <Debug/Exceptions.h>
 #include <System/SettingsManager.h>
 #include <iostream>
@@ -132,7 +133,7 @@ void CMatrixManager::SetModeMatrix(MatrixMode mode)
 		glm::mat4x4 mat;
 		glm::ivec2 size =
 				CSettingsManager::Instance().GetSizeRenderingWindow();
-		mat.OrthoOffCenter(0, 0, size.x, size.y);
+		mat = glm::ortho(0, 0, size.x, size.y);
 		m_ProjectionMatrixOld = m_ProjectionMatrix;
 		SetProjectionMatrix(mat);
 		glDisable(GL_DEPTH_TEST);

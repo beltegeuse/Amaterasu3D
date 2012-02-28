@@ -23,7 +23,7 @@
 //==========================================================
 
 #include "ICameraSceneNode.h"
-
+#include "glm/ext.hpp"
 namespace ama3D
 {
 ICameraSceneNode::ICameraSceneNode(const std::string& name, ISceneNode* parent) :
@@ -80,8 +80,8 @@ void ICameraSceneNode::UpdateTransformations()
 	ISceneNode::UpdateTransformations();
 	if (m_NeedUpdateProjectionMatrix)
 	{
-		m_ProjectionMatrix = glm::mat4x4::CreatePerspectiveFOV(m_FOV,
-				m_Ratio, m_Near, m_Far);
+		m_ProjectionMatrix = glm::perspectiveFov(m_FOV,
+				m_Ratio, 1/m_Ratio, m_Near, m_Far); // ????
 		m_NeedUpdateProjectionMatrix = false;
 	}
 }

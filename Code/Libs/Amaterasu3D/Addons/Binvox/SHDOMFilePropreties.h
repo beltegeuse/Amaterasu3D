@@ -132,11 +132,11 @@ public:
 
 	// Global information
 	bool IsAllocated() const;
-	const ama3D::Math::TVector3I& GetDimension() const;
+	const glm::ivec3& GetDimension() const;
 
 	// Get data
 	const SHDOMCell& GetData(int x, int y, int z) const;
-	const SHDOMCell& GetData(const ama3D::Math::TVector3I& coordinates) const;
+	const SHDOMCell& GetData(const glm::ivec3& coordinates) const;
 
 private:
 	/*
@@ -147,7 +147,7 @@ private:
 
 	// Get index
 	int GetIndexData(int x, int y, int z) const;
-	int GetIndexData(const ama3D::Math::TVector3I& coordinates) const;
+	int GetIndexData(const glm::ivec3& coordinates) const;
 
 	// Parser for each files
 	FILETYPE ReadHeader();

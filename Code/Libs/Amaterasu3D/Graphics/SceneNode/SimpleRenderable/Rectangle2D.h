@@ -26,7 +26,7 @@
 #define RECTANGLE2D_H_
 
 #include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
-#include <Math/Vector2.h>
+#include "glm/glm.hpp"
 
 namespace ama3D
 {
@@ -36,7 +36,7 @@ public:
 	/*
 	 * Constructors & Destructors
 	 */
-	Rectangle2D(const Math::TVector2I& top, const Math::TVector2I& bottom,
+	Rectangle2D(const glm::ivec2& top, const glm::ivec2& bottom,
 			bool generateUVCoord = true, float offset = 0);
 	virtual ~Rectangle2D();
 };

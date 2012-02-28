@@ -159,7 +159,7 @@ glm::ivec2 CRectangle::Size() const
 /// \return Type d'intersection
 ///
 ////////////////////////////////////////////////////////////
-TIntersection CRectangle::Intersects(const TVector2I& Point) const
+TIntersection CRectangle::Intersects(const glm::ivec2& Point) const
 {
 	if ((Point.x >= Origin.x) && (Point.y >= Origin.y) && (Point.x <= End.x)
 			&& (Point.y <= End.y))

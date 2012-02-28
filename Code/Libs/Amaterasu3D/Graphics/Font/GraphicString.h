@@ -62,7 +62,7 @@ public:
 	//----------------------------------------------------------
 	// Donnees membres
 	//----------------------------------------------------------
-	glm::vec2 Position; ///< Position du texte a l'ecran
+	glm::ivec2 Position; ///< Position du texte a l'ecran
 	std::string Text; ///< Chaine de caracteres
 	std::string FontAlias;
 	CColor Color; ///< Couleur du texte

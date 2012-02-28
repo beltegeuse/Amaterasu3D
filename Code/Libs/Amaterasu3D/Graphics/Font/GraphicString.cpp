@@ -42,7 +42,7 @@ namespace ama3D
 /// \param StringSize :     Taille
 ///
 ////////////////////////////////////////////////////////////
-	CGraphicString::CGraphicString(const glm::vec2& StringPosition,
+	CGraphicString::CGraphicString(const glm::ivec2& StringPosition,
 		const std::string& StringText, const std::string& fontAlias, int size) :
 		Position(StringPosition), Text(StringText), Size(size), FontAlias(fontAlias)
 {

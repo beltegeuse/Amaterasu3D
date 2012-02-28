@@ -30,7 +30,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include <Math/Matrix4.h>
+#include "glm/glm.hpp"
 #include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
@@ -51,7 +51,7 @@ protected:
 	TShaderPtr m_BasicShader;
 	TShaderPtr m_ShadowShader;
 //	TShaderPtr m_GBufferShader;
-	Math::CMatrix4 m_matrixPerspective;
+	glm::mat4x4 m_matrixPerspective;
 	SpotLight m_Light;
 
 	bool m_debug;
@@ -76,11 +76,11 @@ public:
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		//m_Sky = new Skydome;
 		// Camera Setup
-		m_Camera = new CameraFPS(Math::TVector3F(3,4,2), Math::TVector3F(0,0,0));
+		m_Camera = new CameraFPS(glm::vec3(3,4,2),glm::vec3(0,0,0));
 		m_Camera->SetSpeed(20.0);
 		// Initialise OpenGL
 		GLCheck(glClearColor(0.0f,0.0f,0.0f,1.f));
-		m_matrixPerspective = m_matrixPerspective.CreatePerspectiveFOV(70, (double)800/600, 1.0, 400);
+		m_matrixPerspective = glm::perspectiveFov(70.f, 800.f, 600.f, 1.f, 400.f);
 		CMatrixManager::Instance().SetProjectionMatrix(m_matrixPerspective);
 		// Shader loading
 		m_BasicShaderShadow = CShaderManager::Instance().LoadShader("DebugDrawShadowMapOnly.shader");
@@ -90,19 +90,19 @@ public:
 
 		// Create Light
 		m_Light.LightColor = Color(1.0,1.0,1.0,0.0);
-		m_Light.Position = Math::TVector3F(7,10,7);
+		m_Light.Position = glm::vec3(7,10,7);
 		m_Light.LightRaduis = 40.0;
 		m_Light.LightIntensity = 1.0;
 		m_Light.LightCutOff = 70;
-		m_Light.Direction = Math::TVector3F(4.0,4.0,4.0);
+		m_Light.Direction = glm::vec3(4.0,4.0,4.0);
 		// Load scene
 		// * Create first cube
 		ISimpleRenderableSceneNode* cube1 = SceneManager.CreateSimpleMesh(MESH_CUBE, "cube1", 0);
-		cube1->SetPosition(Math::TVector3F(4,4,4));
+		cube1->SetPosition(glm::vec3(4,4,4));
 		SceneManager.AddScenegraphRoot(cube1);
 		// * Create floor
 		ISimpleRenderableSceneNode* cube2 = SceneManager.CreateSimpleMesh(MESH_CUBE, "cube2", 0);
-		cube2->SetScale(Math::TVector3F(10,1,10));
+		cube2->SetScale(glm::vec3(10,1,10));
 		SceneManager.AddScenegraphRoot(cube2);
 
 		Console.RegisterCommand("updatelight",Console::Bind(&ApplicationShadow::UpdateLightPosition, *this));
@@ -112,7 +112,7 @@ public:
 	{
 		if(event.Type == C3::Event::KeyPressed)
 		{
-			Math::CMatrix4 matrixTransform;
+			glm::mat4x4 matrixTransform;
 			switch(event.Key.Code)
 			{
 			case C3::Key::F1:
@@ -135,12 +135,12 @@ public:
 	virtual void OnRender()
 	{
 		MatrixManager.SetModeMatrix(MATRIX_3D);
-		Math::CMatrix4 LightViewMatrix;
-		LightViewMatrix.LookAt(m_Light.Position, m_Light.Direction);
-		Math::CMatrix4 LightProjectionMatrix;
-		Math::CMatrix4 oldProjectionMatrix;
-		Math::CMatrix4 oldViewMatrix;
-		LightProjectionMatrix = LightProjectionMatrix.CreatePerspectiveFOV(m_Light.LightCutOff, (double)512.0/512.0, 1.0, m_Light.LightRaduis);
+		glm::mat4x4 LightViewMatrix;
+		LightViewMatrix = glm::lookAt(m_Light.Position, m_Light.Direction, glm::vec3(0,1,0));
+		glm::mat4x4 LightProjectionMatrix;
+		glm::mat4x4 oldProjectionMatrix;
+		glm::mat4x4 oldViewMatrix;
+		LightProjectionMatrix = glm::perspectiveFov(m_Light.LightCutOff, 512.f, 512.f, 1.f, m_Light.LightRaduis);
 		{
 			// Generate the Shadow Map
 			// * Transformations

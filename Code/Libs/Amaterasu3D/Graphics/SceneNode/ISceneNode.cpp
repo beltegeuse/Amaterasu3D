@@ -177,12 +177,8 @@ void ISceneNode::UpdateTransformations()
 		m_NeedUpdate = false;
 
 		Logger::Log() << "[DEBUG] NeedUpdate : " << this << "\n";
-		glm::mat4x4 positionMatrix, scaleMatrix;
-		positionMatrix.SetTranslation(m_Position.x, m_Position.y,
-				m_Position.z);
-		scaleMatrix.SetScaling(m_Scale.x, m_Scale.y, m_Scale.z);
-		m_CachedLocalTransformationMatrix = scaleMatrix
-				* m_Orientation.ToMatrix() * positionMatrix;
+		m_CachedLocalTransformationMatrix  = glm::mat4x4();
+		m_CachedLocalTransformationMatrix = glm::translate(glm::scale(m_CachedLocalTransformationMatrix,m_Scale) * glm::mat4_cast(m_Orientation),m_Position);
 	}
 
 	if (m_Parent)
@@ -211,9 +207,9 @@ void ISceneNode::SetParent(ISceneNode* node)
 
 void ISceneNode::UpdateAttributes()
 {
-	m_Position = m_CachedLocalTransformationMatrix.GetTranslation();
-	m_Orientation.FromMatrix(m_CachedLocalTransformationMatrix);
-	m_Scale = m_CachedLocalTransformationMatrix.GetScale();
+	m_Position = glm::vec3(m_CachedLocalTransformationMatrix[0][3],m_CachedLocalTransformationMatrix[1][3],m_CachedLocalTransformationMatrix[2][3]);
+	m_Orientation = glm::quat_cast(m_CachedLocalTransformationMatrix);
+	m_Scale = glm::vec3(m_CachedLocalTransformationMatrix[0][0], m_CachedLocalTransformationMatrix[1][1], m_CachedLocalTransformationMatrix[2][2]);
 }
 
 } // Namespace Ama3D

@@ -1,5 +1,5 @@
-SUBDIRS(
-	Fattal
-	BinvoxViewer
+#SUBDIRS(
+	#Fattal
+	#BinvoxViewer
 	#SHDOMVisualizer
-)
+#)

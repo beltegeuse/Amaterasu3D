@@ -57,8 +57,7 @@ void DurandToneOperator::Compress(Texture* HDRBuffer)
 
 //	Logger::Log() << "[DEBUG] Half : " << HalfSize << "\n";
 
-	m_BilateralShader->SetUniformVector("SizeTexture",
-			Math::TVector2F(size.x, size.y));
+	m_BilateralShader->SetUniformVector("SizeTexture",glm::vec2(size.x, size.y));
 	m_BilateralShader->SetUniform1i("HalfSizeNeigbours", HalfSize);
 	m_BilateralShader->SetUniform1f("SigS", (HalfSize - 1) / 8.0);
 	m_BilateralShader->SetUniform1f("SigR", 0.35);

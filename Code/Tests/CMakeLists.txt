@@ -4,9 +4,9 @@ IF(LINUX)
 ENDIF(LINUX)
 
 # Techniques
-SUBDIRS(Techniques/GBuffer
-		Techniques/LPV
-		Techniques/SSAO
+SUBDIRS(#Techniques/GBuffer
+		#Techniques/LPV
+		#Techniques/SSAO
 		Techniques/ShadowMap
 		#Techniques/WhiteBalancing
 )

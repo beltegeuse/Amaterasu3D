@@ -31,9 +31,8 @@
 #include <Graphics/Camera/CameraAbstract.h>
 #include <Graphics/RenderableObject.h>
 #include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
-#include <Math/Vector2.h>
-#include <Math/Vector3.h>
-#include <Math/Matrix4.h>
+#include "glm/glm.hpp"
+
 
 namespace ama3D
 {

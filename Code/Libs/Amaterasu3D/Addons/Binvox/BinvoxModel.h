@@ -9,11 +9,9 @@
 #define BINVOXMODEL_H_
 
 #include <string>
-
+#include "glm/glm.hpp"
 #include <Graphics/Texture.h>
 #include <Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h>
-#include <Math/Vector2.h>
-#include <Math/Vector3.h>
 #include <Addons/Binvox/VolumetricRenderableObject.h>
 
 namespace ama3D

@@ -1,1 +1,1 @@
-SUBDIRS(SDFont)
+#SUBDIRS(SDFont)

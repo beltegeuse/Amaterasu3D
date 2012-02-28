@@ -209,15 +209,15 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 			 glm::vec3 v1(b1.buffer[0], b1.buffer[1], b1.buffer[2]);
 			 glm::vec3 v2(b1.buffer[3], b1.buffer[4], b1.buffer[5]);
 			 glm::vec3 v3(b1.buffer[6], b1.buffer[7], b1.buffer[8]);
-			 glm::vec3 v4 = v1 + ((v2 - v1) ^ (v3 - v1));
-			glm::mat4x4 t1(v1.x, v2.x, v3.x, v4.x, v1.y, v2.y, v3.y, v4.y,
+			 glm::vec3 v4 = v1 + glm::cross((v2 - v1),(v3 - v1));
+			 glm::mat4x4 t1(v1.x, v2.x, v3.x, v4.x, v1.y, v2.y, v3.y, v4.y,
 					v1.z, v2.z, v3.z, v4.z, 1, 1, 1, 1);
 			// second matrix
 			 glm::vec3 v1p(b2.buffer[0], b2.buffer[1], b2.buffer[2]);
 			 glm::vec3 v2p(b2.buffer[3], b2.buffer[4], b2.buffer[5]);
 			 glm::vec3 v3p(b2.buffer[6], b2.buffer[7], b2.buffer[8]);
-			 glm::vec3 v4p = v1p + ((v2p - v1p) ^ (v3p - v1p));
-			glm::mat4x4 t2(v1p.x, v2p.x, v3p.x, v4p.x, v1p.y, v2p.y, v3p.y,
+			 glm::vec3 v4p = v1p + glm::cross((v2p - v1p),(v3p - v1p));
+			 glm::mat4x4 t2(v1p.x, v2p.x, v3p.x, v4p.x, v1p.y, v2p.y, v3p.y,
 					v4p.y, v1p.z, v2p.z, v3p.z, v4p.z, 1, 1, 1, 1);
 
 			transformationMatrix = glm::inverse(t1) * t2;
@@ -265,9 +265,10 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 					if (v2 != vTrans)
 					{
 						Logger::Log() << "[INFO] Buffer difference detected : "
-								<< i << " ( " << v2 << " != " << vTrans
+								<< i << " ( " << v2.x << "x" << v2.y << "x" << v2.z << " != " 
+								<< vTrans.x << "x" << vTrans.y << "x" << vTrans.y
 								<< " )\n";
-						return false;
+ 						return false;
 					}
 					// Must add two steps
 					i += 2;
