@@ -1,10 +1,8 @@
 #include <iostream>
 
-#include <Logger/Logger.h>
-#include <Logger/LoggerDebug.h>
+#include "Logger.h" //#include <Logger/Logger.h>
+#include <LoggerDebug.h>
 
-namespace ama3D
-{
 // By default Logger => STDOUT
 Logger* Logger::_instance = new LoggerDebug;
 
@@ -30,8 +28,8 @@ Logger& Logger::Log()
 {
 	if (_instance == NULL)
 	{
-		throw CLoggerException(
-				"Undefined Logger ! Please Use the following fonction : SetLogger(Logger* logger).");
+		//throw CLoggerException(
+		//		"Undefined Logger ! Please Use the following fonction : SetLogger(Logger* logger)."); // FIXME
 	}
 	return *(_instance);
 }
@@ -50,4 +48,4 @@ void Logger::Kill()
 		_instance = NULL;
 	}
 }
-}
+

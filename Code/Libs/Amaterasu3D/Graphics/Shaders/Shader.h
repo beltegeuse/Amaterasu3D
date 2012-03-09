@@ -40,9 +40,9 @@
 // Amaterasu3D includes
 #include <Singleton.h>
 #include <Enum.h>
-#include <Debug/OpenGLDebug.h>
+#include <OpenGLDebug.h>
 #include <System/Resource.h>
-#include <Logger/Logger.h>
+#include <iostream> //#include "Logger.h"
 #include <Graphics/Shaders/ShaderUnit.h>
 #include <Graphics/Shaders/Compiler/ShaderCompiler.h>
 #include <Graphics/FBO.h>
@@ -281,7 +281,7 @@ GLint Shader::GetUniformLocation(const GLchar* name)
 	GLint loc = glGetUniformLocation(m_ProgramID, name);
 //	if (loc == -1)
 //	{
-//		Logger::Log() << "Error: can't find uniform variable \"" << name
+//		std::cout << "Error: can't find uniform variable \"" << name
 //				<< "\"\n";
 //	}
 //	else

@@ -24,7 +24,7 @@
 
 #include "FPS.h"
 
-#include <Logger/Logger.h>
+#include <iostream> //#include <Logger/Logger.h>
 
 namespace ama3D
 {
@@ -48,7 +48,7 @@ void FPS::FrameEnded()
 	m_FPS++;
 	if (m_TimeElasped > 1.0)
 	{
-		Logger::Log() << "[INFO] FPS : " << m_FPS << "\n";
+		std::cout << "[INFO] FPS : " << m_FPS << "\n";
 		// Reinitialize all variables
 		m_FPS = 0;
 		m_TimeElasped -= 1.0;

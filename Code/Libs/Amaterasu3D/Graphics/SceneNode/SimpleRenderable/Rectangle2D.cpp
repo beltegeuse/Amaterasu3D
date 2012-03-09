@@ -22,11 +22,11 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 #include "Rectangle2D.h"
-#include <Logger/Logger.h>
+#include <iostream> //#include "Logger.h"
 namespace ama3D
 {
-Rectangle2D::Rectangle2D(const Math::TVector2I& top,
-		const Math::TVector2I& bottom, bool generateUVCoord, float offset) :
+Rectangle2D::Rectangle2D(const glm::ivec2& top,
+		const glm::ivec2& bottom, bool generateUVCoord, float offset) :
 		ISimpleRenderableSceneNode("Rectangle2D", 0)
 {
 	// Create Vertex buffer
@@ -74,7 +74,7 @@ Rectangle2D::Rectangle2D(const Math::TVector2I& top,
 
 Rectangle2D::~Rectangle2D()
 {
-	Logger::Log() << "[DEBUG] Delete Rectangle2D \n";
+	std::cout << "[DEBUG] Delete Rectangle2D \n";
 }
 
 }

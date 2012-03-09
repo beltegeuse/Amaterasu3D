@@ -23,19 +23,19 @@
 //==========================================================
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <Utilities/File.h>
 #include <algorithm>
 #include <fstream>
 
-#include <Logger/Logger.h>
+#include <iostream> //#include <Logger/Logger.h>
 
 namespace ama3D
 {
 
 /////////////////////////////////////////////////////////////
-/// Constructeur � partir d'un std::string
+/// Constructeur e partir d'un std::string
 ///
 /// \param Name : Chemin complet du fichier
 ///
@@ -51,7 +51,7 @@ CFile::CFile(const std::string& Name) :
 }
 
 /////////////////////////////////////////////////////////////
-/// Constructeur � partir d'un const char*
+/// Constructeur e partir d'un const char*
 ///
 /// \param Name : Chemin complet du fichier
 ///

@@ -4,10 +4,9 @@
 /*
  * Heritage de Logger
  */
+#include "Logger.h"
+#include <iostream> //#include <Logger/Logger.h>
 
-#include <Logger/Logger.h>
-namespace ama3D
-{
 class LoggerDebug: public Logger
 {
 private:
@@ -18,6 +17,6 @@ public:
 	LoggerDebug();
 	virtual ~LoggerDebug();
 };
-}
+
 
 #endif /* LOGGERDEBUG_H_ */

@@ -26,11 +26,11 @@
 #define FUNCTOR_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <Utilities/SmartPtr.h>
 #include <Utilities/StringUtils.h>
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 #include <string>
 
 namespace ama3D
@@ -58,26 +58,26 @@ public:
 };
 
 ////////////////////////////////////////////////////////////
-/// Classe d�finissant un foncteur (objet fonction)
+/// Classe definissant un foncteur (objet fonction)
 ////////////////////////////////////////////////////////////
 class CFunctor
 {
 public:
 
 	//----------------------------------------------------------
-	// Construit le foncteur � partir d'une fonction
+	// Construit le foncteur e partir d'une fonction
 	//----------------------------------------------------------
 	CFunctor(IFunction* Func = NULL);
 
 	//----------------------------------------------------------
-	// Effectue l'appel � la fonction
+	// Effectue l'appel e la fonction
 	//----------------------------------------------------------
 	std::string operator ()(const std::string& Params = "") const;
 
 private:
 
 	//----------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------
 	CSmartPtr<IFunction> m_Function; ///< Pointeur sur l'objet stockant la fonction
 };

@@ -51,7 +51,7 @@ public:
 	virtual ~CException() throw ();
 
 	//----------------------------------------------------------
-	// Renvoie le message associ� � l'exception
+	// Renvoie le message associe e l'exception
 	//----------------------------------------------------------
 	virtual const char* what() const throw ();
 
@@ -60,11 +60,11 @@ protected:
 	//----------------------------------------------------------
 	// Donnees membres
 	//----------------------------------------------------------
-	std::string m_Message; ///< Message d�crivant l'exception
+	std::string m_Message; ///< Message decrivant l'exception
 };
 
 ////////////////////////////////////////////////////////////
-/// Exception lanc�e si une condition n'est pas v�rifi�e
+/// Exception lancee si une condition n'est pas verifiee
 ////////////////////////////////////////////////////////////
 struct CAssertException: public CException
 {
@@ -89,7 +89,7 @@ struct CLoadingFailed: public CException
 };
 
 ////////////////////////////////////////////////////////////
-/// Exception lanc�e lors d'une erreur de conversion
+/// Exception lancee lors d'une erreur de conversion
 ////////////////////////////////////////////////////////////
 struct CBadConversion: public CException
 {

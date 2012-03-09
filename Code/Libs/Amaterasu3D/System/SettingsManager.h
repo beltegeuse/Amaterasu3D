@@ -25,6 +25,7 @@
 #define SETTINGSMANAGER_H_
 
 #include <Singleton.h>
+#include <string>
 #include "glm/glm.hpp"
 
 namespace ama3D

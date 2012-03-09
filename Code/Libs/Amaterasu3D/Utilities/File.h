@@ -26,7 +26,7 @@
 #define FILE_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <string>
 
@@ -41,12 +41,12 @@ class CFile
 public:
 
 	//----------------------------------------------------------
-	// Constructeur � partir d'un std::string
+	// Constructeur e partir d'un std::string
 	//----------------------------------------------------------
 	CFile(const std::string& Name = "unknown");
 
 	//----------------------------------------------------------
-	// Constructeur � partir d'un const char*
+	// Constructeur e partir d'un const char*
 	//----------------------------------------------------------
 	CFile(const char* Name);
 
@@ -78,7 +78,7 @@ public:
 private:
 
 	//----------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------
 	std::string m_Name; ///< Chemin complet du fichier
 };

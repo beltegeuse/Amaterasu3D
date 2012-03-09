@@ -24,7 +24,7 @@
 
 #include "ManualMipmapping.h"
 
-#include <Logger/Logger.h>
+#include <iostream> //#include "Logger.h"
 #include <Utilities/Util.h>
 
 namespace ama3D
@@ -34,10 +34,10 @@ ManualMipmapping::ManualMipmapping(int initialeSize) :
 {
 	// Init object parameters
 	m_InitialSize = NearestPowerOfTwo(m_InitialSize);
-	Logger::Log() << "[INFO] Creation of Manual Mip-mapping : " << m_InitialSize
+	std::cout << "[INFO] Creation of Manual Mip-mapping : " << m_InitialSize
 			<< "\n";
 	m_NbLevels = log((float)m_InitialSize) / log(2.f);
-	Logger::Log() << "[INFO] Number levels : " << m_NbLevels << "\n";
+	std::cout << "[INFO] Number levels : " << m_NbLevels << "\n";
 }
 
 ManualMipmapping::~ManualMipmapping()
@@ -46,7 +46,7 @@ ManualMipmapping::~ManualMipmapping()
 
 void ManualMipmapping::Initialize()
 {
-	Logger::Log() << "[INFO] Manual mipmapping : Initialize ... \n";
+	std::cout << "[INFO] Manual mipmapping : Initialize ... \n";
 	// Load Shaders
 	m_ManualMipmappingShader = CShaderManager::Instance().LoadShader(
 			"ManualMipmappingPass.shader");
@@ -64,7 +64,7 @@ void ManualMipmapping::Initialize()
 	m_DownSamplerShader->Begin();
 	param.Attachment = glGetFragDataLocation(
 			m_DownSamplerShader->GetProgramObject(), "ColorBuffer");
-	Logger::Log() << "           * Attachment : " << param.Attachment << "\n";
+	std::cout << "           * Attachment : " << param.Attachment << "\n";
 	m_DownSamplerShader->End();
 
 	m_DownSamplerShader->SetFBO(CreateFBO(param, "ColorBuffer", m_InitialSize),
@@ -73,15 +73,15 @@ void ManualMipmapping::Initialize()
 	m_ManualMipmappingShader->Begin();
 	param.Attachment = glGetFragDataLocation(
 			m_ManualMipmappingShader->GetProgramObject(), "ColorBuffer");
-	Logger::Log() << "           * Attachment : " << param.Attachment << "\n";
+	std::cout << "           * Attachment : " << param.Attachment << "\n";
 	m_ManualMipmappingShader->End();
 
 	// Create FBOs
-	Logger::Log() << "[INFO] Create FBO \n";
+	std::cout << "[INFO] Create FBO \n";
 	m_Mipmaps = new FBO*[m_NbLevels];
 	for (int i = 0; i < m_NbLevels; i++)
 	{
-		Logger::Log() << "    * Size of FBO : " << m_InitialSize / pow(2.f, i + 1)
+		std::cout << "    * Size of FBO : " << m_InitialSize / pow(2.f, i + 1)
 				<< "\n";
 		m_Mipmaps[i] = CreateFBO(param, "ColorBuffer",
 				m_InitialSize / pow(2.f, i + 1));
@@ -94,7 +94,7 @@ FBO* ManualMipmapping::CreateFBO(FBOTextureBufferParam p,
 	std::map<std::string, FBOTextureBufferParam> buffers;
 	buffers[buffername] = p;
 	FBODepthBufferParam bufferDepth;
-	return new FBO(Math::TVector2I(size, size), buffers, FBODEPTH_NONE,
+	return new FBO(glm::ivec2(size, size), buffers, FBODEPTH_NONE,
 			bufferDepth);
 }
 
@@ -132,7 +132,7 @@ void ManualMipmapping::Compute(Texture* texture)
 
 		int size = m_InitialSize / pow(2.f, i);
 		m_ManualMipmappingShader->SetUniformVector("TexSize",
-				Math::TVector2F(size, size));
+				glm::vec2(size, size));
 		DrawQuad();
 
 		if (i == 0)

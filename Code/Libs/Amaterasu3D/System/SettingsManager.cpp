@@ -25,10 +25,10 @@
 #include <System/MediaManager.h>
 #include <Graphics/MatrixManagement.h>
 #include <tinyxml.h>
-#include <Logger/Logger.h>
-#include <Debug/Exceptions.h>
-#include <Logger/LoggerFile.h>
-#include <Logger/LoggerDebug.h>
+#include <iostream> //#include <Logger/Logger.h>
+#include <Exceptions.h>
+//#include <LoggerFile.h>
+//#include <LoggerDebug.h>
 #include <TinyXMLHelper.h>
 
 namespace ama3D
@@ -40,7 +40,7 @@ CSettingsManager::CSettingsManager() :
 				70)
 {
 	// The default values
-	m_SizeRenderingWindow = Math::TVector2I(800, 600);
+	m_SizeRenderingWindow = glm::ivec2(800, 600);
 	m_RootDataDir = "../Donnees";
 }
 
@@ -56,7 +56,7 @@ void CSettingsManager::LoadFile(const std::string& path)
 	TiXmlDocument doc(path.c_str());
 	if (!doc.LoadFile())
 	{
-		Logger::Log() << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
+		std::cout << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
 		throw CLoadingFailed(path, "unable to load xml with TinyXML");
 	}
 
@@ -80,13 +80,13 @@ void CSettingsManager::LoadFile(const std::string& path)
 		if (loggerType == "File")
 		{
 			std::string fileLog = std::string(nodeLogger->Attribute("file"));
-			Logger::SetLogger(new LoggerFile(fileLog));
-			Logger::Log() << "[INFO] SettingsManager : Log to a file : "
+			//Logger::SetLogger(new LoggerFile(fileLog)); // FIXME
+			std::cout << "[INFO] SettingsManager : Log to a file : "
 					<< fileLog << "\n";
 		}
 		else if (loggerType == "Debug")
 		{
-			Logger::SetLogger(new LoggerDebug);
+			//Logger::SetLogger(new LoggerDebug); // FIXME
 		}
 		else
 		{
@@ -100,16 +100,16 @@ void CSettingsManager::LoadFile(const std::string& path)
 		int x, y;
 		nodeResolution->Attribute("x", &x);
 		nodeResolution->Attribute("y", &y);
-		Logger::Log() << "[INFO] SettingsManager : Resolution = " << x << "x"
+		std::cout << "[INFO] SettingsManager : Resolution = " << x << "x"
 				<< y << "\n";
-		SetSizeRenderingWindow(Math::TVector2I(x, y));
+		SetSizeRenderingWindow(glm::ivec2(x, y));
 	}
 	// * Data
 	TiXmlElement* nodeData = rootConfig->FirstChildElement("Data");
 	if (nodeData)
 	{
 		std::string rootDataDir = std::string(nodeData->Attribute("rootDir"));
-		Logger::Log() << "[INFO] SettingsManager : Root data dir : "
+		std::cout << "[INFO] SettingsManager : Root data dir : "
 				<< rootDataDir << "\n";
 		m_RootDataDir = rootDataDir;
 		CMediaManager::Instance().AddSearchPathAndChilds(rootDataDir);
@@ -122,21 +122,21 @@ void CSettingsManager::LoadFile(const std::string& path)
 		TinyXMLGetAttributeValue(nodeProjection, "fov", &fov);
 		TinyXMLGetAttributeValue(nodeProjection, "near", &near);
 		TinyXMLGetAttributeValue(nodeProjection, "far", &far);
-		Logger::Log() << "[INFO] SettingsManager : Projection Settings : \n";
-		Logger::Log() << "     * FOV : " << fov << "\n";
-		Logger::Log() << "     * Near : " << near << "\n";
-		Logger::Log() << "     * Far : " << far << "\n";
+		std::cout << "[INFO] SettingsManager : Projection Settings : \n";
+		std::cout << "     * FOV : " << fov << "\n";
+		std::cout << "     * Near : " << near << "\n";
+		std::cout << "     * Far : " << far << "\n";
 		SetProjection(near, far, fov);
 	}
 }
 
 // To manage the Size of the rendering window
-const Math::TVector2I& CSettingsManager::GetSizeRenderingWindow() const
+const glm::ivec2& CSettingsManager::GetSizeRenderingWindow() const
 {
 	return m_SizeRenderingWindow;
 }
 
-void CSettingsManager::SetSizeRenderingWindow(const Math::TVector2I& newSize)
+void CSettingsManager::SetSizeRenderingWindow(const glm::ivec2& newSize)
 {
 	m_SizeRenderingWindow = newSize;
 	UpdateProjectionMatrix();
@@ -177,8 +177,8 @@ const std::string& CSettingsManager::GetRootDir() const
 void CSettingsManager::UpdateProjectionMatrix()
 {
 	CMatrixManager::Instance().SetProjectionMatrix(
-			Math::CMatrix4::CreatePerspectiveFOV(m_FOV,
-					m_SizeRenderingWindow.x / (float) m_SizeRenderingWindow.y,
+			glm::perspectiveFov(m_FOV,
+					(float)m_SizeRenderingWindow.x,(float) m_SizeRenderingWindow.y,
 					m_NearClipping, m_FarClipping));
 }
 }

@@ -23,7 +23,8 @@
 //==========================================================
 
 #include "Skydome.h"
-
+#include "glm/glm.hpp"
+#include "glm/ext.hpp"
 namespace ama3D
 {
 Skydome::Skydome() :
@@ -47,20 +48,20 @@ void Skydome::FrameStarted(double delta)
 
 void Skydome::Render()
 {
-	static Math::TVector3F eye(0.0f, 0.0f, 0.0f);
-	static Math::TVector3F look(0.0f, 0.0f, 1.0f);
-	static Math::TVector3F up(0.0f, 1.0f, 0.0f);
+	static glm::vec3 eye(0.0f, 0.0f, 0.0f);
+	static glm::vec3 look(0.0f, 0.0f, 1.0f);
+	static glm::vec3 up(0.0f, 1.0f, 0.0f);
 
-	Math::TVector3F trans =
-			CMatrixManager::Instance().GetMatrix(VIEW_MATRIX).GetTranslation();
-	Math::CMatrix4 transMatrix;
-	transMatrix.SetTranslation(-trans.x, -trans.y, -trans.z);
+	glm::mat4x4 view_mat = CMatrixManager::Instance().GetMatrix(VIEW_MATRIX);
+	glm::vec3 trans = glm::vec3(view_mat[0][3],view_mat[1][3], view_mat[2][3]);
+	glm::mat4x4 transMatrix;
+	transMatrix = glm::translate(-trans.x, -trans.y, -trans.z);
 	CMatrixManager::Instance().PushMatrix(transMatrix);
 	m_TextureCloud->activateMultiTex(CUSTOM_TEXTURE + 0);
 	m_SkyShader->Begin();
 	m_SkyShader->SetUniform1f("time", m_Time / 10.0);
 	m_SkyShader->SetUniformVector("horizon",
-			Math::TVector4F(0.9f, 0.7f, 0.7f, 1.0f));
+		glm::vec4(0.9f, 0.7f, 0.7f, 1.0f));
 	glDisable(GL_DEPTH_TEST);
 	gluSphere(m_Obj, 2.0, 300, 300);
 	glEnable(GL_DEPTH_TEST);

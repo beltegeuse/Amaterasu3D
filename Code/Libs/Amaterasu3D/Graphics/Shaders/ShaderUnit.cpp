@@ -36,8 +36,8 @@
 #include <sstream>
 #include <fstream>
 
-#include <Debug/Exceptions.h>
-#include <Logger/Logger.h>
+#include <Exceptions.h>
+#include <iostream> //#include "Logger.h"
 #include <Utilities/StringUtils.h>
 //#include <Graphics/Shaders/Compiler/ShaderCompiler.h>
 #include <System/Python/Jinja2Template.h>
@@ -76,21 +76,21 @@ void AddArgument(Jinja2Template& jinja2, const std::string& name,const ShaderCom
 ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type,
 		const ShaderCompilerConfig& config)
 {
-	Logger::Log() << "[INFO] Compile shader file : " << path << "\n";
+	std::cout << "[INFO] Compile shader file : " << path << "\n";
 	// ID Creation
 	if (type == VERTEX_SHADER)
 	{
-		Logger::Log() << "  * Shader type : VERTEX \n";
+		std::cout << "  * Shader type : VERTEX \n";
 		m_ID = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
 	}
 	else if (type == FRAGMENT_SHADER)
 	{
-		Logger::Log() << "  * Shader type : FRAGMENT \n";
+		std::cout << "  * Shader type : FRAGMENT \n";
 		m_ID = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
 	}
 	else if (type == GEOMETRY_SHADER)
 	{
-		Logger::Log() << "  * Shader type : GEOMETRY \n";
+		std::cout << "  * Shader type : GEOMETRY \n";
 		m_ID = glCreateShaderObjectARB(GL_GEOMETRY_SHADER_ARB);
 	}
 	else
@@ -100,14 +100,14 @@ ShaderUnit::ShaderUnit(const std::string& path, const ShaderUnitType& type,
 	for(ShaderCompilerConfig::DefineMap::const_iterator it = config.GetDefines().begin(); it != config.GetDefines().end(); ++it)
 		AddArgument(jinja2,it->first, it->second);
 	jinja2.Generate();
-	Logger::Log() << jinja2.GetCode() << "\n";
+	std::cout << jinja2.GetCode() << "\n";
 	const std::string source = jinja2.GetCode();
 	// Use GLSL To compile the current shader code
 	const char * bufferPtr = source.c_str();
 	GLint lenght = source.size();
 	glShaderSource(m_ID, 1, &bufferPtr, &lenght);
 	// Compile the shader
-	Logger::Log() << "  * Building .... \n";
+	std::cout << "  * Building .... \n";
 	glCompileShader(m_ID);
 	// Show all the Complilation log
 	ShowCompilerLog(m_ID);
@@ -137,14 +137,14 @@ void ShaderUnit::ShowCompilerLog(unsigned int id)
 		glGetInfoLogARB(id, blen, &slen, compilerLog);
 		if (compilerLog != 0)
 		{
-			Logger::Log() << "[LOG] **** Compiler LOG **** \n";
-			Logger::Log() << compilerLog;
+			std::cout << "[LOG] **** Compiler LOG **** \n";
+			std::cout << compilerLog;
 			//compiler.AnalyseCompilerLog(std::string(compilerLog));
-			Logger::Log() << "[LOG] **** END **** \n";
+			std::cout << "[LOG] **** END **** \n";
 		}
 		else
 		{
-			Logger::Log() << "[LOG] Compiler LOG : No log available \n";
+			std::cout << "[LOG] Compiler LOG : No log available \n";
 		}
 		free(compilerLog);
 	}
@@ -161,7 +161,7 @@ unsigned int ShaderUnit::GetID()
  */
 const std::string ShaderUnit::LoadFile(const std::string& path)
 {
-	Logger::Log() << "[INFO] LoadFile : " << path << "\n";
+	std::cout << "[INFO] LoadFile : " << path << "\n";
 	std::ifstream file(path.c_str(), std::ios::in);
 	// Check if the file is open
 	if (!file) // if not

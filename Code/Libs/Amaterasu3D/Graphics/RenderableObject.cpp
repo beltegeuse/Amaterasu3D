@@ -40,7 +40,7 @@ RenderableObject::~RenderableObject()
 	if (m_IsInstance)
 		return;
 
-	Logger::Log() << "[DEBUG] Delete RenderableObject : \n";
+	std::cout << "[DEBUG] Delete RenderableObject : \n";
 
 	glDeleteBuffers(m_buffers.size() + 1, m_indices_buffers);
 	delete[] m_indices_buffers;
@@ -50,7 +50,7 @@ RenderableObject::~RenderableObject()
 		if (it->second.owner)
 
 		{
-			Logger::Log() << "[DEBUG] * Delete buffer dim : "
+			std::cout << "[DEBUG] * Delete buffer dim : "
 					<< it->second.dimension << "\n";
 			delete[] it->second.buffer;
 		}
@@ -82,14 +82,14 @@ void RenderableObject::AddMaterial(MaterialType type, Color color)
 
 void RenderableObject::CompileBuffers()
 {
-	Logger::Log() << "[INFO] Generate " << m_buffers.size() + 1
+	std::cout << "[INFO] Generate " << m_buffers.size() + 1
 			<< " buffers ... \n";
 	m_is_compiled = true;
 	m_indices_buffers = new unsigned int[m_buffers.size() + 1];
 	GLCheck(glGenBuffers( m_buffers.size()+1, m_indices_buffers ));
-	Logger::Log() << "  * indice id : " << m_indices_buffers[0] << "\n";
+	std::cout << "  * indice id : " << m_indices_buffers[0] << "\n";
 	// Add index buffer
-	Logger::Log() << "   * load indices buffers ... " << m_indices_buffers[0]
+	std::cout << "   * load indices buffers ... " << m_indices_buffers[0]
 			<< "\n";
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices_buffers[0]));
 	GLCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*m_indices_size, m_indices, GL_STATIC_DRAW));
@@ -98,7 +98,7 @@ void RenderableObject::CompileBuffers()
 	for (BufferMap::iterator it = m_buffers.begin(); it != m_buffers.end();
 			it++)
 			{
-		Logger::Log() << "   * load other buffers ... " << m_indices_buffers[i]
+		std::cout << "   * load other buffers ... " << m_indices_buffers[i]
 				<< "\n";
 		GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_indices_buffers[i]));
 		GLCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(float)*it->second.size, it->second.buffer, GL_STATIC_DRAW));
@@ -112,7 +112,7 @@ void RenderableObject::Draw()
 	// pas de shader
 	if (!CShaderManager::Instance().activedShader())
 	{
-		Logger::Log()
+		std::cout
 				<< "[Warning] No actived shader. Nothings to render ... \n";
 	}
 	// Material activation
@@ -199,7 +199,7 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 	if (m_buffers.find(VERTEX_ATTRIBUT) != m_buffers.end()
 			&& m_buffers[VERTEX_ATTRIBUT].size >= 11)
 	{
-		Logger::Log() << "[INFO] Try to find the transformations ... \n";
+		std::cout << "[INFO] Try to find the transformations ... \n";
 		RenderableBuffer b1 = m_buffers[VERTEX_ATTRIBUT];
 		RenderableBuffer b2 = model.m_buffers[VERTEX_ATTRIBUT];
 		if (b1.buffer[0] != b2.buffer[0])
@@ -221,7 +221,7 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 					v4p.y, v1p.z, v2p.z, v3p.z, v4p.z, 1, 1, 1, 1);
 
 			transformationMatrix = glm::inverse(t1) * t2;
-			Logger::Log() << "[INFO] Transform matrice : \n"
+			std::cout << "[INFO] Transform matrice : \n"
 					<< transformationMatrix[0][0] << " " << transformationMatrix[0][1] << " " << transformationMatrix[0][2] << " " << transformationMatrix[0][3] << "\n"
 					<< transformationMatrix[1][0] << " " << transformationMatrix[1][1] << " " << transformationMatrix[1][2] << " " << transformationMatrix[1][3] << "\n"
 					<< transformationMatrix[2][0] << " " << transformationMatrix[2][1] << " " << transformationMatrix[2][2] << " " << transformationMatrix[2][3] << "\n"
@@ -233,7 +233,7 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 			{
 
 		BufferMap::const_iterator it2 = model.m_buffers.find(it->first);
-		Logger::Log() << "[INFO] INSTANCE : " << it->first
+		std::cout << "[INFO] INSTANCE : " << it->first
 				<< " buffer check instance ... \n";
 		for (int i = 0; i < it->second.size; i++)
 		{
@@ -241,7 +241,7 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 			{
 				if (it->second.buffer[i] != it2->second.buffer[i])
 				{
-					Logger::Log() << "[INFO] Buffer difference detected : " << i
+					std::cout << "[INFO] Buffer difference detected : " << i
 							<< " ( " << it->second.buffer[i] << " != "
 							<< it2->second.buffer[i] << " )\n";
 					return false;
@@ -264,7 +264,7 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 					vTrans /= vTrans.w;
 					if (v2 != vTrans)
 					{
-						Logger::Log() << "[INFO] Buffer difference detected : "
+						std::cout << "[INFO] Buffer difference detected : "
 								<< i << " ( " << v2.x << "x" << v2.y << "x" << v2.z << " != " 
 								<< vTrans.x << "x" << vTrans.y << "x" << vTrans.y
 								<< " )\n";
@@ -278,7 +278,7 @@ bool RenderableObject::IsInstance(RenderableObject& model)
 					// XXX: Somes copy from other tests
 					if (it->second.buffer[i] != it2->second.buffer[i])
 					{
-						Logger::Log() << "[INFO] Buffer difference detected : "
+						std::cout << "[INFO] Buffer difference detected : "
 								<< i << " ( " << it->second.buffer[i] << " != "
 								<< it2->second.buffer[i] << " )\n";
 						return false;

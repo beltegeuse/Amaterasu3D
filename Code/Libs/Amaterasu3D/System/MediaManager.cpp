@@ -36,13 +36,13 @@ namespace ama3D
 SINGLETON_IMPL(ama3D::CMediaManager)
 
 /////////////////////////////////////////////////////////////
-/// Constructeur par d�faut
+/// Constructeur par defaut
 ///
 ////////////////////////////////////////////////////////////
 CMediaManager::CMediaManager()
 {
 	m_Paths.insert("");
-	Logger::Log() << "[INFO] MediaManager creation .... \n";
+	std::cout << "[INFO] MediaManager creation .... \n";
 }
 
 /////////////////////////////////////////////////////////////
@@ -55,9 +55,9 @@ CMediaManager::~CMediaManager()
 }
 
 /////////////////////////////////////////////////////////////
-/// Ajoute un r�pertoire de recherche pour les m�dias
+/// Ajoute un repertoire de recherche pour les medias
 ///
-/// \param Path : Chemin � ajouter
+/// \param Path : Chemin e ajouter
 ///
 ////////////////////////////////////////////////////////////
 void CMediaManager::AddSearchPath(const std::string& Path)
@@ -75,7 +75,7 @@ void CMediaManager::AddSearchPath(const std::string& Path)
 void CMediaManager::AddSearchPathAndChilds(const std::string& Path)
 {
 	// Add the root directory
-//	Logger::Log() << Path << "\n";
+//	std::cout << Path << "\n";
 	AddSearchPath(Path);
 
 	// find childs directories to add...
@@ -90,11 +90,11 @@ void CMediaManager::AddSearchPathAndChilds(const std::string& Path)
 }
 
 /////////////////////////////////////////////////////////////
-/// Cherche un fichier dans les r�pertoires de recherche
+/// Cherche un fichier dans les repertoires de recherche
 ///
 /// \param Filename : Chemin du media
 ///
-/// \return Chemin complet du media, exception si non trouv�
+/// \return Chemin complet du media, exception si non trouve
 ///
 ////////////////////////////////////////////////////////////
 CFile CMediaManager::FindMedia(const CFile& Filename) const
@@ -109,11 +109,11 @@ CFile CMediaManager::FindMedia(const CFile& Filename) const
 	}
 
 	//// DEBUG
-	Logger::Log() << "===== PATH : \n";
+	std::cout << "===== PATH : \n";
 	for (std::set<std::string>::const_iterator i = m_Paths.begin();
 			i != m_Paths.end(); ++i)
 			{
-		Logger::Log() << "  * " << *i + Filename.Fullname() << "\n";
+		std::cout << "  * " << *i + Filename.Fullname() << "\n";
 	}
 
 	// Si le fichier est introuvable, on lance une exception

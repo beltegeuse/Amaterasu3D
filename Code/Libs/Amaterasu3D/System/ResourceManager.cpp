@@ -23,21 +23,21 @@
 //==========================================================
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <System/ResourceManager.h>
-#include <Logger/Logger.h>
-#include <Debug/Exceptions.h>
+#include <iostream> //#include "Logger.h"
+#include <Exceptions.h>
 
 namespace ama3D
 {
 ////////////////////////////////////////////////////////////
-// Impl�mentation des m�thodes du singleton
+// Implementation des methodes du singleton
 ////////////////////////////////////////////////////////////
 SINGLETON_IMPL(ama3D::CResourceManager)
 
 /////////////////////////////////////////////////////////////
-/// Constructeur par d�faut
+/// Constructeur par defaut
 ///
 ////////////////////////////////////////////////////////////
 CResourceManager::CResourceManager()
@@ -54,12 +54,12 @@ CResourceManager::~CResourceManager()
 	// S'il reste des ressources dans la liste, on le signale
 	if (!m_Resources.empty())
 	{
-		Logger::Log() << "** warning ** leak resources :\n";
+		std::cout << "** warning ** leak resources :\n";
 
 		for (TResourcesMap::const_iterator i = m_Resources.begin();
 				i != m_Resources.end(); ++i)
 				{
-			Logger::Log() << " - " << i->second->GetName() << "\n";
+			std::cout << " - " << i->second->GetName() << "\n";
 		}
 	}
 }
@@ -67,19 +67,19 @@ CResourceManager::~CResourceManager()
 /////////////////////////////////////////////////////////////
 /// Ajoute une ressource
 ///
-/// \param Name :     Nom associ� � la ressource
-/// \param Resource : Pointeur sur la ressource � ajouter
+/// \param Name :     Nom associe a la ressource
+/// \param Resource : Pointeur sur la ressource a ajouter
 ///
 ////////////////////////////////////////////////////////////
 void CResourceManager::Add(const std::string& Name, IResource* Resource)
 {
 	Assert(Resource != NULL);
 
-	// Si la ressource avait d�j� �t� charg�e, on le signale
+	// Si la ressource avait deja ete chargee, on le signale
 	if (m_Resources.find(Name) != m_Resources.end())
-		Logger::Log() << Name << " : ressource d�j� charg�e !\n";
+		std::cout << Name << " : ressource deja chargee !\n";
 
-	// Ajout de la ressource � la liste
+	// Ajout de la ressource a la liste
 	m_Resources[Name] = Resource;
 	Resource->m_Name = Name;
 }
@@ -87,7 +87,7 @@ void CResourceManager::Add(const std::string& Name, IResource* Resource)
 /////////////////////////////////////////////////////////////
 /// Retire une ressource
 ///
-/// \param Name : Nom de la ressource � retirer
+/// \param Name : Nom de la ressource a retirer
 ///
 ////////////////////////////////////////////////////////////
 void CResourceManager::Remove(const std::string& Name)
@@ -95,9 +95,9 @@ void CResourceManager::Remove(const std::string& Name)
 	// Recherche de la ressource dans la table
 	TResourcesMap::iterator It = m_Resources.find(Name);
 
-	// Si la ressource n'avait pas �t� charg�e, on le signale
+	// Si la ressource n'avait pas ete chargee, on le signale
 	if (It == m_Resources.end())
-		Logger::Log() << Name << " : ressource d�truite mais non-charg�e !\n";
+		std::cout << Name << " : ressource detruite mais non-chargee !\n";
 
 	// Retrait de la ressource de la liste
 	m_Resources.erase(It);

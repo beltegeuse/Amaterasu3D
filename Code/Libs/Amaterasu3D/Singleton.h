@@ -52,7 +52,7 @@ public:
 	}
 
 	//----------------------------------------------------------------
-	// D�truit l'instance unique de la classe
+	// Detruit l'instance unique de la classe
 	//----------------------------------------------------------------
 	static void Destroy()
 	{
@@ -63,7 +63,7 @@ public:
 protected:
 
 	//----------------------------------------------------------------
-	// Constructeur par d�faut
+	// Constructeur par defaut
 	//----------------------------------------------------------------
 	CSingleton()
 	{
@@ -79,7 +79,7 @@ protected:
 private:
 
 	//----------------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------------
 	static T* Inst; ///< Instance unique de la classe
 
@@ -91,9 +91,9 @@ private:
 };
 
 ////////////////////////////////////////////////////////////
-/// Macro automatisant la cr�ation d'un singleton --
-/// � placer dans la d�finition de la classe concern�e.
-/// La raison pour laquelle il faut red�finir (et masquer)
+/// Macro automatisant la creation d'un singleton --
+/// e placer dans la definition de la classe concernee.
+/// La raison pour laquelle il faut redefinir (et masquer)
 /// la fonction Instance() reste obscure, mais si ce n'est pas
 /// fait le client obtient des erreurs de link sur Inst
 ////////////////////////////////////////////////////////////

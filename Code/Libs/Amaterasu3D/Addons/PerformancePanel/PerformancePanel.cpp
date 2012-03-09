@@ -28,7 +28,7 @@
 #include <sstream>
 
 // Amaterasu includes
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 
 namespace ama3D
 {

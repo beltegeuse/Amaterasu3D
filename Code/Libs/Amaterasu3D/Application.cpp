@@ -73,7 +73,7 @@ Application::~Application()
 	// * Destroy the Event manager
 	CEventManager::Instance();
 	// * Final step: Delete Logger
-	Logger::Kill();
+	//Logger::Kill();
 }
 
 void Application::CreateSDLWindow()
@@ -83,7 +83,7 @@ void Application::CreateSDLWindow()
 	// **************************************
 //	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 //	{
-//		Logger::Log() << "[ERROR] On the SDL initialisation : "
+//		std::cout << "[ERROR] On the SDL initialisation : "
 //				<< SDL_GetError() << "\n";
 //		throw CException("Can't initialize SDL Context.");
 //	}

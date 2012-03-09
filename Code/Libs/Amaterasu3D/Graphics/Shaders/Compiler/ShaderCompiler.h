@@ -31,7 +31,7 @@
 #include <map>
 
 // Amaterasu3D Includes
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 
 namespace ama3D
 {

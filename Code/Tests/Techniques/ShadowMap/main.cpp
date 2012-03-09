@@ -31,7 +31,6 @@
 #include <stdlib.h>
 
 #include "glm/glm.hpp"
-#include <Logger/LoggerFile.h>
 #include <Graphics/Lighting/DeferredLighting/DeferredLighting.h>
 #include <Application.h>
 #include <Graphics/Camera/CameraFPS.h>

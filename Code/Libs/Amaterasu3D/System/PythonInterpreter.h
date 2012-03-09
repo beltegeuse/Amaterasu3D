@@ -26,7 +26,7 @@
 #define PYTHONINTERPRETER_H_
 
 // Ama3D includes
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 
 // Python main include
 #include <Python.h>

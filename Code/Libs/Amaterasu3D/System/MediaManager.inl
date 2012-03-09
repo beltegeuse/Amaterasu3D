@@ -27,23 +27,23 @@
 /// Enregistre un nouveau chargeur de media de type T
 ///
 /// \param Loader :     Pointeur sur le chargeur
-/// \param Extensions : Extensions associ�es au chargeur
+/// \param Extensions : Extensions associees au chargeur
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
 inline void CMediaManager::RegisterLoader(ILoader<T>* Loader, const std::string& Extensions)
 {
-    // R�cup�ration des extensions
+    // Recuperation des extensions
     std::vector<std::string> Ext;
     Split(Extensions, Ext, " /\\*.,;|-_\t\n'\"");
 
-	Logger::Log() << "[INFO] Add New Loader ... \n";
+	std::cout  << "[INFO] Add New Loader ... \n";
 
-    // Ajout des extensions une � une
+    // Ajout des extensions une e une
     CSmartPtr<ILoader<T> > Ptr = Loader;
     for (std::vector<std::string>::iterator i = Ext.begin(); i != Ext.end(); ++i)
 	{
-		Logger::Log() << "  * " << ToLower(*i) << " ( " << CMediaHolder<T>::m_Loaders.size() << ")\n";
+		std::cout  << "  * " << ToLower(*i) << " ( " << CMediaHolder<T>::m_Loaders.size() << ")\n";
         CMediaHolder<T>::m_Loaders[ToLower(*i)] = Ptr;
 	}
 }
@@ -52,13 +52,13 @@ inline void CMediaManager::RegisterLoader(ILoader<T>* Loader, const std::string&
 ////////////////////////////////////////////////////////////
 /// Supprime un chargeur
 ///
-/// \param Extensions : Extensions associ�es au chargeur
+/// \param Extensions : Extensions associees au chargeur
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
 inline void CMediaManager::UnregisterLoader(const std::string& Extensions)
 {
-    // R�cup�ration des extensions
+    // Recuperation des extensions
     std::vector<std::string> Ext;
     Split(Extensions, Ext, " /\\*.,;|-_\t\n'\"");
 
@@ -69,11 +69,11 @@ inline void CMediaManager::UnregisterLoader(const std::string& Extensions)
 
 
 /////////////////////////////////////////////////////////////
-/// Charge un media de type T � partir d'un fichier
+/// Charge un media de type T e partir d'un fichier
 ///
 /// \param Filename : Chemin du fichier
 ///
-/// \return Pointeur sur le T charg�
+/// \return Pointeur sur le T charge
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
@@ -82,7 +82,7 @@ inline T* CMediaManager::LoadMediaFromFile(const CFile& Filename) const
     // Recherche du fichier dans les repertoires enregistres
     CFile MediaPath = FindMedia(Filename);
 
-    // On d�l�gue le boulot au loader approprie
+    // On delegue le boulot au loader approprie
     T* Media;
     try
     {
@@ -90,12 +90,12 @@ inline T* CMediaManager::LoadMediaFromFile(const CFile& Filename) const
     }
     catch(CException e)
     {
-    	Logger::Log() << "[ERROR] On loading " << MediaPath.Fullname() << " [Reason : " << e.what() << "]\n";
+    	std::cout  << "[ERROR] On loading " << MediaPath.Fullname() << " [Reason : " << e.what() << "]\n";
     	throw CException("Unable to load " + MediaPath.Fullname());
     }
 
     // Loggization du chargement
-    Logger::Log() << "[LOAD] New resources loaded : " << MediaPath.Fullname() << "\n";
+    std::cout  << "[LOAD] New resources loaded : " << MediaPath.Fullname() << "\n";
 
     return Media;
 }
@@ -104,45 +104,45 @@ inline T* CMediaManager::LoadMediaFromFile(const CFile& Filename) const
 /////////////////////////////////////////////////////////////
 /// Sauvegarde un T dans un fichier
 ///
-/// \param Object :   Pointeur sur l'objet � sauvegarder
-/// \param Filename : Nom du fichier � cr�er
+/// \param Object :   Pointeur sur l'objet e sauvegarder
+/// \param Filename : Nom du fichier e creer
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
 inline void CMediaManager::SaveMediaToFile(const T* Object, const CFile& Filename) const
 {
-    // On d�l�gue le boulot au loader appropri�
+    // On delegue le boulot au loader approprie
     FindLoader<T>(Filename).SaveToFile(Object, Filename.Fullname());
 
     // Loggization de la sauvegarde
-    Logger::Log() << "[SAVE] resources saved : " << Filename.Fullname() << "\n";
+    std::cout  << "[SAVE] resources saved : " << Filename.Fullname() << "\n";
 }
 
 
 /////////////////////////////////////////////////////////////
-/// Cherche le loader correspondant � un fichier donn�
+/// Cherche le loader correspondant e un fichier donne
 ///
 /// \param Filename : Fichier
 ///
-/// \return R�f�rence sur le loader, exception si non-trouv�
+/// \return Reference sur le loader, exception si non-trouve
 ///
 ////////////////////////////////////////////////////////////
 template <class T>
 inline ILoader<T>& CMediaManager::FindLoader(const CFile& Filename) const
 {
-	Logger::Log() << "[DEBUG] Number extension supported : " << CMediaHolder<T>::m_Loaders.size() << "\n";
+	std::cout  << "[DEBUG] Number extension supported : " << CMediaHolder<T>::m_Loaders.size() << "\n";
     // Recherche de l'extension dans la map de loaders
     typename CMediaHolder<T>::TLoadersMap::const_iterator It = CMediaHolder<T>::m_Loaders.find(ToLower(Filename.Extension()));
 
-    // Si l'extension du fichier se trouve parmi celles reconnues on renvoie le loader associ�, sinon on lance une exception
+    // Si l'extension du fichier se trouve parmi celles reconnues on renvoie le loader associe, sinon on lance une exception
     if ((It != CMediaHolder<T>::m_Loaders.end()) && It->second)
         return *It->second;
 
 	It =  CMediaHolder<T>::m_Loaders.begin();
-	Logger::Log() << "[INFO] Extension supported : \n"; 
+	std::cout  << "[INFO] Extension supported : \n"; 
 	while(It !=  CMediaHolder<T>::m_Loaders.end())
 	{
-		Logger::Log() << "   * "<< It->first << "\n";
+		std::cout  << "   * "<< It->first << "\n";
 		++It;
 	}
 

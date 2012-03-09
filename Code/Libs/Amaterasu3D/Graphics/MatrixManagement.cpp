@@ -23,7 +23,7 @@
 //==========================================================
 #include "MatrixManagement.h"
 #include "glm/ext.hpp"
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 #include <System/SettingsManager.h>
 #include <iostream>
 

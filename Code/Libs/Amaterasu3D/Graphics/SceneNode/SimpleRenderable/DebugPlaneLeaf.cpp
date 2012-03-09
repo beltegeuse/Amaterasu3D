@@ -23,7 +23,7 @@
 //==========================================================
 #include "DebugPlaneLeaf.h"
 
-#include <Debug/OpenGLDebug.h>
+#include <OpenGLDebug.h>
 #include <iostream>
 #ifdef MSVC
 #include <windows.h>
@@ -31,7 +31,7 @@
 #include <GL/gl.h>
 #include <Enum.h>
 #include <Graphics/Shaders/Shader.h>
-#include <Logger/Logger.h>
+#include <iostream> //#include <Logger/Logger.h>
 
 namespace ama3D
 {
@@ -45,16 +45,16 @@ GLuint DebugPlaneLeaf::IndiceArray[6] =
 DebugPlaneLeaf::DebugPlaneLeaf(const std::string& name, ISceneNode* parent) :
 		ISimpleRenderableSceneNode(name, parent)
 {
-	// G�n�ration des buffers
-	Logger::Log() << "[INFO] Gen Buffer ...\n";
+	// Generation des buffers
+	std::cout << "[INFO] Gen Buffer ...\n";
 	GLCheck(glGenBuffers( 2, m_planebuffers ));
 	// Buffer d'informations de vertex
-	Logger::Log() << "[INFO] Fill Array Buffer ...\n";
+	std::cout << "[INFO] Fill Array Buffer ...\n";
 	GLCheck(glBindBuffer(GL_ARRAY_BUFFER, m_planebuffers[0]));
 	GLCheck(
 			glBufferData(GL_ARRAY_BUFFER, sizeof(PlaneArray), PlaneArray, GL_STATIC_DRAW));
 	// Buffer d'indices
-	Logger::Log() << "[INFO] Fill Element Array Buffer ...\n";
+	std::cout << "[INFO] Fill Element Array Buffer ...\n";
 	GLCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_planebuffers[1]));
 	GLCheck(
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(IndiceArray), IndiceArray, GL_STATIC_DRAW));
@@ -70,7 +70,7 @@ void DebugPlaneLeaf::Draw()
 	// pas de shader
 	if (!CShaderManager::Instance().activedShader())
 	{
-		Logger::Log()
+		std::cout
 				<< "[Warning] No actived shader. Nothings to render ... \n";
 	}
 	//  * Les differents blindings ...

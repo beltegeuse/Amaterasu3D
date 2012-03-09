@@ -22,22 +22,22 @@
 // E-mail : laurent.gom@gmail.com
 //==========================================================
 
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 
 /////////////////////////////////////////////////////////////
-/// D�coupe une chaine de caract�res
+/// Decoupe une chaine de caracteres
 ///
-/// \param String : Cha�ne � d�composer
-/// \param Tokens : Tableau contenant les tokens r�cup�r�s
-/// \param Delim :  D�limiteurs
+/// \param String : Chaene e decomposer
+/// \param Tokens : Tableau contenant les tokens recuperes
+/// \param Delim :  Delimiteurs
 ///
 ////////////////////////////////////////////////////////////
 inline void Split(const std::string& String, std::vector<std::string>& Tokens, const std::string& Delim)
 {
-    // Effacement du vector dans lequel on va mettre les r�sultats
+    // Effacement du vector dans lequel on va mettre les resultats
     Tokens.clear();
 
-    // Parcours de la cha�ne et extraction des tokens un � un
+    // Parcours de la chaene et extraction des tokens un e un
     for (std::string::size_type p1 = 0, p2 = 0; p1 != std::string::npos; )
     {
         p1 = String.find_first_not_of(Delim, p1);
@@ -52,9 +52,9 @@ inline void Split(const std::string& String, std::vector<std::string>& Tokens, c
 
 
 ////////////////////////////////////////////////////////////
-/// Renvoie le contenu d'un fichier sous forme de cha�ne
+/// Renvoie le contenu d'un fichier sous forme de chaene
 ///
-/// \param Filename : Nom du fichier � lire
+/// \param Filename : Nom du fichier e lire
 ///
 /// \return Contenu du fichier
 ///
@@ -64,9 +64,9 @@ inline std::string ReadFile(const std::string& Filename)
     // Ouverture du fichier
     std::ifstream File(Filename.c_str());
     if (!File)
-        throw CLoadingFailed(Filename, "Impossible d'acc�der au fichier en lecture");
+        throw CLoadingFailed(Filename, "Impossible d'acceder au fichier en lecture");
 
-    // R�cup�ration du contenu
+    // Recuperation du contenu
     std::ostringstream oss;
     oss << File.rdbuf();
 
@@ -75,11 +75,11 @@ inline std::string ReadFile(const std::string& Filename)
 
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le code de hachage d'une cha�ne de caract�res
+/// Renvoie le code de hachage d'une chaene de caracteres
 ///
-/// \param String : Cha�ne de caract�res
+/// \param String : Chaene de caracteres
 ///
-/// \return Code de hachage correspondant � la cha�ne
+/// \return Code de hachage correspondant e la chaene
 ///
 ////////////////////////////////////////////////////////////
 inline unsigned long StringHash(const std::string& String)
@@ -93,18 +93,18 @@ inline unsigned long StringHash(const std::string& String)
 
 
 /////////////////////////////////////////////////////////////
-/// Convertit une cha�ne de caract�res en minuscule
+/// Convertit une chaene de caracteres en minuscule
 ///
-/// \param Text : Cha�ne d'entr�e
+/// \param Text : Chaene d'entree
 ///
-/// \return Cha�ne convertie
+/// \return Chaene convertie
 ///
 ////////////////////////////////////////////////////////////
 inline std::string ToLower(const std::string& Text)
 {
     std::string Ret(Text.size(), ' ');
 
-    // Le cast est n�cessaire pour faire fonctionner ce code sous gcc
+    // Le cast est necessaire pour faire fonctionner ce code sous gcc
     std::transform(Text.begin(), Text.end(), Ret.begin(), static_cast<int (*)(int)>(std::tolower));
 
     return Ret;
@@ -112,18 +112,18 @@ inline std::string ToLower(const std::string& Text)
 
 
 /////////////////////////////////////////////////////////////
-/// Convertit une cha�ne de caract�res en majuscules
+/// Convertit une chaene de caracteres en majuscules
 ///
-/// \param Text : Cha�ne d'entr�e
+/// \param Text : Chaene d'entree
 ///
-/// \return Cha�ne convertie
+/// \return Chaene convertie
 ///
 ////////////////////////////////////////////////////////////
 inline std::string ToUpper(const std::string& Text)
 {
     std::string Ret(Text.size(), ' ');
 
-    // Le cast est n�cessaire pour faire fonctionner ce code sous gcc
+    // Le cast est necessaire pour faire fonctionner ce code sous gcc
     std::transform(Text.begin(), Text.end(), Ret.begin(), static_cast<int (*)(int)>(std::toupper));
 
     return Ret;
@@ -141,7 +141,7 @@ inline bool ToBool(const std::string& Text)
 }
 
 ////////////////////////////////////////////////////////////
-/// Constructeur par d�faut
+/// Constructeur par defaut
 ///
 ////////////////////////////////////////////////////////////
 inline CStringBuilder::CStringBuilder()
@@ -151,9 +151,9 @@ inline CStringBuilder::CStringBuilder()
 
 
 ////////////////////////////////////////////////////////////
-/// Construit l'injecteur avec une premi�re valeur
+/// Construit l'injecteur avec une premiere valeur
 ///
-/// \param Value : Valeur � injecter
+/// \param Value : Valeur e injecter
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
@@ -164,11 +164,11 @@ inline CStringBuilder::CStringBuilder(const T& Value)
 
 
 ////////////////////////////////////////////////////////////
-/// Injecte une valeur dans la cha�ne
+/// Injecte une valeur dans la chaene
 ///
-/// \param Value : Valeur � injecter
+/// \param Value : Valeur e injecter
 ///
-/// \return R�f�rence sur l'instance de l'injecteur
+/// \return Reference sur l'instance de l'injecteur
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
@@ -181,9 +181,9 @@ inline CStringBuilder& CStringBuilder::operator ()(const T& Value)
 
 
 ////////////////////////////////////////////////////////////
-/// Op�rateur de conversion implicite en string
+/// Operateur de conversion implicite en string
 ///
-/// \return Cha�ne de caract�re construite avec les valeurs inject�es
+/// \return Chaene de caractere construite avec les valeurs injectees
 ///
 ////////////////////////////////////////////////////////////
 inline CStringBuilder::operator std::string()
@@ -193,9 +193,9 @@ inline CStringBuilder::operator std::string()
 
 
 ////////////////////////////////////////////////////////////
-/// Construit l'extracteur � partir d'une cha�ne
+/// Construit l'extracteur e partir d'une chaene
 ///
-/// \param Text : Texte � convertir
+/// \param Text : Texte e convertir
 ///
 ////////////////////////////////////////////////////////////
 inline CStringExtractor::CStringExtractor(const std::string& Text) :
@@ -208,9 +208,9 @@ m_InStream(Text)
 ////////////////////////////////////////////////////////////
 /// Extrait une valeur de type T
 ///
-/// \param Value : Valeur � extraire
+/// \param Value : Valeur e extraire
 ///
-/// \return R�f�rence sur l'extracteur
+/// \return Reference sur l'extracteur
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
@@ -219,7 +219,7 @@ inline CStringExtractor& CStringExtractor::operator ()(T& Value)
     if (!(m_InStream >> Value))
     {
         if (m_InStream.eof())
-            throw CBadConversion(CStringBuilder("Tentative d'extraire � partir d'une cha�ne vide"));
+            throw CBadConversion(CStringBuilder("Tentative d'extraire e partir d'une chaene vide"));
         else
             throw CBadConversion(CStringBuilder("Impossible de convertir"));
     }
@@ -229,12 +229,12 @@ inline CStringExtractor& CStringExtractor::operator ()(T& Value)
 
 
 ////////////////////////////////////////////////////////////
-/// V�rifie qu'il n'y a plus rien � extraire
+/// Verifie qu'il n'y a plus rien e extraire
 ///
 ////////////////////////////////////////////////////////////
 inline void CStringExtractor::ThrowIfEOF()
 {
     std::string Left;
     if (std::getline(m_InStream, Left))
-        throw CBadConversion("Cha�ne trop longue, \"" + Left + "\" n'a pas �t� extrait");
+        throw CBadConversion("Chaene trop longue, \"" + Left + "\" n'a pas ete extrait");
 }

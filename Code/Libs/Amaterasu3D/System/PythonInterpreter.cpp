@@ -24,7 +24,7 @@
 
 #include "PythonInterpreter.h"
 
-#include <Logger/Logger.h>
+#include <iostream> //#include "Logger.h"
 
 namespace ama3D
 {
@@ -71,7 +71,7 @@ PythonInterpreter::PythonInterpreter() : m_MainModule(0), m_MainDict(0)
 
 PythonInterpreter::~PythonInterpreter()
 {
-	Logger::Log() << "[INFO] Destruct python interpreter.\n";
+	std::cout << "[INFO] Destruct python interpreter.\n";
 	Py_Finalize();
 }
 
@@ -84,9 +84,9 @@ void PythonInterpreter::Import(const std::string& module)
 
 void PythonInterpreter::Execute(const std::string& code, PythonMap& args, PythonResult& res)
 {
-//		Logger::Log() << "[DEBUG] Execute python script =======\n";
-//		Logger::Log() << code;
-//		Logger::Log() << "[DEBUG] =============================\n";
+//		std::cout << "[DEBUG] Execute python script =======\n";
+//		std::cout << code;
+//		std::cout << "[DEBUG] =============================\n";
 
 		//TODO: Gerer le nettoye du dictionnaire
 		PyDict_SetItemString(m_MainDict, "args", args.GetObject());

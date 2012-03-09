@@ -22,14 +22,14 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 #include "DebugCubeLeaf.h"
-#include <Debug/OpenGLDebug.h>
+#include <OpenGLDebug.h>
 #include <iostream>
 #ifdef MSVC
 #include <windows.h>
 #endif
 #include <GL/gl.h>
 #include <Enum.h>
-#include <Logger/Logger.h>
+#include <iostream> //#include <Logger/Logger.h>
 
 namespace ama3D
 {

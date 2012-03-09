@@ -34,7 +34,7 @@
 namespace ama3D
 {
 /////////////////////////////////////////////////////////////
-/// Foncteur servant � faire le m�nage dans les collections
+/// Foncteur servant e faire le menage dans les collections
 /// de pointeurs
 ///
 ////////////////////////////////////////////////////////////
@@ -48,10 +48,10 @@ struct Delete
 };
 
 ////////////////////////////////////////////////////////////
-/// Renvoie une valeur approch�e d'un nombre � la plus proche
+/// Renvoie une valeur approchee d'un nombre e la plus proche
 /// plus grande puissance de 2
 ///
-/// \param Value : Nombre � tester
+/// \param Value : Nombre e tester
 ///
 /// \return Puissance de 2 correspondante
 ///

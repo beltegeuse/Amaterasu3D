@@ -29,8 +29,8 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include <Logger/Logger.h>
-#include <Debug/Exceptions.h>
+#include <iostream> //#include "Logger.h"
+#include <Exceptions.h>
 #include <Graphics/MatrixManagement.h>
 #include <Graphics/Shaders/GBufferShader.h>
 #include <System/ResourceManager.h>
@@ -77,10 +77,10 @@ Shader::~Shader()
 
 void Shader::Link()
 {
-	Logger::Log() << "[INFO] Link the shader program ... \n";
+	std::cout << "[INFO] Link the shader program ... \n";
 	if (m_IsLink)
 	{
-		Logger::Log() << "[Warning] the shader program is already link ... \n";
+		std::cout << "[Warning] the shader program is already link ... \n";
 		glDetachShader(m_ProgramID, m_VertexShader->GetID());
 		glDetachShader(m_ProgramID, m_FragementShader->GetID());
 		if (m_GeometryShader)
@@ -127,7 +127,7 @@ void Shader::SetGeometryShaderParameters(GLenum inputMode, GLenum outputMode,
 			outputMode);
 
 	int MaxVertices = MaxOutputVertices();
-	Logger::Log() << "[INFO] Setup MaxVertices : " << MaxVertices << "\n";
+	std::cout << "[INFO] Setup MaxVertices : " << MaxVertices << "\n";
 	if (output < 0)
 	{
 		glProgramParameteriEXT(m_ProgramID, GL_GEOMETRY_VERTICES_OUT_EXT,
@@ -211,7 +211,7 @@ void Shader::UpdateTextureUnitsBinding()
 	for (MapTexture::iterator it = m_textures_bind.begin();
 			it != m_textures_bind.end(); it++)
 			{
-		Logger::Log() << "[INFO] Texture : " << it->second << " : "
+		std::cout << "[INFO] Texture : " << it->second << " : "
 				<< (GLint) it->first << "\n";
 		SetUniform1i(it->second.c_str(), it->first);
 	}
@@ -389,8 +389,8 @@ void Shader::SetUniformMatrix4fv(const GLchar* varname,
 		const glm::mat4x4& matrix)
 {
 	CheckLoc(glUniformMatrix4fv(loc,1, GL_FALSE, (const float*)glm::value_ptr(matrix)))
-//	Logger::Log() << "[DEBUG] " << varname << " : "  << loc << "\n";
-//	Logger::Log() << matrix << "\n";
+//	std::cout << "[DEBUG] " << varname << " : "  << loc << "\n";
+//	std::cout << matrix << "\n";
 }
 
 void Shader::SetUniformMatrix4fv(MatrixType type, const glm::mat4x4& matrix)

@@ -26,9 +26,9 @@
 #define LOADER_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 #include <string>
 
 ////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ public:
 	}
 
 	//----------------------------------------------------------
-	// Charge un T � partir d'un fichier
+	// Charge un T e partir d'un fichier
 	//----------------------------------------------------------
 	virtual T* LoadFromFile(const std::string& Filename)
 	{
@@ -71,7 +71,7 @@ public:
 protected:
 
 	//----------------------------------------------------------
-	// Constructeur - prot�g� : rend la classe abstraite
+	// Constructeur - protege : rend la classe abstraite
 	//----------------------------------------------------------
 	ILoader()
 	{

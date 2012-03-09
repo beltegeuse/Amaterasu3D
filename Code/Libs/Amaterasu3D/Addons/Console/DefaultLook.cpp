@@ -23,27 +23,27 @@
 //==========================================================
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include "DefaultLook.h"
 #include <sstream>
 #include <Addons/Console/Functor.h>
 #include <Addons/Console/Console.h>
 
-#include <Logger/Logger.h>
+#include <iostream> //#include <Logger/Logger.h>
 #include <System/SettingsManager.h>
 #include <Graphics/MatrixManagement.h>
 
 namespace ama3D
 {
 ////////////////////////////////////////////////////////////
-// Donn�es statiques
+// Donnees statiques
 ////////////////////////////////////////////////////////////
 const std::string DefaultLook::s_Fonts[] =
 { "Cheeseburger" };
 
 ////////////////////////////////////////////////////////////
-/// Constructeur par d�faut
+/// Constructeur par defaut
 ///
 ////////////////////////////////////////////////////////////
 DefaultLook::DefaultLook() :
@@ -53,12 +53,12 @@ DefaultLook::DefaultLook() :
 	m_BackgroundTexture = Texture::LoadFromFile("ConsoleBG.tga");
 
 	// Position initiale : invisible
-	m_Transfo.SetScaling(0, 0, 0);
+	m_Transfo = glm::scale(0, 0, 0);
 
-	// Cr�ation de la premi�re ligne
+	// Creation de la premiere ligne
 	AddLine(); // FIXME
 
-	// Enregistrement des commandes sp�ciales console
+	// Enregistrement des commandes speciales console
 	CConsole::Instance().RegisterCommand("clear",
 			Console::Bind(&std::list<CGraphicString>::clear, m_Lines));
 	CConsole::Instance().RegisterCommand("font",
@@ -78,23 +78,23 @@ DefaultLook::~DefaultLook()
 }
 
 ////////////////////////////////////////////////////////////
-/// Fonction appel�e lors de la mise � jour de la console
+/// Fonction appelee lors de la mise e jour de la console
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::Update(double delta)
 {
 	static float Scale = 0.0f;
 
-	// Mise � jour de la position de la console selon son �tat courant
-	// et mise � jour de celui-ci
+	// Mise e jour de la position de la console selon son etat courant
+	// et mise e jour de celui-ci
 	if (m_State == SHOWING)
 	{
-		m_Transfo.SetScaling(Scale, Scale, 1);
+		m_Transfo = glm::scale(Scale, Scale, 1.f);
 		Scale += delta * 4.0;
 
 		if (Scale > 1.0f)
 		{
-			m_Transfo.SetScaling(1, 1, 1);
+			m_Transfo = glm::scale(1.f, 1.f, 1.f);
 			m_State = STOPPED;
 			Scale = 1.0f;
 			m_ShowText = true;
@@ -103,12 +103,12 @@ void DefaultLook::Update(double delta)
 	else if (m_State == HIDDING)
 	{
 		m_ShowText = false;
-		m_Transfo.SetScaling(Scale, Scale, 1);
+		m_Transfo = glm::scale(Scale, Scale, 1.f);
 		Scale -= delta * 4.0;
 
 		if (Scale < 0.01f)
 		{
-			m_Transfo.SetScaling(0, 0, 0);
+			m_Transfo = glm::scale(0.f, 0.f, 0.f);
 			m_State = STOPPED;
 			Scale = 0.0f;
 		}
@@ -116,7 +116,7 @@ void DefaultLook::Update(double delta)
 }
 
 ////////////////////////////////////////////////////////////
-/// Fonction appel�e lors de l'affichage de la console
+/// Fonction appelee lors de l'affichage de la console
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::Draw()
@@ -126,8 +126,8 @@ void DefaultLook::Draw()
 	{
 
 		m_Rectangle = new Rectangle2D(
-				Math::TVector2I(0, 0),
-				Math::TVector2I(
+				glm::ivec2(0, 0),
+				glm::ivec2(
 						CSettingsManager::Instance().GetSizeRenderingWindow().x,
 						210.0));
 		m_Rectangle->GetObject().AddTextureMap(DIFFUSE_TEXTURE,
@@ -154,9 +154,9 @@ void DefaultLook::Draw()
 }
 
 ////////////////////////////////////////////////////////////
-/// Fonction appel�e lors de l'activation / d�sactivation de la console
+/// Fonction appelee lors de l'activation / desactivation de la console
 ///
-/// \param Visible : Nouvel �tat de la console
+/// \param Visible : Nouvel etat de la console
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::Show(bool Visible)
@@ -165,9 +165,9 @@ void DefaultLook::Show(bool Visible)
 }
 
 ////////////////////////////////////////////////////////////
-/// Fonction appel�e apr�s l'appel � une commande
+/// Fonction appelee apres l'appel e une commande
 ///
-/// \param Result : R�sultat de l'appel de la commande
+/// \param Result : Resultat de l'appel de la commande
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::CommandCalled(const std::string& Result)
@@ -178,7 +178,7 @@ void DefaultLook::CommandCalled(const std::string& Result)
 }
 
 ////////////////////////////////////////////////////////////
-/// Fonction appel�e � chaque changement de la ligne courante
+/// Fonction appelee e chaque changement de la ligne courante
 ///
 /// \param NewText : Nouveau texte
 ///
@@ -189,14 +189,14 @@ void DefaultLook::TextChanged(const std::string& NewText)
 }
 
 ////////////////////////////////////////////////////////////
-/// Fonction appel�e en cas d'erreur
+/// Fonction appelee en cas d'erreur
 ///
-/// \param Message : Message d�crivant l'erreur
+/// \param Message : Message decrivant l'erreur
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::Error(const std::string& Message)
 {
-	// D�composition du message en lignes
+	// Decomposition du message en lignes
 	std::string Line;
 	std::istringstream iss(Message);
 	while (std::getline(iss, Line))
@@ -208,17 +208,17 @@ void DefaultLook::Error(const std::string& Message)
 ////////////////////////////////////////////////////////////
 /// Ajoute une ligne
 ///
-/// \param Line :  Texte de la ligne � ajouter
+/// \param Line :  Texte de la ligne e ajouter
 /// \param Color : Couleur du texte
 ///
 ////////////////////////////////////////////////////////////
 void DefaultLook::AddLine(const std::string& Line, const CColor& Color)
 {
-	// On supprime la derni�re ligne si n�cessaire
+	// On supprime la derniere ligne si necessaire
 	if (m_Lines.size() == 10)
 		m_Lines.pop_back();
 
-	// On d�cale les autres
+	// On decale les autres
 	for (std::list<CGraphicString>::iterator i = m_Lines.begin();
 			i != m_Lines.end(); ++i)
 			{
@@ -227,13 +227,13 @@ void DefaultLook::AddLine(const std::string& Line, const CColor& Color)
 				i->Color.GetAlpha() - 20);
 	}
 
-	// Et on cr�e la nouvelle
+	// Et on cree la nouvelle
 	//TODO : Add Color
-	m_Lines.push_front(CGraphicString(Math::TVector2F(10, 190), Line, s_Fonts[m_CurrentFont], 20));
+	m_Lines.push_front(CGraphicString(glm::ivec2(10, 190), Line, s_Fonts[m_CurrentFont], 20));
 }
 
 ////////////////////////////////////////////////////////////
-/// S�lectionne la police suivante
+/// Selectionne la police suivante
 ///
 /// \return Nom de la nouvelle police
 ///

@@ -30,7 +30,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 #include <Utilities/GenHierarchies.h>
 
 namespace ama3D

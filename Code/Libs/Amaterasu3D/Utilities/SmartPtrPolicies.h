@@ -25,7 +25,7 @@
 #ifndef SMARTPTRPOLICIES_H
 #define SMARTPTRPOLICIES_H
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 
 #include <algorithm>
@@ -35,7 +35,7 @@ namespace ama3D
 
 ////////////////////////////////////////////////////////////
 /// Police de pointeur intelligent :
-/// comptage de r�f�rence externe
+/// comptage de reference externe
 ////////////////////////////////////////////////////////////
 template<class T>
 class CRefCount
@@ -43,7 +43,7 @@ class CRefCount
 public:
 
 	//----------------------------------------------------------
-	// Constructeur par d�faut
+	// Constructeur par defaut
 	//----------------------------------------------------------
 	CRefCount() :
 			m_Counter(new int(1))
@@ -60,7 +60,7 @@ public:
 	}
 
 	//----------------------------------------------------------
-	// G�re la lib�ration de la ressource
+	// Gere la liberation de la ressource
 	//----------------------------------------------------------
 	void Release(T* Ptr)
 	{
@@ -81,12 +81,12 @@ public:
 
 private:
 
-	int* m_Counter; ///< Pointeur sur le compteur de r�f�rence
+	int* m_Counter; ///< Pointeur sur le compteur de reference
 };
 
 ////////////////////////////////////////////////////////////
 /// Police de pointeur intelligent :
-/// objets COM et ressources du moteur - comptage de r�f�rence intrusif
+/// objets COM et ressources du moteur - comptage de reference intrusif
 ////////////////////////////////////////////////////////////
 template<class T>
 class CResourceCOM
@@ -104,7 +104,7 @@ public:
 	}
 
 	//----------------------------------------------------------
-	// G�re la lib�ration de la ressource
+	// Gere la liberation de la ressource
 	//----------------------------------------------------------
 	static void Release(T* Ptr)
 	{
@@ -113,7 +113,7 @@ public:
 	}
 
 	//----------------------------------------------------------
-	// Echange deux instances - aucune donn�e membre : ne fait rien
+	// Echange deux instances - aucune donnee membre : ne fait rien
 	//----------------------------------------------------------
 	static void Swap(CResourceCOM&)
 	{

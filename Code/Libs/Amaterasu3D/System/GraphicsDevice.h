@@ -1,7 +1,7 @@
 #ifndef GRAPHICSDEVICE_H_
 #define GRAPHICSDEVICE_H_
 
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 
 namespace ama3D
 {

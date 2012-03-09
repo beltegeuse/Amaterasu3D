@@ -1,6 +1,6 @@
 #include "GraphicsDevice.h"
 #include <GL/glew.h>
-#include <Logger/Logger.h>
+#include <iostream> //#include <Logger/Logger.h>
 
 namespace ama3D
 {
@@ -20,24 +20,24 @@ void GraphicsDevice::CheckSystem()
 	if (initialisationGLEW != GLEW_OK)
 	{
 		// Print the error
-		Logger::Log() << "[Error] Can't initialize GLEW : "
+		std::cout << "[Error] Can't initialize GLEW : "
 				<< glewGetErrorString(initialisationGLEW) << "\n";
 		throw CException("Can't initialize GLEW.");
 	}
-	Logger::Log() << "\n";
-	Logger::Log() << "====== GraphicsDevice::CheckSystem ======= \n";
-	Logger::Log() << " *** CG informations : \n";
-	Logger::Log() << "    - OpenGL Vendor: " << (char*) glGetString(GL_VENDOR)
+	std::cout << "\n";
+	std::cout << "====== GraphicsDevice::CheckSystem ======= \n";
+	std::cout << " *** CG informations : \n";
+	std::cout << "    - OpenGL Vendor: " << (char*) glGetString(GL_VENDOR)
 			<< "\n";
-	Logger::Log() << "    - OpenGL Renderer: "
+	std::cout << "    - OpenGL Renderer: "
 			<< (char*) glGetString(GL_RENDERER) << "\n";
-	Logger::Log() << "    - OpenGL Version: " << (char*) glGetString(GL_VERSION)
+	std::cout << "    - OpenGL Version: " << (char*) glGetString(GL_VERSION)
 			<< "\n\n";
 
 #ifdef WIN32
 	if (glewIsSupported("GL_VERSION_3_1"))
 	{
-		Logger::Log() << "[INFO] : Ready for OpenGL 3.1\n";
+		std::cout << "[INFO] : Ready for OpenGL 3.1\n";
 	}
 	else // Fatal error
 	{
@@ -48,7 +48,7 @@ void GraphicsDevice::CheckSystem()
 	if (GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader
 			&& GL_EXT_geometry_shader4
 		)
-		Logger::Log()
+		std::cout
 				<< "[INFO] Ready for GLSL - vertex, fragment, and geometry units\n";
 	else
 	{
@@ -59,8 +59,8 @@ void GraphicsDevice::CheckSystem()
 					"Geometry Shader function isn't supported.");
 	}
 
-	Logger::Log() << "====== GraphicsDevice::CheckSystem (End) ======= \n";
-	Logger::Log() << "\n";
+	std::cout << "====== GraphicsDevice::CheckSystem (End) ======= \n";
+	std::cout << "\n";
 }
 
 }

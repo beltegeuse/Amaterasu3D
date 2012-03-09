@@ -23,7 +23,7 @@
 //==========================================================
 
 #include "ISceneNode.h"
-#include <Logger/Logger.h>
+#include <iostream> //#include <Logger/Logger.h>
 #include <Graphics/SceneManager.h>
 
 namespace ama3D
@@ -176,7 +176,7 @@ void ISceneNode::UpdateTransformations()
 	{
 		m_NeedUpdate = false;
 
-		Logger::Log() << "[DEBUG] NeedUpdate : " << this << "\n";
+		std::cout << "[DEBUG] NeedUpdate : " << this << "\n";
 		m_CachedLocalTransformationMatrix  = glm::mat4x4();
 		m_CachedLocalTransformationMatrix = glm::translate(glm::scale(m_CachedLocalTransformationMatrix,m_Scale) * glm::mat4_cast(m_Orientation),m_Position);
 	}

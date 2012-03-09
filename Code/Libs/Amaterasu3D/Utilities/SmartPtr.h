@@ -26,24 +26,24 @@
 #define SMARTPTR_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <cstdlib>
 #include <Utilities/SmartPtrPolicies.h>
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 
 namespace ama3D
 {
 
 ////////////////////////////////////////////////////////////
-// D�clarations anticip�es
+// Declarations anticipees
 ////////////////////////////////////////////////////////////
 template<class, template<class > class> class CSmartPtr;
 template<class T, template<class > class Ownership> T*& GetPtr(
 		CSmartPtr<T, Ownership>& Ptr);
 
 ////////////////////////////////////////////////////////////
-/// Pointeurs intelligents � base de polices
+/// Pointeurs intelligents e base de polices
 ////////////////////////////////////////////////////////////
 template<class T, template<class > class Ownership = CRefCount>
 class CSmartPtr: public Ownership<T>
@@ -51,7 +51,7 @@ class CSmartPtr: public Ownership<T>
 public:
 
 	//----------------------------------------------------------
-	// Constructeur par d�faut
+	// Constructeur par defaut
 	//----------------------------------------------------------
 	CSmartPtr();
 
@@ -61,7 +61,7 @@ public:
 	CSmartPtr(const CSmartPtr& Copy);
 
 	//----------------------------------------------------------
-	// Constructeur � partir d'un pointeur
+	// Constructeur e partir d'un pointeur
 	//----------------------------------------------------------
 	CSmartPtr(T* Pointer);
 
@@ -71,7 +71,7 @@ public:
 	~CSmartPtr();
 
 	//----------------------------------------------------------
-	// Op�rateurs de d�r�f�rencement
+	// Operateurs de dereferencement
 	//----------------------------------------------------------
 	T& operator *() const;
 	T* operator ->() const;

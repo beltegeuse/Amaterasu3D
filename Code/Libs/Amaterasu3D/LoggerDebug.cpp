@@ -1,8 +1,7 @@
-#include <Logger/LoggerDebug.h>
-
+#include <LoggerDebug.h>
+#include <string>
 #include <iostream>
-namespace ama3D
-{
+
 LoggerDebug::LoggerDebug()
 {
 	std::cout << "***** LoggerDebug 0.1v *******\n";
@@ -21,4 +20,4 @@ void LoggerDebug::Flush()
 {
 	std::cout.flush();
 }
-}
+

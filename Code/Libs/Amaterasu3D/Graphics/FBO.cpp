@@ -23,8 +23,8 @@
 //==========================================================
 
 #include "FBO.h"
-#include <Debug/Exceptions.h>
-#include <Logger/Logger.h>
+#include <Exceptions.h>
+#include <iostream> //#include <Logger/Logger.h>
 #include <vector>
 #include <cmath>
 
@@ -41,13 +41,13 @@ FBO::FBO(const glm::ivec2& size,
 	m_TextDebug.Position = glm::vec2(0.0, 0.0);
 	m_TextDebug.Size = 30;
 	// ============== Creation FBO
-	Logger::Log() << "[INFO] FBO Creation ... \n";
+	std::cout << "[INFO] FBO Creation ... \n";
 	// On verifie que l'on a assez de Color Attachement
 	if (GetMaxColorAttachement() < (int) buffers.size())
 		throw CException("Pas assez de Color attachement");
 
 	// ==== Construction du FBO pour les color
-	Logger::Log() << "  * Color buffer creation ... \n";
+	std::cout << "  * Color buffer creation ... \n";
 	for (std::map<std::string, FBOTextureBufferParam>::iterator it =
 			buffers.begin(); it != buffers.end(); it++)
 	{
@@ -58,13 +58,13 @@ FBO::FBO(const glm::ivec2& size,
 		glTexImage2D(GL_TEXTURE_2D, 0, it->second.InternalFormat, size.x,
 				size.y, 0, it->second.ExternalFormat, it->second.Precision, 0);
 		it->second.applyPostParam();
-		Logger::Log() << "   * Create new texture : " << it->first << " ( "
+		std::cout << "   * Create new texture : " << it->first << " ( "
 				<< tex->getIdTex() << " )\n";
 	}
 	// ==== Construction de FBO pour Depth
 	if (type != FBODEPTH_NONE)
 	{
-		Logger::Log() << "   * Depth buffer creation ... \n";
+		std::cout << "   * Depth buffer creation ... \n";
 		if (type == FBODEPTH_TEXTURE)
 		{
 			m_DepthShader = CShaderManager::Instance().LoadShader(
@@ -76,7 +76,7 @@ FBO::FBO(const glm::ivec2& size,
 					size.y, 0, paramDepth.ExternalFormat, paramDepth.Precision,
 					0);
 			paramDepth.applyPostParam();
-			Logger::Log() << " * Generate Depth Texture : " << m_DepthID
+			std::cout << " * Generate Depth Texture : " << m_DepthID
 					<< "\n";
 			m_ColoredBuffers["Depth"] = new Texture(false, m_DepthID);
 		}
@@ -87,7 +87,7 @@ FBO::FBO(const glm::ivec2& size,
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, size.x,
 					size.y);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
-			Logger::Log() << " * Generate Depth Render target : " << m_DepthID
+			std::cout << " * Generate Depth Render target : " << m_DepthID
 					<< "\n";
 		}
 		else
@@ -96,7 +96,7 @@ FBO::FBO(const glm::ivec2& size,
 
 	// ==== Creation du FBO
 	glGenFramebuffers(1, &m_FBO_ID);
-	Logger::Log() << " * FBO ID : " << m_FBO_ID << "\n";
+	std::cout << " * FBO ID : " << m_FBO_ID << "\n";
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO_ID);
 
 	// ==== Ajout au FBO les couleurs
@@ -104,11 +104,11 @@ FBO::FBO(const glm::ivec2& size,
 
 	GLenum* buffersDraw = new GLenum[sizeBufferDraw];
 	int i = 0;
-	Logger::Log() << " * Attach textures ... \n";
+	std::cout << " * Attach textures ... \n";
 	for (std::map<std::string, FBOTextureBufferParam>::iterator it =
 			buffers.begin(); it != buffers.end(); it++)
 	{
-		Logger::Log() << "   * Texture : " << it->first << " attachment : "
+		std::cout << "   * Texture : " << it->first << " attachment : "
 				<< it->second.Attachment << " ( id "
 				<< m_ColoredBuffers[it->first]->getIdTex() << " ) \n";
 		glFramebufferTexture2D(GL_FRAMEBUFFER,
@@ -154,33 +154,33 @@ void FBO::CheckFBOStatus()
 		switch (error)
 		{
 		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
-			Logger::Log()
+			std::cout
 					<< "Error! missing a required image/buffer attachment!\n";
 			break;
 		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
-			Logger::Log() << "Error! has no images/buffers attached!\n";
+			std::cout << "Error! has no images/buffers attached!\n";
 			break;
 		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-			Logger::Log() << "Error! has mismatched image/buffer dimensions!\n";
+			std::cout << "Error! has mismatched image/buffer dimensions!\n";
 			break;
 		case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-			Logger::Log()
+			std::cout
 					<< "Error! 's colorbuffer attachments have different types!\n";
 			break;
 		case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
-			Logger::Log()
+			std::cout
 					<< "Error! trying to draw to non-attached color buffer!\n";
 			break;
 		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
-			Logger::Log()
+			std::cout
 					<< "Error! trying to read from a non-attached color buffer!\n";
 			break;
 		case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
-			Logger::Log()
+			std::cout
 					<< "Error! format is not supported by current graphics card/driver!\n";
 			break;
 		default:
-			Logger::Log()
+			std::cout
 					<< "*UNKNOWN ERROR* reported from glCheckFramebufferStatusEXT()!\n";
 			break;
 		}
@@ -233,7 +233,7 @@ void FBO::SetSize(const glm::ivec2& size)
 FBO::~FBO()
 {
 	//FIXME: Faire le destructeur
-	Logger::Log() << "[INFO] FBO destory \n";
+	std::cout << "[INFO] FBO destory \n";
 }
 
 void FBO::Bind(bool clearNeed)
@@ -301,10 +301,10 @@ Texture* FBO::GetTexture(const std::string& nameBuffer)
 {
 	if(m_ColoredBuffers.find(nameBuffer) == m_ColoredBuffers.end())
 	{
-		Logger::Log() << "[DEBUG] List of buffers : \n";
+		std::cout << "[DEBUG] List of buffers : \n";
 		for (std::map<std::string, Texture*>::const_iterator it =
 					m_ColoredBuffers.begin(); it != m_ColoredBuffers.end(); ++it)
-			Logger::Log() << "  * " << it->first << "\n";
+			std::cout << "  * " << it->first << "\n";
 		throw CException("Unable to find buffer named : " + nameBuffer);
 	}
 

@@ -25,6 +25,9 @@
 #include <Graphics/MatrixManagement.h>
 #include <Graphics/SceneManager.h>
 #include <System/SettingsManager.h>
+#include "glm/glm.hpp"
+#include "glm/ext.hpp"
+
 #include <math.h>
 namespace ama3D
 {
@@ -66,17 +69,18 @@ void DeferredLighting::SpotLightPass()
 	{
 		// Generate the Shadow Map
 		// * Transformations
-		Math::CMatrix4 oldProjectionMatrix =
+		glm::mat4x4 oldProjectionMatrix =
 				CMatrixManager::Instance().GetMatrix(PROJECTION_MATRIX);
-		Math::CMatrix4 oldViewMatrix = CMatrixManager::Instance().GetMatrix(
+		glm::mat4x4 oldViewMatrix = CMatrixManager::Instance().GetMatrix(
 				VIEW_MATRIX);
-		Math::CMatrix4 LightViewMatrix;
-		LightViewMatrix.LookAt(m_spots_lights[i].Position,
-				m_spots_lights[i].Direction);
-		Math::CMatrix4 LightProjectionMatrix;
+		glm::mat4x4 LightViewMatrix;
+		LightViewMatrix = glm::lookAt(m_spots_lights[i].Position,
+				m_spots_lights[i].Direction,
+				glm::vec3(0.f,1.f,0.f));
+		glm::mat4x4 LightProjectionMatrix;
 		CMatrixManager::Instance().SetProjectionMatrix(
-				Math::CMatrix4::CreatePerspectiveFOV(
-						m_spots_lights[i].LightCutOff, 512.0 / 512.0, 1.0,
+				glm::perspectiveFov(
+						m_spots_lights[i].LightCutOff, 512.f,512.f, 1.f,
 						m_spots_lights[i].LightRaduis));
 		CMatrixManager::Instance().SetViewMatrix(LightViewMatrix);
 		// * Draw the scene

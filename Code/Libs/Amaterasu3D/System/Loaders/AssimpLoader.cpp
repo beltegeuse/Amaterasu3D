@@ -26,7 +26,7 @@
 #include "assimp.h"
 #include "aiPostProcess.h"
 #include "aiScene.h"
-#include <Logger/Logger.h>
+#include <iostream> //#include "Logger.h"
 #include <iostream>
 #include <algorithm>
 #include <Enum.h>
@@ -58,9 +58,9 @@ IMeshSceneNode* AssimpLoader::LoadFromFile(const std::string& Filename)
 	if (!scene)
 		throw CException("assimp library can load model.");
 	IMeshSceneNode* group = new IMeshSceneNode(Filename, 0);
-	BuildGroup(group, scene, scene->mRootNode, Math::CMatrix4());
+	BuildGroup(group, scene, scene->mRootNode, glm::mat4x4());
 	group->SetAssimpScene(scene);
-	Logger::Log() << "[INFO] Finish to load : " << Filename << " mesh : "
+	std::cout << "[INFO] Finish to load : " << Filename << " mesh : "
 			<< scene->mNumMeshes << "\n";
 	return group;
 }
@@ -99,7 +99,7 @@ void AssimpLoader::GetMaterialPropreties(RenderableObject* assimpMesh,
 				&& aiGetMaterialFloatArray(mtl, AI_MATKEY_SHININESS_STRENGTH,
 						&strength, &max) == AI_SUCCESS)
 		{
-			color.A = strength * shininess;
+			color.C.a = strength * shininess;
 		}
 		assimpMesh->AddMaterial(SPECULAR_MATERIAL, color);
 	}
@@ -142,15 +142,15 @@ void AssimpLoader::GetMaterialPropreties(RenderableObject* assimpMesh,
 }
 
 void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode,
-		const aiScene* scene, aiNode* nd, const Math::CMatrix4& matrixUpp)
+		const aiScene* scene, aiNode* nd, const glm::mat4x4& matrixUpp)
 {
 	// Load transformation
 	struct aiMatrix4x4 m = nd->mTransformation;
 	//aiTransposeMatrix4(&m);
-	Math::CMatrix4 matrixLocalTrans = Math::CMatrix4(m.a1, m.a2, m.a3, m.a4,
+	glm::mat4x4 matrixLocalTrans = glm::mat4x4(m.a1, m.a2, m.a3, m.a4,
 			m.b1, m.b2, m.b3, m.b4, m.c1, m.c2, m.c3, m.c4, m.d1, m.d2, m.d3,
 			m.d4);
-	Math::CMatrix4 globalTransformation = matrixLocalTrans * matrixUpp;
+	glm::mat4x4 globalTransformation = matrixLocalTrans * matrixUpp;
 
 	// draw all meshes assigned to this node
 	for (unsigned int n = 0; n < nd->mNumMeshes; ++n)
@@ -161,7 +161,7 @@ void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode,
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
 		if (mesh->mNumFaces == 0)
 		{
-			Logger::Log() << "[INFO] Skip assimp mesh. No faces. \n";
+			std::cout << "[INFO] Skip assimp mesh. No faces. \n";
 			continue;
 		}
 		RenderableObject* assimpMesh = new RenderableObject;
@@ -176,7 +176,7 @@ void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode,
 			const struct aiFace* face = &mesh->mFaces[t];
 			if (face->mNumIndices != 3)
 			{
-				Logger::Log() << "[Warning] More or less indices faces ("
+				std::cout << "[Warning] More or less indices faces ("
 						<< face->mNumIndices << "). \n";
 				continue;
 			}
@@ -196,17 +196,17 @@ void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode,
 		}
 		// Set all buffers
 		// * Indice Buffer
-		Logger::Log() << "[INFO] Add indice buffer : " << indicesVector.size()
+		std::cout << "[INFO] Add indice buffer : " << indicesVector.size()
 				<< "\n";
 		assimpMesh->SetIndiceBuffer(indiceArray, indicesVector.size());
 		// * Vertex buffer
-		Logger::Log() << "[INFO] Add Vertex buffer ... \n";
+		std::cout << "[INFO] Add Vertex buffer ... \n";
 		RenderableObject::RenderableBuffer buffer;
 		buffer.buffer = &mesh->mVertices[0].x;
 		buffer.dimension = 3;
 		buffer.size = maxIndice * 3 + 3;
 		buffer.owner = false;
-		Logger::Log() << "   * size : " << buffer.size << "\n";
+		std::cout << "   * size : " << buffer.size << "\n";
 		assimpMesh->AddBuffer(buffer, VERTEX_ATTRIBUT);
 		//  * Normal buffer
 		if (mesh->HasNormals())
@@ -275,7 +275,7 @@ void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode,
 					aiString AiPath;
 					material->GetTexture(aiTextureType_DIFFUSE, 0, &AiPath);
 					CFile texturePath = std::string(AiPath.data);
-					Logger::Log() << "[INFO] Diffuse texture : "
+					std::cout << "[INFO] Diffuse texture : "
 							<< texturePath.Filename() << "\n";
 					assimpMesh->AddTextureMap(DIFFUSE_TEXTURE,
 							LoadTexture(texturePath));
@@ -285,7 +285,7 @@ void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode,
 					aiString AiPath;
 					material->GetTexture(aiTextureType_SPECULAR, 0, &AiPath);
 					CFile texturePath = std::string(AiPath.data);
-					Logger::Log() << "[INFO] Specular Texture : "
+					std::cout << "[INFO] Specular Texture : "
 							<< texturePath.Filename() << "\n";
 					assimpMesh->AddTextureMap(SPECULAR_TEXTURE,
 							LoadTexture(texturePath));
@@ -296,7 +296,7 @@ void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode,
 //					aiString AiPath;
 //					material->GetTexture(aiTextureType_HEIGHT, 0, &AiPath);
 //					CFile texturePath = std::string(AiPath.data);
-//					Logger::Log() << "[INFO] Normal texture : " << texturePath.Filename() << "\n";
+//					std::cout << "[INFO] Normal texture : " << texturePath.Filename() << "\n";
 //					assimpMesh->AddTextureMap(NORMAL_TEXTURE, LoadTexture(texturePath));
 //				}
 			}
@@ -320,20 +320,20 @@ void AssimpLoader::BuildGroup(IMeshSceneNode* meshSceneNode,
 
 		if (foundInstance)
 		{
-			Logger::Log() << "[INFO] Found an Instance ... \n";
+			std::cout << "[INFO] Found an Instance ... \n";
 			Assert(false);
 		}
 		else
 		{
 			// Compile all buffers
-			Logger::Log() << "[INFO] Compile all buffers ... \n";
+			std::cout << "[INFO] Compile all buffers ... \n";
 			assimpMesh->CompileBuffers();
-			Logger::Log() << "[INFO] Add cached resources : " << nd->mMeshes[n]
+			std::cout << "[INFO] Add cached resources : " << nd->mMeshes[n]
 					<< "\n";
 			m_cached_geom.push_back(assimpMesh);
 		}
 		// Attach to group
-		Logger::Log() << "[INFO] Add to father node... \n";
+		std::cout << "[INFO] Add to father node... \n";
 
 		meshSceneNode->AddRenderableObject(assimpMesh, globalTransformation);
 	}

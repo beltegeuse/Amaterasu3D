@@ -26,7 +26,7 @@
 #define RESOURCEMANAGER_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <System/Resource.h>
 #include <Singleton.h>
@@ -36,7 +36,7 @@
 namespace ama3D
 {
 ////////////////////////////////////////////////////////////
-/// Gestionnaire des ressources associ�es � un fichier
+/// Gestionnaire des ressources associees e un fichier
 ////////////////////////////////////////////////////////////
 class CResourceManager: public CSingleton<ama3D::CResourceManager>
 {
@@ -45,7 +45,7 @@ MAKE_SINGLETON(CResourceManager)
 public:
 
 	//----------------------------------------------------------
-	// R�cup�re une ressource
+	// Recupere une ressource
 	//----------------------------------------------------------
 	template<class T> T* Get(const std::string& Name) const;
 
@@ -62,7 +62,7 @@ public:
 private:
 
 	//----------------------------------------------------------
-	// Constructeur par d�faut
+	// Constructeur par defaut
 	//----------------------------------------------------------
 	CResourceManager();
 
@@ -77,9 +77,9 @@ private:
 	typedef std::map<std::string, IResource*> TResourcesMap;
 
 	//----------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------
-	TResourcesMap m_Resources; ///< Table contenant les ressources associ�es � leur nom de fichier
+	TResourcesMap m_Resources; ///< Table contenant les ressources associees e leur nom de fichier
 };
 
 #include "ResourceManager.inl"

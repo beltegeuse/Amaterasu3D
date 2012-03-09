@@ -8,63 +8,385 @@ IF(CMAKE_BUILD_TYPE MATCHES debug)
 ENDIF(CMAKE_BUILD_TYPE MATCHES debug)
 
 
-SET(LIST_DIR 
-	# ADDONS
-	Addons
-	Addons/FPS
-	Addons/Logo
-	Addons/PerformancePanel
-	Addons/Binvox
-	Addons/LPV
-	Addons/ToneMappingOperator
-	Addons/ToneMappingOperator/PhotographicToneOperator
-	Addons/ToneMappingOperator/AdaptationLuminance
-	Addons/ToneMappingOperator/SumantToneOperator
-	Addons/ToneMappingOperator/DurandToneOperator
-	
-	Math
-	
-	Graphics
-	Graphics/SceneNode
-	Graphics/Font
-	Graphics/Lighting
-	Graphics/Camera
-	Graphics/Shaders
-	
-	Debug
-	Logger
-	Utilities
-)
-
-SET(SOURCES_AMA3D)
-SET(HEADERS_AMA3D)
-
-list(LENGTH LIST_DIR len1)
-math(EXPR len2 "${len1} - 1")
-
-foreach(val RANGE ${len2})
-	list(GET LIST_DIR ${val} dir)
-	#MESSAGE("Directory : ${dir}")
-	FILE(GLOB files_cpp "${dir}/*.cpp")
-	FILE(GLOB files_headers "${dir}/*.h")
-	
-	#MESSAGE("Files : ${files_cpp}")
-	
-	# ADD TO GLOBAL LISTS
-	SET(SOURCES_AMA3D ${SOURCES_AMA3D} ${files_cpp})
-	SET(HEADERS_AMA3D ${HEADERS_AMA3D} ${files_headers})
-	
-	SOURCE_GROUP(${dir} FILES  ${files_cpp} ${files_headers})
-ENDFOREACH()
-
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+# Dir name 
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Application.cpp
+	Exceptions.cpp
+	Logger.cpp
+	LoggerDebug.cpp
+	LoggerFile.cpp
+	OpenGLDebug.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Application.h
+	Enum.h
+	Exceptions.h
+	Logger.h
+	LoggerDebug.h
+	LoggerFile.h
+	OpenGLDebug.h
+	SDLUtilities.h
+	Singleton.h
+	TinyXMLHelper.h
+)
+
+
+
+# Dir name Addons/Console
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/Console/Console.cpp
+	Addons/Console/DefaultLook.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/Console/Console.h
+	Addons/Console/DefaultLook.h
+	Addons/Console/Functor.h
+	Addons/Console/Look.h
+	Addons/Console/Functor.inl
+)
+
+
+# Dir name Addons/FPS
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/FPS/FPS.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/FPS/FPS.h
+)
+
+
+# Dir name Addons/Logo
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/Logo/Logo.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/Logo/Logo.h
+)
+
+
+# Dir name Addons/LPV
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/LPV/LPV.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/LPV/LPV.h
+)
+
+
+# Dir name Addons/PerformancePanel
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/PerformancePanel/PerformancePanel.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/PerformancePanel/PerformancePanel.h
+)
+
+
+# Dir name Addons/ToneMappingOperator
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/ToneMappingOperator/AbsrtactToneOperator.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/ToneMappingOperator/AbsrtactToneOperator.h
+)
+
+
+
+# Dir name Addons/ToneMappingOperator/AdaptationLuminance/Global
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.cpp
+	Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimpleExp.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimple.h
+	Addons/ToneMappingOperator/AdaptationLuminance/Global/AdaptationLuminanceSimpleExp.h
+)
+
+
+# Dir name Addons/ToneMappingOperator/DurandToneOperator
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/ToneMappingOperator/DurandToneOperator/DurandToneOperator.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/ToneMappingOperator/DurandToneOperator/DurandToneOperator.h
+)
+
+
+# Dir name Addons/ToneMappingOperator/PhotographicToneOperator
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.cpp
+	Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperatorExp.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperator.h
+	Addons/ToneMappingOperator/PhotographicToneOperator/PhotographicToneOperatorExp.h
+)
+
+
+# Dir name Addons/ToneMappingOperator/SumantToneOperator
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Addons/ToneMappingOperator/SumantToneOperator/SumantToneOperator.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Addons/ToneMappingOperator/SumantToneOperator/BleachingFilter.h
+	Addons/ToneMappingOperator/SumantToneOperator/ExpFilter.h
+	Addons/ToneMappingOperator/SumantToneOperator/SumantToneOperator.h
+)
+
+
+# Dir name Graphics
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/Color.cpp
+	Graphics/FBO.cpp
+	Graphics/MatrixManagement.cpp
+	Graphics/RenderableObject.cpp
+	Graphics/SceneManager.cpp
+	Graphics/Texture.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/Color.h
+	Graphics/FBO.h
+	Graphics/MatrixManagement.h
+	Graphics/RenderableObject.h
+	Graphics/SceneManager.h
+	Graphics/Texture.h
+)
+
+
+# Dir name Graphics/Camera
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/Camera/CameraAbstract.cpp
+	Graphics/Camera/CameraFixed.cpp
+	Graphics/Camera/CameraFPS.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/Camera/CameraAbstract.h
+	Graphics/Camera/CameraAnimation.h
+	Graphics/Camera/CameraFixed.h
+	Graphics/Camera/CameraFPS.h
+)
+
+
+# Dir name Graphics/Font
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/Font/FontManager.cpp
+	Graphics/Font/GraphicString.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/Font/FontManager.h
+	Graphics/Font/GraphicString.h
+)
+
+
+# Dir name Graphics/Lighting
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/Lighting/LightingPassAbstract.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/Lighting/LightingPassAbstract.h
+	Graphics/Lighting/LightingStructures.h
+	Graphics/Lighting/LightShaders.h
+)
+
+
+# Dir name Graphics/Lighting/DeferredLighting
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/Lighting/DeferredLighting/DeferredLighting.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/Lighting/DeferredLighting/DeferredLighting.h
+)
+
+
+# Dir name Graphics/SceneNode
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/SceneNode/ICameraSceneNode.cpp
+	Graphics/SceneNode/ILightSceneNode.cpp
+	Graphics/SceneNode/IMeshSceneNode.cpp
+	Graphics/SceneNode/IRenderableSceneNode.cpp
+	Graphics/SceneNode/ISceneNode.cpp
+	Graphics/SceneNode/ISimpleRenderableSceneNode.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/SceneNode/ICameraSceneNode.h
+	Graphics/SceneNode/ILightSceneNode.h
+	Graphics/SceneNode/IMeshSceneNode.h
+	Graphics/SceneNode/IRenderableSceneNode.h
+	Graphics/SceneNode/ISceneNode.h
+	Graphics/SceneNode/ISimpleRenderableSceneNode.h
+)
+
+
+# Dir name Graphics/SceneNode/Others
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/SceneNode/Others/Skydome.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/SceneNode/Others/Skydome.h
+)
+
+
+# Dir name Graphics/SceneNode/SimpleRenderable
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.cpp
+	Graphics/SceneNode/SimpleRenderable/DebugPlaneLeaf.cpp
+	Graphics/SceneNode/SimpleRenderable/Rectangle2D.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/SceneNode/SimpleRenderable/DebugCubeLeaf.h
+	Graphics/SceneNode/SimpleRenderable/DebugPlaneLeaf.h
+	Graphics/SceneNode/SimpleRenderable/Rectangle2D.h
+)
+
+
+# Dir name Graphics/Shaders
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/Shaders/GBufferShader.cpp
+	Graphics/Shaders/Shader.cpp
+	Graphics/Shaders/ShaderUnit.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/Shaders/GBufferShader.h
+	Graphics/Shaders/Shader.h
+	Graphics/Shaders/ShaderUnit.h
+)
+
+
+# Dir name Graphics/Shaders/Compiler
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/Shaders/Compiler/ShaderCompiler.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/Shaders/Compiler/ShaderCompiler.h
+)
+
+
+# Dir name Graphics/Shaders/Tools
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Graphics/Shaders/Tools/ManualMipmapping.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Graphics/Shaders/Tools/ManualMipmapping.h
+)
+
+
+# Dir name Math
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Math/Rectangle.cpp
+	Math/SphericalCoordinates.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Math/InterpolatorCatmullRom.h
+	Math/Rectangle.h
+	Math/SphericalCoordinates.h
+)
+
+
+# Dir name System
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	System/EventListeners.cpp
+	System/EventManager.cpp
+	System/GraphicsDevice.cpp
+	System/MediaManager.cpp
+	System/PythonInterpreter.cpp
+	System/Resource.cpp
+	System/ResourceManager.cpp
+	System/SettingsManager.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	System/EventListeners.h
+	System/EventManager.h
+	System/GraphicsDevice.h
+	System/Input.h
+	System/IXMLSerialisable.h
+	System/MediaManager.h
+	System/PythonInterpreter.h
+	System/Resource.h
+	System/ResourceManager.h
+	System/SettingsManager.h
+	System/MediaManager.inl
+	System/ResourceManager.inl
+)
+
+
+# Dir name System/Loaders
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	System/Loaders/AssimpLoader.cpp
+	System/Loaders/ImagesLoader.cpp
+	System/Loaders/Loaders.cpp
+	System/Loaders/ShadersLoader.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	System/Loaders/AssimpLoader.h
+	System/Loaders/ImagesLoader.h
+	System/Loaders/Loader.h
+	System/Loaders/Loaders.h
+	System/Loaders/ShadersLoader.h
+)
+
+
+# Dir name System/Python
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	System/Python/Jinja2Template.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	System/Python/Jinja2Template.h
+)
+
+
+# Dir name Utilities
+SET(SOURCES_AMA3D ${SOURCES_AMA3D} 
+	Utilities/File.cpp
+	Utilities/StringUtils.cpp
+)
+
+SET(HEADERS_AMA3D ${HEADERS_AMA3D} 
+	Utilities/File.h
+	Utilities/GenHierarchies.h
+	Utilities/SmartPtr.h
+	Utilities/SmartPtrPolicies.h
+	Utilities/StringUtils.h
+	Utilities/Typelist.h
+	Utilities/Util.h
+	Utilities/SmartPtr.inl
+	Utilities/StringUtils.inl
+	Utilities/Typelist.inl
 )
 
 SET(AMATERASU3D_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
 IF(MSVC)
-	ADD_LIBRARY(Amaterasu3D SHARED ${SOURCES_AMA3D} ${HEADERS_AMA3D})
+	ADD_LIBRARY(Amaterasu3D STATIC ${SOURCES_AMA3D} ${HEADERS_AMA3D})
 ELSE()
 	ADD_LIBRARY(Amaterasu3D SHARED ${SOURCES_AMA3D})
 ENDIF()

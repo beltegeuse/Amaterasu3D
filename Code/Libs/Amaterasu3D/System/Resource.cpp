@@ -23,14 +23,14 @@
 //==========================================================
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <System/Resource.h>
 #include <System/ResourceManager.h>
 namespace ama3D
 {
 /////////////////////////////////////////////////////////////
-/// Constructeur par d�faut
+/// Constructeur par defaut
 ///
 ////////////////////////////////////////////////////////////
 IResource::IResource() :
@@ -50,9 +50,9 @@ IResource::~IResource()
 }
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le nom associ� � la ressource
+/// Renvoie le nom associe e la ressource
 ///
-/// \return Nom attribu� � la ressource
+/// \return Nom attribue e la ressource
 ///
 ////////////////////////////////////////////////////////////
 const std::string& IResource::GetName() const
@@ -61,7 +61,7 @@ const std::string& IResource::GetName() const
 }
 
 /////////////////////////////////////////////////////////////
-/// Ajoute une r�f�rence sur la ressource
+/// Ajoute une reference sur la ressource
 ///
 ////////////////////////////////////////////////////////////
 void IResource::AddRef()
@@ -70,17 +70,17 @@ void IResource::AddRef()
 }
 
 /////////////////////////////////////////////////////////////
-/// Retire une r�f�rence sur la ressource
+/// Retire une reference sur la ressource
 ///
-/// \return Nombre de r�f�rences restantes sur la ressource
+/// \return Nombre de references restantes sur la ressource
 ///
 ////////////////////////////////////////////////////////////
 int IResource::Release()
 {
-	// D�cr�mentation du compteur de r�f�rences
+	// Decrementation du compteur de references
 	int RefCount = --m_RefCount;
 
-	// S'il n'y a plus de r�f�rence sur la ressource, on la d�truit
+	// S'il n'y a plus de reference sur la ressource, on la detruit
 	if (RefCount == 0)
 		delete this;
 

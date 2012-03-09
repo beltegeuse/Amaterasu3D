@@ -26,7 +26,7 @@
 #define RESOURCE_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <string>
 
@@ -40,7 +40,7 @@ class IResource
 public:
 
 	//----------------------------------------------------------
-	// Constructeur par d�faut
+	// Constructeur par defaut
 	//----------------------------------------------------------
 	IResource();
 
@@ -50,17 +50,17 @@ public:
 	virtual ~IResource() = 0;
 
 	//----------------------------------------------------------
-	// Renvoie le nom associ� � la ressource
+	// Renvoie le nom associe e la ressource
 	//----------------------------------------------------------
 	const std::string& GetName() const;
 
 	//----------------------------------------------------------
-	// Ajoute une r�f�rence sur la ressource
+	// Ajoute une reference sur la ressource
 	//----------------------------------------------------------
 	void AddRef();
 
 	//----------------------------------------------------------
-	// Retire une r�f�rence sur la ressource
+	// Retire une reference sur la ressource
 	//----------------------------------------------------------
 	int Release();
 
@@ -78,10 +78,10 @@ private:
 	void operator =(IResource&);
 
 	//----------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------
-	std::string m_Name; ///< Nom associ� � la ressource
-	int m_RefCount; ///< Compteur de r�f�rences
+	std::string m_Name; ///< Nom associe e la ressource
+	int m_RefCount; ///< Compteur de references
 };
 
 }

@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <math.h>
 // --- ama3D includes
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 #include <Graphics/RenderableObject.h>
 #include <Graphics/Shaders/Shader.h>
 #include <System/MediaManager.h>
@@ -108,11 +108,11 @@ CFont::CFont(const std::string& filename):
 {
 	ama3D::CFile file = ama3D::CMediaManager::Instance().FindMedia(filename);
 	m_FontFile = file.Fullname();
-	ama3D::Logger::Log() << "[INFO] Load Font file : " << m_FontFile << "\n";
+	std::cout << "[INFO] Load Font file : " << m_FontFile << "\n";
 	TiXmlDocument doc(m_FontFile);
 	if (!doc.LoadFile())
 	{
-		ama3D::Logger::Log() << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
+		std::cout << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
 		throw ama3D::CLoadingFailed(m_FontFile, "unable to load xml with TinyXML");
 	}
 
@@ -168,11 +168,11 @@ void CFont::Render(const CGraphicString& gstring)
 
 void CFont::LoadFile()
 {
-	ama3D::Logger::Log() << "[INFO] Load Font file : " << m_FontFile << "\n";
+	std::cout << "[INFO] Load Font file : " << m_FontFile << "\n";
 	TiXmlDocument doc(m_FontFile);
 	if (!doc.LoadFile())
 	{
-		ama3D::Logger::Log() << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
+		std::cout << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
 		throw ama3D::CLoadingFailed(m_FontFile, "unable to load xml with TinyXML");
 	}
 
@@ -189,10 +189,10 @@ void CFont::LoadFile()
 	TinyXMLGetAttributeValue<int>(fontNode,"width",&texWidth);
 	TinyXMLGetAttributeValue<int>(fontNode,"height",&texHeight);
 
-	ama3D::Logger::Log() << "      * Load Texture : " << fileNameTex<< "\n";
+	std::cout << "      * Load Texture : " << fileNameTex<< "\n";
 	m_FontsTex = ama3D::Texture::LoadFromFile(fileNameTex);
 
-	ama3D::Logger::Log() << "      * Load Fonts ... ";
+	std::cout << "      * Load Fonts ... ";
 	TiXmlElement *facesNode = fontNode->FirstChildElement("Faces");
 	TiXmlElement *faceNode = facesNode->FirstChildElement("Face");
 	int i = 0;
@@ -203,7 +203,7 @@ void CFont::LoadFile()
 		faceNode = faceNode->NextSiblingElement();
 		i++;
 	}
-	ama3D::Logger::Log() << i << " Font loaded ! \n";
+	std::cout << i << " Font loaded ! \n";
 }
 
 //////////////////////////////////////////
@@ -229,7 +229,7 @@ void CFontManager::LoadFont(const std::string& filename)
 	// La police est absente
 	if (it == m_polices.end())
 	{
-		Logger::Log() << "[INFO] Add new font : " << filename << " -> " <<  font->GetFontName() << "\n";
+		std::cout << "[INFO] Add new font : " << filename << " -> " <<  font->GetFontName() << "\n";
 		m_polices[font->GetFontName()] = font;
 	}
 }
@@ -258,7 +258,7 @@ void CFontManager::RenderText(const CGraphicString& gstring)
 	TPolices::iterator it = m_polices.find(gstring.FontAlias);
 	if(it == m_polices.end())
 	{
-		//Logger::Log() << "[Warning] Can't Draw Graphic String [Reason : Font \"" << gstring.FontAlias << "\" isn't found ! \n";
+		//std::cout << "[Warning] Can't Draw Graphic String [Reason : Font \"" << gstring.FontAlias << "\" isn't found ! \n";
 		return;
 	}
 

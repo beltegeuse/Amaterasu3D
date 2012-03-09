@@ -29,8 +29,8 @@
 
 #include "Texture.h"
 
-#include <Debug/Exceptions.h>
-#include <Logger/Logger.h>
+#include <Exceptions.h>
+#include <iostream> //#include "Logger.h"
 #include <System/MediaManager.h>
 #include <System/ResourceManager.h>
 
@@ -50,7 +50,7 @@ Texture::Texture(bool create, GLuint id, GLenum textureMode) :
 Texture::~Texture()
 {
 	glDeleteTextures(1, &m_idTex);
-	Logger::Log() << "[INFO] Delete texture... \n";
+	std::cout << "[INFO] Delete texture... \n";
 }
 
 //Fonction qui active le texturage

@@ -22,7 +22,7 @@
 // E-mail : adrien.gruson@gmail.com
 //==========================================================
 
-#include "FixedCamera.h"
+#include "Graphics/Camera/CameraFixed.h"
 
 namespace ama3D
 {

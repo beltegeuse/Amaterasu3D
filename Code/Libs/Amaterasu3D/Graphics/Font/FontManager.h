@@ -38,7 +38,7 @@
 #include <Singleton.h>
 #include "glm/glm.hpp"
 #include <Utilities/File.h>
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 #include <Graphics/Texture.h>
 #include <Graphics/MatrixManagement.h>
 #include <Graphics/Font/GraphicString.h>

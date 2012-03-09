@@ -7,10 +7,8 @@
 #include <iostream>
 
 // CoreEngine Includes
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 
-namespace ama3D
-{
 class Logger
 {
 private:
@@ -76,6 +74,5 @@ private:
 
 	std::string m_Text;
 };
-}
 
 #endif /* LOGGER_H_ */

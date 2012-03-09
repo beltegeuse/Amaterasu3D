@@ -29,7 +29,7 @@
 
 // Amaterasu includes
 #include <Utilities/Util.h>
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 #include <Math/SphericalCoordinates.h>
 #include <Graphics/SceneNode/ISimpleRenderableSceneNode.h>
 
@@ -104,7 +104,7 @@ void LPV::Initialize()
 	m_PropagationFBOs[0] = m_LPVPropagationShader->GetFBO(); // No copy the first
 	for (int i = 1; i < m_NbPropagationStep; i++)
 	{
-		Logger::Log() << "[INFO] Create Copy Propagation FBO : " << i << "\n";
+		std::cout << "[INFO] Create Copy Propagation FBO : " << i << "\n";
 		m_PropagationFBOs[i] = m_LPVPropagationShader->GetFBO()->Copy();
 	}
 	/////////////////////////////
@@ -424,14 +424,14 @@ void LPV::ComputeGridPosition(CameraAbstract* Camera)
 
 void LPV::GenerateGridModels()
 {
-	Logger::Log() << "[INFO] Generate Grid models \n";
+	std::cout << "[INFO] Generate Grid models \n";
 	m_GridModels = new ISimpleRenderableSceneNode*[m_NbCascadedLevels];
 	for (int i = 0; i < m_NbCascadedLevels; i++)
 	{
-		Logger::Log() << "   * Generate Level : " << i << "\n";
+		std::cout << "   * Generate Level : " << i << "\n";
 		CreateGridModel(&m_GridModels[i], m_NbCellDim, m_CellSize[i]);
 	}
-	Logger::Log() << "[INFO] Generate Grid models (END) \n";
+	std::cout << "[INFO] Generate Grid models (END) \n";
 }
 
 void LPV::CreateGridModel(ISimpleRenderableSceneNode** GirdModel, int nbCellDim,
@@ -558,7 +558,7 @@ void LPV::DrawGrid(int level)
 //	Math::SphericalCoordinates gridSphericalCoords( glm::vec3(directionView.x, directionView.z, directionView.y));
 //	rotationGird.SetRotationY(gridSphericalCoords.GetTheta());
 //	rotationGird2.SetRotationZ(gridSphericalCoords.GetPhy()-(M_PI/2.0));
-//	//Logger::Log() << "Dir : " << m_Camera->GetTarget() - m_Camera->GetPosition() << " Theta : " << gridSphericalCoords.GetTheta() << " Phy : " << gridSphericalCoords.GetPhy() << "\n";
+//	//std::cout << "Dir : " << m_Camera->GetTarget() - m_Camera->GetPosition() << " Theta : " << gridSphericalCoords.GetTheta() << " Phy : " << gridSphericalCoords.GetPhy() << "\n";
 //	//glm::mat4x4 transGrid = MatrixManager.GetMatrix(VIEW_MATRIX);
 //	 glm::vec3 cameraPos = m_Camera->GetPosition();
 //	transGrid.SetTranslation(cameraPos.x,cameraPos.y,cameraPos.z);

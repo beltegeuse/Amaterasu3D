@@ -58,12 +58,12 @@ class CColor
 public:
 
 	//----------------------------------------------------------------
-	// Constructeur par d�faut
+	// Constructeur par defaut
 	//----------------------------------------------------------------
 	CColor(unsigned long Color = 0xFFFFFFFF);
 
 	//----------------------------------------------------------------
-	// Constructeur � partir de 4 composantes
+	// Constructeur e partir de 4 composantes
 	//----------------------------------------------------------------
 	CColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a =
 			0xFF);

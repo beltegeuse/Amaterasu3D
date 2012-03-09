@@ -50,7 +50,7 @@ private:
 	void GetMaterialPropreties(RenderableObject* assimpMesh,
 			const struct aiMaterial *mtl);
 	void BuildGroup(IMeshSceneNode* group, const aiScene* scene, aiNode* nd,
-			const Math::CMatrix4& matrix);
+		const glm::mat4x4& matrix);
 	TTexturePtr LoadTexture(const CFile& name);
 };
 }

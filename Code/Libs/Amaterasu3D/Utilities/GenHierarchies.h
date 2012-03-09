@@ -26,14 +26,14 @@
 #define GENHIERARCHIES_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <Utilities/Typelist.h>
 
 namespace ama3D
 {
 ////////////////////////////////////////////////////////////
-/// Hi�rarchie "�parpill�e"
+/// Hierarchie "eparpillee"
 ////////////////////////////////////////////////////////////
 template<class TList, template<class > class Handler> class CScatteredHierarchy;
 
@@ -54,7 +54,7 @@ class CScatteredHierarchy<NullType, Handler>
 };
 
 ////////////////////////////////////////////////////////////
-/// Hi�rarchie "lin�aire"
+/// Hierarchie "lineaire"
 ////////////////////////////////////////////////////////////
 template<class TList, template<class, class > class Handler
 		, class Root = NullType> class CLinearHierarchy;

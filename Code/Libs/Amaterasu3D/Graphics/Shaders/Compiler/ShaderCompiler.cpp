@@ -34,7 +34,7 @@
 
 // Amaterasu3D Includes
 #include <Utilities/StringUtils.h>
-#include <Logger/Logger.h>
+#include <iostream> //#include "Logger.h"
 #include <System/MediaManager.h>
 
 namespace ama3D
@@ -75,14 +75,14 @@ ShaderCompiler::~ShaderCompiler()
 
 void ShaderCompiler::Compile()
 {
-	Logger::Log() << "[INFO] Compile Current code ... \n";
+	std::cout << "[INFO] Compile Current code ... \n";
 	ResolveDefinesRules();
 	ResolveIncludeRules();
 }
 
 void ShaderCompiler::ResolveDefinesRules()
 {
-	Logger::Log() << "   * ResolveDefinesRules\n";
+	std::cout << "   * ResolveDefinesRules\n";
 	/////////////////////////////////////
 	// Find good position to add defines.
 	// After #version and #extension
@@ -109,7 +109,7 @@ void ShaderCompiler::ResolveDefinesRules()
 	for (ShaderCompilerConfig::DefineMap::iterator it2 = defs.begin();
 			it2 != defs.end(); it2++)
 			{
-		Logger::Log() << "   *   |- " << it2->first << " : " << it2->second.value
+		std::cout << "   *   |- " << it2->first << " : " << it2->second.value
 				<< "\n";
 		std::stringstream ss;
 		ss << "#define " << it2->first << " " << it2->second.value;
@@ -120,7 +120,7 @@ void ShaderCompiler::ResolveDefinesRules()
 void ShaderCompiler::ResolveIncludeRules()
 {
 	bool find = false;
-	Logger::Log() << "   * ResolveIncludeRules\n";
+	std::cout << "   * ResolveIncludeRules\n";
 	/*
 	 * Search Pass
 	 */
@@ -136,7 +136,7 @@ void ShaderCompiler::ResolveIncludeRules()
 		{
 			find = true;
 			std::string fileName(matches[1].first, matches[1].second);
-			Logger::Log() << "[Compiler] Found include : " << fileName << "\n";
+			std::cout << "[Compiler] Found include : " << fileName << "\n";
 			IncludeV[fileName] = it;
 		}
 	}
@@ -161,7 +161,7 @@ void ShaderCompiler::ResolveIncludeRules()
 
 	if (find)
 	{
-		Logger::Log() << "Code : \n" << GetCode() << "\n";
+		std::cout << "Code : \n" << GetCode() << "\n";
 	}
 }
 
@@ -174,7 +174,7 @@ void ShaderCompiler::AnalyseCompilerLog(const std::string& log)
 	for (std::vector<std::string>::iterator it = vectorResult.begin();
 			it != vectorResult.end(); ++it)
 			{
-		Logger::Log() << "[LOG] " << (*it) << "\n";
+		std::cout << "[LOG] " << (*it) << "\n";
 		boost::cmatch matches;
 		boost::match_results<std::string::iterator> what;
 		std::string lineNumberString;
@@ -196,11 +196,11 @@ void ShaderCompiler::AnalyseCompilerLog(const std::string& log)
 			ss << lineNumberString;
 			int lineNumber;
 			ss >> lineNumber;
-			Logger::Log() << "[Compiler] Error line found : " << lineNumber
+			std::cout << "[Compiler] Error line found : " << lineNumber
 					<< "\n";
 			std::list<std::string>::iterator i = m_LinesCode.begin();
 			std::advance(i, lineNumber - 1);
-			Logger::Log() << "[Compiler] [Line] " << lineNumber << " : " << *i
+			std::cout << "[Compiler] [Line] " << lineNumber << " : " << *i
 					<< "\n";
 		}
 	}

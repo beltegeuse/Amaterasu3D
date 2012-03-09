@@ -26,7 +26,7 @@
 #include <Utilities/StringUtils.h>
 #include <Utilities/File.h>
 #include <FreeImage.h>
-#include <Logger/Logger.h>
+#include <iostream> //#include "Logger.h"
 
 namespace ama3D
 {
@@ -65,7 +65,7 @@ Texture* ImagesLoader::LoadImageFromFile(const std::string& Filename)
 
 	int w = FreeImage_GetWidth(imagen);
 	int h = FreeImage_GetHeight(imagen);
-	//Logger::Log() <<"The size of the image is: "<<Filename<<" es "<<w<<"*"<<h<<"\n"; //Some debugging code
+	//std::cout <<"The size of the image is: "<<Filename<<" es "<<w<<"*"<<h<<"\n"; //Some debugging code
 
 	GLubyte* textura = new GLubyte[4 * w * h];char
 	* pixeles = (char*) FreeImage_GetBits(imagen);

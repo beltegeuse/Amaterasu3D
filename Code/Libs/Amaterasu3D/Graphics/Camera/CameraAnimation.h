@@ -10,7 +10,7 @@
 
 #include <tinyxml.h>
 #include <TinyXMLHelper.h>
-#include <Logger/Logger.h>
+#include <iostream> //#include <Logger/Logger.h>
 namespace ama3D
 {
 struct CameraAnimationControlPoint
@@ -18,15 +18,15 @@ struct CameraAnimationControlPoint
 	/*
 	 * Attributes
 	 */
-	Math::TVector3F Position;
-	Math::TVector3F Direction;
+	glm::vec3 Position;
+	glm::vec3 Direction;
 
 	/*
 	 * Constructors & Destructors
 	 */
-	CameraAnimationControlPoint(const Math::TVector3F& position =
-			Math::TVector3F(0, 0, 0), const Math::TVector3F& direction =
-			Math::TVector3F(1, 0, 0)) :
+	CameraAnimationControlPoint(const glm::vec3& position =
+			glm::vec3(0, 0, 0), const glm::vec3& direction =
+			glm::vec3(1, 0, 0)) :
 			Position(position), Direction(direction)
 	{
 		Direction.Normalize();
@@ -77,7 +77,7 @@ protected:
 	std::vector<CameraAnimationControlPoint> m_Points;
 	std::vector<float> m_TimePoints;
 
-	CatmullRomInterpolator<Math::TVector3F> m_PositionInterpolator;
+	CatmullRomInterpolator<glm::vec3> m_PositionInterpolator;
 	CatmullRomInterpolator<float> m_TimeInterpolator;
 
 	CameraAbstract* m_Camera;
@@ -164,7 +164,7 @@ public:
 				- m_TimePoints[m_AnimationSequence - 1])
 				/ ((float) (m_TimePoints[m_AnimationSequence]
 						- m_TimePoints[m_AnimationSequence - 1]));
-		Math::TVector3F newPos = m_PositionInterpolator.Interpolation(
+		glm::vec3 newPos = m_PositionInterpolator.Interpolation(
 				m_AnimationSequence + deltaTinterpolation - 1);
 
 		// Direction interpolation
@@ -174,9 +174,9 @@ public:
 		q1.From3DVector(m_Points[m_AnimationSequence - 1].Direction);
 		q2.From3DVector(m_Points[m_AnimationSequence].Direction);
 
-		Math::TVector3F newDir = Math::CQuaternion::slerp(q1, q2,
+		glm::vec3 newDir = Math::CQuaternion::slerp(q1, q2,
 				deltaTinterpolation).ToMatrix().Transform(
-				Math::TVector3F(1, 0, 0), 1);
+				glm::vec3(1, 0, 0), 1);
 
 		std::cout << "New Camera position : " << newPos << std::endl;
 		std::cout << "New Camera orientation : " << newDir << std::endl;
@@ -209,7 +209,7 @@ public:
 		// Get configuration
 		TinyXMLGetAttributeValue(animationNode, "Looping", &m_LoopAnimation);
 
-		Logger::Log() << "[INFO] Read animation camera XML structure ... \n";
+		std::cout << "[INFO] Read animation camera XML structure ... \n";
 
 		// Get all points controls
 		TiXmlElement* controlPointNode = animationNode->FirstChildElement(
@@ -223,7 +223,7 @@ public:
 			p.ReadXML(controlPointNode);
 
 			AddControlPoint(p, time);
-			Logger::Log() << "     * " << p << " ( " << time << " )\n";
+			std::cout << "     * " << p << " ( " << time << " )\n";
 
 			// Pass to the next element
 			controlPointNode = controlPointNode->NextSiblingElement();
@@ -249,7 +249,7 @@ public:
 		TiXmlDocument doc(path.c_str());
 		if (!doc.LoadFile())
 		{
-			Logger::Log() << "[ERROR] TinyXML error : " << doc.ErrorDesc()
+			std::cout << "[ERROR] TinyXML error : " << doc.ErrorDesc()
 					<< "\n";
 			throw CLoadingFailed(path, "unable to load xml with TinyXML");
 		}

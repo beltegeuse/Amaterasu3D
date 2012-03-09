@@ -53,7 +53,7 @@ void SumantToneOperator::Compress(Texture* HDRBuffer)
 	m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels() - 1)->activateTexture();
 	float averageValues[3];
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, &averageValues);
-	//Logger::Log() << "Value : " << averageValues[0] << "x" << averageValues[1]
+	//std::cout << "Value : " << averageValues[0] << "x" << averageValues[1]
 	//		<< "x" << averageValues[2] << "\n";
 	m_ManualMipmapping.GetLevel(m_ManualMipmapping.NumberLevels() - 1)->desactivateTextureMapping();
 
@@ -91,15 +91,15 @@ void SumantToneOperator::Compress(Texture* HDRBuffer)
 							+ 0.171 * std::pow(1.0 - k4, 2)
 									* std::pow(Acone, 1.f / 3.f));
 
-//	Logger::Log() << "[DEBUG] Info operator Sumant : \n";
-//	Logger::Log() << "    * Grod : " << Grod << "\n";
-//	Logger::Log() << "    * Gcone : " << Gcone << "\n";
-//	Logger::Log() << "    * Arod : " << Arod << "\n";
-//	Logger::Log() << "    * Acone : " << Acone << "\n";
-//	Logger::Log() << "    * SigRod : " << sigRod << "\n";
-//	Logger::Log() << "    * SigCone : " << sigCone << "\n";
-//	Logger::Log() << "    * Brod : " << m_RodBlenching.GetValue() << "\n";
-//	Logger::Log() << "    * Bcone : " << m_ConeBlenching.GetValue() << "\n";
+//	std::cout << "[DEBUG] Info operator Sumant : \n";
+//	std::cout << "    * Grod : " << Grod << "\n";
+//	std::cout << "    * Gcone : " << Gcone << "\n";
+//	std::cout << "    * Arod : " << Arod << "\n";
+//	std::cout << "    * Acone : " << Acone << "\n";
+//	std::cout << "    * SigRod : " << sigRod << "\n";
+//	std::cout << "    * SigCone : " << sigCone << "\n";
+//	std::cout << "    * Brod : " << m_RodBlenching.GetValue() << "\n";
+//	std::cout << "    * Bcone : " << m_ConeBlenching.GetValue() << "\n";
 
 	m_ToneOperator->Begin();
 	HDRBuffer->activateMultiTex(CUSTOM_TEXTURE + 0);

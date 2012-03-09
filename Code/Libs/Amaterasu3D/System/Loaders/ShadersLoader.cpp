@@ -23,7 +23,7 @@
 //==========================================================
 #include "ShadersLoader.h"
 #include <tinyxml.h>
-#include <Logger/Logger.h>
+#include <iostream> //#include "Logger.h"
 #include <System/MediaManager.h>
 #include <TinyXMLHelper.h>
 #include <System/SettingsManager.h>
@@ -43,7 +43,7 @@ void ShadersLoader::LoadMaterials(Shader* shader, TiXmlElement *root)
 	TiXmlElement *rootMaterial = root->FirstChildElement("Materials");
 	if (!rootMaterial)
 	{
-		Logger::Log() << "[INFO] No Materials is available ... \n";
+		std::cout << "[INFO] No Materials is available ... \n";
 		return;
 	}
 	TiXmlElement *materialNode = rootMaterial->FirstChildElement("Material");
@@ -82,14 +82,14 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 	TiXmlElement *rootFBO = root->FirstChildElement("OutputFrame");
 	if (!rootFBO)
 	{
-		Logger::Log() << "[INFO] No FBO is available ... \n";
+		std::cout << "[INFO] No FBO is available ... \n";
 		return;
 	}
 	// Get the depth buffer type
 	std::string typeDepthString;
 	TinyXMLGetAttributeValue<std::string>(rootFBO, "depthType",
 			&typeDepthString);
-	Logger::Log() << "   * Depth buffer type " << typeDepthString << "\n";
+	std::cout << "   * Depth buffer type " << typeDepthString << "\n";
 	FBODepthType typeDepth;
 	if (typeDepthString == "None")
 	{
@@ -112,14 +112,14 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 	TinyXMLGetAttributeValue<std::string>(rootFBO, "size", &typeSize);
 	if (typeSize == "Screen")
 	{
-		Math::TVector2I sizeScreen =
+		glm::ivec2 sizeScreen =
 				CSettingsManager::Instance().GetSizeRenderingWindow();
 		X = sizeScreen.x;
 		Y = sizeScreen.y;
 	}
 	else if (typeSize == "HalfScreen")
 	{
-		Math::TVector2I sizeScreen =
+		glm::ivec2 sizeScreen =
 				CSettingsManager::Instance().GetSizeRenderingWindow();
 		X = sizeScreen.x / 2;
 		Y = sizeScreen.y / 2;
@@ -135,7 +135,7 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 	}
 	// Get all buffers
 	std::map<std::string, FBOTextureBufferParam> buffers;
-	Logger::Log() << "   * Chargement des differents buffers .... \n";
+	std::cout << "   * Chargement des differents buffers .... \n";
 	TiXmlElement *frameNode = rootFBO->FirstChildElement("Frame");
 	shader->Begin();
 	while (frameNode)
@@ -144,7 +144,7 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 		std::string typeString;
 		TinyXMLGetAttributeValue<std::string>(frameNode, "name", &name);
 		TinyXMLGetAttributeValue<std::string>(frameNode, "type", &typeString);
-		Logger::Log() << "      * Create buffer : " << name << " ( "
+		std::cout << "      * Create buffer : " << name << " ( "
 				<< typeString << " ) \n";
 		FBOTextureBufferParam param;
 		// Mipmapping parsing
@@ -153,7 +153,7 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 		frameNode->Attribute("mipmapping", &mipmapping);
 		if (mipmapping)
 		{
-			Logger::Log() << "        * Mipmapping enable \n";
+			std::cout << "        * Mipmapping enable \n";
 			param.GenerateMipMapping = true;
 			param.MinFiltering = GL_LINEAR_MIPMAP_NEAREST;
 			param.MaxFiltering = GL_LINEAR;
@@ -163,7 +163,7 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 		frameNode->Attribute("bilinear", &bilinear);
 		if(bilinear)
 		{
-			Logger::Log() << "        * Bilinear enable \n";
+			std::cout << "        * Bilinear enable \n";
 			param.MinFiltering = GL_LINEAR;
 			param.MaxFiltering = GL_LINEAR;
 		}
@@ -205,14 +205,14 @@ void ShadersLoader::LoadShaderFBO(Shader* shader, TiXmlElement *root)
 			throw CException("unknow buffer type");
 		param.Attachment = glGetFragDataLocation(shader->GetProgramObject(),
 				name.c_str());
-		Logger::Log() << "           * Attachment : " << param.Attachment
+		std::cout << "           * Attachment : " << param.Attachment
 				<< "\n";
 		buffers[name] = param;
 		frameNode = frameNode->NextSiblingElement("Frame");
 	}
 	shader->End();
 	FBODepthBufferParam bufferDepth;
-	FBO* fbo = new FBO(Math::TVector2I(X, Y), buffers, typeDepth, bufferDepth); // FIXME: Inversion des tailles ???
+	FBO* fbo = new FBO(glm::ivec2(X, Y), buffers, typeDepth, bufferDepth); // FIXME: Inversion des tailles ???
 	shader->SetFBO(fbo);
 }
 
@@ -221,11 +221,11 @@ void ShadersLoader::LoadShaderMatrix(Shader* shader, TiXmlElement *root)
 	TiXmlElement *rootMatrix = root->FirstChildElement("MatrixInput");
 	if (!rootMatrix)
 	{
-		Logger::Log() << "[INFO] No Matrix is available ... \n";
+		std::cout << "[INFO] No Matrix is available ... \n";
 		return;
 	}
 	TiXmlElement *matrixNode = rootMatrix->FirstChildElement("Matrix");
-	Logger::Log() << "[INFO] Matrix : \n";
+	std::cout << "[INFO] Matrix : \n";
 	while (matrixNode)
 	{
 		std::string nameMatrix;
@@ -236,23 +236,23 @@ void ShadersLoader::LoadShaderMatrix(Shader* shader, TiXmlElement *root)
 		//TODO: Faire une factory ???
 		if (typeMatrix == "Model")
 		{
-			Logger::Log() << "   * Matrix : " << nameMatrix << " (Model) \n";
+			std::cout << "   * Matrix : " << nameMatrix << " (Model) \n";
 			type = MODEL_MATRIX;
 		}
 		else if (typeMatrix == "Projection")
 		{
-			Logger::Log() << "   * Matrix : " << nameMatrix
+			std::cout << "   * Matrix : " << nameMatrix
 					<< " (Projection) \n";
 			type = PROJECTION_MATRIX;
 		}
 		else if (typeMatrix == "Normal")
 		{
-			Logger::Log() << "   * Matrix : " << nameMatrix << " (Normal) \n";
+			std::cout << "   * Matrix : " << nameMatrix << " (Normal) \n";
 			type = NORMAL_MATRIX;
 		}
 		else if (typeMatrix == "View")
 		{
-			Logger::Log() << "   * Matrix : " << nameMatrix << " (View) \n";
+			std::cout << "   * Matrix : " << nameMatrix << " (View) \n";
 			type = VIEW_MATRIX;
 		}
 		else
@@ -269,11 +269,11 @@ void ShadersLoader::LoadShaderAttributs(Shader* shader, TiXmlElement *root)
 	TiXmlElement *rootAttributs = root->FirstChildElement("Attributs");
 	if (!rootAttributs)
 	{
-		Logger::Log() << "[INFO] No Attribut is available ... \n";
+		std::cout << "[INFO] No Attribut is available ... \n";
 		return;
 	}
 	TiXmlElement *attributNode = rootAttributs->FirstChildElement("Attribut");
-	Logger::Log() << "[INFO] Attribut : \n";
+	std::cout << "[INFO] Attribut : \n";
 	while (attributNode)
 	{
 		std::string nameAttrib;
@@ -286,35 +286,35 @@ void ShadersLoader::LoadShaderAttributs(Shader* shader, TiXmlElement *root)
 		//TODO: Faire une factory ???
 		if (typeAttrib == "Vertex")
 		{
-			Logger::Log() << "   * Attribut : " << nameAttrib << " (Vertex) \n";
+			std::cout << "   * Attribut : " << nameAttrib << " (Vertex) \n";
 			typeID = VERTEX_ATTRIBUT;
 		}
 		else if (typeAttrib == "Color")
 		{
-			Logger::Log() << "   * Attribut : " << nameAttrib << " (Color) \n";
+			std::cout << "   * Attribut : " << nameAttrib << " (Color) \n";
 			typeID = COLOR_ATTRIBUT;
 		}
 		else if (typeAttrib == "TexCoord")
 		{
-			Logger::Log() << "   * Attribut : " << nameAttrib
+			std::cout << "   * Attribut : " << nameAttrib
 					<< " (TexCoord) \n";
 			typeID = TEXCOORD_ATTRIBUT;
 		}
 		else if (typeAttrib == "Tangent")
 		{
-			Logger::Log() << "   * Attribut : " << nameAttrib
+			std::cout << "   * Attribut : " << nameAttrib
 					<< " (Tangent) \n";
 			typeID = TANGENT_ATTRIBUT;
 		}
 		else if (typeAttrib == "BiTangent")
 		{
-			Logger::Log() << "   * Attribut : " << nameAttrib
+			std::cout << "   * Attribut : " << nameAttrib
 					<< " (BiTangent) \n";
 			typeID = BITANGENT_ATTRIBUT;
 		}
 		else if (typeAttrib == "Normal")
 		{
-			Logger::Log() << "   * Attribut : " << nameAttrib << " (Normal) \n";
+			std::cout << "   * Attribut : " << nameAttrib << " (Normal) \n";
 			typeID = NORMAL_ATTRIBUT;
 		}
 		else if(typeAttrib == "Custom")
@@ -322,7 +322,7 @@ void ShadersLoader::LoadShaderAttributs(Shader* shader, TiXmlElement *root)
 			// TODO: Add Limit number & do verifications
 			int idNum;
 			TinyXMLGetAttributeValue<int>(attributNode, "id",&idNum);
-			Logger::Log() << "   * Attribut : " << nameAttrib << " (Custom " << idNum << ") \n";
+			std::cout << "   * Attribut : " << nameAttrib << " (Custom " << idNum << ") \n";
 			typeID = CUSTOM_ATTRIBUT + idNum;
 		}
 		else
@@ -339,11 +339,11 @@ void ShadersLoader::LoadShaderTextures(Shader* shader, TiXmlElement *root)
 	TiXmlElement *rootTextures = root->FirstChildElement("Textures");
 	if (!rootTextures)
 	{
-		Logger::Log() << "[INFO] No Textures is available ... \n";
+		std::cout << "[INFO] No Textures is available ... \n";
 		return;
 	}
 	TiXmlElement *textureNode = rootTextures->FirstChildElement("Texture");
-	Logger::Log() << "[INFO] Textures : \n";
+	std::cout << "[INFO] Textures : \n";
 	while (textureNode)
 	{
 		std::string nameAttrib;
@@ -355,24 +355,24 @@ void ShadersLoader::LoadShaderTextures(Shader* shader, TiXmlElement *root)
 		//TODO: Faire une factory ???
 		if (typeAttrib == "Diffuse")
 		{
-			Logger::Log() << "   * Texture : " << nameAttrib << " (Diffuse) \n";
+			std::cout << "   * Texture : " << nameAttrib << " (Diffuse) \n";
 			typeID = DIFFUSE_TEXTURE;
 		}
 		else if (typeAttrib == "Normal")
 		{
-			Logger::Log() << "   * Texture : " << nameAttrib << " (Normal) \n";
+			std::cout << "   * Texture : " << nameAttrib << " (Normal) \n";
 			typeID = NORMAL_TEXTURE;
 		}
 		else if (typeAttrib == "Specular")
 		{
-			Logger::Log() << "   * Texture : " << nameAttrib
+			std::cout << "   * Texture : " << nameAttrib
 					<< " (Specular) \n";
 			typeID = SPECULAR_TEXTURE;
 		}
 		else if (typeAttrib == "Custom")
 		{
 			textureNode->Attribute("id", &id);
-			Logger::Log() << "   * Texture : " << nameAttrib << " (Custom) ["
+			std::cout << "   * Texture : " << nameAttrib << " (Custom) ["
 					<< id << "]\n";
 			typeID = CUSTOM_TEXTURE + id;
 		}
@@ -418,7 +418,7 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	TiXmlDocument doc(Filename.c_str());
 	if (!doc.LoadFile())
 	{
-		Logger::Log() << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
+		std::cout << "[ERROR] TinyXML error : " << doc.ErrorDesc() << "\n";
 		throw CLoadingFailed(Filename, "unable to load xml with TinyXML");
 	}
 	// Get the root
@@ -434,7 +434,7 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	std::string shaderTypeName;
 	TinyXMLGetAttributeValue<std::string>(root, "name", &name);
 	TinyXMLGetAttributeValue<std::string>(root, "type", &shaderTypeName);
-	Logger::Log() << "[INFO] Load shader : " << name << " ( " << shaderTypeName
+	std::cout << "[INFO] Load shader : " << name << " ( " << shaderTypeName
 			<< " ) ... \n";
 	ShaderType shaderType;
 	if (shaderTypeName == "Basic")
@@ -456,7 +456,7 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	}
 	std::string vertexShadername = std::string(
 			shadername->Attribute("filename"));
-	Logger::Log() << "   * Vertex shader : " << vertexShadername << "\n";
+	std::cout << "   * Vertex shader : " << vertexShadername << "\n";
 	// * Fragment shader
 	shadername = root->FirstChildElement("FragmentShader");
 	if (!shadername)
@@ -465,7 +465,7 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	}
 	std::string fragmentShadername = std::string(
 			shadername->Attribute("filename"));
-	Logger::Log() << "   * Fragment shader : " << fragmentShadername << "\n";
+	std::cout << "   * Fragment shader : " << fragmentShadername << "\n";
 
 	/*
 	 * Find full path
@@ -481,7 +481,7 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	{
 		std::string geometryShadername = std::string(
 				shadername->Attribute("filename"));
-		Logger::Log() << "   * Geometry shader : " << geometryShadername
+		std::cout << "   * Geometry shader : " << geometryShadername
 				<< "\n";
 		geometryShadername = CMediaManager::Instance().FindMedia(
 				geometryShadername).Fullname();
@@ -497,7 +497,7 @@ Shader* ShadersLoader::LoadFromFile(const std::string& Filename)
 	}
 	else
 	{
-		Logger::Log() << "   * No Geometry shader\n";
+		std::cout << "   * No Geometry shader\n";
 		// Shader creation ....
 		shader = CShaderManager::Instance().loadfromFile(
 				vertexShadername.c_str(), fragmentShadername.c_str(),

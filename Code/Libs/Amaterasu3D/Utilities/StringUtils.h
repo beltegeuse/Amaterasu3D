@@ -26,7 +26,7 @@
 #define STRINGUTILS_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <algorithm>
 #include <cctype>
@@ -34,23 +34,23 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 
 namespace ama3D
 {
 //----------------------------------------------------------------
-// D�coupe une chaine de caract�res
+// Decoupe une chaine de caracteres
 //----------------------------------------------------------------
 void Split(const std::string& String, std::vector<std::string>& Tokens,
 		const std::string& Delim = " \t\n");
 
 //----------------------------------------------------------------
-// Renvoie le contenu d'un fichier sous forme de cha�ne
+// Renvoie le contenu d'un fichier sous forme de chaene
 //----------------------------------------------------------------
 std::string ReadFile(const std::string& Filename);
 
 //----------------------------------------------------------------
-// Renvoie le code de hachage d'une cha�ne de caract�res
+// Renvoie le code de hachage d'une chaene de caracteres
 //----------------------------------------------------------------
 unsigned long StringHash(const std::string& String);
 
@@ -107,49 +107,49 @@ public:
 typedef CToCustomType<int> ToIntType;
 typedef CToCustomType<float> ToFloatType;
 ////////////////////////////////////////////////////////////
-/// Template servant � construire les classes singleton
+/// Template servant e construire les classes singleton
 ////////////////////////////////////////////////////////////
 class CStringBuilder
 {
 public:
 
 	//----------------------------------------------------------------
-	// Constructeur par d�faut
+	// Constructeur par defaut
 	//----------------------------------------------------------------
 	CStringBuilder();
 
 	//----------------------------------------------------------------
-	// Construit l'injecteur avec une premi�re valeur
+	// Construit l'injecteur avec une premiere valeur
 	//----------------------------------------------------------------
 	template<typename T> CStringBuilder(const T& Value);
 
 	//----------------------------------------------------------------
-	// Injecte une valeur dans la cha�ne
+	// Injecte une valeur dans la chaene
 	//----------------------------------------------------------------
 	template<typename T> CStringBuilder& operator ()(const T& Value);
 
 	//----------------------------------------------------------------
-	// Op�rateur de conversion implicite en string
+	// Operateur de conversion implicite en string
 	//----------------------------------------------------------------
 	operator std::string();
 
 private:
 
 	//----------------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------------
-	std::ostringstream m_OutStream; ///< Flux-cha�ne utilis� pourl'injection des valeurs
+	std::ostringstream m_OutStream; ///< Flux-chaene utilise pourl'injection des valeurs
 };
 
 ////////////////////////////////////////////////////////////
-/// Template servant � construire les classes singleton
+/// Template servant e construire les classes singleton
 ////////////////////////////////////////////////////////////
 class CStringExtractor
 {
 public:
 
 	//----------------------------------------------------------------
-	// Construit l'extracteur � partir d'une cha�ne
+	// Construit l'extracteur e partir d'une chaene
 	//----------------------------------------------------------------
 	CStringExtractor(const std::string& Text);
 
@@ -159,16 +159,16 @@ public:
 	template<typename T> CStringExtractor& operator ()(T& Value);
 
 	//----------------------------------------------------------------
-	// V�rifie qu'il n'y a plus rien � extraire
+	// Verifie qu'il n'y a plus rien e extraire
 	//----------------------------------------------------------------
 	void ThrowIfEOF();
 
 private:
 
 	//----------------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------------
-	std::istringstream m_InStream; ///< Flux-cha�ne utilis� pour l'extraction des valeurs
+	std::istringstream m_InStream; ///< Flux-chaene utilise pour l'extraction des valeurs
 };
 
 #include "StringUtils.inl"

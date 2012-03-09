@@ -1,8 +1,7 @@
-#include <Logger/LoggerFile.h>
-
+#include <LoggerFile.h>
+#include <string>
 #include <iostream>
-namespace ama3D
-{
+
 LoggerFile::LoggerFile(const std::string& Filename) :
 		_File(Filename.c_str())
 {
@@ -29,4 +28,4 @@ void LoggerFile::Flush()
 {
 	_File.flush();
 }
-}
+

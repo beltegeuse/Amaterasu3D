@@ -53,7 +53,7 @@ CException::~CException() throw ()
 }
 
 /////////////////////////////////////////////////////////////
-/// Renvoie le message associ� � l'exception
+/// Renvoie le message associe e l'exception
 ///
 /// \return Pointeur sur le message
 ///
@@ -67,7 +67,7 @@ const char* CException::what() const throw ()
 /// Constructeur
 ///
 /// \param File :    Fichier source contenant l'erreur
-/// \param Line :    Ligne � laquelle se trouve l'erreur dans le fichier source
+/// \param Line :    Ligne e laquelle se trouve l'erreur dans le fichier source
 /// \param Message : Message d'erreur
 ///
 ////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ CLoadingFailed::CLoadingFailed(const std::string& File,
 /////////////////////////////////////////////////////////////
 /// Constructeur
 ///
-/// \param Error : Message d�crivant l'erreur
+/// \param Error : Message decrivant l'erreur
 ///
 ////////////////////////////////////////////////////////////
 CBadConversion::CBadConversion(const std::string& Error) :

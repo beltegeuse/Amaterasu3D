@@ -26,7 +26,7 @@
 #define CONSOLE_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <Singleton.h>
 #include <Addons/Console/Functor.h>
@@ -47,7 +47,7 @@ MAKE_SINGLETON(ama3D::CConsole)
 public:
 
 	//----------------------------------------------------------
-	// Constructeur par d�faut
+	// Constructeur par defaut
 	//----------------------------------------------------------
 	CConsole();
 	virtual ~CConsole();
@@ -63,12 +63,12 @@ public:
 			const Console::CFunctor& Function);
 
 	//----------------------------------------------------------
-	// Envoie un nouveau caract�re � la console
+	// Envoie un nouveau caractere e la console
 	//----------------------------------------------------------
 	void SendChar(char Character);
 
 	//----------------------------------------------------------
-	// Met � jour la console
+	// Met e jour la console
 	//----------------------------------------------------------
 	virtual void FrameStarted(double delta);
 	virtual void FrameEnded()
@@ -81,14 +81,14 @@ public:
 	void Draw() const;
 
 	//----------------------------------------------------------
-	// Active ou d�sactive la console
+	// Active ou desactive la console
 	//----------------------------------------------------------
 	void Enable(bool Enabled);
 	bool IsEnable() const;
 private:
 
 	//----------------------------------------------------------
-	// Donne la liste des commandes enregistr�es
+	// Donne la liste des commandes enregistrees
 	//----------------------------------------------------------
 	std::string GetCommands() const;
 
@@ -103,11 +103,11 @@ private:
 	typedef std::map<std::string, Console::CFunctor> TCommandTable;
 
 	//----------------------------------------------------------
-	// Donn�es membres
+	// Donnees membres
 	//----------------------------------------------------------
-	TCommandTable m_Commands; ///< Table des commandes enregistr�es
+	TCommandTable m_Commands; ///< Table des commandes enregistrees
 	std::string m_Current; ///< Ligne courante
-	CSmartPtr<Console::ILook> m_Look; ///< Pointeur sur la classe g�rant l'apparence de la console
+	CSmartPtr<Console::ILook> m_Look; ///< Pointeur sur la classe gerant l'apparence de la console
 	bool m_Enabled; ///< Indique si la console est active ou non
 };
 }

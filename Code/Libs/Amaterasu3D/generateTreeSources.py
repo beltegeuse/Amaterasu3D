@@ -11,13 +11,21 @@ class SourceDir:
 		self.dir = ""
 		
 	def updateFiles(self, dir):
-		self.dir = dir
+		self.dir = dir.replace("\\","/")[2:]
+		#print "Dir",self.dir
 		self.sources = glob.glob(dir+'/*.cpp')
 		self.headers = glob.glob(dir+'/*.hpp')
 		self.headers.extend(glob.glob(dir+'/*.h'))
+		self.headers.extend(glob.glob(dir+'/*.inl'))
+	
+		self.headers = [s.replace("\\","/")[2:] for s in self.headers]
+		self.sources = [s.replace("\\","/")[2:] for s in self.sources]
+	
+		#print "Sources:", self.sources
+		#print "Headers:", self.headers
 	
 	def __str__(self):
-		if(len(self.sources) + len(self.headers)):
+		if((len(self.sources) + len(self.headers)) == 0):
 			return ""
 		s = "# Dir name " +  self.dir + "\n"
 		if(len(self.sources) != 0):
@@ -36,13 +44,14 @@ class SourceDir:
 		
 
 def callbackWalk(arg, directory, files):
-	print "Walk : " + directory
+	print "#Walk : " + directory
 	for i in IGNORE:
 		if(directory.find(i) != -1):
-			print "Ignore : " + directory
+			print "#Ignore : " + directory
 			return
 	s = SourceDir()
 	s.updateFiles(directory)
+	#print str(s)
 	arg.append(s)
 		
 if __name__=="__main__":

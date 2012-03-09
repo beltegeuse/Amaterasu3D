@@ -29,7 +29,7 @@
 
 #include <string>
 #include <tinyxml.h>
-#include <Debug/Exceptions.h>
+#include <Exceptions.h>
 
 // Declaration of TinyXML error
 struct CTinyXMLException: public ama3D::CException

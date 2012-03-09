@@ -26,7 +26,7 @@
 #define LOOK_H
 
 //==========================================================
-// En-t�tes
+// En-tetes
 //==========================================================
 #include <string>
 
@@ -35,7 +35,7 @@ namespace ama3D
 namespace Console
 {
 ////////////////////////////////////////////////////////////
-/// Classe � d�river pour personnaliser l'apparence de la console
+/// Classe e deriver pour personnaliser l'apparence de la console
 ////////////////////////////////////////////////////////////
 class ILook
 {
@@ -49,32 +49,32 @@ public:
 	}
 
 	//----------------------------------------------------------
-	// Fonction appel�e lors de la mise � jour de la console (Listener functions)
+	// Fonction appelee lors de la mise e jour de la console (Listener functions)
 	//----------------------------------------------------------
 	virtual void Update(double delta) = 0;
 
 	//----------------------------------------------------------
-	// Fonction appel�e lors de l'affichage de la console
+	// Fonction appelee lors de l'affichage de la console
 	//----------------------------------------------------------
 	virtual void Draw() = 0; // FIXME add CONST
 
 	//----------------------------------------------------------
-	// Fonction appel�e lors de l'activation / d�sactivation de la console
+	// Fonction appelee lors de l'activation / desactivation de la console
 	//----------------------------------------------------------
 	virtual void Show(bool Visible) = 0;
 
 	//----------------------------------------------------------
-	// Fonction appel�e apr�s l'appel � une commande
+	// Fonction appelee apres l'appel e une commande
 	//----------------------------------------------------------
 	virtual void CommandCalled(const std::string& Result) = 0;
 
 	//----------------------------------------------------------
-	// Fonction appel�e � chaque changement de la ligne courante
+	// Fonction appelee e chaque changement de la ligne courante
 	//----------------------------------------------------------
 	virtual void TextChanged(const std::string& NewText) = 0;
 
 	//----------------------------------------------------------
-	// Fonction appel�e en cas d'erreur
+	// Fonction appelee en cas d'erreur
 	//----------------------------------------------------------
 	virtual void Error(const std::string& Message) = 0;
 };
